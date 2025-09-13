@@ -1,0 +1,1 @@
+Use this folder for game related files only
