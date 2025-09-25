@@ -1,1 +1,1 @@
-Use this folder for game related files onlyhfjhgjhgj
+Use this folder for game related files only
