@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 @Disabled
 public class Main extends LinearOpMode {
 
+<<<<<<< HEAD
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
@@ -45,5 +46,7 @@ public class Main extends LinearOpMode {
 
         }
     }
+=======
+>>>>>>> e8d5d6b (Main.java)
 
 }
