@@ -18,26 +18,31 @@ public class TeleOpMain extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+        frontLeftDrive = hardwareMap.get(DcDrive.class, "front_left_drive");
+        backLeftDrive = hardwareMap.get(DcDrive.class, "back_left_drive");
+        frontRightDrive = hardwareMap.get(DcDrive.class, "front_right_drive");
+        backRightDrive = hardwareMap.get(DcDrive.class, "back_right_drive");
 
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcDrive.Direction.REVERSE);
+        backLeftDrive.setDirection(DcDrive.Direction.REVERSE);
 
         waitForStart();
 
         while (opModeIsActive()) {
 
-            double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
-            double x = gamepad1.left_stick_x;
+            double y = gamepad1.left_stick_y;
+            double x = -gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
-
-            frontLeftDrive.setPower(y + x + rx);
-            backLeftDrive.setPower(y - x + rx);
-            frontRightDrive.setPower(y - x - rx);
-            backRightDrive.setPower(y + x - rx);
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
+            
+            frontLeftDrive.setPower(frontLeftPower);
+            backLeftDrive.setPower(backLeftPower);
+            frontRightDrive.setPower(frontRightPower);
+            backRightDrive.setPower(backRightPower);
 
         }
     }
