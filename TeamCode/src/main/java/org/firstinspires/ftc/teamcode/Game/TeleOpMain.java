@@ -5,6 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name="Tele-Op Main", group="Linear OpMode")
 public class TeleOpMain extends LinearOpMode {
@@ -18,13 +22,13 @@ public class TeleOpMain extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        frontLeftDrive = hardwareMap.get(DcDrive.class, "front_left_drive");
-        backLeftDrive = hardwareMap.get(DcDrive.class, "back_left_drive");
-        frontRightDrive = hardwareMap.get(DcDrive.class, "front_right_drive");
-        backRightDrive = hardwareMap.get(DcDrive.class, "back_right_drive");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
+        backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
 
-        frontLeftDrive.setDirection(DcDrive.Direction.REVERSE);
-        backLeftDrive.setDirection(DcDrive.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
 
         waitForStart();
 
