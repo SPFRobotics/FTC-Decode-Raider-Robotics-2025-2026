@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcDrive;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="Tele-Op Main", group="Linear OpMode")
+@TeleOp(name="Basic: Linear OpMode", group="Linear OpMode")
 @Disabled
 public class Main extends LinearOpMode {
 
