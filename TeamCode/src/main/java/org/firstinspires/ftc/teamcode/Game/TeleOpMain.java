@@ -17,6 +17,8 @@ public class TeleOpMain extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
+    
+    private Intake intake = null;
 
 
     @Override
@@ -29,11 +31,15 @@ public class TeleOpMain extends LinearOpMode {
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        
+        // Initialize intake subsystem
+        intake = new Intake(hardwareMap);
 
         waitForStart();
 
         while (opModeIsActive()) {
 
+            // Mecanum drive control
             double y = gamepad1.left_stick_y;
             double x = -gamepad1.left_stick_x;
             double rx = -gamepad1.right_stick_x;
@@ -48,7 +54,13 @@ public class TeleOpMain extends LinearOpMode {
             frontRightDrive.setPower(frontRightPower);
             backRightDrive.setPower(backRightPower);
 
+            // Update intake (square button toggles on/off)
+            intake.update(gamepad1);
 
+            // Telemetry
+            telemetry.addData("Intake Active", intake.isActive());
+            telemetry.addData("Runtime", runtime.toString());
+            telemetry.update();
 
         }
     }
