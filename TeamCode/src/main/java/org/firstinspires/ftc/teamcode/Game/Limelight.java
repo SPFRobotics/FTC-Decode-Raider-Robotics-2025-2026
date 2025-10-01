@@ -47,7 +47,6 @@ public class Limelight {
 
             // Target Detection Data
             telemetry.addLine("=== LIMELIGHT 3A DATA ===");
-            telemetry.addData("Pipeline", limelight.getCurrentPipelineIndex());
             telemetry.addData("Target Detected", llResult.isValid() ? "YES" : "NO");
             
             // Targeting Information
@@ -85,7 +84,6 @@ public class Limelight {
         } else {
             telemetry.addLine("=== LIMELIGHT 3A ===");
             telemetry.addData("Status", "No Valid Targets");
-            telemetry.addData("Pipeline", limelight.getCurrentPipelineIndex());
         }
         
         // IMU Data
