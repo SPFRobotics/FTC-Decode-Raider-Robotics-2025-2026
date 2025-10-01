@@ -20,7 +20,7 @@ public class Limelight {
         this.telemetry = telemetry;
         
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(1);
+        limelight.pipelineSwitch(0);
         
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(
