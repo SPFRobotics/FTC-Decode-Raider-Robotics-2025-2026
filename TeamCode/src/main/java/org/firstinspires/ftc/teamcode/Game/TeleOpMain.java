@@ -5,11 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
 @TeleOp(name="Tele-Op Main", group="Linear OpMode")
 public class TeleOpMain extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
@@ -19,6 +14,7 @@ public class TeleOpMain extends LinearOpMode {
     private DcMotor backRightDrive = null;
     
     private Intake intake = null;
+    private Limelight limelight = null;
 
 
     @Override
@@ -32,10 +28,17 @@ public class TeleOpMain extends LinearOpMode {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         
-        // Initialize intake subsystem
+        // Initialize subsystems
         intake = new Intake(hardwareMap);
+        limelight = new Limelight(hardwareMap, telemetry);
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
 
         waitForStart();
+        
+        // Start limelight after waitForStart
+        limelight.start();
 
         while (opModeIsActive()) {
 
@@ -54,10 +57,12 @@ public class TeleOpMain extends LinearOpMode {
             frontRightDrive.setPower(frontRightPower);
             backRightDrive.setPower(backRightPower);
 
-            // Update intake (square button toggles on/off)
+            // Update subsystems
             intake.update(gamepad1);
+            limelight.update();
 
-            // Telemetry
+            // Additional Telemetry
+            telemetry.addLine("\n=== DRIVE & INTAKE ===");
             telemetry.addData("Intake Active", intake.isActive());
             telemetry.addData("Runtime", runtime.toString());
             telemetry.update();
