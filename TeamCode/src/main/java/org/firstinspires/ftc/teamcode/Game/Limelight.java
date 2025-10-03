@@ -41,6 +41,14 @@ public class Limelight {
 
         LLResult llResult = limelight.getLatestResult();
 
+        // Diagnostic info - always show
+        telemetry.addLine("=== LIMELIGHT 3A DIAGNOSTICS ===");
+        telemetry.addData("Result Null?", llResult == null ? "YES - CHECK CONNECTION" : "No");
+        if (llResult != null) {
+            telemetry.addData("Result Valid?", llResult.isValid() ? "YES" : "NO");
+            telemetry.addData("Staleness", "%d ms", llResult.getStaleness());
+        }
+
         if (llResult != null && llResult.isValid()) {
             // Get MegaTag2 pose (field positioning)
             Pose3D botPose = llResult.getBotpose_MT2();
@@ -77,13 +85,23 @@ public class Limelight {
             }
             
             // Capture Latency
-            telemetry.addData("\nCapture Latency", "%.1f ms", llResult.getCaptureLatency());
-            telemetry.addData("Target Latency", "%.1f ms", llResult.getTargetingLatency());
-            telemetry.addData("Parse Latency", "%.1f ms", llResult.getParseLatency());
+            telemetry.addData("\nCapture Latency", "%d ms", llResult.getCaptureLatency());
+            telemetry.addData("Target Latency", "%d ms", llResult.getTargetingLatency());
+            telemetry.addData("Parse Latency", "%d ms", llResult.getParseLatency());
             
         } else {
-            telemetry.addLine("=== LIMELIGHT 3A ===");
-            telemetry.addData("Status", "No Valid Targets");
+            telemetry.addLine("\n=== NO VALID TARGETS ===");
+            telemetry.addData("Status", "Searching for targets...");
+            
+            // Show what we're looking for
+            if (llResult != null) {
+                telemetry.addLine("\nTroubleshooting Tips:");
+                telemetry.addData("1", "Check Limelight LEDs are ON");
+                telemetry.addData("2", "Point at AprilTag (Pipeline 1)");
+                telemetry.addData("3", "Ensure tag is well-lit");
+                telemetry.addData("4", "Distance: 1-15 feet works best");
+                telemetry.addData("5", "Check pipeline config at limelight.local:5801");
+            }
         }
         
         // IMU Data
@@ -139,5 +157,36 @@ public class Limelight {
     // Stop limelight
     public void stop() {
         limelight.stop();
+    }
+
+    // Get number of AprilTags detected
+    public int getAprilTagCount() {
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid() && result.getFiducialResults() != null) {
+            return result.getFiducialResults().size();
+        }
+        return 0;
+    }
+
+    // Get the ID of the first detected AprilTag (-1 if none)
+    public int getFirstAprilTagId() {
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid() && 
+            result.getFiducialResults() != null && 
+            !result.getFiducialResults().isEmpty()) {
+            return result.getFiducialResults().get(0).getFiducialId();
+        }
+        return -1;
+    }
+
+    // Check if Limelight is connected and responding
+    public boolean isConnected() {
+        return limelight.getLatestResult() != null;
+    }
+
+    // Get data staleness (how old the data is)
+    public double getStaleness() {
+        LLResult result = limelight.getLatestResult();
+        return (result != null) ? result.getStaleness() : -1.0;
     }
 }
