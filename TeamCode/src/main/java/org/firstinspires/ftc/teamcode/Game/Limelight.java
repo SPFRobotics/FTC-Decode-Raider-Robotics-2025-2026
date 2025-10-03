@@ -41,74 +41,30 @@ public class Limelight {
 
         LLResult llResult = limelight.getLatestResult();
 
-        // Diagnostic info - always show
-        telemetry.addLine("=== LIMELIGHT 3A DIAGNOSTICS ===");
-        telemetry.addData("Result Null?", llResult == null ? "YES - CHECK CONNECTION" : "No");
-        if (llResult != null) {
-            telemetry.addData("Result Valid?", llResult.isValid() ? "YES" : "NO");
-            telemetry.addData("Staleness", "%d ms", llResult.getStaleness());
-        }
-
         if (llResult != null && llResult.isValid()) {
             // Get MegaTag2 pose (field positioning)
             Pose3D botPose = llResult.getBotpose_MT2();
 
-            // Target Detection Data
-            telemetry.addLine("=== LIMELIGHT 3A DATA ===");
-            telemetry.addData("Target Detected", llResult.isValid() ? "YES" : "NO");
+            // Target Detection
+            telemetry.addLine("=== LIMELIGHT ===");
+            telemetry.addData("Target", "LOCKED");
+            telemetry.addData("Tx", String.format("%.1f°", llResult.getTx()));
+            telemetry.addData("Ty", String.format("%.1f°", llResult.getTy()));
             
-            // Targeting Information
-            telemetry.addData("Tx (Horizontal Offset)", "%.2f°", llResult.getTx());
-            telemetry.addData("Ty (Vertical Offset)", "%.2f°", llResult.getTy());
-            telemetry.addData("Ta (Target Area)", "%.2f%%", llResult.getTa());
+            // Robot Position
+            telemetry.addData("X", String.format("%.1f", botPose.getPosition().x));
+            telemetry.addData("Y", String.format("%.1f", botPose.getPosition().y));
+            telemetry.addData("Heading", String.format("%.1f°", botPose.getOrientation().getYaw()));
             
-            // Robot Pose (MegaTag2 - Field Position)
-            telemetry.addLine("\n--- Robot Position (MT2) ---");
-            telemetry.addData("X Position", "%.2f inches", botPose.getPosition().x);
-            telemetry.addData("Y Position", "%.2f inches", botPose.getPosition().y);
-            telemetry.addData("Z Position", "%.2f inches", botPose.getPosition().z);
-            telemetry.addData("Yaw", "%.2f°", botPose.getOrientation().getYaw());
-            telemetry.addData("Pitch", "%.2f°", botPose.getOrientation().getPitch());
-            telemetry.addData("Roll", "%.2f°", botPose.getOrientation().getRoll());
-            
-            // Color Detection (if using neural detector)
-            if (llResult.getColorResults() != null && !llResult.getColorResults().isEmpty()) {
-                telemetry.addLine("\n--- Color Detection ---");
-                telemetry.addData("Colors Found", llResult.getColorResults().size());
-            }
-            
-            // Detector Results (if using neural/fiducial detector)
+            // AprilTag Info
             if (llResult.getFiducialResults() != null && !llResult.getFiducialResults().isEmpty()) {
-                telemetry.addLine("\n--- AprilTag Detection ---");
-                telemetry.addData("Tags Found", llResult.getFiducialResults().size());
-                telemetry.addData("First Tag ID", llResult.getFiducialResults().get(0).getFiducialId());
+                telemetry.addData("Tag ID", llResult.getFiducialResults().get(0).getFiducialId());
             }
-            
-            // Capture Latency
-            telemetry.addData("\nCapture Latency", "%d ms", llResult.getCaptureLatency());
-            telemetry.addData("Target Latency", "%d ms", llResult.getTargetingLatency());
-            telemetry.addData("Parse Latency", "%d ms", llResult.getParseLatency());
             
         } else {
-            telemetry.addLine("\n=== NO VALID TARGETS ===");
-            telemetry.addData("Status", "Searching for targets...");
-            
-            // Show what we're looking for
-            if (llResult != null) {
-                telemetry.addLine("\nTroubleshooting Tips:");
-                telemetry.addData("1", "Check Limelight LEDs are ON");
-                telemetry.addData("2", "Point at AprilTag (Pipeline 1)");
-                telemetry.addData("3", "Ensure tag is well-lit");
-                telemetry.addData("4", "Distance: 1-15 feet works best");
-                telemetry.addData("5", "Check pipeline config at limelight.local:5801");
-            }
+            telemetry.addLine("=== LIMELIGHT ===");
+            telemetry.addData("Target", "NO LOCK");
         }
-        
-        // IMU Data
-        telemetry.addLine("\n--- IMU Data ---");
-        telemetry.addData("Robot Yaw", "%.2f°", headingOrientation.getYaw());
-        telemetry.addData("Robot Pitch", "%.2f°", headingOrientation.getPitch());
-        telemetry.addData("Robot Roll", "%.2f°", headingOrientation.getRoll());
     }
 
     // Getter for latest result (if needed elsewhere)
