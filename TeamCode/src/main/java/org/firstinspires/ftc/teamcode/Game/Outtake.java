@@ -2,19 +2,18 @@ package org.firstinspires.ftc.teamcode.Game;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class Intake {
+public class Outtake {
 
-    public DcMotor intakeMotor = null;
+    public DcMotor outtakeMotor = null;
     private boolean isActive = false;
     private int encoderCount = 0;
 
     private ElapsedTime clock = new ElapsedTime();
     // Constructor - initializes the intake motor
-    public Intake(HardwareMap hardwareMap) {
-        intakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
+    public Outtake(HardwareMap hardwareMap) {
+        outtakeMotor = hardwareMap.get(DcMotor.class, "OuttakeMotor");
         //intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
@@ -23,9 +22,9 @@ public class Intake {
     public void update() {
         // Set motor power based on active state
         if (isActive) {
-            intakeMotor.setPower(-1.0); // Full power when active
+            outtakeMotor.setPower(-1.0); // Full power when active
         } else {
-            intakeMotor.setPower(0.0); // Off when inactive
+            outtakeMotor.setPower(0.0); // Off when inactive
         }
     }
 
@@ -44,11 +43,11 @@ public class Intake {
     }
 
     public void setPower(double power) {
-        intakeMotor.setPower(power);
+        outtakeMotor.setPower(power);
     }
 
     public double getRPM(double encoderRes){
-        int currentPos = intakeMotor.getCurrentPosition();
+        int currentPos = outtakeMotor.getCurrentPosition();
         int deltaTicks = currentPos - encoderCount;
 
         if (deltaTicks != 0) {
