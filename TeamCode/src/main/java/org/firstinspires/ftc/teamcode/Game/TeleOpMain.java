@@ -20,6 +20,7 @@ public class TeleOpMain extends LinearOpMode {
     private Outtake outtake = null;
     private Limelight limelight = null;
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
+    private Button flipButton = new Button();
 
     @Override
     public void runOpMode() {
@@ -63,18 +64,31 @@ public class TeleOpMain extends LinearOpMode {
             backRightDrive.setPower(backRightPower);*/
 
             // Update subsystems
-
-            outtake.setPower(gamepad1.left_stick_y);
+            
+            // Right trigger to shoot (activate outtake)
+            if (gamepad1.right_trigger > 0.1) {
+                outtake.activate();
+            } else {
+                outtake.deactivate();
+            }
+            
+            // Right bumper to flip direction
+            if (flipButton.press(gamepad1.right_bumper)) {
+                outtake.flipDirection();
+            }
+            
+            outtake.update();
 
             // Additional Telemetry
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
             telemetry.addLine("==========================================");
             limelight.update();
-            telemetry.addLine("\n=== DRIVE & INTAKE ===");
-            telemetry.addData("Intake Active", outtake.isActive());
+            telemetry.addLine("\n=== OUTTAKE ===");
+            telemetry.addData("Outtake Active", outtake.isActive());
+            telemetry.addData("Direction", outtake.getDirection() == 1 ? "FORWARD" : "BACKWARD");
+            telemetry.addData("RPM", String.format("%.1f", outtake.getRPM(28)));
             telemetry.addData("Runtime", runtime.toString());
-            telemetry.addLine(Double.toString(outtake.getRPM(28)) + " RPM");
             telemetry.update();
 
         }
