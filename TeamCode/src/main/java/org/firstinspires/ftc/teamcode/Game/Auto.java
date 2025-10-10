@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Game;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
+@Autonomous
 public abstract class Auto extends LinearOpMode {
 
     private DcMotor frontLeftDrive;
@@ -24,7 +24,6 @@ public abstract class Auto extends LinearOpMode {
         backLeftDrive.setPower(-0.5);
         backRightDrive.setPower(-0.5);
     }
-
 
 
     public void runOpMode() throws InterruptedException {
