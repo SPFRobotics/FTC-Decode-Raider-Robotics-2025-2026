@@ -45,52 +45,26 @@ public class Limelight {
             // Get MegaTag2 pose (field positioning)
             Pose3D botPose = llResult.getBotpose_MT2();
 
-            // Target Detection Data
-            telemetry.addLine("=== LIMELIGHT 3A DATA ===");
-            telemetry.addData("Target Detected", llResult.isValid() ? "YES" : "NO");
+            // Target Detection
+            telemetry.addLine("=== LIMELIGHT ===");
+            telemetry.addData("Target", "LOCKED");
+            telemetry.addData("Tx", String.format("%.1f°", llResult.getTx()));
+            telemetry.addData("Ty", String.format("%.1f°", llResult.getTy()));
             
-            // Targeting Information
-            telemetry.addData("Tx (Horizontal Offset)", "%.2f°", llResult.getTx());
-            telemetry.addData("Ty (Vertical Offset)", "%.2f°", llResult.getTy());
-            telemetry.addData("Ta (Target Area)", "%.2f%%", llResult.getTa());
+            // Robot Position
+            telemetry.addData("X", String.format("%.1f", botPose.getPosition().x));
+            telemetry.addData("Y", String.format("%.1f", botPose.getPosition().y));
+            telemetry.addData("Heading", String.format("%.1f°", botPose.getOrientation().getYaw()));
             
-            // Robot Pose (MegaTag2 - Field Position)
-            telemetry.addLine("\n--- Robot Position (MT2) ---");
-            telemetry.addData("X Position", "%.2f inches", botPose.getPosition().x);
-            telemetry.addData("Y Position", "%.2f inches", botPose.getPosition().y);
-            telemetry.addData("Z Position", "%.2f inches", botPose.getPosition().z);
-            telemetry.addData("Yaw", "%.2f°", botPose.getOrientation().getYaw());
-            telemetry.addData("Pitch", "%.2f°", botPose.getOrientation().getPitch());
-            telemetry.addData("Roll", "%.2f°", botPose.getOrientation().getRoll());
-            
-            // Color Detection (if using neural detector)
-            if (llResult.getColorResults() != null && !llResult.getColorResults().isEmpty()) {
-                telemetry.addLine("\n--- Color Detection ---");
-                telemetry.addData("Colors Found", llResult.getColorResults().size());
-            }
-            
-            // Detector Results (if using neural/fiducial detector)
+            // AprilTag Info
             if (llResult.getFiducialResults() != null && !llResult.getFiducialResults().isEmpty()) {
-                telemetry.addLine("\n--- AprilTag Detection ---");
-                telemetry.addData("Tags Found", llResult.getFiducialResults().size());
-                telemetry.addData("First Tag ID", llResult.getFiducialResults().get(0).getFiducialId());
+                telemetry.addData("Tag ID", llResult.getFiducialResults().get(0).getFiducialId());
             }
-            
-            // Capture Latency
-            telemetry.addData("\nCapture Latency", "%.1f ms", llResult.getCaptureLatency());
-            telemetry.addData("Target Latency", "%.1f ms", llResult.getTargetingLatency());
-            telemetry.addData("Parse Latency", "%.1f ms", llResult.getParseLatency());
             
         } else {
-            telemetry.addLine("=== LIMELIGHT 3A ===");
-            telemetry.addData("Status", "No Valid Targets");
+            telemetry.addLine("=== LIMELIGHT ===");
+            telemetry.addData("Target", "NO LOCK");
         }
-        
-        // IMU Data
-        telemetry.addLine("\n--- IMU Data ---");
-        telemetry.addData("Robot Yaw", "%.2f°", headingOrientation.getYaw());
-        telemetry.addData("Robot Pitch", "%.2f°", headingOrientation.getPitch());
-        telemetry.addData("Robot Roll", "%.2f°", headingOrientation.getRoll());
     }
 
     // Getter for latest result (if needed elsewhere)
@@ -139,5 +113,36 @@ public class Limelight {
     // Stop limelight
     public void stop() {
         limelight.stop();
+    }
+
+    // Get number of AprilTags detected
+    public int getAprilTagCount() {
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid() && result.getFiducialResults() != null) {
+            return result.getFiducialResults().size();
+        }
+        return 0;
+    }
+
+    // Get the ID of the first detected AprilTag (-1 if none)
+    public int getFirstAprilTagId() {
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid() && 
+            result.getFiducialResults() != null && 
+            !result.getFiducialResults().isEmpty()) {
+            return result.getFiducialResults().get(0).getFiducialId();
+        }
+        return -1;
+    }
+
+    // Check if Limelight is connected and responding
+    public boolean isConnected() {
+        return limelight.getLatestResult() != null;
+    }
+
+    // Get data staleness (how old the data is)
+    public double getStaleness() {
+        LLResult result = limelight.getLatestResult();
+        return (result != null) ? result.getStaleness() : -1.0;
     }
 }
