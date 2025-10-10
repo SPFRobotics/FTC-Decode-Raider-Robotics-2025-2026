@@ -24,6 +24,8 @@ public abstract class Auto extends LinearOpMode {
         backRightDrive.setPower(-0.5);
     }
 
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -48,5 +50,7 @@ public abstract class Auto extends LinearOpMode {
         frontRightDrive.setPower(0);
         backLeftDrive.setPower(0);
         backRightDrive.setPower(0);
+
     }
+
 }
