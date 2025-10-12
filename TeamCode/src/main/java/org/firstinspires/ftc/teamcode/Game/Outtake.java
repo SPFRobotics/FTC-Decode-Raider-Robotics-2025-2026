@@ -1,15 +1,25 @@
 package org.firstinspires.ftc.teamcode.Game;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Outtake {
+    @Config
+    public static class Speed{
+        public static double speed = 77;
 
+
+
+    }
     public DcMotor outtakeMotor = null;
     private boolean isActive = false;
     private int encoderCount = 0;
     private int direction = 1; // 1 for forward, -1 for backward
+
+
+
 
     private ElapsedTime clock = new ElapsedTime();
     // Constructor - initializes the intake motor
@@ -23,7 +33,7 @@ public class Outtake {
     public void update() {
         // Set motor power based on active state and direction
         if (isActive) {
-            outtakeMotor.setPower(-1.0 * direction); // Full power when active, respects direction
+            outtakeMotor.setPower(Speed.speed * direction); // Full power when active, respects direction
         } else {
             outtakeMotor.setPower(0.0); // Off when inactive
         }
