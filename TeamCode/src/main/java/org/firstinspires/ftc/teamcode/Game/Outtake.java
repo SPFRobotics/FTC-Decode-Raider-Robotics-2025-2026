@@ -156,7 +156,7 @@ public class Outtake {
     // Get remaining boost time
     public double getRemainingBoostTime() {
         if (isBoosted) {
-            return Math.max(0, Speed.boostDuration - boostTimer.seconds());
+            return Math.max(0, BOOST_DURATION - boostTimer.seconds());
         }
         return 0.0;
     }
