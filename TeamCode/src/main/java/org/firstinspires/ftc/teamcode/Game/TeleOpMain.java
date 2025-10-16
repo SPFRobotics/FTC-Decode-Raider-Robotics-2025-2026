@@ -95,6 +95,9 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Runtime", runtime.toString());
             telemetry.update();
 
+                public static void main(String[] args) {
+                
+                }
         }
     }
 
