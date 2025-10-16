@@ -20,7 +20,6 @@ public class TeleOpMain extends LinearOpMode {
     private Outtake outtake = null;
     private Limelight limelight = null;
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
-    private Button flipButton = new Button();
 
     @Override
     public void runOpMode() {
@@ -64,40 +63,19 @@ public class TeleOpMain extends LinearOpMode {
             backRightDrive.setPower(backRightPower);*/
 
             // Update subsystems
-            
-            // Right trigger to activate outtake (auto-boost enabled)
-            if (gamepad1.right_trigger > 0.1) {
-                outtake.activate();
-            } else {
-                outtake.deactivate();
-            }
-            
-            // Right bumper to switch between far (77%) and short (55%) locations
-            if (flipButton.press(gamepad1.right_bumper)) {
-                outtake.switchLocation();
-            }
-            
-            outtake.update();
+
+            outtake.setPower(gamepad1.left_stick_y);
 
             // Additional Telemetry
-            telemetry.addLine("==========================================");
-            telemetry.addLine(bigThree.foward());
-            telemetry.addLine("==========================================");
+            //telemetry.addLine("==========================================");
+            //telemetry.addLine(bigThree.foward());
+            //telemetry.addLine("==========================================");
             limelight.update();
-            telemetry.addLine("\n=== OUTTAKE ===");
-            telemetry.addData("Outtake Active", outtake.isActive());
-            telemetry.addData("Location", outtake.getLocationName());
-            telemetry.addData("RPM", String.format("%.1f", outtake.getRPM(28)));
-            telemetry.addData("Power", String.format("%.1f%%", outtake.getCurrentPower() * 100));
-            if (outtake.isBoosted()) {
-                telemetry.addData("Boost Time Left", String.format("%.1fs", outtake.getRemainingBoostTime()));
-            }
+            telemetry.addLine("\n=== DRIVE & INTAKE ===");
+            telemetry.addData("Intake Active", outtake.isActive());
             telemetry.addData("Runtime", runtime.toString());
+            telemetry.addLine(Double.toString(outtake.getRPM(28)) + " RPM");
             telemetry.update();
-
-                public static void main(String[] args) {
-                
-                }
         }
     }
 
