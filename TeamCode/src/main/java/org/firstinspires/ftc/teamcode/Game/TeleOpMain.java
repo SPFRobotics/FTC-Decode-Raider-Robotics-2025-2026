@@ -65,16 +65,16 @@ public class TeleOpMain extends LinearOpMode {
 
             // Update subsystems
             
-            // Right trigger to shoot (activate outtake)
+            // Right trigger to activate outtake (auto-boost enabled)
             if (gamepad1.right_trigger > 0.1) {
                 outtake.activate();
             } else {
                 outtake.deactivate();
             }
             
-            // Right bumper to flip direction
+            // Right bumper to switch between far (77%) and short (55%) locations
             if (flipButton.press(gamepad1.right_bumper)) {
-                outtake.flipDirection();
+                outtake.switchLocation();
             }
             
             outtake.update();
@@ -86,8 +86,12 @@ public class TeleOpMain extends LinearOpMode {
             limelight.update();
             telemetry.addLine("\n=== OUTTAKE ===");
             telemetry.addData("Outtake Active", outtake.isActive());
-            telemetry.addData("Direction", outtake.getDirection() == 1 ? "FORWARD" : "BACKWARD");
+            telemetry.addData("Location", outtake.getLocationName());
             telemetry.addData("RPM", String.format("%.1f", outtake.getRPM(28)));
+            telemetry.addData("Power", String.format("%.1f%%", outtake.getCurrentPower() * 100));
+            if (outtake.isBoosted()) {
+                telemetry.addData("Boost Time Left", String.format("%.1fs", outtake.getRemainingBoostTime()));
+            }
             telemetry.addData("Runtime", runtime.toString());
             telemetry.update();
 
