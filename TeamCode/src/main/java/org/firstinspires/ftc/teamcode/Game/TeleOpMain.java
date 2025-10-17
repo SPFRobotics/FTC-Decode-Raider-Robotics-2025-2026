@@ -77,6 +77,10 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine(Double.toString(outtake.getRPM(28)) + " RPM");
             telemetry.update();
         }
-    }
 
+
+    }
+    public static void main(String[] args) {
+        System.out.println("Father Ryan");
+    }
 }
