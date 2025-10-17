@@ -15,8 +15,7 @@ public class TeleOpMain extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
 
-    private DcMotor intakeMotor = null;
-
+    private Intake intake = null;
     private Outtake outtake = null;
     private Limelight limelight = null;
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
@@ -33,6 +32,7 @@ public class TeleOpMain extends LinearOpMode {
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         
         // Initialize subsystems
+        intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
         limelight = new Limelight(hardwareMap, telemetry);
 
@@ -48,7 +48,7 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Mecanum drive control
-            /*double y = gamepad1.left_stick_y;
+            double y = gamepad1.left_stick_y;
             double x = -gamepad1.left_stick_x;
             double rx = -gamepad1.right_stick_x;
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
@@ -60,11 +60,24 @@ public class TeleOpMain extends LinearOpMode {
             frontLeftDrive.setPower(frontLeftPower);
             backLeftDrive.setPower(backLeftPower);
             frontRightDrive.setPower(frontRightPower);
-            backRightDrive.setPower(backRightPower);*/
+            backRightDrive.setPower(backRightPower);
 
             // Update subsystems
+            // Intake control - left trigger
+            if (gamepad1.left_trigger > 0.1) {
+                intake.activate();
+            } else {
+                intake.deactivate();
+            }
+            intake.update();
 
-            outtake.setPower(gamepad1.left_stick_y);
+            // Outtake control - right trigger
+            if (gamepad1.right_trigger > 0.1) {
+                outtake.activate();
+            } else {
+                outtake.deactivate();
+            }
+            outtake.update();
 
             // Additional Telemetry
             //telemetry.addLine("==========================================");
@@ -72,9 +85,11 @@ public class TeleOpMain extends LinearOpMode {
             //telemetry.addLine("==========================================");
             limelight.update();
             telemetry.addLine("\n=== DRIVE & INTAKE ===");
-            telemetry.addData("Intake Active", outtake.isActive());
+            telemetry.addData("Intake Active", intake.isActive());
+            telemetry.addData("Outtake Active", outtake.isActive());
             telemetry.addData("Runtime", runtime.toString());
-            telemetry.addLine(Double.toString(outtake.getRPM(28)) + " RPM");
+            telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
+            telemetry.addLine("Outtake RPM: " + Double.toString(outtake.getRPM(28)));
             telemetry.update();
         }
 
