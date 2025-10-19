@@ -64,7 +64,7 @@ public class TeleOpMain extends LinearOpMode {
 
             // Update subsystems
             // Intake control - left trigger
-            if (gamepad1.left_trigger > 0.1) {
+            if (gamepad1.left_trigger > 0) {
                 intake.activate();
             } else {
                 intake.deactivate();
