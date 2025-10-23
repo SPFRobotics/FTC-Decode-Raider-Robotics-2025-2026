@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Game;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-@Autonomous
+@Autonomous(name="Auto Main")
 public abstract class Auto extends LinearOpMode {
 
     private DcMotor frontLeftDrive;

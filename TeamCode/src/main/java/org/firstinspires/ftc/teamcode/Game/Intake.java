@@ -23,7 +23,7 @@ public class Intake {
     public void update() {
         // Set motor power based on active state
         if (isActive) {
-            intakeMotor.setPower(-1.0); // Full power when active
+            intakeMotor.setPower(1.0); // Full power when active
         } else {
             intakeMotor.setPower(0.0); // Off when inactive
         }
