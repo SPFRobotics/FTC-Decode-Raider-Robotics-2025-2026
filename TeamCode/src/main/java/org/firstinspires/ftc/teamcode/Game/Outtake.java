@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Game;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -11,7 +12,7 @@ public class Outtake {
         public static double farPower = 0.77;     // Far location power (77%)
         public static double shortPower = 0.55;   // Short location power (55%)
     }
-    public DcMotor outtakeMotor = null;
+    public DcMotorEx outtakeMotor = null;
     private boolean isActive = false;
     private int encoderCount = 0;
     private boolean isFarLocation = true; // true = far (77%), false = short (55%)
@@ -32,7 +33,7 @@ public class Outtake {
     private ElapsedTime clock = new ElapsedTime();
     // Constructor - initializes the intake motor
     public Outtake(HardwareMap hardwareMap) {
-        outtakeMotor = hardwareMap.get(DcMotor.class, "OuttakeMotor");
+        outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         //intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
