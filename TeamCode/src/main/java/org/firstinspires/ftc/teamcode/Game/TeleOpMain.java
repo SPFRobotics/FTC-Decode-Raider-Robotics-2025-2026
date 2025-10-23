@@ -63,12 +63,13 @@ public class TeleOpMain extends LinearOpMode {
             backRightDrive.setPower(backRightPower);
 
             // Update subsystems
-            // Intake control - left trigger
-            if (gamepad1.left_trigger > 0.1) {
-                intake.activate();
-            } else {
-                intake.deactivate();
-            }
+            // Intake control - left trigger (DEACTIVATED)
+            // if (gamepad1.left_trigger > 0.1) {
+            //     intake.activate();
+            // } else {
+            //     intake.deactivate();
+            // }
+            intake.deactivate(); // Always deactivated
             intake.update();
 
             // Outtake control - right trigger
