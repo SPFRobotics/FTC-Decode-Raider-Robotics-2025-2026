@@ -33,7 +33,7 @@ public class TeleOpMain extends LinearOpMode {
     private Button outtakeClose = new Button();
     private Button a = new Button();
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
-
+    private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and amd push us forward towards victory. Ryan will save us. Ryan is Jewses.");
     @Override
     public void runOpMode() {
 
@@ -125,6 +125,8 @@ public class TeleOpMain extends LinearOpMode {
             // Additional Telemetry
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
+            telemetry.addLine(daddyRyan.foward());
+
             telemetry.addLine("==========================================");
             //limelight.update();
             telemetry.addLine("\n=== DRIVE & INTAKE ===");

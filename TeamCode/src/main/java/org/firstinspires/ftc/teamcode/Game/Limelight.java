@@ -14,6 +14,13 @@ public class Limelight {
     private Limelight3A limelight;
     private IMU imu;
     private Telemetry telemetry;
+    
+    // AprilTag centering variables
+    private static final double CENTERING_THRESHOLD = 1.0; // degrees
+    private static final double MAX_CENTERING_SPEED = 0.5; // max power for centering
+    private static final double CENTERING_GAIN = 0.02; // proportional gain for centering
+    private boolean centeringEnabled = false;
+    private int targetAprilTagId = -1; // -1 means any AprilTag
 
     // Constructor - initializes the limelight and IMU
     public Limelight(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -23,9 +30,10 @@ public class Limelight {
         limelight.pipelineSwitch(0);
         
         imu = hardwareMap.get(IMU.class, "imu");
+        // Fixed orientation for upside-down logo facing right
         RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(
-            RevHubOrientationOnRobot.LogoFacingDirection.UP, 
-            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+            RevHubOrientationOnRobot.LogoFacingDirection.DOWN, 
+            RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
         );
         imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
     }
