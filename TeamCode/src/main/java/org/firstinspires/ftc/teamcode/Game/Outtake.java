@@ -11,6 +11,7 @@ public class Outtake {
     public static class Speed{
         public static double farPower = 0.77;     // Far location power (77%)
         public static double shortPower = 0.55;   // Short location power (55%)
+        public static double power = 0;
     }
     public DcMotorEx outtakeMotor = null;
     private boolean isActive = false;
