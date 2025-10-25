@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.Game;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;
+
 
 @TeleOp(name="Tele-Op Main", group="Linear OpMode")
 public class TeleOpMain extends LinearOpMode {
@@ -17,11 +19,11 @@ public class TeleOpMain extends LinearOpMode {
         public static double rpm = 4300;
     }
     private ElapsedTime runtime = new ElapsedTime();
-    /*private DcMotor frontLeftDrive = null;
+    private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
-    */
+
 
 
     private Intake intake = null;
@@ -39,13 +41,13 @@ public class TeleOpMain extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        //frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
-        /*backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
 
         //frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);*/
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         
         // Initialize subsystems
         intake = new Intake(hardwareMap);
@@ -76,10 +78,10 @@ public class TeleOpMain extends LinearOpMode {
             double frontRightPower = (y - x - rx) / denominator;
             double backRightPower = (y + x - rx) / denominator;
             
-            //frontLeftDrive.setPower(frontLeftPower);
-            /*backLeftDrive.setPower(backLeftPower);
+            frontLeftDrive.setPower(frontLeftPower);
+            backLeftDrive.setPower(backLeftPower);
             frontRightDrive.setPower(frontRightPower);
-            backRightDrive.setPower(backRightPower);*/
+            backRightDrive.setPower(backRightPower);
 
             // Update subsystems
             // Intake control - left trigger
