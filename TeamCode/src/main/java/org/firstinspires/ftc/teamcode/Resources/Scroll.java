@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game;
+package org.firstinspires.ftc.teamcode.Resources;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;

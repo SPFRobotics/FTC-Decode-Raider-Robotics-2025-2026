@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Resources.Scroll;
+
 @TeleOp(name="Tele-Op Main", group="Linear OpMode")
 public class TeleOpMain extends LinearOpMode {
     @Config
@@ -14,7 +17,6 @@ public class TeleOpMain extends LinearOpMode {
         public static double rpm = 4300;
     }
     private ElapsedTime runtime = new ElapsedTime();
-    private ElapsedTime outtakeTimer = new ElapsedTime();
     /*private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
@@ -24,8 +26,8 @@ public class TeleOpMain extends LinearOpMode {
 
     private Intake intake = null;
     private Outtake outtake = null;
-    private Extension extension = null;
     private Kicker kicker = null;
+    private Extension extension = null;
     private boolean zeroKicker = false;
     //private Limelight limelight = null;
 
@@ -33,7 +35,7 @@ public class TeleOpMain extends LinearOpMode {
     private Button outtakeClose = new Button();
     private Button a = new Button();
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
-    private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and amd push us forward towards victory. Ryan will save us. Ryan is Jewses.");
+    private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
     @Override
     public void runOpMode() {
 
@@ -49,6 +51,7 @@ public class TeleOpMain extends LinearOpMode {
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
+
         //extension = new Extension(hardwareMap);
         //limelight = new Limelight(hardwareMap, telemetry);
 
@@ -88,17 +91,7 @@ public class TeleOpMain extends LinearOpMode {
 
             intake.update();*/
 
-            if (a.toggle(gamepad1.a)){
-                if (outtakeTimer.seconds() >= 4){
-                    outtakeTimer.reset();
-                }
-                if ((int)outtakeTimer.seconds() == 0){
-                    kicker.down();
-                }
-                else if ((int)outtakeTimer.seconds() == 2) {
-                    kicker.up();
-                }
-            }
+            outtake.automate(a.toggle(gamepad1.a));
 
             // Outtake control - right trigger
             if (outtakeFar.press(gamepad1.right_bumper)) {
@@ -126,7 +119,6 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
             telemetry.addLine(daddyRyan.foward());
-
             telemetry.addLine("==========================================");
             //limelight.update();
             telemetry.addLine("\n=== DRIVE & INTAKE ===");
@@ -138,7 +130,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Runtime", runtime.toString());
             telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
             telemetry.addLine("Outtake RPM: " + Double.toString(outtake.getRPM(28)));
-            telemetry.addLine(Double.toString(outtakeTimer.seconds()));
+            telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
             telemetry.update();
         }
 

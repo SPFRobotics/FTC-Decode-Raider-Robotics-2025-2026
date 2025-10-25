@@ -14,6 +14,7 @@ public class Outtake {
         public static double power = 0;
     }
     public DcMotorEx outtakeMotor = null;
+    private Kicker kicker = null;
     private boolean isActive = false;
     private int encoderCount = 0;
     private boolean isFarLocation = true; // true = far (77%), false = short (55%)
@@ -32,10 +33,12 @@ public class Outtake {
 
 
     private ElapsedTime clock = new ElapsedTime();
+    //Interval in seconds of outtake cycle
+    private ElapsedTime interval = new ElapsedTime();
     // Constructor - initializes the intake motor
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
-        //intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        kicker = new Kicker(hardwareMap);
     }
 
 
@@ -79,6 +82,8 @@ public class Outtake {
             lastRPM = 0; // Reset RPM tracking
         }
     }
+
+
     
     // Switch between far and short locations
     public void switchLocation() {
@@ -111,6 +116,27 @@ public class Outtake {
 
     public void setPower(double power) {
         outtakeMotor.setPower(power);
+    }
+
+    public void automate(boolean x){
+        if (x){
+            if (interval.seconds() >= 4){
+                interval.reset();
+            }
+            if ((int)interval.seconds() == 0){
+                kicker.down();
+            }
+            else if ((int)interval.seconds() == 2) {
+                kicker.up();
+            }
+        }
+        else{
+            kicker.up();
+        }
+    }
+
+    public double getCurrentCycleTime(){
+        return interval.seconds();
     }
 
     public double getRPM(double encoderRes){

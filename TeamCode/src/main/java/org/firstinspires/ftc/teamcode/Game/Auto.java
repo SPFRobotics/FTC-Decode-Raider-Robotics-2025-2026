@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Game;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 @Autonomous(name="Auto Main")
 public abstract class Auto extends LinearOpMode {
 
@@ -10,20 +11,6 @@ public abstract class Auto extends LinearOpMode {
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
     private DcMotor backRightDrive;
-
-    public void forward() {
-        frontLeftDrive.setPower(0.5);
-        frontRightDrive.setPower(0.5);
-        backLeftDrive.setPower(0.5);
-        backRightDrive.setPower(0.5);
-    }
-
-    public void backward() {
-        frontLeftDrive.setPower(-0.5);
-        frontRightDrive.setPower(-0.5);
-        backLeftDrive.setPower(-0.5);
-        backRightDrive.setPower(-0.5);
-    }
 
 
     public void runOpMode() throws InterruptedException {
@@ -36,20 +23,11 @@ public abstract class Auto extends LinearOpMode {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
 
+        MecanumChassis robot = new MecanumChassis(this);
         waitForStart();
 
-        // Example: drive forward for 2 seconds, then stop
-        forward();
-        sleep(2000);
-        stopAll();
-    }
 
-    public void stopAll() {
-        frontLeftDrive.setPower(0);
-        frontRightDrive.setPower(0);
-        backLeftDrive.setPower(0);
-        backRightDrive.setPower(0);
-
+        robot.move(1, "foward", 10);
     }
 
 }
