@@ -132,6 +132,7 @@ public class Outtake {
         }
         else{
             kicker.up();
+            interval.reset();
         }
     }
 
