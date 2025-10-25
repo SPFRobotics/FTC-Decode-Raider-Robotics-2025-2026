@@ -35,7 +35,7 @@ import java.util.List;
  *   below the name of the Limelight on the top level configuration screen.
  */
 
-@TeleOp
+@Disabled
 public class LimelightTest extends LinearOpMode {
 
     private Limelight3A limelight;
