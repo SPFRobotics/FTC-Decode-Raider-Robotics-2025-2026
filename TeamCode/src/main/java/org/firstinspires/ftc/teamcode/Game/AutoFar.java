@@ -44,15 +44,7 @@ public abstract class AutoFar extends LinearOpMode {
         MecanumChassis robot = new MecanumChassis(this);
         waitForStart();
 
-        //start at close starting pos
-        runtime.reset();
-        outtakeMotor.setPower(.77);
-
-        if (runtime.milliseconds()>=1500) {
-
-            outtake.automate(true);
-
-        }
+        outtake.automate(true);
     }
 
 }
