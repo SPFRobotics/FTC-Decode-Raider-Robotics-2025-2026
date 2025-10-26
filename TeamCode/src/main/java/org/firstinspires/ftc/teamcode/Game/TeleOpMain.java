@@ -29,6 +29,7 @@ public class TeleOpMain extends LinearOpMode {
     private Intake intake = null;
     private Outtake outtake = null;
     private Kicker kicker = null;
+    private boolean rumbled = false;
     private Extension extension = null;
     private boolean zeroKicker = false;
     //private Limelight limelight = null;
@@ -76,8 +77,8 @@ public class TeleOpMain extends LinearOpMode {
 
             // Mecanum drive control
             double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
-            double rx = -gamepad1.right_stick_x;
+            double x = -gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double frontLeftPower = (y + x + rx) / denominator;
             double backLeftPower = (y - x + rx) / denominator;
@@ -99,16 +100,24 @@ public class TeleOpMain extends LinearOpMode {
 
             intake.update();*/
 
-            outtake.automate(a.toggle(gamepad1.a));
+            outtake.automate(a.toggle(gamepad2.a));
+            if (a.getState() && rumbled == false){
+                rumbled = true;
+                gamepad2.rumbleBlips(1);
+            }
+            else if (!a.getState() && rumbled == true){
+                rumbled = false;
+                gamepad2.rumbleBlips(2);
+            }
 
             // Outtake control - right trigger
-            if (outtakeFar.press(gamepad1.right_bumper)) {
+            if (outtakeFar.press(gamepad2.dpad_up)) {
                 outtake.setPower(Stuff.farOuttakeSpeed);
             }
-            if(outtakeClose.press(gamepad1.left_bumper)){
+            if(outtakeClose.press(gamepad2.dpad_down)){
                 outtake.setPower(Stuff.closeOuttakeSpeed);
             }
-            if (gamepad1.b) {
+            if (gamepad2.ps) {
                 outtake.setPower(0);
             }
 
@@ -126,10 +135,9 @@ public class TeleOpMain extends LinearOpMode {
             // Additional Telemetry
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
-            telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
             //limelight.update();
-            telemetry.addLine("\n=== DRIVE & INTAKE ===");
+            telemetry.addLine("=== DRIVE & INTAKE ===");
             telemetry.addData("Intake Active", intake.isActive());
             telemetry.addData("Outtake Active", outtake.isActive());
             if (a.getState() == true){
@@ -139,6 +147,9 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
             telemetry.addLine("Outtake RPM: " + Double.toString(outtake.getRPM(28)));
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
+            telemetry.addLine("==========================================");
+            telemetry.addLine(daddyRyan.foward());
+            telemetry.addLine("==========================================");
             telemetry.update();
         }
 
