@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Main")
+@Autonomous(name="Auto Short")
 public abstract class AutoShort extends LinearOpMode {
 
     private DcMotor frontLeftDrive;

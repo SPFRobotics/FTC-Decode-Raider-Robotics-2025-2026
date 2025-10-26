@@ -22,6 +22,7 @@ public class Outtake {
     private ElapsedTime boostTimer = new ElapsedTime(); // Timer for boost duration
     private int updateCounter = 0; // Counter for RPM checking interval
     private double lastRPM = 0; // Store last RPM reading
+    private int kickerCycleCount = 0;
     
     // Fixed boost parameters (no longer configurable)
     private static final double BOOST_POWER = 1.0;        // 100% boost power
@@ -121,6 +122,7 @@ public class Outtake {
     public void automate(boolean x){
         if (x){
             if (interval.seconds() >= 4){
+                kickerCycleCount++;
                 interval.reset();
             }
             if ((int)interval.seconds() == 0){
@@ -132,7 +134,12 @@ public class Outtake {
         }
         else{
             kicker.up();
+            interval.reset();
         }
+    }
+
+    public int getKickerCycleCount(){
+        return kickerCycleCount;
     }
 
     public double getCurrentCycleTime(){
