@@ -13,6 +13,7 @@ public class Test extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()){
             Motor1.setPower(gamepad1.right_trigger);
+            Motor1.setPower(-gamepad1.left_trigger);
         }
     }
 }

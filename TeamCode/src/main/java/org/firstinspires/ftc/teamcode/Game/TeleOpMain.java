@@ -48,7 +48,6 @@ public class TeleOpMain extends LinearOpMode {
 
         //frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         
         // Initialize subsystems
         intake = new Intake(hardwareMap);
@@ -70,12 +69,9 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Mecanum drive control
-            //Forward BackWard
-            double y = -gamepad1.left_stick_y;
-            //Strafe
+            double y = gamepad1.left_stick_y;
             double x = -gamepad1.left_stick_x;
-            //Turning
-            double rx = gamepad1.right_stick_x;
+            double rx = -gamepad1.right_stick_x;
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double frontLeftPower = (y + x + rx) / denominator;
             double backLeftPower = (y - x + rx) / denominator;
