@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.Resources.Scroll;
 public class TeleOpMain extends LinearOpMode {
     @Config
     public static class Stuff{
-        public static double farOuttakeSpeed = 0.75;
-        public static double closeOuttakeSpeed = 0.68;
+        public static double farOuttakeSpeed = 0.72;
+        public static double closeOuttakeSpeed = 0.52;
         public static double rpm = 4300;
     }
     private ElapsedTime runtime = new ElapsedTime();
@@ -32,6 +32,8 @@ public class TeleOpMain extends LinearOpMode {
     private boolean rumbled = false;
     private Extension extension = null;
     private boolean zeroKicker = false;
+    //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
+    private double speedFactor =  1;
     //private Limelight limelight = null;
 
     private Button outtakeFar = new Button();
@@ -75,10 +77,17 @@ public class TeleOpMain extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
+                speedFactor = 0.5;
+            }
+            else{
+                speedFactor = 1;
+            }
+
             // Mecanum drive control
-            double y = -gamepad1.left_stick_y;
-            double x = -gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
+            double y = -gamepad1.left_stick_y*speedFactor;
+            double x = gamepad1.left_stick_x*speedFactor;
+            double rx = gamepad1.right_stick_x*speedFactor;
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double frontLeftPower = (y + x + rx) / denominator;
             double backLeftPower = (y - x + rx) / denominator;

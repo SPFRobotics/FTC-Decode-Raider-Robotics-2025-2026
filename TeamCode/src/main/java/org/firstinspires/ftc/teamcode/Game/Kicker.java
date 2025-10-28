@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Kicker {
     @Config
     public static class Values{
-        public static double down = 0;
+        public static double down = 0.05;
         public static double up = 0.18;
     }
     private Servo kicker = null;
