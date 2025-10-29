@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Outtake {
     @Config
-    public static class Speed{
-        public static double farPower = 0.77;     // Far location power (77%)
-        public static double shortPower = 0.55;   // Short location power (55%)
-        public static double power = 0;
+    public static class OuttakeSpeed{
+        public static double farPower = 0.69;
+        public static double closePower = 0.52;
+        public static double rpm = 4300;
     }
     public DcMotorEx outtakeMotor = null;
     private Kicker kicker = null;
@@ -72,7 +72,7 @@ public class Outtake {
             if (isBoosted) {
                 power = BOOST_POWER;
             } else {
-                power = isFarLocation ? Speed.farPower : Speed.shortPower;
+                power = isFarLocation ? OuttakeSpeed.farPower : OuttakeSpeed.closePower;
             }
             
             outtakeMotor.setPower(power);
@@ -177,7 +177,7 @@ public class Outtake {
             if (isBoosted) {
                 return BOOST_POWER;
             } else {
-                return isFarLocation ? Speed.farPower : Speed.shortPower;
+                return isFarLocation ? OuttakeSpeed.farPower : OuttakeSpeed.closePower;
             }
         }
         return 0.0;
