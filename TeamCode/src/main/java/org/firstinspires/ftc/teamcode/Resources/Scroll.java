@@ -3,9 +3,6 @@ package org.firstinspires.ftc.teamcode.Resources;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-
-@Config
 public class Scroll {
     private StringBuilder modTxt = new StringBuilder("");
     private int scrollCount = 0;
