@@ -32,6 +32,7 @@ public class TeleOpMain extends LinearOpMode {
 
     private Button outtakeFar = new Button();
     private Button outtakeClose = new Button();
+    private double setRPM = 0;
     private Button a = new Button();
     //private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     //private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
@@ -110,16 +111,28 @@ public class TeleOpMain extends LinearOpMode {
                 kicker.up();
             }
 
+            if (setRPM == Outtake.OuttakeSpeed.closeRPM && outtake.getRPM() >= setRPM){
+                gamepad2.rumble(1);
+            }
+            else if (setRPM == Outtake.OuttakeSpeed.farRPM & outtake.getRPM() >= setRPM){
+                gamepad2.rumble(1);
+            }
+            else{
+                gamepad2.stopRumble();
+            }
+
             // Outtake control - right trigger
             if (outtakeFar.press(gamepad2.dpad_up)) {
-                outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
+                setRPM = Outtake.OuttakeSpeed.farRPM;
             }
             if(outtakeClose.press(gamepad2.dpad_down)){
-                outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
+                setRPM = Outtake.OuttakeSpeed.closeRPM;
             }
             if (gamepad2.touchpad) {
-                outtake.setRPM(0);
+                setRPM = 0;
             }
+
+            outtake.setRPM(setRPM);
 
             // Additional Telemetry
             telemetry.addLine("==========================================");
@@ -133,8 +146,8 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addLine("Kicker Active");
             }
             telemetry.addData("Runtime", runtime.toString());
-            telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
-            telemetry.addLine("Outtake RPM: " + Double.toString(outtake.getRPM(28)));
+            //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
+            telemetry.addLine("Outtake RPM: " + Double.toString(outtake.getRPM()));
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
             telemetry.addLine("==========================================");
             //telemetry.addLine(daddyRyan.foward());

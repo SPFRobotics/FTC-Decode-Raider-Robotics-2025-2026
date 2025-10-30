@@ -97,7 +97,7 @@ public class Outtake {
         outtakeMotor.setVelocity(tps);
 
     }
-    public double getRPM(double encoderRes) {
+    public double getRPM() {
         return (outtakeMotor.getVelocity()*60)/motorER;
     }
 
