@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Outtake {
     @Config
     public static class OuttakeSpeed{
-        public static double farRPM = 0.69;
-        public static double closeRPM = 0.52;
+        public static double farRPM = 3200;
+        public static double closeRPM = 2700;
     }
     private DcMotorEx outtakeMotor = null;
     private Kicker kicker = null;
@@ -25,9 +25,6 @@ public class Outtake {
 
     //The "E"ncoder "R"esolution our current motor runs at.
     private final int motorER = 28;
-
-
-
 
     private ElapsedTime clock = new ElapsedTime();
     //Interval in seconds of outtake cycle

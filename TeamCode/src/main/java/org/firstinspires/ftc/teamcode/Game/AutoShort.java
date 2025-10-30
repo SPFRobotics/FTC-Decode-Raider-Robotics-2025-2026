@@ -47,12 +47,6 @@ public abstract class AutoShort extends LinearOpMode {
         //start at close starting pos
         runtime.reset();
         outtakeMotor.setPower(.44);
-
-        if (runtime.milliseconds()>=1500) {
-
-            outtake.automate(true);
-
-        }
     }
 
 }
