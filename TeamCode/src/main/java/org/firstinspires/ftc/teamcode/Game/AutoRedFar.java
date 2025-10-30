@@ -10,16 +10,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Red Far")
+@Autonomous(name="Auto Red Long")
 public class AutoRedFar extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
     private DcMotor backRightDrive;
-    private DcMotorEx outtakeMotor = null;
+    private Outtake outtake = null;
     private ElapsedTime masterClock = new ElapsedTime();
     private Kicker kicker = null;
-    private Outtake outtake = null;
     private boolean isActive = false;
     //change
 
@@ -32,7 +31,7 @@ public class AutoRedFar extends LinearOpMode {
 
         waitForStart();
         robot.rotate(50.0,-.1);
-        outtakeMotor.setPower(.77);
+        outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
         while (opModeIsActive()){
             if (outtake.getKickerCycleCount() < 3 && masterClock.seconds() >= 5){
                 outtake.enableKickerCycle(true);

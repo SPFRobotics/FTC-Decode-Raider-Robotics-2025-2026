@@ -32,6 +32,7 @@ public class Outtake {
     // Constructor - initializes the intake motor
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
+        outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         kicker = new Kicker(hardwareMap);
     }
 

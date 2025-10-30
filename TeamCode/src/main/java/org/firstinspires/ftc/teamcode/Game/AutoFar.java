@@ -16,10 +16,9 @@ public class AutoFar extends LinearOpMode {
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
     private DcMotor backRightDrive;
-    private DcMotorEx outtakeMotor = null;
+    private Outtake outtake = null;
     private ElapsedTime masterClock = new ElapsedTime();
     private Kicker kicker = null;
-    private Outtake outtake = null;
     private boolean isActive = false;
     //change
 
@@ -31,8 +30,8 @@ public class AutoFar extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
-        robot.rotate(50.0,.1);
-        outtakeMotor.setPower(.77);
+        robot.rotate(25.0,.1);
+        outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
         while (opModeIsActive()){
             if (outtake.getKickerCycleCount() < 3 && masterClock.seconds() >= 5){
                 outtake.enableKickerCycle(true);

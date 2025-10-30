@@ -112,10 +112,10 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             if (setRPM == Outtake.OuttakeSpeed.closeRPM && outtake.getRPM() >= setRPM){
-                gamepad2.rumble(1);
+                gamepad2.rumble(100);
             }
             else if (setRPM == Outtake.OuttakeSpeed.farRPM & outtake.getRPM() >= setRPM){
-                gamepad2.rumble(1);
+                gamepad2.rumble(100);
             }
             else{
                 gamepad2.stopRumble();

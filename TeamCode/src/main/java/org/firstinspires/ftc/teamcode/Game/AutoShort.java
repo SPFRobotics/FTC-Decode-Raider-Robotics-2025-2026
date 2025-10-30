@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Long")
+@Autonomous(name="Auto Short")
 public class AutoShort extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
@@ -31,7 +31,7 @@ public class AutoShort extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
-        outtakeMotor.setPower(.55);
+        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
         while (opModeIsActive()){
             if (outtake.getKickerCycleCount() < 3 && masterClock.seconds() >= 5){
                 outtake.enableKickerCycle(true);
