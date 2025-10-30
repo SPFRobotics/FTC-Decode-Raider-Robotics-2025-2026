@@ -10,14 +10,8 @@ import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;
 
 
-@TeleOp(name="Tele-Op Main", group="Linear OpMode")
+@TeleOp(name="Tele-Op Main")
 public class TeleOpMain extends LinearOpMode {
-    @Config
-    public static class Stuff{
-        public static double farOuttakeSpeed = 0.72;
-        public static double closeOuttakeSpeed = 0.52;
-        public static double rpm = 4300;
-    }
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
@@ -39,8 +33,8 @@ public class TeleOpMain extends LinearOpMode {
     private Button outtakeFar = new Button();
     private Button outtakeClose = new Button();
     private Button a = new Button();
-    private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
-    private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
+    //private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
+    //private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
     @Override
     public void runOpMode() {
 
@@ -99,17 +93,8 @@ public class TeleOpMain extends LinearOpMode {
             frontRightDrive.setPower(frontRightPower);
             backRightDrive.setPower(backRightPower);
 
-            // Update subsystems
-            // Intake control - left trigger
-            /*if (gamepad1.left_trigger > 0) {
-                intake.activate();
-            } else {
-                intake.deactivate();
-            }
-
-            intake.update();*/
-
-            outtake.automate(a.toggle(gamepad2.a));
+            //Automate the kicker
+            /*outtake.automate(a.toggle(gamepad2.a));
             if (a.getState() && rumbled == false){
                 rumbled = true;
                 gamepad2.rumbleBlips(1);
@@ -117,33 +102,29 @@ public class TeleOpMain extends LinearOpMode {
             else if (!a.getState() && rumbled == true){
                 rumbled = false;
                 gamepad2.rumbleBlips(2);
+            }*/
+
+            if (a.toggle(gamepad2.a)){
+                kicker.down();
+            }
+            else{
+                kicker.up();
             }
 
             // Outtake control - right trigger
             if (outtakeFar.press(gamepad2.dpad_up)) {
-                outtake.setPower(Stuff.farOuttakeSpeed);
+                outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
             }
             if(outtakeClose.press(gamepad2.dpad_down)){
-                outtake.setPower(Stuff.closeOuttakeSpeed);
+                outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
             }
-            if (gamepad2.ps) {
-                outtake.setPower(0);
+            if (gamepad2.touchpad) {
+                outtake.setRPM(0);
             }
-
-
-            /*if (gamepad1.right_bumper){
-                extension.power(1);
-            }
-            else if(gamepad1.left_bumper){
-                extension.power(-1);
-            }
-            else{
-                extension.power(0);
-            }*/
 
             // Additional Telemetry
             telemetry.addLine("==========================================");
-            telemetry.addLine(bigThree.foward());
+            //telemetry.addLine(bigThree.foward());
             telemetry.addLine("==========================================");
             //limelight.update();
             telemetry.addLine("=== DRIVE & INTAKE ===");
@@ -157,7 +138,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine("Outtake RPM: " + Double.toString(outtake.getRPM(28)));
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
             telemetry.addLine("==========================================");
-            telemetry.addLine(daddyRyan.foward());
+            //telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
             telemetry.update();
         }

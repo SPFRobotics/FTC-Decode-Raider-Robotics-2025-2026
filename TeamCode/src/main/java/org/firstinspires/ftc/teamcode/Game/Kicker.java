@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Kicker {
     @Config
-    public static class Values{
+    public static class KickerHeight{
         public static double down = 0.05;
         public static double up = 0.18;
     }
@@ -24,12 +24,12 @@ public class Kicker {
 
     public void up(){
         state = true;
-        kicker.setPosition(Values.up);
+        kicker.setPosition(KickerHeight.up);
     }
 
     public void down(){
         state = false;
-        kicker.setPosition(Values.down);
+        kicker.setPosition(KickerHeight.down);
     }
 
     public void zero(){
