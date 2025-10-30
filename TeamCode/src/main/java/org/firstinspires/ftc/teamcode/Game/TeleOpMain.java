@@ -149,6 +149,7 @@ public class TeleOpMain extends LinearOpMode {
             //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
             telemetry.addLine("Outtake RPM: " + Double.toString(outtake.getRPM()));
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
+            telemetry.addData("Rumbleing?", gamepad2.isRumbling());
             telemetry.addLine("==========================================");
             //telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
