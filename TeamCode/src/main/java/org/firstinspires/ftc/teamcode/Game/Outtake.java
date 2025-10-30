@@ -9,9 +9,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Outtake {
     @Config
     public static class OuttakeSpeed{
-        public static double farPower = 0.69;
-        public static double closePower = 0.52;
-        public static double rpm = 4300;
+        public static double farRPM = 0.69;
+        public static double closeRPM = 0.52;
     }
     public DcMotorEx outtakeMotor = null;
     private Kicker kicker = null;
@@ -23,12 +22,9 @@ public class Outtake {
     private int updateCounter = 0; // Counter for RPM checking interval
     private double lastRPM = 0; // Store last RPM reading
     private int kickerCycleCount = 0;
-    
-    // Fixed boost parameters (no longer configurable)
-    private static final double BOOST_POWER = 1.0;        // 100% boost power
-    private static final double BOOST_DURATION = 0.5;     // 0.5 seconds boost duration
-    private static final double RPM_THRESHOLD = 60;       // RPM threshold to trigger boost
-    private static final int CHECK_INTERVAL = 5;          // Check RPM every 5 updates
+
+    //The "E"ncoder "R"esolution our current motor runs at.
+    private final int motorER = 28;
 
 
 
@@ -41,49 +37,6 @@ public class Outtake {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         kicker = new Kicker(hardwareMap);
     }
-
-
-    // Update method - call this in the main loop with the gamepad
-    public void update() {
-        // Set motor power based on active state and location
-        if (isActive) {
-            // Check if boost timer has expired
-            if (isBoosted && boostTimer.seconds() >= BOOST_DURATION) {
-                isBoosted = false; // End boost phase
-            }
-            
-            // Auto-boost detection: Check RPM periodically
-            updateCounter++;
-            if (updateCounter >= CHECK_INTERVAL) {
-                updateCounter = 0;
-                double currentRPM = getRPM(28);
-                
-                // If RPM drops below threshold and we're not already boosting, trigger boost
-                if (currentRPM < RPM_THRESHOLD && !isBoosted && currentRPM > 0) {
-                    isBoosted = true;
-                    boostTimer.reset();
-                }
-                
-                lastRPM = currentRPM;
-            }
-            
-            // Determine power: boost power when boosted, location power otherwise
-            double power;
-            if (isBoosted) {
-                power = BOOST_POWER;
-            } else {
-                power = isFarLocation ? OuttakeSpeed.farPower : OuttakeSpeed.closePower;
-            }
-            
-            outtakeMotor.setPower(power);
-        } else {
-            outtakeMotor.setPower(0.0); // Off when inactive
-            isBoosted = false; // Reset boost when inactive
-            updateCounter = 0; // Reset counter
-            lastRPM = 0; // Reset RPM tracking
-        }
-    }
-
 
     
     // Switch between far and short locations
@@ -119,7 +72,7 @@ public class Outtake {
         outtakeMotor.setPower(power);
     }
 
-    public void automate(boolean x){
+    public void enableKickerCycle(boolean x){
         if (x){
             if (interval.seconds() >= 4){
                 kickerCycleCount++;
@@ -146,6 +99,11 @@ public class Outtake {
         return interval.seconds();
     }
 
+    public void setRPM(double rpm){
+        double tps = (rpm/60)*motorER;
+        outtakeMotor.setVelocity(tps);
+
+    }
     public double getRPM(double encoderRes){
         int currentPos = outtakeMotor.getCurrentPosition();
         int deltaTicks = currentPos - encoderCount;
@@ -161,38 +119,5 @@ public class Outtake {
         else{
             return 0;
         }
-    }
-    
-    // Trigger boost for shooting (call this when you want to shoot)
-    public void triggerBoost() {
-        if (isActive) {
-            isBoosted = true;
-            boostTimer.reset(); // Start the boost timer
-        }
-    }
-    
-    // Get current power level (useful for telemetry)
-    public double getCurrentPower() {
-        if (isActive) {
-            if (isBoosted) {
-                return BOOST_POWER;
-            } else {
-                return isFarLocation ? OuttakeSpeed.farPower : OuttakeSpeed.closePower;
-            }
-        }
-        return 0.0;
-    }
-    
-    // Check if currently boosting
-    public boolean isBoosted() {
-        return isBoosted;
-    }
-    
-    // Get remaining boost time
-    public double getRemainingBoostTime() {
-        if (isBoosted) {
-            return Math.max(0, BOOST_DURATION - boostTimer.seconds());
-        }
-        return 0.0;
     }
 }
