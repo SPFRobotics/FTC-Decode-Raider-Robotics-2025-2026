@@ -31,6 +31,7 @@ public class AutoFar extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
+        robot.rotate(50.0,.1);
         outtake.setPower(0.77);
         while (opModeIsActive()){
             if (outtake.getKickerCycleCount() < 3 && masterClock.seconds() >= 5){
@@ -45,10 +46,6 @@ public class AutoFar extends LinearOpMode {
             }
         }
 
-        if (opModeIsActive()){
-            robot.move(0.75, "forward", 12*3);
         }
     }
-
-}
 
