@@ -122,13 +122,13 @@ public class TeleOpMain extends LinearOpMode {
 
             // Outtake control - right trigger
             if (outtakeFar.press(gamepad2.dpad_up)) {
-                outtake.setPower(Outtake.OuttakeSpeed.farPower);
+                outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
             }
             if(outtakeClose.press(gamepad2.dpad_down)){
-                outtake.setPower(Outtake.OuttakeSpeed.closePower);
+                outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
             }
             if (gamepad2.touchpad) {
-                outtake.setPower(0);
+                outtake.setRPM(0);
             }
 
 

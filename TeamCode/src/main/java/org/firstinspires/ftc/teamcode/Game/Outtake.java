@@ -12,7 +12,7 @@ public class Outtake {
         public static double farRPM = 0.69;
         public static double closeRPM = 0.52;
     }
-    public DcMotorEx outtakeMotor = null;
+    private DcMotorEx outtakeMotor = null;
     private Kicker kicker = null;
     private boolean isActive = false;
     private int encoderCount = 0;
@@ -66,10 +66,6 @@ public class Outtake {
 
     public void deactivate() {
         isActive = false;
-    }
-
-    public void setPower(double power) {
-        outtakeMotor.setPower(power);
     }
 
     public void enableKickerCycle(boolean x){
