@@ -33,8 +33,8 @@ public class TeleOpMain extends LinearOpMode {
     private Button outtakeFar = new Button();
     private Button outtakeClose = new Button();
     private Button a = new Button();
-    private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
-    private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
+    //private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
+    //private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
     @Override
     public void runOpMode() {
 
@@ -93,15 +93,6 @@ public class TeleOpMain extends LinearOpMode {
             frontRightDrive.setPower(frontRightPower);
             backRightDrive.setPower(backRightPower);
 
-            // Update subsystems
-            // Intake control - left trigger
-            /*if (gamepad1.left_trigger > 0) {
-                intake.activate();
-            } else {
-                intake.deactivate();
-            }
-
-            intake.update();*/
             //Automate the kicker
             /*outtake.automate(a.toggle(gamepad2.a));
             if (a.getState() && rumbled == false){
@@ -130,17 +121,6 @@ public class TeleOpMain extends LinearOpMode {
             if (gamepad2.touchpad) {
                 outtake.setRPM(0);
             }
-
-
-            /*if (gamepad1.right_bumper){
-                extension.power(1);
-            }
-            else if(gamepad1.left_bumper){
-                extension.power(-1);
-            }
-            else{
-                extension.power(0);
-            }*/
 
             // Additional Telemetry
             telemetry.addLine("==========================================");
