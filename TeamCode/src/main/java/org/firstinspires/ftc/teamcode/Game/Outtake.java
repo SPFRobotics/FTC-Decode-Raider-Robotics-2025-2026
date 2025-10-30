@@ -100,20 +100,8 @@ public class Outtake {
         outtakeMotor.setVelocity(tps);
 
     }
-    public double getRPM(double encoderRes){
-        int currentPos = outtakeMotor.getCurrentPosition();
-        int deltaTicks = currentPos - encoderCount;
-
-        if (deltaTicks != 0) {
-            encoderCount = currentPos;
-            double time = clock.seconds();
-            clock.reset();
-
-            double rotationsMoved = (double) deltaTicks / encoderRes;
-            return (rotationsMoved / time)*60;
-        }
-        else{
-            return 0;
-        }
+    public double getRPM(double encoderRes) {
+        return (outtakeMotor.getVelocity()*60)/motorER;
     }
+
 }
