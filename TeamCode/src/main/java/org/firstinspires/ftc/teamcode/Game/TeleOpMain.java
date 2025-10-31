@@ -23,17 +23,17 @@ public class TeleOpMain extends LinearOpMode {
     private Intake intake = null;
     private Outtake outtake = null;
     private Kicker kicker = null;
-    private boolean rumbled = false;
-    private Extension extension = null;
-    private boolean zeroKicker = false;
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
     private double speedFactor =  1;
     //private Limelight limelight = null;
 
+    //Buttons
     private Button outtakeFar = new Button();
     private Button outtakeClose = new Button();
-    private double setRPM = 0;
+    private Button triangle = new Button();
     private Button a = new Button();
+
+    private double setRPM = 0;
     //private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     //private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
     @Override
@@ -104,10 +104,10 @@ public class TeleOpMain extends LinearOpMode {
                 gamepad2.rumbleBlips(2);
             }*/
 
-            if (a.toggle(gamepad2.a)){
+            if (a.press(gamepad2.a)){
                 kicker.down();
             }
-            else{
+            else if (triangle.press(gamepad2.y)){
                 kicker.up();
             }
 
@@ -133,6 +133,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             outtake.setRPM(setRPM);
+
 
             // Additional Telemetry
             telemetry.addLine("==========================================");
