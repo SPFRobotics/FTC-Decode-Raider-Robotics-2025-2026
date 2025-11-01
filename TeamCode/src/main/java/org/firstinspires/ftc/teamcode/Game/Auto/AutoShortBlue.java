@@ -2,18 +2,16 @@ package org.firstinspires.ftc.teamcode.Game.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Game.TeleOp.Kicker;
 import org.firstinspires.ftc.teamcode.Game.TeleOp.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Long")
-public class AutoFar extends LinearOpMode {
+@Autonomous(name="Auto Short")
+public class AutoShortBlue extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
@@ -26,18 +24,19 @@ public class AutoFar extends LinearOpMode {
     //change
 
     public void runOpMode() {
-            MecanumChassis robot = new MecanumChassis(this);
-            robot.initializeMovement();
-            outtake = new Outtake(hardwareMap);
-            kicker = new Kicker(hardwareMap);
-            // Reverse the left motors if needed
+        MecanumChassis robot = new MecanumChassis(this);
+        robot.initializeMovement();
+        outtake = new Outtake(hardwareMap);
+        kicker = new Kicker(hardwareMap);
+        // Reverse the left motors if needed
 
-            waitForStart();
-            robot.rotate(25.0,.1);
-            outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
-            while (opModeIsActive()) {
-                    outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-            }
+        waitForStart();
+        robot.move(-.7,"backward",48);
+        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
+        while (opModeIsActive()){
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM);
         }
+
     }
+}
 
