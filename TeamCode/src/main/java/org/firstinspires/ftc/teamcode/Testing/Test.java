@@ -18,8 +18,7 @@ public class Test extends LinearOpMode {
         Motor1 = hardwareMap.get(DcMotor.class, Testing.motor);
         waitForStart();
         while (opModeIsActive()){
-            Motor1.setPower(gamepad1.right_trigger);
-            Motor1.setPower(-gamepad1.left_trigger);
+
         }
     }
 }

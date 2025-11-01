@@ -129,6 +129,7 @@ public class TeleOpMain extends LinearOpMode {
                 setRPM = 0;
             }
 
+
             outtake.setRPM(setRPM);
 
 
@@ -153,6 +154,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.update();
             System.out.println(outtake.getRPM());
+
 
         }
     }

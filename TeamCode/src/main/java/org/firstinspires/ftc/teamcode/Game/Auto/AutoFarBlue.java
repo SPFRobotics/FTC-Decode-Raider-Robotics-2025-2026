@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Game.TeleOp.Kicker;
 import org.firstinspires.ftc.teamcode.Game.TeleOp.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Long")
+@Autonomous(name="Auto Blue Long")
 public class AutoFarBlue extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
