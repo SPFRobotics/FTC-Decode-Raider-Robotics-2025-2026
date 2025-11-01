@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Game.TeleOp.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
 @Autonomous(name="Auto Short")
-public class AutoShort extends LinearOpMode {
+public class AutoShortBlue extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
