@@ -68,7 +68,7 @@ public class Outtake {
 
     public void enableKickerCycle(boolean x){
         if (x){
-            if (interval.seconds() >= 4){
+            if (interval.seconds() >= 2){
                 kickerCycleCount++;
                 interval.reset();
             }
