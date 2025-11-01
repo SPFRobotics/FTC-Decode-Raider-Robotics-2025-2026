@@ -34,7 +34,7 @@ public class AutoFar extends LinearOpMode {
 
         waitForStart();
         robot.rotate(25.0,.1);
-        outtakeMotor.setPower(.77);
+        outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
         while (opModeIsActive()){
             if (outtake.getKickerCycleCount() < 3 && masterClock.seconds() >= 7){
                 outtake.enableKickerCycle(true);
