@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.Game.TeleOp.Kicker;
 import org.firstinspires.ftc.teamcode.Game.TeleOp.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Short")
-public class AutoShort extends LinearOpMode {
+@Autonomous(name="Auto Long")
+public class AutoFarBlue extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
@@ -24,22 +24,23 @@ public class AutoShort extends LinearOpMode {
     //change
 
     public void runOpMode() {
-        MecanumChassis robot = new MecanumChassis(this);
-        robot.initializeMovement();
-        outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap);
-        // Reverse the left motors if needed
+            MecanumChassis robot = new MecanumChassis(this);
+            robot.initializeMovement();
+            outtake = new Outtake(hardwareMap);
+            kicker = new Kicker(hardwareMap);
+            // Reverse the left motors if needed
 
-        waitForStart();
-        robot.move(-.7,"backward",48);
-        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
-        while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM);
-
-            if (outtake.getKickerCycleCount() == 3) {
-                break;
+            waitForStart();
+            robot.rotate(25.0,.1);
+            outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
+            while (opModeIsActive()) {
+                    outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+                if (outtake.getKickerCycleCount()==2){
+                    robot.wiggle();
+                }
+                robot.move(.9,"leftward",20);
             }
+
         }
-        robot.move()
     }
-}
+
