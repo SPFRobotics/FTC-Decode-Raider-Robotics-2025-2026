@@ -104,4 +104,7 @@ public class Outtake {
 
     }
 
+    public void wiggle(){
+
+}
 }

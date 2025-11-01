@@ -37,7 +37,11 @@ public class AutoFar extends LinearOpMode {
             outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
             while (opModeIsActive()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+                if (outtake.getKickerCycleCount()==2){
+                    robot.wiggle();
+                }
             }
+
         }
     }
 

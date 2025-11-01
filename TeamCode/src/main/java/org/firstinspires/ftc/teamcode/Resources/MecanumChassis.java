@@ -5,13 +5,11 @@ import androidx.annotation.NonNull;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Resources.Unit;
 
 
 import java.util.ArrayList;
@@ -111,7 +109,7 @@ public class MecanumChassis {
         frontLeft.setPower(0);
         frontRight.setPower(0);
     }
-    public void move(double movePower, @NonNull String moveDirection, double moveDistance){ // added support for moving lift and wheels at the same time.
+    public boolean move(double movePower, @NonNull String moveDirection, double moveDistance){ // added support for moving lift and wheels at the same time.
         stop_and_reset_encoders_all(); //Sets encoder count to 0
         run_using_encoders_all();
         if (moveDirection.equals("forward")) {
@@ -180,6 +178,7 @@ public class MecanumChassis {
         opmode.sleep(500);
         opmode.telemetry.addData("test", "done!");
         opmode.telemetry.update();
+        return false;
     }
 
     public void moveWithCorrections(double movePower, @NonNull String moveDirection, double moveDistance, double angle) {
@@ -425,6 +424,10 @@ public class MecanumChassis {
         move(.3, "forward", 3);
         move(.3, "left", 46);
     }
+
+    public void wiggle(){
+        move(.1,"forward",.05);
+    }
     public void goToPixel(int placement){
         if (placement == 1){
             move(.3, "forward", 40);
@@ -514,5 +517,7 @@ public class MecanumChassis {
             frontRight.setPower(0);
         }
     }
+
+
 }
 
