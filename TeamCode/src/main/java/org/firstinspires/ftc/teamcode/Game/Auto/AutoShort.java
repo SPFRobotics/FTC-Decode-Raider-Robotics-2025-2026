@@ -31,8 +31,7 @@ public class AutoShort extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
-
-        robot.move(-.7,"backward",51);
+        robot.move(-.7,"backward",48);
         outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
         while (opModeIsActive()){
             outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM);
