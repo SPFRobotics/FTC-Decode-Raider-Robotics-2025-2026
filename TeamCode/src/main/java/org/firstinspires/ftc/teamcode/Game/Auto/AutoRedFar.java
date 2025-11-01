@@ -29,7 +29,7 @@ public class AutoRedFar extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
-        robot.rotate(50.0,-.1);
+        robot.rotate(25.0,-.1);
         outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
         while (opModeIsActive()){
             outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
