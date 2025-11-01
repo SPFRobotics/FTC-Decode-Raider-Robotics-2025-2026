@@ -68,15 +68,19 @@ public class Outtake {
 
     public void enableKickerCycle(boolean x, double RPM){
         if (x){
-            if ((int)interval.seconds() == 0){
+            if (interval.seconds() == 0){
                 kicker.down();
             }
-            else if ((int)interval.seconds() >= 2 && getRPM() >= RPM) {
+            else if (interval.seconds() >= 2 && getRPM() >= RPM) {
                 kicker.up();
-                if (interval.seconds() >= 2){
-                    kickerCycleCount++;
-                    interval.reset();
-                }
+                kickerCycleCount++;
+                interval.reset();
+            }
+            // If 2 seconds have passed but RPM not reached, wait a bit then reset anyway
+            else if (interval.seconds() >= 2.5) {
+                kicker.up();
+                kickerCycleCount++;
+                interval.reset();
             }
         }
         else{
