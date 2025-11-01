@@ -37,6 +37,7 @@ public class MecanumChassis {
     private double powerFrontLeft = 0;
     private double powerBackLeft = 0;
     private double powerBackRight = 0;
+    private int wiggleCount = 0;
 
     public static double kP = 0.01;
     public static double kI = 0.00001;
@@ -426,7 +427,13 @@ public class MecanumChassis {
     }
 
     public void wiggle(){
-        move(.1,"forward",.05);
+        move(1,"forward",3);
+        move(1,"backward",3);
+        wiggleCount++;
+    }
+
+    public int getWiggleCount(){
+        return wiggleCount;
     }
     public void goToPixel(int placement){
         if (placement == 1){
