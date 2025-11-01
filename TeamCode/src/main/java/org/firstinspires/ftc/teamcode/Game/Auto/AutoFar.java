@@ -26,28 +26,18 @@ public class AutoFar extends LinearOpMode {
     //change
 
     public void runOpMode() {
-        MecanumChassis robot = new MecanumChassis(this);
-        robot.initializeMovement();
-        outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap);
-        // Reverse the left motors if needed
+            MecanumChassis robot = new MecanumChassis(this);
+            robot.initializeMovement();
+            outtake = new Outtake(hardwareMap);
+            kicker = new Kicker(hardwareMap);
+            // Reverse the left motors if needed
 
-        waitForStart();
-        robot.rotate(25.0,.1);
-        outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
-        while (opModeIsActive()){
-            if (outtake.getKickerCycleCount() < 3 && masterClock.seconds() >= 7){
-                outtake.enableKickerCycle(true);
+            waitForStart();
+            robot.rotate(25.0,.1);
+            outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
+            while (opModeIsActive()){
+                outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
             }
-            else{
-                outtake.enableKickerCycle(false);
-            }
-
-            if (outtake.getKickerCycleCount() == 3){
-                break;
-            }
-        }
-
         }
     }
 

@@ -66,17 +66,17 @@ public class Outtake {
         isActive = false;
     }
 
-    public void enableKickerCycle(boolean x){
+    public void enableKickerCycle(boolean x, double RPM){
         if (x){
-            if (interval.seconds() >= 2){
-                kickerCycleCount++;
-                interval.reset();
-            }
             if ((int)interval.seconds() == 0){
                 kicker.down();
             }
-            else if ((int)interval.seconds() == 2) {
+            else if ((int)interval.seconds() >= 2 && getRPM() >= RPM) {
                 kicker.up();
+                if (interval.seconds() >= 2){
+                    kickerCycleCount++;
+                    interval.reset();
+                }
             }
         }
         else{

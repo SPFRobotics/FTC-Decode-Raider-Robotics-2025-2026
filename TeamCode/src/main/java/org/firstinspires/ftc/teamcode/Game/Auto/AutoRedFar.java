@@ -32,16 +32,7 @@ public class AutoRedFar extends LinearOpMode {
         robot.rotate(50.0,-.1);
         outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
         while (opModeIsActive()){
-            if (outtake.getKickerCycleCount() < 3 && masterClock.seconds() >= 5){
-                outtake.enableKickerCycle(true);
-            }
-            else{
-                outtake.enableKickerCycle(false);
-            }
-
-            if (outtake.getKickerCycleCount() == 3){
-                break;
-            }
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
         }
 
     }
