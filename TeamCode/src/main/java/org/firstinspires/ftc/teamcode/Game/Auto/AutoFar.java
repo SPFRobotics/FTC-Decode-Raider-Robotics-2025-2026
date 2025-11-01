@@ -40,6 +40,7 @@ public class AutoFar extends LinearOpMode {
                 if (outtake.getKickerCycleCount()==2){
                     robot.wiggle();
                 }
+                robot.move(.9,"leftward",20);
             }
 
         }
