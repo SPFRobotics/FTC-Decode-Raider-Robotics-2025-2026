@@ -66,19 +66,20 @@ public class Outtake {
         isActive = false;
     }
 
+    public double getRPM() {
+        return (outtakeMotor.getVelocity()*60)/motorER;
+    }
+
     public void enableKickerCycle(boolean x, double RPM){
         if (x){
             if (interval.seconds() == 0){
                 kicker.down();
+
             }
             else if (interval.seconds() >= 2 && getRPM() >= RPM) {
                 kicker.up();
-                kickerCycleCount++;
-                interval.reset();
             }
-            // If 2 seconds have passed but RPM not reached, wait a bit then reset anyway
-            else if (interval.seconds() >= 2.5) {
-                kicker.up();
+            else if (interval.seconds() == 5){
                 kickerCycleCount++;
                 interval.reset();
             }
@@ -101,9 +102,6 @@ public class Outtake {
         double tps = (rpm/60)*motorER;
         outtakeMotor.setVelocity(tps);
 
-    }
-    public double getRPM() {
-        return (outtakeMotor.getVelocity()*60)/motorER;
     }
 
 }
