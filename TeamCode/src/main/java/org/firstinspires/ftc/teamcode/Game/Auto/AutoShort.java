@@ -32,7 +32,7 @@ public class AutoShort extends LinearOpMode {
 
         waitForStart();
 
-        robot.move(-1.0,"forward",3);
+        robot.move(-1.0,"forward",51);
         outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
         while (opModeIsActive()){
             if (outtake.getKickerCycleCount() < 3 && masterClock.seconds() >= 5){
