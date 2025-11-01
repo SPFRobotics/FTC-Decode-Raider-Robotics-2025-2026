@@ -40,6 +40,6 @@ public class AutoShortBlue extends LinearOpMode {
                 break;
             }
         }
-        robot.move()
+        robot.move(.9,"leftward",20);
     }
 }
