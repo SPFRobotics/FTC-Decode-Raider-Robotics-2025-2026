@@ -32,16 +32,17 @@ public class AutoShortRed extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
-        robot.move(-.7,"backward",48);
-        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
+        robot.move(-.7, "backward", 48);
         while (opModeIsActive()) {
             outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM);
-
-            if (outtake.getKickerCycleCount() == 3) {
-                break;
+            if (outtake.getKickerCycleCount() == 3 && robot.getWiggleCount() < 2) {
+                kicker.down();
+                robot.wiggle();
+            } else if (robot.getWiggleCount() == 3) {
+                kicker.up();
             }
+            //robot.move(.9,"leftward",20);
         }
-        robot.move(.9,"rightward",20);
     }
 }
 
