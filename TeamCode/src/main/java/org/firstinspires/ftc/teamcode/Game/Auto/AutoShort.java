@@ -1,24 +1,25 @@
-package org.firstinspires.ftc.teamcode.Game;
+package org.firstinspires.ftc.teamcode.Game.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Game.TeleOp.Kicker;
+import org.firstinspires.ftc.teamcode.Game.TeleOp.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Long")
-public class AutoFar extends LinearOpMode {
+@Autonomous(name="Auto Short")
+public class AutoShort extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
     private DcMotor backRightDrive;
-    private Outtake outtake = null;
+    private DcMotorEx outtakeMotor = null;
     private ElapsedTime masterClock = new ElapsedTime();
     private Kicker kicker = null;
+    private Outtake outtake = null;
     private boolean isActive = false;
     //change
 
@@ -30,8 +31,7 @@ public class AutoFar extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
-        robot.rotate(25.0,.1);
-        outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
+        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
         while (opModeIsActive()){
             if (outtake.getKickerCycleCount() < 3 && masterClock.seconds() >= 5){
                 outtake.enableKickerCycle(true);
@@ -45,6 +45,6 @@ public class AutoFar extends LinearOpMode {
             }
         }
 
-        }
     }
+}
 
