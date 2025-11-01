@@ -12,7 +12,7 @@ public class Outtake {
         public static double farRPM = 3200;
         public static double closeRPM = 2700;
     }
-    private DcMotorEx outtakeMotor = null;
+    public DcMotorEx outtakeMotor = null;
     private Kicker kicker = null;
     private boolean isActive = false;
     private int encoderCount = 0;
