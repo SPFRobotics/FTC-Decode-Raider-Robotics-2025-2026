@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game;
+package org.firstinspires.ftc.teamcode.Game.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
 public class Extension {

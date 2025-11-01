@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game;
+package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,7 +12,7 @@ public class Outtake {
         public static double farRPM = 3200;
         public static double closeRPM = 2700;
     }
-    private DcMotorEx outtakeMotor = null;
+    public DcMotorEx outtakeMotor = null;
     private Kicker kicker = null;
     private boolean isActive = false;
     private int encoderCount = 0;
@@ -32,6 +32,7 @@ public class Outtake {
     // Constructor - initializes the intake motor
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
+        outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         kicker = new Kicker(hardwareMap);
     }
 

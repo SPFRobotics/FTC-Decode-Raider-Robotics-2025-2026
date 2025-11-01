@@ -1,16 +1,16 @@
-package org.firstinspires.ftc.teamcode.Game;
+package org.firstinspires.ftc.teamcode.Game.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Game.TeleOp.Kicker;
+import org.firstinspires.ftc.teamcode.Game.TeleOp.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Long")
+@Autonomous(name="Auto Short")
 public class AutoShort extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
@@ -31,7 +31,7 @@ public class AutoShort extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
-        outtakeMotor.setPower(.55);
+        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
         while (opModeIsActive()){
             if (outtake.getKickerCycleCount() < 3 && masterClock.seconds() >= 5){
                 outtake.enableKickerCycle(true);
