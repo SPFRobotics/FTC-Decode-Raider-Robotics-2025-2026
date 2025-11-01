@@ -36,7 +36,6 @@ public class TeleOpMain extends LinearOpMode {
     //private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
     @Override
     public void runOpMode() {
-
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
@@ -50,7 +49,7 @@ public class TeleOpMain extends LinearOpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        
+
         // Initialize subsystems
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
@@ -64,7 +63,7 @@ public class TeleOpMain extends LinearOpMode {
         telemetry.update();
         waitForStart();
         kicker.up();
-        
+
         // Start limelight after waitForStart
         //limelight.start();
 
@@ -85,7 +84,7 @@ public class TeleOpMain extends LinearOpMode {
             double backLeftPower = (y - x + rx) / denominator;
             double frontRightPower = (y - x - rx) / denominator;
             double backRightPower = (y + x - rx) / denominator;
-            
+
             frontLeftDrive.setPower(frontLeftPower);
             backLeftDrive.setPower(backLeftPower);
             frontRightDrive.setPower(frontRightPower);
@@ -153,11 +152,8 @@ public class TeleOpMain extends LinearOpMode {
             //telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
             telemetry.update();
+            System.out.println(outtake.getRPM());
+
         }
-
-
-    }
-    public static void main(String[] args) {
-        System.out.println("Father Ryan");
     }
 }
