@@ -9,10 +9,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Game.TeleOp.Kicker;
 import org.firstinspires.ftc.teamcode.Game.TeleOp.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
+
 @Autonomous(name="Auto Short Red")
-
 public class AutoShortRed extends LinearOpMode {
-
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
@@ -32,18 +31,25 @@ public class AutoShortRed extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
-        robot.move(-.7, "backward", 48);
+        robot.move(-.7,"backward",48);
+        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM-100);
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM);
-            if (outtake.getKickerCycleCount() == 3 && robot.getWiggleCount() < 2) {
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM-100);
+
+            if (outtake.getKickerCycleCount()==3 && robot.getWiggleCount() < 2){
                 kicker.down();
                 robot.wiggle();
-            } else if (robot.getWiggleCount() == 3) {
+            }
+            else if (robot.getWiggleCount() == 3){
                 kicker.up();
             }
-            //robot.move(.9,"leftward",20);
+
+            if (outtake.getKickerCycleCount() == 4) {
+                break;
+            }
+        }
+        if (opModeIsActive()){
+            robot.move(.9,"right",20);
         }
     }
 }
-
-

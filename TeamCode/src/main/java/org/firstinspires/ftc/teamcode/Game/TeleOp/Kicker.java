@@ -43,9 +43,7 @@ public class Kicker {
          return voltage.getVoltage();
 
     }
-
-
-
+    
     public boolean getState(){
         return state;
     }

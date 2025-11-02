@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
+import com.acmerobotics.dashboard.DashboardCore;
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 
 
@@ -31,6 +34,8 @@ public class TeleOpMain extends LinearOpMode {
     private Button triangle = new Button();
     private Button a = new Button();
 
+    //telemetry
+    FtcDashboard dashboard = null;
     private double setRPM = 0;
     //private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     //private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
@@ -57,7 +62,8 @@ public class TeleOpMain extends LinearOpMode {
 
         //extension = new Extension(hardwareMap);
         //limelight = new Limelight(hardwareMap, telemetry);
-
+        //dashboard = FtcDashboard.getInstance();
+        //telemetry = dashboard.getTelemetry();
         telemetry.setMsTransmissionInterval(16);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -74,6 +80,7 @@ public class TeleOpMain extends LinearOpMode {
             else{
                 speedFactor = 1;
             }
+
 
             // Mecanum drive control
             double y = -gamepad1.left_stick_y*speedFactor;
@@ -125,13 +132,17 @@ public class TeleOpMain extends LinearOpMode {
             if(outtakeClose.press(gamepad2.dpad_down)){
                 setRPM = Outtake.OuttakeSpeed.closeRPM;
             }
+            if (!kicker.getState() && gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0){
+                setRPM = Outtake.OuttakeSpeed.reverseRPM;
+            }
+            else{
+                setRPM = 0;
+            }
             if (gamepad2.touchpad) {
                 setRPM = 0;
             }
-
-
+            
             outtake.setRPM(setRPM);
-
 
             // Additional Telemetry
             telemetry.addLine("==========================================");
@@ -146,16 +157,14 @@ public class TeleOpMain extends LinearOpMode {
             }
             telemetry.addData("Runtime", runtime.toString());
             //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
-            telemetry.addLine("Outtake RPM: " + Double.toString(outtake.getRPM()));
+            telemetry.addData("Outtake RPM: ", outtake.getRPM());
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
-            telemetry.addData("Rumbleing?", gamepad2.isRumbling());
+            telemetry.addData("Rumbleing:", gamepad2.isRumbling());
             telemetry.addLine("==========================================");
             //telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
             telemetry.update();
             System.out.println(outtake.getRPM());
-
-
         }
     }
 }

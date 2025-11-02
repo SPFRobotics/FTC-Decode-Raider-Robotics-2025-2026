@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Game.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Game.TeleOp.Kicker;
@@ -15,9 +16,10 @@ public class AutoRedFar extends LinearOpMode {
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
     private DcMotor backRightDrive;
-    private Outtake outtake = null;
+    private DcMotorEx outtakeMotor = null;
     private ElapsedTime masterClock = new ElapsedTime();
     private Kicker kicker = null;
+    private Outtake outtake = null;
     private boolean isActive = false;
     //change
 
@@ -29,7 +31,7 @@ public class AutoRedFar extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
-        robot.rotate(20.0,-.1);
+        robot.rotate(-20.0,.1);
         outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
         sleep(5000);
 
@@ -42,7 +44,12 @@ public class AutoRedFar extends LinearOpMode {
             else if (robot.getWiggleCount() == 3){
                 kicker.up();
             }
-            //robot.move(.9,"leftward",20);
+            if (outtake.getKickerCycleCount() == 4) {
+                break;
+            }
+        }
+        if (opModeIsActive()){
+            robot.move(.9,"forward",20);
         }
 
     }

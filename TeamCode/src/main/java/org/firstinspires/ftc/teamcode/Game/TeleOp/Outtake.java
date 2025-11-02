@@ -13,6 +13,7 @@ public class Outtake {
     public static class OuttakeSpeed{
         public static double farRPM = 3200;
         public static double closeRPM = 2700;
+        public static double reverseRPM = -200;
     }
     public DcMotorEx outtakeMotor = null;
     private Kicker kicker = null;

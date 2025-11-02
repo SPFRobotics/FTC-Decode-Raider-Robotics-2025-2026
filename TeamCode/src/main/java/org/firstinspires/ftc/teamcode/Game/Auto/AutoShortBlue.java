@@ -32,14 +32,24 @@ public class AutoShortBlue extends LinearOpMode {
 
         waitForStart();
         robot.move(-.7,"backward",48);
-        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
+        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM-100);
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM);
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM-100);
 
-            if (outtake.getKickerCycleCount() == 3) {
+            if (outtake.getKickerCycleCount()==3 && robot.getWiggleCount() < 2){
+                kicker.down();
+                robot.wiggle();
+            }
+            else if (robot.getWiggleCount() == 3){
+                kicker.up();
+            }
+
+            if (outtake.getKickerCycleCount() == 4) {
                 break;
             }
         }
-        robot.move(.9,"leftward",20);
+        if (opModeIsActive()){
+            robot.move(.9,"left",20);
+        }
     }
 }
