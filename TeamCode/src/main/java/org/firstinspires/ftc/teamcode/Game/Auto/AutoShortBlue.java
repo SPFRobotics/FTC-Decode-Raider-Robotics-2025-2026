@@ -33,6 +33,7 @@ public class AutoShortBlue extends LinearOpMode {
         waitForStart();
         robot.move(-.7,"backward",48);
         outtake.setRPM(Outtake.OuttakeSpeed.closeRPM-100);
+        sleep(5000);
         while (opModeIsActive()) {
             outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM-100);
 
