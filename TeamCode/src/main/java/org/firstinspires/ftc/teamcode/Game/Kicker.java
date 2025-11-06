@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.TeleOp;
+package org.firstinspires.ftc.teamcode.Game;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.HardwareMap;

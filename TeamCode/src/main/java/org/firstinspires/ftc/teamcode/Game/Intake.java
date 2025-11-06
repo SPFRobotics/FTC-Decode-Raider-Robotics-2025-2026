@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.TeleOp;
+package org.firstinspires.ftc.teamcode.Game;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
