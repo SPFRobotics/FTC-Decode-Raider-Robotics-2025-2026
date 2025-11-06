@@ -7,8 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Game.TeleOp.Kicker;
-import org.firstinspires.ftc.teamcode.Game.TeleOp.Outtake;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Game.Kicker;
+import org.firstinspires.ftc.teamcode.Game.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
 @Autonomous(name="Auto Blue Long")
@@ -19,15 +20,18 @@ public class AutoFarBlue extends LinearOpMode {
     private DcMotor backRightDrive;
     private DcMotorEx outtakeMotor = null;
     private ElapsedTime masterClock = new ElapsedTime();
+    private Telemetry telemetry = null;
+    FtcDashboard dashboard = null;
     private Kicker kicker = null;
     private Outtake outtake = null;
     private boolean isActive = false;
-    FtcDashboard dashboard = null;
     //change
 
     public void runOpMode() {
-            //dashboard = FtcDashboard.getInstance();
-            //telemetry = dashboard.getTelemetry();
+            dashboard = FtcDashboard.getInstance();
+            telemetry = dashboard.getTelemetry();
+            telemetry.addData("Outake RPM: ", 0);
+            telemetry.update();
             MecanumChassis robot = new MecanumChassis(this);
             robot.initializeMovement();
             outtake = new Outtake(hardwareMap);
@@ -38,22 +42,25 @@ public class AutoFarBlue extends LinearOpMode {
             waitForStart();
             robot.rotate(20.0,.1);
             outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
-            sleep(5000);
-
+            masterClock.reset();
 
             while (opModeIsActive()) {
-                outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                if (outtake.getKickerCycleCount()==3 && robot.getWiggleCount() < 2){
-                    kicker.down();
-                    robot.wiggle();
-                }
-                else if (robot.getWiggleCount() == 3){
-                    kicker.up();
-                }
-                if (outtake.getKickerCycleCount() == 4) {
-                    break;
+                if (masterClock.seconds() >= 5) {
+                    outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+                    if (outtake.getKickerCycleCount() == 3 && robot.getWiggleCount() < 2) {
+                        kicker.down();
+                        robot.wiggle();
+                    } else if (robot.getWiggleCount() == 3) {
+                        kicker.up();
+                    }
+                    if (outtake.getKickerCycleCount() == 4) {
+                        break;
+                    }
                 }
                 //System.out.printf(";%.3f;%d;%s%n", getRuntime(), (int)outtake.getRPM(), kicker.getState());
+                telemetry.addData("Outake RPM: ", outtake.getRPM());
+                telemetry.update();
+
             }
             if (opModeIsActive()){
                 robot.move(.9,"forward",20);
