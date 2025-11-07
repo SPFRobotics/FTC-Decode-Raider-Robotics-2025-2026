@@ -135,14 +135,14 @@ public class TeleOpMain extends LinearOpMode {
                     telemetry.addData("Limelight Center", "Starting full centering...");
                     telemetry.update();
                     // Full centering: rotate to face target, then strafe to center position
-                    boolean success = chassis.centerOnLimelightTargetFull(limelight, 0.4, 0.4, distanceToTarget);
+                    boolean success = limelight.centerOnTargetFull(chassis, 0.4, 0.4, distanceToTarget);
                     telemetry.addData("Centering Result", success ? "Success" : "Failed");
                     telemetry.addData("Limelight Center", "Centered! Ready to shoot.");
                 } else if (limelight.hasValidTarget()) {
                     telemetry.addData("Limelight Center", "Starting rotation only...");
                     telemetry.update();
                     // If we can't get distance, just rotate to face the target
-                    boolean success = chassis.centerOnLimelightTarget(limelight, 0.4, 0);
+                    boolean success = limelight.centerOnTarget(chassis, 0.4, 0);
                     telemetry.addData("Centering Result", success ? "Success" : "Failed");
                     telemetry.addData("Limelight Center", "Rotated to face target");
                 } else {

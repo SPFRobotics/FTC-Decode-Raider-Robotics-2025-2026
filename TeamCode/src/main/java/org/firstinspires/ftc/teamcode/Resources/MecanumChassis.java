@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Game.Limelight;
 
 
 import java.util.ArrayList;
@@ -540,7 +539,7 @@ public class MecanumChassis {
      * @param timeoutSeconds Maximum time to spend centering (0 = no timeout)
      * @return true if successfully centered, false if target lost or timeout
      */
-    public boolean centerOnLimelightTarget(Limelight limelight,
+    public boolean centerOnLimelightTarget(org.firstinspires.ftc.teamcode.Game.TeleOp.Limelight limelight, 
                                            double rotationPower, double timeoutSeconds) {
         if (limelight == null) {
             opmode.telemetry.addData("Error", "Limelight is null");
@@ -597,7 +596,7 @@ public class MecanumChassis {
      * @param limelight The Limelight instance
      * @return true if successfully centered
      */
-    public boolean centerOnLimelightTarget(Limelight limelight) {
+    public boolean centerOnLimelightTarget(org.firstinspires.ftc.teamcode.Game.TeleOp.Limelight limelight) {
         return centerOnLimelightTarget(limelight, 0.5, 0);
     }
 
@@ -610,8 +609,8 @@ public class MecanumChassis {
      * @param maxIterations Maximum number of centering attempts (0 = no limit, but check opModeIsActive)
      * @return true if successfully centered
      */
-    public boolean centerOnLimelightTargetContinuous(Limelight limelight,
-                                                     double rotationPower, int maxIterations) {
+    public boolean centerOnLimelightTargetContinuous(org.firstinspires.ftc.teamcode.Game.TeleOp.Limelight limelight,
+                                                      double rotationPower, int maxIterations) {
         if (limelight == null) {
             return false;
         }
@@ -667,8 +666,8 @@ public class MecanumChassis {
      * @param distanceToTarget Estimated distance to target in inches (used to calculate strafe distance)
      * @return true if successfully centered
      */
-    public boolean centerOnLimelightTargetByStrafing(Limelight limelight,
-                                                     double movePower, double distanceToTarget) {
+    public boolean centerOnLimelightTargetByStrafing(org.firstinspires.ftc.teamcode.Game.TeleOp.Limelight limelight,
+                                                      double movePower, double distanceToTarget) {
         if (limelight == null) {
             opmode.telemetry.addData("Error", "Limelight is null");
             opmode.telemetry.update();
@@ -738,8 +737,8 @@ public class MecanumChassis {
      * @param distanceToTarget Estimated distance to target in inches
      * @return true if successfully centered
      */
-    public boolean centerOnLimelightTargetFull(Limelight limelight,
-                                               double rotationPower, double movePower, double distanceToTarget) {
+    public boolean centerOnLimelightTargetFull(org.firstinspires.ftc.teamcode.Game.TeleOp.Limelight limelight,
+                                                double rotationPower, double movePower, double distanceToTarget) {
         // First, rotate to face the target
         boolean rotated = centerOnLimelightTarget(limelight, rotationPower, 0);
         
