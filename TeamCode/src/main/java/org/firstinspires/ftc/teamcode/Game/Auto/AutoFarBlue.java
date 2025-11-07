@@ -25,6 +25,7 @@ public class AutoFarBlue extends LinearOpMode {
     private Kicker kicker = null;
     private Outtake outtake = null;
     private boolean isActive = false;
+    private String outtakeRPMGraph;
     //change
 
     public void runOpMode() {
@@ -59,13 +60,14 @@ public class AutoFarBlue extends LinearOpMode {
                 }
                 //System.out.printf(";%.3f;%d;%s%n", getRuntime(), (int)outtake.getRPM(), kicker.getState());
                 telemetry.addData("Outake RPM: ", outtake.getRPM());
+                telemetry.addData("PIDF: ", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
                 telemetry.update();
 
             }
             if (opModeIsActive()){
                 robot.move(.9,"forward",20);
             }
-
+            telemetry.update();
         }
     }
 
