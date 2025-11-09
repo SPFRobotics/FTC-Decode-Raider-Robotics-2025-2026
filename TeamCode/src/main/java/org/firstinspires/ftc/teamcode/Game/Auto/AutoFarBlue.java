@@ -12,6 +12,10 @@ import org.firstinspires.ftc.teamcode.Game.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 @Autonomous(name="Auto Blue Long")
 public class AutoFarBlue extends LinearOpMode {
     private DcMotor frontLeftDrive;
@@ -26,6 +30,11 @@ public class AutoFarBlue extends LinearOpMode {
     private Outtake outtake = null;
     private boolean isActive = false;
     private String outtakeRPMGraph;
+    private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
+    private ElapsedTime runtime = new ElapsedTime();
+
+    public AutoFarBlue() throws FileNotFoundException, UnsupportedEncodingException {
+    }
     //change
 
     public void runOpMode() {
@@ -41,7 +50,7 @@ public class AutoFarBlue extends LinearOpMode {
             // Reverse the left motors if needed
 
             waitForStart();
-            robot.rotate(20.0,.1);
+            //robot.rotate(20.0,.1);
             outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
             masterClock.reset();
 
@@ -58,12 +67,15 @@ public class AutoFarBlue extends LinearOpMode {
                         break;
                     }
                 }
+
                 //System.out.printf(";%.3f;%d;%s%n", getRuntime(), (int)outtake.getRPM(), kicker.getState());
                 telemetry.addData("Outake RPM: ", outtake.getRPM());
                 telemetry.addData("PIDF: ", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
                 telemetry.update();
+                pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + ":" + kicker.getState() + "\n");
 
             }
+            pen.close();
             if (opModeIsActive()){
                 robot.move(.9,"forward",20);
             }

@@ -1,17 +1,26 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
+import android.os.Environment;
+import android.util.PrintWriterPrinter;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Game.Intake;
 import org.firstinspires.ftc.teamcode.Game.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
+import org.firstinspires.ftc.teamcode.Resources.Scroll;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 
 @TeleOp(name="Tele-Op Main")
@@ -40,10 +49,17 @@ public class TeleOpMain extends LinearOpMode {
     private Button centeringButton = new Button(); // X button for encoder-based centering
 
     //telemetry
-    FtcDashboard dashboard = null;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry telemetry = dashboard.getTelemetry();;
     private double setRPM = 0;
-    //private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
-    //private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
+    private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
+    private ElapsedTime logClock = new ElapsedTime();
+    private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
+    private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
+
+    public TeleOpMain() throws FileNotFoundException, UnsupportedEncodingException {
+    }
+
     @Override
     public void runOpMode() {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -70,9 +86,9 @@ public class TeleOpMain extends LinearOpMode {
         
         // Initialize MecanumChassis for encoder-based centering
         chassis = new MecanumChassis(this);
-        
-        //dashboard = FtcDashboard.getInstance();
-        //telemetry = dashboard.getTelemetry();
+
+        //Initialize Telemetry/FTCdashboard
+
         telemetry.setMsTransmissionInterval(16);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -115,7 +131,7 @@ public class TeleOpMain extends LinearOpMode {
             // To change to hold-to-center, replace press() with direct gamepad1.x check
             
             // Option 1: Single click (current) - click once, centers fully, then stops
-            boolean xButtonPressed = centeringButton.press(gamepad1.x);
+            boolean xButtonPressed = centeringButton.press(gamepad1.cross);
             
             // Option 2: Hold-to-center (uncomment to use) - hold X, centers while held, stops when released
             // boolean xButtonPressed = gamepad1.x;
@@ -223,7 +239,7 @@ public class TeleOpMain extends LinearOpMode {
             if (gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0){
                 setRPM = Outtake.OuttakeSpeed.reverseRPM;
             }
-            if (gamepad2.touchpad) {
+            if (gamepad2.ps) {
                 setRPM = 0;
             }
             
@@ -231,7 +247,7 @@ public class TeleOpMain extends LinearOpMode {
 
             // Additional Telemetry
             telemetry.addLine("==========================================");
-            //telemetry.addLine(bigThree.foward());
+            telemetry.addLine(bigThree.foward());
             telemetry.addLine("==========================================");
             telemetry.addLine("=== DRIVE & INTAKE ===");
             telemetry.addData("Intake Active", intake.isActive());
@@ -242,12 +258,14 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Runtime", runtime.toString());
             //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
             telemetry.addData("Outtake RPM: ", outtake.getRPM());
+            telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
             telemetry.addData("Rumbleing:", gamepad2.isRumbling());
             telemetry.addLine("=== AUTO-CENTERING ===");
             telemetry.addData("Press X to Center", "Full (Rotate + Strafe)");
             telemetry.addData("Has Target", limelight.hasValidTarget());
             telemetry.addData("Centered", limelight.isCentered());
+            limelight.getAprilTagCount();
             if (limelight.hasValidTarget()) {
                 telemetry.addData("Tx (deg)", String.format("%.2f", limelight.getTx()));
                 telemetry.addData("Rotation Angle", String.format("%.2f", limelight.getCenteringRotationAngle()));
@@ -258,11 +276,13 @@ public class TeleOpMain extends LinearOpMode {
                     telemetry.addData("Distance", "Unknown");
                 }
             }
+            telemetry.addData("File Dir: ", Environment.getDataDirectory());
             telemetry.addLine("==========================================");
-            //telemetry.addLine(daddyRyan.foward());
+            telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
             telemetry.update();
-            System.out.println(outtake.getRPM());
+            pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + "\n");
         }
+        pen.close();
     }
 }

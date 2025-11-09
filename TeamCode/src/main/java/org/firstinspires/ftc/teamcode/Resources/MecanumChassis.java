@@ -414,22 +414,6 @@ public class MecanumChassis {
         powerZero();
         opmode.sleep(500);
     } */
-    public void parkFarRed(){
-        move(.3, "forward", 2);
-        move(.3, "right", 96);
-    }
-    public void parkCloseRed(){
-        move(.3, "forward", 3);
-        move(.3, "right", 46);
-    }
-    public void parkFarBlue(){
-        move(.3, "forward", 2);
-        move(.3, "left", 96);
-    }
-    public void parkCloseBlue(){
-        move(.3, "forward", 3);
-        move(.3, "left", 46);
-    }
 
     public void wiggle(){
         move(1,"forward",3);
@@ -440,41 +424,7 @@ public class MecanumChassis {
     public int getWiggleCount(){
         return wiggleCount;
     }
-    public void goToPixel(int placement){
-        if (placement == 1){
-            move(.3, "forward", 40);
-            rotate(-90, .3);
-            move(.3, "forward", 60);
-        } else if (placement == 2){
-            move(.3, "forward", 40);
-            move(.3, "left", 48);
-            move(.3, "forward", 12);
-            rotate(-90, .3);
-            move(.3, "forward", 24);
-        } else if (placement == 3){
-            move(.3, "forward", 40);
-            move(.3, "left", 48);
-            move(.3, "forward", 24); rotate(-90, .3); move(.3, "forward", 24);
-        } else if (placement == 4){
-            move(.3, "forward", 40);
-            move(.3, "left", 48);
-            move(.3, "forward", 48);
-            rotate(-90, .3);
-            move(.3, "forward", 24);
-        } else if (placement == 5){
-            move(.3, "forward", 40);
-            move(.3, "left", 48);
-            move(.3, "forward", 60);
-            rotate(-90, .3);
-            move(.3, "forward", 24);
-        } else if (placement == 6){
-            move(.3, "forward", 40);
-            move(.3, "left", 50);
-            move(.3, "forward", 72);
-            rotate(-90, .3);
-            move(.3, "forward", 24);
-        }
-    }
+
     public void adjust(String direction, double power){
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -539,7 +489,7 @@ public class MecanumChassis {
      * @param timeoutSeconds Maximum time to spend centering (0 = no timeout)
      * @return true if successfully centered, false if target lost or timeout
      */
-    public boolean centerOnLimelightTarget(org.firstinspires.ftc.teamcode.Game.TeleOp.Limelight limelight, 
+    public boolean centerOnLimelightTarget(org.firstinspires.ftc.teamcode.Game.Limelight limelight,
                                            double rotationPower, double timeoutSeconds) {
         if (limelight == null) {
             opmode.telemetry.addData("Error", "Limelight is null");
@@ -596,7 +546,7 @@ public class MecanumChassis {
      * @param limelight The Limelight instance
      * @return true if successfully centered
      */
-    public boolean centerOnLimelightTarget(org.firstinspires.ftc.teamcode.Game.TeleOp.Limelight limelight) {
+    public boolean centerOnLimelightTarget(org.firstinspires.ftc.teamcode.Game.Limelight limelight) {
         return centerOnLimelightTarget(limelight, 0.5, 0);
     }
 
@@ -609,7 +559,7 @@ public class MecanumChassis {
      * @param maxIterations Maximum number of centering attempts (0 = no limit, but check opModeIsActive)
      * @return true if successfully centered
      */
-    public boolean centerOnLimelightTargetContinuous(org.firstinspires.ftc.teamcode.Game.TeleOp.Limelight limelight,
+    public boolean centerOnLimelightTargetContinuous(org.firstinspires.ftc.teamcode.Game.Limelight limelight,
                                                       double rotationPower, int maxIterations) {
         if (limelight == null) {
             return false;
@@ -666,7 +616,7 @@ public class MecanumChassis {
      * @param distanceToTarget Estimated distance to target in inches (used to calculate strafe distance)
      * @return true if successfully centered
      */
-    public boolean centerOnLimelightTargetByStrafing(org.firstinspires.ftc.teamcode.Game.TeleOp.Limelight limelight,
+    public boolean centerOnLimelightTargetByStrafing(org.firstinspires.ftc.teamcode.Game.Limelight limelight,
                                                       double movePower, double distanceToTarget) {
         if (limelight == null) {
             opmode.telemetry.addData("Error", "Limelight is null");
@@ -737,7 +687,7 @@ public class MecanumChassis {
      * @param distanceToTarget Estimated distance to target in inches
      * @return true if successfully centered
      */
-    public boolean centerOnLimelightTargetFull(org.firstinspires.ftc.teamcode.Game.TeleOp.Limelight limelight,
+    public boolean centerOnLimelightTargetFull(org.firstinspires.ftc.teamcode.Game.Limelight limelight,
                                                 double rotationPower, double movePower, double distanceToTarget) {
         // First, rotate to face the target
         boolean rotated = centerOnLimelightTarget(limelight, rotationPower, 0);

@@ -13,7 +13,7 @@ public class Kicker {
 
     }
     private Servo kicker = null;
-    private boolean state = false;
+    private int state = 0;
 
     private AnalogInput voltage = null;
 
@@ -24,17 +24,17 @@ public class Kicker {
     }
 
     public void up(){
-        state = true;
+        state = 1;
         kicker.setPosition(KickerHeight.up);
     }
 
     public void down(){
-        state = false;
+        state = 0;
         kicker.setPosition(KickerHeight.down);
     }
 
     public void zero(){
-        state = false;
+        state = 0;
         kicker.setPosition(0);
 
     }
@@ -44,7 +44,7 @@ public class Kicker {
 
     }
     
-    public boolean getState(){
+    public int getState(){
         return state;
     }
 

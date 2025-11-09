@@ -12,7 +12,9 @@ public class Outtake {
         public static double farRPM = 3200;
         public static double closeRPM = 2700;
         public static double reverseRPM = -200;
-        public static double p = 5;
+        public static double p = 100;
+        public static double i = 3;
+        public static double d = 0;
     }
 
     public DcMotorEx outtakeMotor = null;
@@ -36,7 +38,7 @@ public class Outtake {
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        outtakeMotor.setVelocityPIDFCoefficients(5, 3, 0, 0);
+        outtakeMotor.setVelocityPIDFCoefficients(OuttakeSpeed.p, OuttakeSpeed.i, OuttakeSpeed.d, 0);
         kicker = new Kicker(hardwareMap);
     }
 
