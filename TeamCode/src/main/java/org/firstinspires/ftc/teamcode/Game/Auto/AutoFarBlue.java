@@ -72,7 +72,7 @@ public class AutoFarBlue extends LinearOpMode {
                 telemetry.addData("Outake RPM: ", outtake.getRPM());
                 telemetry.addData("PIDF: ", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
                 telemetry.update();
-                pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + ":" + kicker.getState() + "\n");
+                pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + ":" + Kicker.getState() + "\n");
 
             }
             pen.close();

@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Game.Intake;
 import org.firstinspires.ftc.teamcode.Game.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Limelight;
@@ -53,7 +54,6 @@ public class TeleOpMain extends LinearOpMode {
     Telemetry telemetry = dashboard.getTelemetry();;
     private double setRPM = 0;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
-    private ElapsedTime logClock = new ElapsedTime();
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
 
