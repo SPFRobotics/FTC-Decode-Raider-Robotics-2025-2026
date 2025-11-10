@@ -13,7 +13,7 @@ public class Kicker {
 
     }
     private Servo kicker = null;
-    private int state = 0;
+    private static int state = 0;
 
     private AnalogInput voltage = null;
 
@@ -44,7 +44,7 @@ public class Kicker {
 
     }
     
-    public int getState(){
+    public static int getState(){
         return state;
     }
 
