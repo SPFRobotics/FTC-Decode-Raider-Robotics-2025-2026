@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game;
+package org.firstinspires.ftc.teamcode.Resources;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-public class Limelight {
+public class LimelightOld {
 
     private Limelight3A limelight;
     private IMU imu;
@@ -37,7 +37,7 @@ public class Limelight {
     private static final double STRAFE_TOLERANCE = 1.5; // degrees - acceptable error after strafing
 
     // Constructor - initializes the limelight and IMU
-    public Limelight(HardwareMap hardwareMap, Telemetry telemetry) {
+    public LimelightOld(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
         
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -718,3 +718,4 @@ public class Limelight {
     }
 
 }
+
