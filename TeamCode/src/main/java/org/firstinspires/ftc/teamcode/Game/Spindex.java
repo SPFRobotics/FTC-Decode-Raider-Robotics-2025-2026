@@ -8,15 +8,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Spindex {
     private CRServo spindex = null;
     private static AnalogInput spindexPos = null;
+
+    //Stores position and current index of spindex
+    private double[] pos = {0, 0, 0};
+    private int index = 0;
     public Spindex(HardwareMap hardwareMap){
         spindex = hardwareMap.get(CRServo.class, "servo");
         spindexPos = hardwareMap.get(AnalogInput.class, "encoder");
     }
     public void turn(){
+
     }
 
     public void zero(){
-        if (Spindex.getPos() >= 0 && Spindex.getPos() <= 20){
+        if (0-Math.abs(Spindex.getPos()) <= 20){
             spindex.setPower(0);
         }
         else{

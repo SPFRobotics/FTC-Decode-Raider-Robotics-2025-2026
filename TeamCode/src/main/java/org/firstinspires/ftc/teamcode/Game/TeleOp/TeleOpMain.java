@@ -26,7 +26,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-
 @TeleOp(name="Tele-Op Main")
 public class TeleOpMain extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();

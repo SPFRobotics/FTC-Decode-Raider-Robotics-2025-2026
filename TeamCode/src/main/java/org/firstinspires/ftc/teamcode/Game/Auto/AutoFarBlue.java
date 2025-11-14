@@ -53,7 +53,7 @@ public class AutoFarBlue extends LinearOpMode {
             // Reverse the left motors if needed
 
             waitForStart();
-            robot.rotate(20.0,.1);
+            //robot.rotate(20.0,.1);
             kicker.up();
             outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
             masterClock.reset();
@@ -84,7 +84,7 @@ public class AutoFarBlue extends LinearOpMode {
             }
             pen.close();
             if (opModeIsActive()){
-                robot.move(.9,"forward",20);
+                //robot.move(.9,"forward",20);
             }
             telemetry.update();
         }
