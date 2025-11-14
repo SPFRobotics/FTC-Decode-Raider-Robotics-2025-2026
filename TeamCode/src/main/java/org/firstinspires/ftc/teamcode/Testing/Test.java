@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
+import android.graphics.Color;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -16,11 +18,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Game.ColorModels;
 import org.firstinspires.ftc.teamcode.Game.Spindex;
 @TeleOp(name="Test")
 //@Disabled
 public class Test extends LinearOpMode {
     public ColorSensor colorSensor = null;
+    public ColorModels converter = new ColorModels();
     public DistanceSensor distanceSensor = null;
     private CRServo servo = null;
     private AnalogInput encoder = null;
@@ -35,16 +39,18 @@ public class Test extends LinearOpMode {
         servo = hardwareMap.get(CRServo.class, "servo");
         encoder = hardwareMap.get(AnalogInput.class, "encoder");
         spindex = new Spindex(hardwareMap);
-        int red = 0;
-        int green = 0;
-        int blue = 0;
+        int r = 0,  g = 0, b = 0;
+        int[] HSV = new int[3];
 
         //Motor1 = hardwareMap.get(DcMotor.class, Testing.motor);
         waitForStart();
         while (opModeIsActive()){
-            red = Math.min(colorSensor.red(), 255);
-            green = Math.min(colorSensor.green(), 255);
-            blue = Math.min(colorSensor.blue(), 255);
+            //Math.min() is used to cap the max RGB value at 255. Any value that is higher wouldn't make any sense with the RGB model
+            r = Math.min(colorSensor.red(), 255);
+            g = Math.min(colorSensor.green(), 255);
+            b = Math.min(colorSensor.blue(), 255);
+
+            HSV = converter.rgbToHSV(r, g, b);
 
             if (gamepad1.a){
                 spindex.zero();
@@ -52,11 +58,12 @@ public class Test extends LinearOpMode {
             else{
                 spindex.move(gamepad1.right_trigger);
             }
-            telemetry.addData("Color Code ",red + ", " + green + ", " + blue);
-            if (red >= 40 && red <= 50 && green >= 100 && green <= 110 && blue >= 80 && blue <= 90){
+            telemetry.addData("RGB ",r + ", " + g + ", " + b);
+            telemetry.addData("HSV ",HSV[0] + ", " + HSV[1] + "%, " + HSV[2] + "%");
+            if (r >= 40 && r <= 50 && g >= 100 && g <= 110 && b >= 80 && b <= 90){
                 telemetry.addData("Color ", "Green");
             }
-            else if ((red >= 50 && red <= 58 && green >= 80 && green <= 90 && blue >= 90 && blue <= 100)){
+            else if ((r >= 50 && r <= 58 && g >= 80 && g <= 90 && b >= 90 && b <= 100)){
                 telemetry.addData("Color ", "Purple");
             }
             else{
