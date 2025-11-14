@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Game.ColorModels;
-import org.firstinspires.ftc.teamcode.Game.Spindex;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 @TeleOp(name="Test")
 //@Disabled
 public class Test extends LinearOpMode {
