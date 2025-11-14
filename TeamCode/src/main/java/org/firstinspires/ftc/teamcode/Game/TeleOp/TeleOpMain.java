@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
 import android.os.Environment;
-import android.util.PrintWriterPrinter;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,10 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Game.Intake;
-import org.firstinspires.ftc.teamcode.Game.Kicker;
-import org.firstinspires.ftc.teamcode.Game.Outtake;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;

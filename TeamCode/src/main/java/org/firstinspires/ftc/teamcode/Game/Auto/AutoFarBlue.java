@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Game.Kicker;
-import org.firstinspires.ftc.teamcode.Game.Outtake;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
 import java.io.FileNotFoundException;
@@ -80,6 +80,5 @@ public class AutoFarBlue extends LinearOpMode {
                 robot.move(.9,"forward",20);
             }
             telemetry.update();
-        }
-    }
+    }}
 
