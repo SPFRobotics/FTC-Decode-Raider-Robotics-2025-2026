@@ -6,11 +6,14 @@ import android.util.PrintWriterPrinter;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Game.ColorModels;
 import org.firstinspires.ftc.teamcode.Game.Intake;
 import org.firstinspires.ftc.teamcode.Game.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Limelight;
@@ -32,8 +35,6 @@ public class TeleOpMain extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
 
-
-
     private Intake intake = null;
     private Outtake outtake = null;
     private Kicker kicker = null;
@@ -49,10 +50,15 @@ public class TeleOpMain extends LinearOpMode {
     private Button a = new Button();
     private Button centeringButton = new Button(); // X button for encoder-based centering
 
+    private Servo ledRight = null;
+    private Servo ledLeft = null;
+
     //telemetry
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry telemetry = dashboard.getTelemetry();;
     private double setRPM = 0;
+    private ColorModels conversion = new ColorModels();
+    private ColorSensor colorSensor = null;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
@@ -66,6 +72,8 @@ public class TeleOpMain extends LinearOpMode {
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
+        ledLeft = hardwareMap.get(Servo.class, "leftLED");
+        ledRight = hardwareMap.get(Servo.class, "rightLED");
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -107,6 +115,8 @@ public class TeleOpMain extends LinearOpMode {
 
         // Start limelight after waitForStart
         limelight.start();
+        ledLeft.setPosition(0.5);
+        ledRight.setPosition(0.5);
 
         while (opModeIsActive()) {
             // Always ensure motors are in manual control mode for normal driving
@@ -136,7 +146,7 @@ public class TeleOpMain extends LinearOpMode {
             // Option 2: Hold-to-center (uncomment to use) - hold X, centers while held, stops when released
             // boolean xButtonPressed = gamepad1.x;
             
-            if (xButtonPressed) {
+            /*if (xButtonPressed) {
                 // X button was just pressed - trigger encoder-based centering
                 telemetry.addData("!!! CENTERING DEBUG !!!", "X button pressed!");
                 telemetry.addData("Has Valid Target", limelight.hasValidTarget());
@@ -179,7 +189,7 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Motors Restored", "Manual control mode");
                 telemetry.update();
                 sleep(100); // Brief pause to see telemetry
-            }
+            }*/
             
             // Debug: Show X button state
             telemetry.addData("X Button State", gamepad1.x ? "PRESSED" : "not pressed");
@@ -276,7 +286,7 @@ public class TeleOpMain extends LinearOpMode {
                     telemetry.addData("Distance", "Unknown");
                 }
             }
-            telemetry.addData("File Dir: ", Environment.getDataDirectory());
+            //telemetry.addData("Color ", );
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");

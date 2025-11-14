@@ -24,11 +24,13 @@ public class AutoFarBlue extends LinearOpMode {
     private DcMotor backRightDrive;
     private DcMotorEx outtakeMotor = null;
     private ElapsedTime masterClock = new ElapsedTime();
+    private ElapsedTime logTime = new ElapsedTime();
     private Telemetry telemetry = null;
     FtcDashboard dashboard = null;
     private Kicker kicker = null;
     private Outtake outtake = null;
     private boolean isActive = false;
+    private boolean logTimeReset = false;
     private String outtakeRPMGraph;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
     private ElapsedTime runtime = new ElapsedTime();
@@ -41,6 +43,7 @@ public class AutoFarBlue extends LinearOpMode {
             dashboard = FtcDashboard.getInstance();
             telemetry = dashboard.getTelemetry();
             telemetry.addData("Outake RPM: ", 0);
+            telemetry.setMsTransmissionInterval(1);
             telemetry.update();
             MecanumChassis robot = new MecanumChassis(this);
             robot.initializeMovement();
@@ -50,10 +53,10 @@ public class AutoFarBlue extends LinearOpMode {
             // Reverse the left motors if needed
 
             waitForStart();
-            //robot.rotate(20.0,.1);
+            robot.rotate(20.0,.1);
+            kicker.up();
             outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
             masterClock.reset();
-
             while (opModeIsActive()) {
                 if (masterClock.seconds() >= 5) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
@@ -72,7 +75,11 @@ public class AutoFarBlue extends LinearOpMode {
                 telemetry.addData("Outake RPM: ", outtake.getRPM());
                 telemetry.addData("PIDF: ", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
                 telemetry.update();
-                pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + ":" + Kicker.getState() + "\n");
+                if (!logTimeReset){
+                    logTime.reset();
+                    logTimeReset = true;
+                }
+                pen.write((int)logTime.milliseconds() + ":" + (int)outtake.getRPM() + ":" + Kicker.getState() + "\n");
 
             }
             pen.close();
