@@ -108,5 +108,4 @@ public class Outtake {
         double tps = (rpm/60)*motorER;
         outtakeMotor.setVelocity(tps);
     }
-
 }
