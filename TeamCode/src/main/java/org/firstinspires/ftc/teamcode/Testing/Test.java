@@ -21,30 +21,37 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Game.ColorModels;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Resources.Button;
+
 @TeleOp(name="Test")
 //@Disabled
 public class Test extends LinearOpMode {
-    public ColorSensor colorSensor = null;
+    //public ColorSensor colorSensor = null;
     public Servo led = null;
     public ColorModels converter = new ColorModels();
-    public DistanceSensor distanceSensor = null;
+    //public DistanceSensor distanceSensor = null;
     private CRServo servo = null;
     private AnalogInput encoder = null;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     private Telemetry telemetry = dashboard.getTelemetry();
     private ElapsedTime clock = new ElapsedTime();
     private Spindex spindex = null;
+    public static Button spindexTurn = new Button();
+    public static Button spindexMode = new Button();
     public DcMotor Motor1 = null;
     public ElapsedTime ledClock = new ElapsedTime();
+    private double[] intakePos = {0, 240, 120};
+    private int index = 0;
     @Config
     public static class Testing{
         public static double led1 = 0.5;
         public static double led2 = 0.67;
+        public static double[] outtakePos = {60, 300, 180};
     }
 
     public void runOpMode(){
-        colorSensor = hardwareMap.get(ColorSensor.class, "sensor");
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "sensor");
+        //colorSensor = hardwareMap.get(ColorSensor.class, "sensor");
+        //distanceSensor = hardwareMap.get(DistanceSensor.class, "sensor");
         servo = hardwareMap.get(CRServo.class, "servo");
         encoder = hardwareMap.get(AnalogInput.class, "encoder");
         led = hardwareMap.get(Servo.class, "color");
@@ -57,18 +64,23 @@ public class Test extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()){
             //Math.min() is used to cap the max RGB value at 255. Any value that is higher wouldn't make any sense with the RGB model
-            r = Math.min(colorSensor.red(), 255);
-            g = Math.min(colorSensor.green(), 255);
-            b = Math.min(colorSensor.blue(), 255);
+            //r = Math.min(colorSensor.red(), 255);
+            //g = Math.min(colorSensor.green(), 255);
+            //b = Math.min(colorSensor.blue(), 255);
 
             HSV = converter.rgbToHSV(r, g, b);
 
-            if (gamepad1.a){
-                spindex.zero();
+            if (spindexTurn.press(gamepad1.b)){
+                index++;
+            }
+
+            if (spindexMode.toggle(gamepad1.options)){
+                spindex.turn(intakePos[index%3]);
             }
             else{
-                spindex.move(gamepad1.right_trigger);
+                spindex.turn(Testing.outtakePos[index%3]);
             }
+
             telemetry.addData("RGB ",r + ", " + g + ", " + b);
             telemetry.addData("HSV ",HSV[0] + ", " + HSV[1] + "%, " + HSV[2] + "%");
             if (HSV[0] >= 155 && HSV[0] <= 160){
@@ -83,9 +95,11 @@ public class Test extends LinearOpMode {
                 telemetry.addData("Color ", "Other");
                 led.setPosition(1);
             }
-            telemetry.addData("Color: ", "Other");
-            telemetry.addData("Distance ", distanceSensor.getDistance(DistanceUnit.CM));
+            //telemetry.addData("Color: ", "Other");
+            //telemetry.addData("Distance ", distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("Encoder ", spindex.getPos());
+            telemetry.addData("Index ", index%3);
+            //telemetry.addData("Distance ", spindex.getDistanceToSetPos());
             telemetry.update();
         }
     }
