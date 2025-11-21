@@ -33,8 +33,10 @@ public class TeleOpMain extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
+    private DcMotor linearSlides= null;
 
     private Intake intake = null;
+    private ElapsedTime masterClock = new ElapsedTime();
     private Outtake outtake = null;
     private Kicker kicker = null;
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
@@ -47,11 +49,14 @@ public class TeleOpMain extends LinearOpMode {
     private Button outtakeClose = new Button();
     private Button triangle = new Button();
     private Button a = new Button();
-    private Button centeringButton = new Button(); // X button for encoder-based centering
+    private Button centeringButton = new Button();
+
+    private Button circle = new Button();// X button for encoder-based centering
 
     private Servo ledRight = null;
     private Servo ledLeft = null;
 
+    private Button square = new Button();
     //telemetry
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry telemetry = dashboard.getTelemetry();;
@@ -81,7 +86,6 @@ public class TeleOpMain extends LinearOpMode {
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
         // Initialize subsystems
         intake = new Intake(hardwareMap);
@@ -220,6 +224,13 @@ public class TeleOpMain extends LinearOpMode {
                 rumbled = false;
                 gamepad2.rumbleBlips(2);
             }*/
+
+            if (square.press(gamepad2.square)) {
+                    linearSlides.setPower(1.0);
+            }
+            else if (circle.press(gamepad2.circle)) {
+                linearSlides.setPower(0.0);
+            }
 
             if (a.press(gamepad2.a)){
                 kicker.down();
