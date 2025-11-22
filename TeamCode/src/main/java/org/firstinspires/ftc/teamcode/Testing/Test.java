@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Game.ColorModels;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 
@@ -36,17 +37,16 @@ public class Test extends LinearOpMode {
     private Telemetry telemetry = dashboard.getTelemetry();
     private ElapsedTime clock = new ElapsedTime();
     private Spindex spindex = null;
-    public static Button spindexTurn = new Button();
+    public static Button spindexCounterClockWise = new Button();
+    public static Button spindexClockWise = new Button();
     public static Button spindexMode = new Button();
     public DcMotor Motor1 = null;
     public ElapsedTime ledClock = new ElapsedTime();
-    private double[] intakePos = {0, 240, 120};
-    private int index = 0;
+
     @Config
     public static class Testing{
         public static double led1 = 0.5;
         public static double led2 = 0.67;
-        public static double[] outtakePos = {60, 300, 180};
     }
 
     public void runOpMode(){
@@ -56,6 +56,7 @@ public class Test extends LinearOpMode {
         encoder = hardwareMap.get(AnalogInput.class, "encoder");
         led = hardwareMap.get(Servo.class, "color");
         spindex = new Spindex(hardwareMap);
+        Intake intake = new Intake(hardwareMap);
         telemetry.setMsTransmissionInterval(1);
         int r = 0,  g = 0, b = 0;
         int[] HSV = new int[3];
@@ -70,15 +71,19 @@ public class Test extends LinearOpMode {
 
             HSV = converter.rgbToHSV(r, g, b);
 
-            if (spindexTurn.press(gamepad1.b)){
-                index++;
+            if (spindexCounterClockWise.press(gamepad1.b)){
+                spindex.addIndex();
             }
+            else if (spindexClockWise.press(gamepad1.x)){
+                spindex.subtractIndex();
+            }
+            spindex.lockPos();
 
-            if (spindexMode.toggle(gamepad1.options)){
-                spindex.turn(intakePos[index%3]);
+            if (gamepad1.right_trigger > 0){
+                intake.setPower(1);
             }
-            else{
-                spindex.turn(Testing.outtakePos[index%3]);
+            else {
+                intake.setPower(0);
             }
 
             telemetry.addData("RGB ",r + ", " + g + ", " + b);
@@ -98,7 +103,7 @@ public class Test extends LinearOpMode {
             //telemetry.addData("Color: ", "Other");
             //telemetry.addData("Distance ", distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("Encoder ", spindex.getPos());
-            telemetry.addData("Index ", index%3);
+            telemetry.addData("Current Position", Spindex.getPos());
             //telemetry.addData("Distance ", spindex.getDistanceToSetPos());
             telemetry.update();
         }

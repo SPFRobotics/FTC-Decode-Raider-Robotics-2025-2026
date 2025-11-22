@@ -113,7 +113,7 @@ public class TeleOpMain extends LinearOpMode {
         chassis.restoreManualControl();
 
         // Start limelight after waitForStart
-        limelight.start();
+        //limelight.start();
         ledLeft.setPosition(0.5);
         ledRight.setPosition(0.5);
 

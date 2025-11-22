@@ -10,13 +10,26 @@ public class Spindex {
     private CRServo spindex = null;
     private static AnalogInput spindexPos = null;
 
+    private double[] intakePos = {0, 240, 120};
+    private double[] outtakePos = {60, 300, 180};
+    private int index = 0;
+
     //Stores position and current index of spindex
     public Spindex(HardwareMap hardwareMap){
         spindex = hardwareMap.get(CRServo.class, "servo");
         spindexPos = hardwareMap.get(AnalogInput.class, "encoder");
     }
-    public void turn(double pos){
-        if (Math.abs(getPos()-pos) <= 20){
+
+    public void addIndex(){
+        index++;
+    }
+
+    public void subtractIndex(){
+        index--;
+    }
+    //Locks on position based on the index
+    public void lockPos(){
+        if (Math.abs(getPos()-intakePos[index%3]) <= 20){
             spindex.setPower(0);
         }
         else{

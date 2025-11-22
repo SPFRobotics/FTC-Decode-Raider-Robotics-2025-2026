@@ -34,6 +34,7 @@ public class AutoFarBlue extends LinearOpMode {
     private String outtakeRPMGraph;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
     private ElapsedTime runtime = new ElapsedTime();
+    private boolean speedReached = true;
 
     public AutoFarBlue() throws FileNotFoundException, UnsupportedEncodingException {
     }
@@ -53,24 +54,20 @@ public class AutoFarBlue extends LinearOpMode {
             // Reverse the left motors if needed
 
             waitForStart();
-            //robot.rotate(20.0,.1);
+            robot.rotate(20.0,.1);
             kicker.up();
             outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
             masterClock.reset();
             while (opModeIsActive()) {
-                if (masterClock.seconds() >= 5) {
+                if (outtake.getRPM() == 3100) {
+                    speedReached = true;
+                }
+                if (speedReached){
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                    if (outtake.getKickerCycleCount() == 3 && robot.getWiggleCount() < 2) {
-                        kicker.down();
-                        robot.wiggle();
-                    } else if (robot.getWiggleCount() == 3) {
-                        kicker.up();
-                    }
                     if (outtake.getKickerCycleCount() == 4) {
                         break;
                     }
                 }
-
                 //System.out.printf(";%.3f;%d;%s%n", getRuntime(), (int)outtake.getRPM(), kicker.getState());
                 telemetry.addData("Outake RPM: ", outtake.getRPM());
                 telemetry.addData("PIDF: ", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
