@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 @Autonomous(name="Auto Blue Long")
 public class AutoFarBlue extends LinearOpMode {
     private DcMotor frontLeftDrive;
-    private DcMotor frontRightDrive;
+    private DcMotor frontRightDrive;         
     private DcMotor backLeftDrive;
     private DcMotor backRightDrive;
     private DcMotorEx outtakeMotor = null;
