@@ -1,19 +1,14 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
-import android.os.Environment;
-import android.util.PrintWriterPrinter;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Game.ColorModels;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorSensor;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
@@ -62,8 +57,8 @@ public class TeleOpMain extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry telemetry = dashboard.getTelemetry();;
     private double setRPM = 0;
-    private ColorModels conversion = new ColorModels();
-    private ColorSensor colorSensor = null;
+    private ColorSensor conversion = new ColorSensor();
+    private com.qualcomm.robotcore.hardware.ColorSensor colorSensor = null;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");

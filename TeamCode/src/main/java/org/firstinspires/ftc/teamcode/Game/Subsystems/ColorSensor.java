@@ -1,6 +1,36 @@
-package org.firstinspires.ftc.teamcode.Game;
+package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
-public class ColorModels {
+public class ColorSensor {
+
+    private ColorSensor colorsensor = null;
+    
+    // Constructor
+    public ColorSensor() {
+        // Initialize ColorSensor instance
+    }
+
+    public boolean isPurple(int r, int g, int b) {
+        int[] hsv = rgbToHSV(r, g, b);
+        int hue = hsv[0];
+        
+        // Purple: Hue range 200-220 (from test program)
+        return hue >= 200 && hue <= 220;
+    }
+    
+
+    public boolean isGreen(int r, int g, int b) {
+        int[] hsv = rgbToHSV(r, g, b);
+        int hue = hsv[0];
+        
+        // Green: Hue range 155-160 (from test program)
+        return hue >= 155 && hue <= 160;
+    }
+    
+
+    public boolean isPurpleOrGreen(int r, int g, int b) {
+        return isPurple(r, g, b) || isGreen(r, g, b);
+    }
+    
     public int[] rgbToHSV(int r, int g, int b){
         double rPrime = r/255.0;
         double gPrime = g/255.0;

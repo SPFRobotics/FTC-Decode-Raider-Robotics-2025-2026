@@ -1,25 +1,17 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
-import android.graphics.Color;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Game.ColorModels;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorSensor;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
@@ -29,7 +21,7 @@ import org.firstinspires.ftc.teamcode.Resources.Button;
 public class Test extends LinearOpMode {
     //public ColorSensor colorSensor = null;
     public Servo led = null;
-    public ColorModels converter = new ColorModels();
+    public ColorSensor converter = new ColorSensor();
     //public DistanceSensor distanceSensor = null;
     private CRServo servo = null;
     private AnalogInput encoder = null;
