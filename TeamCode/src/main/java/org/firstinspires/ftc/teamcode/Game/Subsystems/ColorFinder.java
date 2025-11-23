@@ -29,7 +29,9 @@ public class ColorFinder {
         int[] hsv = rgbToHSV(rgb[0], rgb[1], rgb[2]);
         int hue = hsv[0];
         
-        return hue >= 200 && hue <= 220;
+        // Purple: Wider range to account for variations (original was 200-220)
+        // Purple can also appear near the wrap-around (270-360)
+        return (hue >= 190 && hue <= 240) || (hue >= 270 && hue <= 360);
     }
     
     public boolean isGreen() {
@@ -40,7 +42,8 @@ public class ColorFinder {
         int[] hsv = rgbToHSV(rgb[0], rgb[1], rgb[2]);
         int hue = hsv[0];
         
-        return hue >= 155 && hue <= 160;
+        // Green: Wider range to account for variations
+        return hue >= 120 && hue <= 180;
     }
     
     public boolean isBlue() {
