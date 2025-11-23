@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Game.ColorModels;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
@@ -224,6 +225,12 @@ public class TeleOpMain extends LinearOpMode {
                 rumbled = false;
                 gamepad2.rumbleBlips(2);
             }*/
+            while(gamepad1.left_trigger>0.1 && gamepad2.left_trigger>0.1){
+                Extension.setPower(1);
+            }
+            while(gamepad1.right_trigger>0.1 && gamepad2.right_trigger>0.1){
+                Extension.setPower(-1);
+            }
 
             if (square.press(gamepad2.square)) {
                     linearSlides.setPower(1.0);
