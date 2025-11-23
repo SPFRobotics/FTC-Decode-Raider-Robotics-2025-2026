@@ -11,7 +11,6 @@ public class ColorFinder {
         hardwareColorSensor = hardwareMap.get(com.qualcomm.robotcore.hardware.ColorSensor.class, "colorSensor");
     }
     
-    // Returns the color data as RGB array [r, g, b]
     public int[] getColor() {
         if (hardwareColorSensor == null) {
             return new int[]{0, 0, 0};
@@ -30,7 +29,6 @@ public class ColorFinder {
         int[] hsv = rgbToHSV(rgb[0], rgb[1], rgb[2]);
         int hue = hsv[0];
         
-        // Purple: Hue range 200-220 (from test program)
         return hue >= 200 && hue <= 220;
     }
     
@@ -42,15 +40,25 @@ public class ColorFinder {
         int[] hsv = rgbToHSV(rgb[0], rgb[1], rgb[2]);
         int hue = hsv[0];
         
-        // Green: Hue range 155-160 (from test program)
         return hue >= 155 && hue <= 160;
+    }
+    
+    public boolean isBlue() {
+        if (hardwareColorSensor == null) {
+            return false;
+        }
+        int[] rgb = getColor();
+        int[] hsv = rgbToHSV(rgb[0], rgb[1], rgb[2]);
+        int hue = hsv[0];
+        
+        return hue >= 240 && hue <= 260;
     }
     
     public boolean isPurpleOrGreen() {
         return isPurple() || isGreen();
     }
     
-    public int[] rgbToHSV(int r, int g, int b){
+    public int[] rgbToHSV(int r, int g, int b) {
         double rPrime = r/255.0;
         double gPrime = g/255.0;
         double bPrime = b/255.0;

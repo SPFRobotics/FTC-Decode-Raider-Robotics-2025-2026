@@ -8,12 +8,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Resources.LedLights;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;
 
@@ -38,6 +40,7 @@ public class TeleOpMain extends LinearOpMode {
     private double speedFactor =  1;
     private Limelight limelight = null;
     private MecanumChassis chassis = null;
+    private ColorFinder colorFinder = null;
 
     //Buttons
     private Button outtakeFar = new Button();
@@ -50,11 +53,15 @@ public class TeleOpMain extends LinearOpMode {
 
     private Servo ledRight = null;
     private Servo ledLeft = null;
+    private LedLights leftLED = null;
+    private LedLights rightLED = null;
 
     private Button square = new Button();
     //telemetry
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry telemetry = dashboard.getTelemetry();;
+
+
     private double setRPM = 0;
     private com.qualcomm.robotcore.hardware.ColorSensor colorSensor = null;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
@@ -85,9 +92,14 @@ public class TeleOpMain extends LinearOpMode {
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
+        colorFinder = new ColorFinder(hardwareMap);
 
         //extension = new Extension(hardwareMap);
         //limelight = new Limelight(hardwareMap, telemetry);
+        
+        // Initialize LED Lights
+        leftLED = new LedLights(ledLeft);
+        rightLED = new LedLights(ledRight);
         
         // Initialize MecanumChassis for encoder-based centering
         chassis = new MecanumChassis(this);
@@ -210,6 +222,17 @@ public class TeleOpMain extends LinearOpMode {
             }
             
             outtake.setRPM(setRPM);
+
+            // Color detection and LED control
+            if (colorFinder != null) {
+                if (colorFinder.isGreen()) {
+                    leftLED.setGreen();
+                    rightLED.setGreen();
+                } else if (colorFinder.isBlue()) {
+                    leftLED.setBlue();
+                    rightLED.setBlue();
+                }
+            }
 
             // Additional Telemetry
             telemetry.addLine("==========================================");
