@@ -137,63 +137,9 @@ public class TeleOpMain extends LinearOpMode {
                 speedFactor = 1;
             }
 
-            // Update limelight (needed for centering calculations)
-            //limelight.update();
-
-            // Encoder-based auto-centering (X button on gamepad1)
-            // CURRENT: Single click starts full centering sequence (runs to completion)
-            // To change to hold-to-center, replace press() with direct gamepad1.x check
-            
-            // Option 1: Single click (current) - click once, centers fully, then stops
             boolean xButtonPressed = centeringButton.press(gamepad1.cross);
             
-            // Option 2: Hold-to-center (uncomment to use) - hold X, centers while held, stops when released
-            // boolean xButtonPressed = gamepad1.x;
-            
-            /*if (xButtonPressed) {
-                // X button was just pressed - trigger encoder-based centering
-                telemetry.addData("!!! CENTERING DEBUG !!!", "X button pressed!");
-                telemetry.addData("Has Valid Target", limelight.hasValidTarget());
-                telemetry.update();
-                
-                // Get distance to target from Limelight
-                double distanceToTarget = limelight.getDistanceToTarget();
-                telemetry.addData("Distance to Target", String.format("%.1f", distanceToTarget));
-                telemetry.update();
-                
-                if (distanceToTarget > 0 && limelight.hasValidTarget()) {
-                    telemetry.addData("Limelight Center", "Starting full centering...");
-                    telemetry.update();
-                    // Full centering: rotate to face target, then strafe to center position
-                    boolean success = limelight.centerOnTargetFull(chassis, 0.4, 0.4, distanceToTarget);
-                    telemetry.addData("Centering Result", success ? "Success" : "Failed");
-                    telemetry.addData("Limelight Center", "Centered! Ready to shoot.");
-                } else if (limelight.hasValidTarget()) {
-                    telemetry.addData("Limelight Center", "Starting rotation only...");
-                    telemetry.update();
-                    // If we can't get distance, just rotate to face the target
-                    boolean success = limelight.centerOnTarget(chassis, 0.4, 0);
-                    telemetry.addData("Centering Result", success ? "Success" : "Failed");
-                    telemetry.addData("Limelight Center", "Rotated to face target");
-                } else {
-                    telemetry.addData("Limelight Center", "No target detected - cannot center");
-                    telemetry.addData("Limelight Valid", limelight.hasTarget());
-                }
-                
-                // CRITICAL: Restore motors to manual control mode after centering
-                // This ensures normal driving works immediately after centering
-                chassis.restoreManualControl();
-                
-                // Double-check: explicitly set all motors to manual mode
-                frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                
-                telemetry.addData("Motors Restored", "Manual control mode");
-                telemetry.update();
-                sleep(100); // Brief pause to see telemetry
-            }*/
+
             
             // Debug: Show X button state
             telemetry.addData("X Button State", gamepad1.x ? "PRESSED" : "not pressed");
@@ -289,21 +235,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
             telemetry.addData("Rumbleing:", gamepad2.isRumbling());
             telemetry.addLine("=== AUTO-CENTERING ===");
-            /*telemetry.addData("Press X to Center", "Full (Rotate + Strafe)");
-            telemetry.addData("Has Target", limelight.hasValidTarget());
-            telemetry.addData("Centered", limelight.isCentered());
-            limelight.getAprilTagCount();
-            if (limelight.hasValidTarget()) {
-                telemetry.addData("Tx (deg)", String.format("%.2f", limelight.getTx()));
-                telemetry.addData("Rotation Angle", String.format("%.2f", limelight.getCenteringRotationAngle()));
-                double distance = limelight.getDistanceToTarget();
-                if (distance > 0) {
-                    telemetry.addData("Distance (in)", String.format("%.1f", distance));
-                } else {
-                    telemetry.addData("Distance", "Unknown");
-                }
-            }
-            //telemetry.addData("Color ", );*/
+
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
