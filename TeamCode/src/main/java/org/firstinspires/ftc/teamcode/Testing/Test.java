@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.Resources.Button;
 public class Test extends LinearOpMode {
     //public ColorSensor colorSensor = null;
     public Servo led = null;
-    public ColorSensor converter = new ColorSensor();
     //public DistanceSensor distanceSensor = null;
     private CRServo servo = null;
     private AnalogInput encoder = null;
@@ -61,7 +60,6 @@ public class Test extends LinearOpMode {
             //g = Math.min(colorSensor.green(), 255);
             //b = Math.min(colorSensor.blue(), 255);
 
-            HSV = converter.rgbToHSV(r, g, b);
 
             if (spindexCounterClockWise.press(gamepad1.b)){
                 spindex.addIndex();

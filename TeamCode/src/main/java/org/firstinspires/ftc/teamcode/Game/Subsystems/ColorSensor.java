@@ -1,34 +1,53 @@
 package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 public class ColorSensor {
 
-    private ColorSensor colorsensor = null;
+    private com.qualcomm.robotcore.hardware.ColorSensor hardwareColorSensor = null;
     
-    // Constructor
-    public ColorSensor() {
-        // Initialize ColorSensor instance
+    // Constructor with HardwareMap - initializes the color sensor
+    public ColorSensor(HardwareMap hardwareMap) {
+        hardwareColorSensor = hardwareMap.get(com.qualcomm.robotcore.hardware.ColorSensor.class, "colorSensor");
     }
-
-    public boolean isPurple(int r, int g, int b) {
-        int[] hsv = rgbToHSV(r, g, b);
+    
+    // Returns the color data as RGB array [r, g, b]
+    public int[] getColor() {
+        if (hardwareColorSensor == null) {
+            return new int[]{0, 0, 0};
+        }
+        int r = Math.min(hardwareColorSensor.red(), 255);
+        int g = Math.min(hardwareColorSensor.green(), 255);
+        int b = Math.min(hardwareColorSensor.blue(), 255);
+        return new int[]{r, g, b};
+    }
+    
+    public boolean isPurple() {
+        if (hardwareColorSensor == null) {
+            return false;
+        }
+        int[] rgb = getColor();
+        int[] hsv = rgbToHSV(rgb[0], rgb[1], rgb[2]);
         int hue = hsv[0];
         
         // Purple: Hue range 200-220 (from test program)
         return hue >= 200 && hue <= 220;
     }
     
-
-    public boolean isGreen(int r, int g, int b) {
-        int[] hsv = rgbToHSV(r, g, b);
+    public boolean isGreen() {
+        if (hardwareColorSensor == null) {
+            return false;
+        }
+        int[] rgb = getColor();
+        int[] hsv = rgbToHSV(rgb[0], rgb[1], rgb[2]);
         int hue = hsv[0];
         
         // Green: Hue range 155-160 (from test program)
         return hue >= 155 && hue <= 160;
     }
     
-
-    public boolean isPurpleOrGreen(int r, int g, int b) {
-        return isPurple(r, g, b) || isGreen(r, g, b);
+    public boolean isPurpleOrGreen() {
+        return isPurple() || isGreen();
     }
     
     public int[] rgbToHSV(int r, int g, int b){
