@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Resources.Button;
 //@Disabled
 public class Test extends LinearOpMode {
     //public ColorSensor colorSensor = null;
-    public Servo led = null;
+    //public Servo led = null;
     //public DistanceSensor distanceSensor = null;
     private CRServo servo = null;
     private AnalogInput encoder = null;
@@ -44,9 +45,9 @@ public class Test extends LinearOpMode {
         //distanceSensor = hardwareMap.get(DistanceSensor.class, "sensor");
         servo = hardwareMap.get(CRServo.class, "servo");
         encoder = hardwareMap.get(AnalogInput.class, "encoder");
-        led = hardwareMap.get(Servo.class, "color");
         spindex = new Spindex(hardwareMap);
         Intake intake = new Intake(hardwareMap);
+        Kicker kicker = new Kicker(hardwareMap);
         telemetry.setMsTransmissionInterval(1);
         int r = 0,  g = 0, b = 0;
         int[] HSV = new int[3];
@@ -75,9 +76,11 @@ public class Test extends LinearOpMode {
                 intake.setPower(0);
             }
 
+            kicker.zero();
+
             telemetry.addData("RGB ",r + ", " + g + ", " + b);
             telemetry.addData("HSV ",HSV[0] + ", " + HSV[1] + "%, " + HSV[2] + "%");
-            if (HSV[0] >= 155 && HSV[0] <= 160){
+            /*if (HSV[0] >= 155 && HSV[0] <= 160){
                 telemetry.addData("Color ", "Green");
                 led.setPosition(Testing.led1);
             }
@@ -88,7 +91,7 @@ public class Test extends LinearOpMode {
             else{
                 telemetry.addData("Color ", "Other");
                 led.setPosition(1);
-            }
+            }*/
             //telemetry.addData("Color: ", "Other");
             //telemetry.addData("Distance ", distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("Encoder ", spindex.getPos());
