@@ -65,6 +65,11 @@ public class TeleOpMain extends LinearOpMode {
     private double setRPM = 0;
     private com.qualcomm.robotcore.hardware.ColorSensor colorSensor = null;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
+    
+    // Color detection debouncing
+    private String lastDetectedColor = "NONE"; // "GREEN", "PURPLE", or "NONE"
+    private int colorDetectionCount = 0;
+    private static final int COLOR_CONFIRMATION_THRESHOLD = 3; // Number of consistent readings needed
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
 
@@ -124,8 +129,7 @@ public class TeleOpMain extends LinearOpMode {
 
         // Start limelight after waitForStart
         //limelight.start();
-        ledLeft.setPosition(0.5);
-        ledRight.setPosition(0.5);
+
 
         while (opModeIsActive()) {
             // Always ensure motors are in manual control mode for normal driving
@@ -145,10 +149,7 @@ public class TeleOpMain extends LinearOpMode {
             boolean xButtonPressed = centeringButton.press(gamepad1.cross);
             
 
-            
-            // Debug: Show X button state
-            telemetry.addData("X Button State", gamepad1.x ? "PRESSED" : "not pressed");
-            telemetry.addData("X Button Press Detected", xButtonPressed ? "YES" : "NO");
+
 
             // Mecanum drive control - ALWAYS active (except during centering which blocks)
             double y = -gamepad1.left_stick_y*speedFactor;
@@ -223,15 +224,55 @@ public class TeleOpMain extends LinearOpMode {
             
             outtake.setRPM(setRPM);
 
-            // Color detection and LED control
+            // Color detection and LED control with debouncing
             if (colorFinder != null) {
-                if (colorFinder.isGreen()) {
-                    leftLED.setGreen();
-                    rightLED.setGreen();
-                } else if (colorFinder.isBlue()) {
-                    leftLED.setBlue();
-                    rightLED.setBlue();
+                int[] rgb = colorFinder.getColor();
+                int[] hsv = colorFinder.rgbToHSV(rgb[0], rgb[1], rgb[2]);
+                
+                // Only process if saturation and value are high enough (filter out noise/low light)
+                boolean isValidReading = hsv[1] > 20 && hsv[2] > 20; // Minimum 20% saturation and value
+                
+                String currentDetection = "NONE";
+                if (isValidReading) {
+                    if (colorFinder.isGreen()) {
+                        currentDetection = "GREEN";
+                    } else if (colorFinder.isPurple()) {
+                        currentDetection = "PURPLE";
+                    }
                 }
+                
+                // Debouncing: require consistent readings before changing
+                if (currentDetection.equals(lastDetectedColor)) {
+                    colorDetectionCount++;
+                } else {
+                    colorDetectionCount = 1;
+                    lastDetectedColor = currentDetection;
+                }
+                
+                // Only update LEDs if we have consistent readings
+                if (colorDetectionCount >= COLOR_CONFIRMATION_THRESHOLD) {
+                    if (lastDetectedColor.equals("GREEN")) {
+                        leftLED.setGreen();
+                        rightLED.setGreen();
+                    } else if (lastDetectedColor.equals("PURPLE")) {
+                        leftLED.setViolet();
+                        rightLED.setViolet();
+                    } else {
+                        // Neither color detected - turn off LEDs
+                        leftLED.turnOFF();
+                        rightLED.turnOFF();
+                    }
+                }
+                
+                // Debug telemetry
+                telemetry.addLine("=== COLOR SENSOR ===");
+                telemetry.addData("RGB", String.format("R:%d G:%d B:%d", rgb[0], rgb[1], rgb[2]));
+                telemetry.addData("HSV", String.format("H:%d S:%d V:%d", hsv[0], hsv[1], hsv[2]));
+                telemetry.addData("Is Green", colorFinder.isGreen());
+                telemetry.addData("Is Purple", colorFinder.isPurple());
+                telemetry.addData("Valid Reading", isValidReading);
+                telemetry.addData("Detected Color", lastDetectedColor);
+                telemetry.addData("Confidence Count", colorDetectionCount);
             }
 
             // Additional Telemetry
