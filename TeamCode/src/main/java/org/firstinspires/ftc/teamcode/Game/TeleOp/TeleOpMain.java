@@ -98,8 +98,8 @@ public class TeleOpMain extends LinearOpMode {
         //limelight = new Limelight(hardwareMap, telemetry);
         
         // Initialize LED Lights
-        leftLED = new LedLights(ledLeft);
-        rightLED = new LedLights(ledRight);
+        leftLED = new LedLights("leftLED", hardwareMap);
+        rightLED = new LedLights("rightLED", hardwareMap);
         
         // Initialize MecanumChassis for encoder-based centering
         chassis = new MecanumChassis(this);
