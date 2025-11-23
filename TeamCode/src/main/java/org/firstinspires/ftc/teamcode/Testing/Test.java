@@ -67,7 +67,13 @@ public class Test extends LinearOpMode {
             else if (spindexClockWise.press(gamepad1.x)){
                 spindex.subtractIndex();
             }
-            spindex.lockPos();
+
+            if (spindexMode.toggle(gamepad1.options)){
+                spindex.lockPos(true);
+            }
+            else{
+                spindex.lockPos(false);
+            }
 
             if (gamepad1.right_trigger > 0){
                 intake.setPower(1);
@@ -76,7 +82,12 @@ public class Test extends LinearOpMode {
                 intake.setPower(0);
             }
 
-            kicker.zero();
+            if (gamepad1.a){
+                kicker.down();
+            }
+            else if (gamepad1.y){
+                kicker.up();
+            }
 
             telemetry.addData("RGB ",r + ", " + g + ", " + b);
             telemetry.addData("HSV ",HSV[0] + ", " + HSV[1] + "%, " + HSV[2] + "%");

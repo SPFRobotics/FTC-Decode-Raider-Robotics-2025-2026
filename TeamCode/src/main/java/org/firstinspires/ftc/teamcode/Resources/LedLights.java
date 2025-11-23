@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.Resources;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 //ROYGBIV!!!
 public class LedLights {
     private Servo ledServo;
 //Constructor
-    public LedLights(Servo servo) {
-        this.ledServo = servo;
+    public LedLights(String led, HardwareMap hardwareMap) {
+        hardwareMap.get(Servo.class, led);
     }
 //Set red
     public void setRed() {

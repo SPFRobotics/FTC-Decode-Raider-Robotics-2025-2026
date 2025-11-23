@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,7 +24,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-@TeleOp(name="Tele-Op Grav")
+//@TeleOp(name="Tele-Op Grav")
+@Disabled
 public class TeleOpMainGrav extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
@@ -96,10 +98,6 @@ public class TeleOpMainGrav extends LinearOpMode {
 
         //extension = new Extension(hardwareMap);
         //limelight = new Limelight(hardwareMap, telemetry);
-        
-        // Initialize LED Lights
-        leftLED = new LedLights(ledLeft);
-        rightLED = new LedLights(ledRight);
         
         // Initialize MecanumChassis for encoder-based centering
         chassis = new MecanumChassis(this);
