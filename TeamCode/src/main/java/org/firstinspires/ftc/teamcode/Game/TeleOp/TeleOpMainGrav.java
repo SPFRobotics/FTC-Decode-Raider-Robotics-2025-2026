@@ -24,15 +24,14 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-//@TeleOp(name="Tele-Op Grav")
-@Disabled
+@TeleOp(name="Tele-Op Grav")
 public class TeleOpMainGrav extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
-    private DcMotor linearSlides= null;
+    //DcMotor linearSlides= null;
 
     private Intake intake = null;
     private ElapsedTime masterClock = new ElapsedTime();
@@ -55,9 +54,6 @@ public class TeleOpMainGrav extends LinearOpMode {
 
     private Servo ledRight = null;
     private Servo ledLeft = null;
-    private LedLights leftLED = null;
-    private LedLights rightLED = null;
-
     private Button square = new Button();
     //telemetry
     FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -181,12 +177,12 @@ public class TeleOpMainGrav extends LinearOpMode {
                 Extension.setPower(-1);
             }
 
-            if (square.press(gamepad2.square)) {
+            /*if (square.press(gamepad2.square)) {
                     linearSlides.setPower(1.0);
             }
             else if (circle.press(gamepad2.circle)) {
                 linearSlides.setPower(0.0);
-            }
+            }*/
 
             if (a.press(gamepad2.a)){
                 kicker.down();
@@ -220,17 +216,6 @@ public class TeleOpMainGrav extends LinearOpMode {
             }
             
             outtake.setRPM(setRPM);
-
-            // Color detection and LED control
-            if (colorFinder != null) {
-                if (colorFinder.isGreen()) {
-                    leftLED.setGreen();
-                    rightLED.setGreen();
-                } else if (colorFinder.isBlue()) {
-                    leftLED.setBlue();
-                    rightLED.setBlue();
-                }
-            }
 
             // Additional Telemetry
             telemetry.addLine("==========================================");
