@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.LedLights;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
@@ -45,6 +46,13 @@ public class TeleOpMain extends LinearOpMode {
     private IMU imu = null;
     private MecanumChassis chassis = null;
     private ColorFinder colorFinder = null;
+    private Spindex spindex = null;
+
+    // Spindex tracking variables
+    private boolean spindexIntakeMode = true; // true = intake mode, false = outtake mode
+    private boolean[] slotOccupied = new boolean[3]; // Track if each slot (0-2) is occupied
+    private String[] slotColors = new String[3]; // Track color in each slot: "purple", "green", or null
+    private int currentSpindexIndex = 0; // Track current spindex index (0-2)
 
     //Buttons
     private Button outtakeFar = new Button();
@@ -54,6 +62,9 @@ public class TeleOpMain extends LinearOpMode {
     private Button centeringButton = new Button();
 
     private Button circle = new Button();// X button for encoder-based centering
+    private Button spindexModeToggle = new Button();
+    private Button spindexRightBumper = new Button();
+    private Button spindexLeftBumper = new Button();
 
     private Servo ledRight = null;
     private Servo ledLeft = null;
@@ -103,6 +114,14 @@ public class TeleOpMain extends LinearOpMode {
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
         colorFinder = new ColorFinder(hardwareMap);
+        spindex = new Spindex(hardwareMap);
+        
+        // Initialize slot tracking arrays (all slots empty initially)
+        for (int i = 0; i < 3; i++) {
+            slotOccupied[i] = false;
+            slotColors[i] = null;
+        }
+        currentSpindexIndex = 0;
 
         //extension = new Extension(hardwareMap);
         //limelight = new Limelight(hardwareMap, telemetry);
@@ -206,8 +225,99 @@ public class TeleOpMain extends LinearOpMode {
             }
             intake.update();
 
-            if (circle.press(gamepad2.circle)) {
-                linearSlides.setPower(0.0);
+            // Spindex mode toggle on Circle/O button
+            if (spindexModeToggle.toggle(gamepad2.circle)) {
+                spindexIntakeMode = !spindexIntakeMode;
+            }
+
+            // Spindex controls
+            if (spindexIntakeMode) {
+                // INTAKE MODE
+                // Right bumper: move to next slot
+                if (spindexRightBumper.press(gamepad2.right_bumper)) {
+                    spindex.addIndex();
+                    currentSpindexIndex = (currentSpindexIndex + 1) % 3;
+                    spindex.lockPos(false);
+                }
+                // Left bumper: move to previous slot
+                if (spindexLeftBumper.press(gamepad2.left_bumper)) {
+                    spindex.subtractIndex();
+                    currentSpindexIndex = (currentSpindexIndex - 1 + 3) % 3; // Ensure positive modulo
+                    spindex.lockPos(false);
+                }
+                
+                // Color detection and auto-advance during intake
+                if (intake.isActive() && colorFinder != null) {
+                    // The color sensor looks at the slot AFTER the current intake position
+                    int nextSlotIndex = (currentSpindexIndex + 1) % 3;
+                    
+                    // Check if color is detected and next slot is empty
+                    if (!slotOccupied[nextSlotIndex]) {
+                        if (colorFinder.isPurple()) {
+                            // Mark next slot as occupied with purple
+                            slotOccupied[nextSlotIndex] = true;
+                            slotColors[nextSlotIndex] = "purple";
+                            // Move to next slot
+                            spindex.addIndex();
+                            currentSpindexIndex = (currentSpindexIndex + 1) % 3;
+                            spindex.lockPos(false);
+                        } else if (colorFinder.isGreen()) {
+                            // Mark next slot as occupied with green
+                            slotOccupied[nextSlotIndex] = true;
+                            slotColors[nextSlotIndex] = "green";
+                            // Move to next slot
+                            spindex.addIndex();
+                            currentSpindexIndex = (currentSpindexIndex + 1) % 3;
+                            spindex.lockPos(false);
+                        }
+                    }
+                }
+                
+                // Continuously lock position in intake mode
+                spindex.lockPos(false);
+            } else {
+                // OUTTAKE MODE
+                // Right bumper: move to green ball position
+                if (spindexRightBumper.press(gamepad2.right_bumper)) {
+                    int greenIndex = -1;
+                    for (int i = 0; i < 3; i++) {
+                        if (slotOccupied[i] && "green".equals(slotColors[i])) {
+                            greenIndex = i;
+                            break;
+                        }
+                    }
+                    if (greenIndex != -1) {
+                        // Calculate shortest path to target index
+                        int steps = (greenIndex - currentSpindexIndex + 3) % 3;
+                        for (int i = 0; i < steps; i++) {
+                            spindex.addIndex();
+                        }
+                        currentSpindexIndex = greenIndex;
+                        spindex.lockPos(true);
+                    }
+                }
+                // Left bumper: move to purple ball position
+                if (spindexLeftBumper.press(gamepad2.left_bumper)) {
+                    int purpleIndex = -1;
+                    for (int i = 0; i < 3; i++) {
+                        if (slotOccupied[i] && "purple".equals(slotColors[i])) {
+                            purpleIndex = i;
+                            break;
+                        }
+                    }
+                    if (purpleIndex != -1) {
+                        // Calculate shortest path to target index
+                        int steps = (purpleIndex - currentSpindexIndex + 3) % 3;
+                        for (int i = 0; i < steps; i++) {
+                            spindex.addIndex();
+                        }
+                        currentSpindexIndex = purpleIndex;
+                        spindex.lockPos(true);
+                    }
+                }
+                
+                // Continuously lock position in outtake mode
+                spindex.lockPos(true);
             }
 
             if (a.press(gamepad2.a)){
@@ -272,6 +382,29 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
             telemetry.addData("Rumbleing:", gamepad2.isRumbling());
             telemetry.addLine("=== AUTO-CENTERING ===");
+            telemetry.addLine("=== SPINDEX ===");
+            telemetry.addData("Spindex Mode", spindexIntakeMode ? "INTAKE" : "OUTTAKE");
+            telemetry.addData("Spindex Index", currentSpindexIndex);
+            telemetry.addData("Spindex Position", Spindex.getPos() + " degrees");
+            telemetry.addLine("Slot Status:");
+            for (int i = 0; i < 3; i++) {
+                String status = "Slot " + i + ": ";
+                if (slotOccupied[i]) {
+                    status += slotColors[i] != null ? slotColors[i].toUpperCase() : "UNKNOWN";
+                } else {
+                    status += "EMPTY";
+                }
+                telemetry.addLine(status);
+            }
+            if (colorFinder != null) {
+                String detectedColor = "NONE";
+                if (colorFinder.isPurple()) {
+                    detectedColor = "PURPLE";
+                } else if (colorFinder.isGreen()) {
+                    detectedColor = "GREEN";
+                }
+                telemetry.addData("Color Sensor", detectedColor);
+            }
 
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());

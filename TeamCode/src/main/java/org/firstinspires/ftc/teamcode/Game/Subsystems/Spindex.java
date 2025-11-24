@@ -23,7 +23,7 @@ public class Spindex {
     private double distance = 0;
     //Stores position and current index of spindex
     public Spindex(HardwareMap hardwareMap){
-        spindex = hardwareMap.get(CRServo.class, "servo");
+        spindex = hardwareMap.get(CRServo.class, "spindex");
         spindexPos = hardwareMap.get(AnalogInput.class, "encoder");
     }
 
