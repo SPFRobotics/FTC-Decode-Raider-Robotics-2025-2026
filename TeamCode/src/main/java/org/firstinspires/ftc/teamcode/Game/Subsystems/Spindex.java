@@ -17,6 +17,8 @@ public class Spindex {
 
     private double[] intakePos = {0, 240, 120};
     private double[] outtakePos = {60, 300, 180};
+
+    private boolean mode = false;
     private int index = 0;
     private double distance = 0;
     //Stores position and current index of spindex
@@ -33,8 +35,11 @@ public class Spindex {
         index--;
     }
     //Locks on position based on the index
-
+    public boolean getLockPos(){
+        return mode;
+    }
     public void lockPos(boolean mode){
+        this.mode = mode;
         if (!mode){
             distance = getPos()-intakePos[index%3];
         }

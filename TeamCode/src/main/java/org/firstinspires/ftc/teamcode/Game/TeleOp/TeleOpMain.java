@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
@@ -39,6 +42,7 @@ public class TeleOpMain extends LinearOpMode {
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
     private double speedFactor =  1;
     private Limelight limelight = null;
+    private IMU imu = null;
     private MecanumChassis chassis = null;
     private ColorFinder colorFinder = null;
 
@@ -79,6 +83,12 @@ public class TeleOpMain extends LinearOpMode {
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
         ledLeft = hardwareMap.get(Servo.class, "leftLED");
         ledRight = hardwareMap.get(Servo.class, "rightLED");
+        imu = hardwareMap.get(IMU.class, "imu");
+
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        imu.initialize(parameters);
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -98,8 +108,8 @@ public class TeleOpMain extends LinearOpMode {
         //limelight = new Limelight(hardwareMap, telemetry);
         
         // Initialize LED Lights
-        leftLED = new LedLights(ledLeft);
-        rightLED = new LedLights(ledRight);
+        leftLED = new LedLights("leftLED", hardwareMap);
+        rightLED = new LedLights("rightLED", hardwareMap);
         
         // Initialize MecanumChassis for encoder-based centering
         chassis = new MecanumChassis(this);
@@ -154,6 +164,11 @@ public class TeleOpMain extends LinearOpMode {
             double y = -gamepad1.left_stick_y*speedFactor;
             double x = gamepad1.left_stick_x*speedFactor;
             double rx = gamepad1.right_stick_x*speedFactor;
+
+            //Field Oriented Drive
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            //x = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            //y = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
             
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double frontLeftPower = (y + x + rx) / denominator;
