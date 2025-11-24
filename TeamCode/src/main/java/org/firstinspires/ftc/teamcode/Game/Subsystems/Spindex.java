@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Testing.Test;
 public class Spindex {
     @Config
     public static class SpindexValues{
-        public static int range = 0;
+        public static double range = 5.0; // Tolerance in degrees for position locking
     }
     private CRServo spindex = null;
     private static AnalogInput spindexPos = null;
@@ -40,18 +40,37 @@ public class Spindex {
     }
     public void lockPos(boolean mode){
         this.mode = mode;
+        double targetPos;
         if (!mode){
-            distance = getPos()-intakePos[index%3];
+            targetPos = intakePos[index%3];
         }
         else{
-            distance = getPos()-outtakePos[index%3];
+            targetPos = outtakePos[index%3];
+        }
+        
+        double currentPos = getPos();
+        distance = currentPos - targetPos;
+        
+        // Handle wrapping around 360 degrees - find shortest path
+        if (distance > 180) {
+            distance = distance - 360;
+        } else if (distance < -180) {
+            distance = distance + 360;
         }
 
         if (Math.abs(distance) < SpindexValues.range){
             spindex.setPower(0);
         }
         else {
-            spindex.setPower(0.1);
+            // Set power with correct direction: negative distance means we're behind, need positive power
+            // Positive distance means we're ahead, need negative power
+            double power = 0.1;
+            if (distance > 0) {
+                power = -0.1; // Go backward
+            } else {
+                power = 0.1; // Go forward
+            }
+            spindex.setPower(power);
         }
     }
 
