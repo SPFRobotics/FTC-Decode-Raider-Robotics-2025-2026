@@ -110,7 +110,7 @@ public class TeleOpMain extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
-        kicker.up();
+        kicker.down();
 
         // Initialize chassis movement after waitForStart
         // Note: This will reset encoders and initialize IMU
@@ -124,8 +124,8 @@ public class TeleOpMain extends LinearOpMode {
 
         // Start limelight after waitForStart
         //limelight.start();
-        ledLeft.setPosition(0.5);
-        ledRight.setPosition(0.5);
+        //ledLeft.setPosition(0.5);
+        //ledRight.setPosition(0.5);
 
         while (opModeIsActive()) {
             // Always ensure motors are in manual control mode for normal driving
@@ -150,7 +150,6 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("X Button State", gamepad1.x ? "PRESSED" : "not pressed");
             telemetry.addData("X Button Press Detected", xButtonPressed ? "YES" : "NO");
 
-            // Mecanum drive control - ALWAYS active (except during centering which blocks)
             double y = -gamepad1.left_stick_y*speedFactor;
             double x = gamepad1.left_stick_x*speedFactor;
             double rx = gamepad1.right_stick_x*speedFactor;
@@ -224,6 +223,7 @@ public class TeleOpMain extends LinearOpMode {
             outtake.setRPM(setRPM);
 
             // Color detection and LED control
+            /*
             if (colorFinder != null) {
                 if (colorFinder.isGreen()) {
                     leftLED.setGreen();
@@ -233,7 +233,7 @@ public class TeleOpMain extends LinearOpMode {
                     rightLED.setBlue();
                 }
             }
-
+*/
             // Additional Telemetry
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
