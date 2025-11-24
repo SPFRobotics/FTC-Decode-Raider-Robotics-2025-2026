@@ -160,8 +160,8 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("X Button State", gamepad1.x ? "PRESSED" : "not pressed");
             telemetry.addData("X Button Press Detected", xButtonPressed ? "YES" : "NO");
 
-            double y = -gamepad1.left_stick_y*speedFactor;
-            double x = gamepad1.left_stick_x*speedFactor;
+            double y = gamepad1.left_stick_x*speedFactor;
+            double x = -gamepad1.left_stick_y*speedFactor;
             double rx = gamepad1.right_stick_x*speedFactor;
 
             //Field Oriented Drive
@@ -197,10 +197,16 @@ public class TeleOpMain extends LinearOpMode {
                 Extension.setPower(-1);
             }
 
-            if (square.press(gamepad2.square)) {
-                    linearSlides.setPower(1.0);
+            // Intake toggle on Square button
+            boolean intakeActive = square.toggle(gamepad2.square);
+            if (intakeActive) {
+                intake.activate();
+            } else {
+                intake.deactivate();
             }
-            else if (circle.press(gamepad2.circle)) {
+            intake.update();
+
+            if (circle.press(gamepad2.circle)) {
                 linearSlides.setPower(0.0);
             }
 

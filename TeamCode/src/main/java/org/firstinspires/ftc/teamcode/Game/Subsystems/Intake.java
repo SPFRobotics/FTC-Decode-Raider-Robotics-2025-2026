@@ -18,7 +18,6 @@ public class Intake {
     }
 
 
-    // Update method - call this in the main loop with the gamepad
     public void update() {
         // Set motor power based on active state
         if (isActive) {
