@@ -28,11 +28,11 @@ public class Spindex {
     }
 
     public void addIndex(){
-        index++;
+        index = (index + 1) % 3;
     }
 
     public void subtractIndex(){
-        index--;
+        index = (index - 1 + 3) % 3;
     }
     //Locks on position based on the index
     public boolean getLockPos(){
