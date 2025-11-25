@@ -42,6 +42,7 @@ public class TeleOpMainGrav extends LinearOpMode {
     private Limelight limelight = null;
     private MecanumChassis chassis = null;
     private ColorFinder colorFinder = null;
+    private Extension extension = null;
 
     //Buttons
     private Button outtakeFar = new Button();
@@ -91,8 +92,8 @@ public class TeleOpMainGrav extends LinearOpMode {
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
         colorFinder = new ColorFinder(hardwareMap);
-
-        //extension = new Extension(hardwareMap);
+        extension = new Extension(hardwareMap);
+        
         //limelight = new Limelight(hardwareMap, telemetry);
         
         // Initialize MecanumChassis for encoder-based centering
