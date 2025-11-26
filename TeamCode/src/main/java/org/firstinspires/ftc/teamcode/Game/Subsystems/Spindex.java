@@ -11,7 +11,7 @@ public class Spindex {
     @Config
     public static class SpindexValues{
         public static double range = 5.0; // Tolerance in degrees for position locking
-        public static double kP = 0.1;
+        public static double kP = 0.01;
         public static double kI = 0.0;
         public static double kD = 0.0;
         public static double kStatic = 0.0; // Minimum effort to overcome servo stiction
