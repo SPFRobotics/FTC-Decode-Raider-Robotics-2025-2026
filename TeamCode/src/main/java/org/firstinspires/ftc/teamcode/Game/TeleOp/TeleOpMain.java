@@ -256,9 +256,9 @@ public class TeleOpMain extends LinearOpMode {
             }
             
             outtake.setRPM(setRPM);
+/*
 
             // Color detection and LED control
-            /*
             if (colorFinder != null) {
                 if (colorFinder.isGreen()) {
                     leftLED.setGreen();
@@ -269,6 +269,7 @@ public class TeleOpMain extends LinearOpMode {
                 }
             }
 */
+
             // Additional Telemetry
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
@@ -289,9 +290,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine("=== SPINDEX ===");
             telemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
             telemetry.addData("Current Position", Spindex.getPos());
-            telemetry.addData("Target Position", spindex.getTargetPosition());
-            telemetry.addData("Error (deg)", spindex.getDistanceToTarget());
-            telemetry.addData("Servo Power", spindex.getLastCommandedPower());
+
             if (colorFinder != null) {
                 String detectedColor = "NONE";
                 if (colorFinder.isPurple()) {

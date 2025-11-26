@@ -107,9 +107,7 @@ public class Test extends LinearOpMode {
             //telemetry.addData("Distance ", distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("Encoder ", spindex.getPos());
             telemetry.addData("Current Position", Spindex.getPos());
-            telemetry.addData("Target Position", spindex.getTargetPosition());
-            telemetry.addData("Error (deg)", spindex.getDistanceToTarget());
-            telemetry.addData("Servo Power", spindex.getLastCommandedPower());
+
             //telemetry.addData("Distance ", spindex.getDistanceToSetPos());
             telemetry.update();
         }

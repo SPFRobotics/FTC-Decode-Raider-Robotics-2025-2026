@@ -46,10 +46,7 @@ public class LedLights {
         ledServo.setPosition(0.722);
     }
 //set white
-    public void setWhite(){
-
-        ledServo.setPosition(1);
-    }
+    public void setWhite(){ledServo.setPosition(1);}
 //turn off
     public void turnOFF(){
         ledServo.setPosition(0);
