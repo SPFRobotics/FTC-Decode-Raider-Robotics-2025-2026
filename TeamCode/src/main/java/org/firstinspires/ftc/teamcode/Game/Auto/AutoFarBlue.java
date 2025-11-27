@@ -55,11 +55,10 @@ public class AutoFarBlue extends LinearOpMode {
 
             waitForStart();
             robot.rotate(20.0,.1);
-            kicker.up();
             outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
             masterClock.reset();
             while (opModeIsActive()) {
-                if (outtake.getRPM() == 3100) {
+                if (outtake.getRPM() == 3200) {
                     speedReached = true;
                 }
                 if (speedReached){
