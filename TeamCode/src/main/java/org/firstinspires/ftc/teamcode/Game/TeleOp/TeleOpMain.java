@@ -290,6 +290,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine("=== SPINDEX ===");
             telemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
             telemetry.addData("Current Position", Spindex.getPos());
+            telemetry.addData("Index", spindex.getIndex());
 
             if (colorFinder != null) {
                 String detectedColor = "NONE";

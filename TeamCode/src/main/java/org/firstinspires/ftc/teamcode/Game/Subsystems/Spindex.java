@@ -10,12 +10,13 @@ import org.firstinspires.ftc.teamcode.Testing.Test;
 public class Spindex {
     @Config
     public static class SpindexValues{
-        public static int range = 0;
+        public static int range = 20;
+        public static double speed = 0.1;
     }
     private CRServo spindex = null;
     private static AnalogInput spindexPos = null;
 
-    private double[] intakePos = {0, 240, 120};
+    private double[] intakePos = {0, 120, 240};
     private double[] outtakePos = {60, 300, 180};
 
     private boolean mode = false;
@@ -39,12 +40,12 @@ public class Spindex {
         return mode;
     }
     public void lockPos(boolean mode){
-        this.mode = mode;
+        int wrappedIndex = Math.floorMod(index, 3);
         if (!mode){
-            distance = getPos()-intakePos[index%3];
+            distance = getPos()-intakePos[wrappedIndex];
         }
         else{
-            distance = getPos()-outtakePos[index%3];
+            distance = getPos()-outtakePos[wrappedIndex];
         }
 
         if (Math.abs(distance) < SpindexValues.range){
@@ -53,6 +54,10 @@ public class Spindex {
         else {
             spindex.setPower(0.1);
         }
+    }
+
+    public int getIndex(){
+        return Math.floorMod(index, 3);
     }
 
     public void zero(){
