@@ -42,7 +42,6 @@ public class TeleOpMainGrav extends LinearOpMode {
     private Limelight limelight = null;
     private MecanumChassis chassis = null;
     private ColorFinder colorFinder = null;
-    private Extension extension = null;
 
     //Buttons
     private Button outtakeFar = new Button();
@@ -92,7 +91,6 @@ public class TeleOpMainGrav extends LinearOpMode {
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
         colorFinder = new ColorFinder(hardwareMap);
-        extension = new Extension(hardwareMap);
         
         //limelight = new Limelight(hardwareMap, telemetry);
         
@@ -171,12 +169,6 @@ public class TeleOpMainGrav extends LinearOpMode {
                 rumbled = false;
                 gamepad2.rumbleBlips(2);
             }*/
-            while(gamepad1.left_trigger>0.1 && gamepad2.left_trigger>0.1){
-                Extension.setPower(1);
-            }
-            while(gamepad1.right_trigger>0.1 && gamepad2.right_trigger>0.1){
-                Extension.setPower(-1);
-            }
 
             /*if (square.press(gamepad2.square)) {
                     linearSlides.setPower(1.0);
