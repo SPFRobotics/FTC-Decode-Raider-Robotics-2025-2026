@@ -8,8 +8,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Kicker {
     @Config
     public static class KickerHeight{
-        public static double down = 0.05;
-        public static double up = 0.18;
+        public static double downGrav = 0.05;
+        public static double upGrav = 0.18;
+
+        public static double down = 0.3;
+        public static double up = 0.53;
+
 
     }
     private Servo kicker = null;
