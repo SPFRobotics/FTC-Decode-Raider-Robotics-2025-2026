@@ -103,7 +103,7 @@ public class TeleOpMainGrav extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
-        kicker.up();
+        kicker.up(true);
 
         // Initialize chassis movement after waitForStart
         // Note: This will reset encoders and initialize IMU
@@ -178,10 +178,10 @@ public class TeleOpMainGrav extends LinearOpMode {
             }*/
 
             if (a.press(gamepad2.a)){
-                kicker.down();
+                kicker.down(true);
             }
             else if (triangle.press(gamepad2.y)){
-                kicker.up();
+                kicker.up(true);
             }
 
             if (setRPM == Outtake.OuttakeSpeed.closeRPM && outtake.getRPM() >= setRPM){
@@ -222,7 +222,7 @@ public class TeleOpMainGrav extends LinearOpMode {
             }
             telemetry.addData("Runtime", runtime.toString());
             //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
-            telemetry.addData("Outtake RPM: ", outtake.getRPM());
+            telemetry.addData("Outtake RPM ", outtake.getRPM());
             telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
             telemetry.addData("Rumbleing:", gamepad2.isRumbling());

@@ -30,7 +30,7 @@ public class Outtake {
     private int kickerCycleCount = 0;
 
     //The "E"ncoder "R"esolution our current motor runs at.
-    private final int motorER = 28;
+    int motorER = 28;
 
     private ElapsedTime clock = new ElapsedTime();
     //Interval in seconds of outtake cycle
@@ -40,7 +40,7 @@ public class Outtake {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeMotor.setVelocityPIDFCoefficients(OuttakeSpeed.p, OuttakeSpeed.i, OuttakeSpeed.d, OuttakeSpeed.f);
-        //outtakeMotor.setPositionPIDFCoefficients(5);
+        outtakeMotor.setPositionPIDFCoefficients(5);
         kicker = new Kicker(hardwareMap);
     }
 
@@ -75,13 +75,13 @@ public class Outtake {
     }
 
     public double getRPM() {
-        return (outtakeMotor.getVelocity()*60)/motorER;
+        return (outtakeMotor.getVelocity()*60)/28*60;
     }
 
     public void enableKickerCycle(boolean x, double RPM){
         if (x){
             if ((int)interval.seconds() >= 2 && getRPM() >= RPM) {
-                kicker.up();
+                kicker.up(true);
             }
             else if ((int)interval.seconds() >= 5){
                 kickerCycleCount++;
@@ -89,7 +89,7 @@ public class Outtake {
             }
         }
         else{
-            kicker.up();
+            kicker.up(true);
             interval.reset();
         }
     }
@@ -103,7 +103,7 @@ public class Outtake {
     }
 
     public void setRPM(double rpm){
-        double tps = ((rpm/60)*motorER);
+        double tps = (rpm / 60.0) * 28;
         outtakeMotor.setVelocity(tps);
     }
 }

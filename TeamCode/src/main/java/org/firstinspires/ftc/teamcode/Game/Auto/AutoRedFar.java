@@ -38,11 +38,11 @@ public class AutoRedFar extends LinearOpMode {
         while (opModeIsActive()) {
             outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
             if (outtake.getKickerCycleCount()==3 && robot.getWiggleCount() < 2){
-                kicker.down();
+                kicker.down(true);
                 robot.wiggle();
             }
             else if (robot.getWiggleCount() == 3){
-                kicker.up();
+                kicker.up(true);
             }
             if (outtake.getKickerCycleCount() == 4) {
                 break;

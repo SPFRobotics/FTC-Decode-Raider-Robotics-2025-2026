@@ -27,14 +27,24 @@ public class Kicker {
         kicker.setDirection(Servo.Direction.REVERSE);
     }
 
-    public void up(){
+    public void up(boolean grav){
         state = 1;
-        kicker.setPosition(KickerHeight.up);
+        if (grav){
+            kicker.setPosition(KickerHeight.upGrav);
+        }
+        else{
+            kicker.setPosition(KickerHeight.up);
+        }
     }
 
-    public void down(){
+    public void down(boolean grav){
         state = 0;
-        kicker.setPosition(KickerHeight.down);
+        if (grav){
+            kicker.setPosition(KickerHeight.downGrav);
+        }
+        else{
+            kicker.setPosition(KickerHeight.down);
+        }
     }
 
     public void zero(){
@@ -47,7 +57,7 @@ public class Kicker {
          return voltage.getVoltage();
 
     }
-    
+
     public static int getState(){
         return state;
     }

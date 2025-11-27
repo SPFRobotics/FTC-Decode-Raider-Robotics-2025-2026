@@ -128,7 +128,7 @@ public class TeleOpMain extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
-        kicker.down();
+        kicker.down(false);
 
         // Initialize chassis movement after waitForStart
         // Note: This will reset encoders and initialize IMU
@@ -225,10 +225,10 @@ public class TeleOpMain extends LinearOpMode {
             spindex.lockPos(spindexOuttakeMode);
 
             if (a.press(gamepad2.a)){
-                kicker.down();
+                kicker.down(false);
             }
             else if (triangle.press(gamepad2.y)){
-                kicker.up();
+                kicker.up(false);
             }
 
             if (setRPM == Outtake.OuttakeSpeed.closeRPM && outtake.getRPM() >= setRPM){
