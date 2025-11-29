@@ -13,14 +13,14 @@ import org.firstinspires.ftc.teamcode.Testing.Test;
 public class Spindex {
     @Config
     public static class SpindexValues{
-        public static int p = 100;
+        public static int p = 140;
         public static double speed = 0.1;
     }
     private CRServo spindex = null;
     private static AnalogInput spindexPos = null;
 
     private double[] intakePos = {0, 120, 240};
-    private double[] outtakePos = {60, 300, 180};
+    private double[] outtakePos = {60, 180, 300};
 
     private boolean mode = false;
     public int index = 0;
@@ -48,42 +48,76 @@ public class Spindex {
         return Math.floorMod(index, 3);
     }
 
+    //Gets the minimum distance to target accepts a list and is overloaded to accept a single value if needed
     private double getMinDistance(double[] positions){
         double distance = 0;
-        if (positions[getIndex()] + 180 > 360 ){
-            if (getPos() > positions[getIndex()]){
-                distance = positions[getIndex()]-getPos();
+        double target = positions[getIndex()];
+        if (target + 180 > 360 ){
+            if (getPos() > target){
+                distance = target-getPos();
             }
-            else if (getPos() <= (positions[getIndex()] + 180)%360){
-                distance = -(positions[getIndex()]+getPos());
+            else if (getPos() <= (target + 180)%360){
+                distance = -(target+getPos());
             }
-            else if (getPos() < positions[getIndex()] && getPos() > (positions[getIndex()] + 180)%360){
-                distance = positions[getIndex()]-getPos();
+            else if (getPos() < target && getPos() > (target + 180)%360){
+                distance = target-getPos();
             }
         }
         else{
-            if (getPos() > positions[getIndex()] && getPos() <= positions[getIndex()]+180){
-                distance = positions[getIndex()]-getPos();
+            if (getPos() > target && getPos() <= target+180){
+                distance = target-getPos();
             }
-            else if (getPos() > positions[getIndex()]+180){
-                distance = (360-getPos())+positions[getIndex()];
+            else if (getPos() > target+180){
+                distance = (360-getPos())+target;
             }
-            else if (getPos() < positions[getIndex()]){
-                distance = positions[getIndex()]-getPos();
+            else if (getPos() < target){
+                distance = target-getPos();
             }
         }
         return distance;
     }
 
+    private double getMinDistance(double x){
+        double distance = 0;
+        double target = x;
+        if (target + 180 > 360 ){
+            if (getPos() > target){
+                distance = target-getPos();
+            }
+            else if (getPos() <= (target + 180)%360){
+                distance = -(target+getPos());
+            }
+            else if (getPos() < target && getPos() > (target + 180)%360){
+                distance = target-getPos();
+            }
+        }
+        else{
+            if (getPos() > target && getPos() <= target+180){
+                distance = target-getPos();
+            }
+            else if (getPos() > target+180){
+                distance = (360-getPos())+target;
+            }
+            else if (getPos() < target){
+                distance = target-getPos();
+            }
+        }
+        return distance;
+    }
+
+    //False = intake, true = outtake
     public void lockPos(boolean mode){
-        spindex.setPower(getMinDistance(intakePos)/SpindexValues.p);
+        if (!mode){
+            spindex.setPower(getMinDistance(intakePos)/SpindexValues.p);
+        }
+        else{
+            spindex.setPower(getMinDistance(outtakePos)/SpindexValues.p);
+        }
     }
 
     public void zero(){
-        double minDistance = getMinDistance(intakePos);
-        if (minDistance != 0){
-            spindex.setPower(minDistance/p);
-        }
+        double minDistance = getMinDistance(0);
+        spindex.setPower(minDistance/p);
     }
 
     public void move(double x){

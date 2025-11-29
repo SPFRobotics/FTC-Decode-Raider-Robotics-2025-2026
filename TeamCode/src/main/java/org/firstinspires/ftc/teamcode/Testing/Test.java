@@ -19,6 +19,7 @@ public class Test extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     private Telemetry telemetry = dashboard.getTelemetry();
     private Spindex spindex = null;
+    private Kicker kicker = null;
     public static Button spindexCounterClockWise = new Button();
     public static Button spindexClockWise = new Button();
     public static Button spindexMode = new Button();
@@ -31,6 +32,7 @@ public class Test extends LinearOpMode {
 
     public void runOpMode(){
         spindex = new Spindex(hardwareMap);
+        kicker = new Kicker(hardwareMap);
         telemetry.setMsTransmissionInterval(1);
         waitForStart();
         while (opModeIsActive()){
@@ -42,7 +44,10 @@ public class Test extends LinearOpMode {
             }
 
             if (gamepad1.y){
-
+                kicker.up(false);
+            }
+            else if (gamepad1.a){
+                kicker.down(false);
             }
 
 
