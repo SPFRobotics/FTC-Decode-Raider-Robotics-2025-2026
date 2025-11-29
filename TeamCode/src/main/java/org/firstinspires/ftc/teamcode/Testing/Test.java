@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 
@@ -33,9 +34,6 @@ public class Test extends LinearOpMode {
         telemetry.setMsTransmissionInterval(1);
         waitForStart();
         while (opModeIsActive()){
-            Spindex.SpindexValues.range = IndexerConfig.range;
-            Spindex.SpindexValues.speed = IndexerConfig.speed;
-
             if (spindexCounterClockWise.press(gamepad1.b)){
                 spindex.addIndex();
             }
@@ -43,13 +41,18 @@ public class Test extends LinearOpMode {
                 spindex.subtractIndex();
             }
 
+            if (gamepad1.y){
+
+            }
+
+
             boolean outtakeMode = spindexMode.toggle(gamepad1.options);
             spindex.lockPos(outtakeMode);
 
             telemetry.addData("Current Position", Spindex.getPos());
+            telemetry.addData("Target Position", spindex.targetPos);
+            telemetry.addData("Index", spindex.getIndex());
             telemetry.addData("Mode", outtakeMode ? "OUTTAKE" : "INTAKE");
-            telemetry.addData("Dashboard Speed", IndexerConfig.speed);
-            telemetry.addData("Dashboard Range", IndexerConfig.range);
             telemetry.update();
         }
     }
