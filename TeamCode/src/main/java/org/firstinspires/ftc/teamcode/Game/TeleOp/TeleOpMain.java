@@ -60,6 +60,7 @@ public class TeleOpMain extends LinearOpMode {
     private Button spindexModeToggle = new Button();
     private Button spindexRightBumper = new Button();
     private Button spindexLeftBumper = new Button();
+    private Button kickstandToggle = new Button();
 
     private Servo ledRight = null;
     private Servo ledLeft = null;
@@ -160,6 +161,10 @@ public class TeleOpMain extends LinearOpMode {
                 speedFactor = 1;
             }
 
+            //Simple toggle for the kickstand using gamepad1 left trigger
+            boolean kickstandRaised = kickstandToggle.toggle(gamepad1.left_trigger > 0.5);
+            Extension.kickStandUp(kickstandRaised);
+
             boolean xButtonPressed = centeringButton.press(gamepad1.cross);
 
             double y = gamepad1.left_stick_x*speedFactor;
@@ -192,12 +197,14 @@ public class TeleOpMain extends LinearOpMode {
                 rumbled = false;
                 gamepad2.rumbleBlips(2);
             }*/
+            /* Extension trigger mapping is currently unused; leave stubbed for future reference.
             while(gamepad1.left_trigger>0.1 && gamepad2.left_trigger>0.1){
                 Extension.setPower(1);
             }
             while(gamepad1.right_trigger>0.1 && gamepad2.right_trigger>0.1){
                 Extension.setPower(-1);
             }
+            */
 
             // Intake toggle on Square button
             boolean intakeActive = square.toggle(gamepad2.square);
@@ -257,7 +264,7 @@ public class TeleOpMain extends LinearOpMode {
                 if (colorFinder.isGreen()) {
                     leftLED.setGreen();
                     rightLED.setGreen();
-                } else if (colorFinder.isBlue()) {
+                } else if (colorFinder.isPurple()) {
                     leftLED.setViolet();
                     rightLED.setViolet();
                 }
@@ -274,6 +281,7 @@ public class TeleOpMain extends LinearOpMode {
             if (a.getState() == true){
                 telemetry.addLine("Kicker Active");
             }
+            telemetry.addData("Kickstand Up", Extension.isKickstandUp());
             telemetry.addData("Runtime", runtime.toString());
             //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
             telemetry.addData("Outtake RPM: ", outtake.getRPM());
