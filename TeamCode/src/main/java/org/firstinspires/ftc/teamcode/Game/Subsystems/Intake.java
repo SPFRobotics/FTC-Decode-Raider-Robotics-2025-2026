@@ -22,33 +22,13 @@ public class Intake {
     }
 
 
-    public void update() {
-        // Set motor power based on active state
-        if (isActive) {
-            intakeMotor.setPower(1.0); // Full power when active
-            intakeServo.setPower(1.0);
-        } else {
-            intakeMotor.setPower(0.0); // Off when inactive
-            intakeServo.setPower(0.0);
-        }
-    }
-
-    // Getter for active state
-    public boolean isActive() {
-        return isActive;
-    }
-
-    // Manual control methods (optional - for testing or manual override)
-    public void activate() {
-        isActive = true;
-    }
-
-    public void deactivate() {
-        isActive = false;
-    }
-
     public void setPower(double power) {
         intakeMotor.setPower(power);
+        intakeServo.setPower(power);
+    }
+
+    public double getPower(){
+        return intakeMotor.getPower();
     }
 
     public double getRPM(double encoderRes){

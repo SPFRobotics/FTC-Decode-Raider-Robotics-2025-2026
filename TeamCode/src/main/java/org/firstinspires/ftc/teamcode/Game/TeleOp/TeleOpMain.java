@@ -34,7 +34,6 @@ public class TeleOpMain extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
-    private DcMotor linearSlides= null;
 
     private Intake intake = null;
     private ElapsedTime masterClock = new ElapsedTime();
@@ -61,7 +60,6 @@ public class TeleOpMain extends LinearOpMode {
     private Button spindexRightBumper = new Button();
     private Button spindexLeftBumper = new Button();
     private Button kickstandToggle = new Button();
-
     private Servo ledRight = null;
     private Servo ledLeft = null;
     private LedLights leftLED = null;
@@ -70,7 +68,7 @@ public class TeleOpMain extends LinearOpMode {
     private Button square = new Button();
     //telemetry
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    Telemetry telemetry = dashboard.getTelemetry();;
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();;
 
 
     private double setRPM = 0;
@@ -209,11 +207,11 @@ public class TeleOpMain extends LinearOpMode {
             // Intake toggle on Square button
             boolean intakeActive = square.toggle(gamepad2.square);
             if (intakeActive) {
-                intake.activate();
-            } else {
-                intake.deactivate();
+                intake.setPower(1);
             }
-            intake.update();
+            else {
+                intake.setPower(0);
+            }
 
             // Spindex mode toggle and position cycling
             if (spindexRightBumper.press(gamepad2.right_bumper)) {
@@ -270,13 +268,12 @@ public class TeleOpMain extends LinearOpMode {
                 }
             }
 
-
-            // Additional Telemetry
+            // Driver Hub
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
             telemetry.addLine("==========================================");
             telemetry.addLine("=== DRIVE & INTAKE ===");
-            telemetry.addData("Intake Active", intake.isActive());
+            telemetry.addData("Intake Active", intake);
             telemetry.addData("Outtake Active", outtake.isActive());
             if (a.getState() == true){
                 telemetry.addLine("Kicker Active");
@@ -294,6 +291,8 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Current Position", Spindex.getPos());
             telemetry.addData("Index", spindex.getIndex());
 
+
+            //Dashboard
             if (colorFinder != null) {
                 String detectedColor = "NONE";
                 if (colorFinder.isPurple()) {
@@ -301,13 +300,53 @@ public class TeleOpMain extends LinearOpMode {
                 } else if (colorFinder.isGreen()) {
                     detectedColor = "GREEN";
                 }
-                telemetry.addData("Color Sensor", detectedColor);
+                dashboardTelemetry.addData("Color Sensor", detectedColor);
             }
 
-            telemetry.addLine("==========================================");
-            telemetry.addLine(daddyRyan.foward());
-            telemetry.addLine("==========================================");
-            telemetry.update();
+            dashboardTelemetry.addLine("==========================================");
+            dashboardTelemetry.addLine(daddyRyan.foward());
+            dashboardTelemetry.addLine("==========================================");
+            dashboardTelemetry.update();
+
+            dashboardTelemetry.addLine("==========================================");
+            dashboardTelemetry.addLine(bigThree.foward());
+            dashboardTelemetry.addLine("==========================================");
+            dashboardTelemetry.addLine("=== DRIVE & INTAKE ===");
+            dashboardTelemetry.addData("Intake Active", intake);
+            dashboardTelemetry.addData("Outtake Active", outtake.isActive());
+            if (a.getState() == true){
+                dashboardTelemetry.addLine("Kicker Active");
+            }
+            dashboardTelemetry.addData("Kickstand Up", Extension.isKickstandUp());
+            dashboardTelemetry.addData("Runtime", runtime.toString());
+            //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
+            dashboardTelemetry.addData("Outtake RPM: ", outtake.getRPM());
+            dashboardTelemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
+            dashboardTelemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
+            dashboardTelemetry.addData("Rumbling:", gamepad2.isRumbling());
+            dashboardTelemetry.addLine("=== AUTO-CENTERING ===");
+            dashboardTelemetry.addLine("=== SPINDEX ===");
+            dashboardTelemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
+            dashboardTelemetry.addData("Current Position", Spindex.getPos());
+            dashboardTelemetry.addData("Index", spindex.getIndex());
+
+
+
+            if (colorFinder != null) {
+                String detectedColor = "NONE";
+                if (colorFinder.isPurple()) {
+                    detectedColor = "PURPLE";
+                } else if (colorFinder.isGreen()) {
+                    detectedColor = "GREEN";
+                }
+                dashboardTelemetry.addData("Color Sensor", detectedColor);
+            }
+
+            dashboardTelemetry.addLine("==========================================");
+            dashboardTelemetry.addLine(daddyRyan.foward());
+            dashboardTelemetry.addLine("==========================================");
+            dashboardTelemetry.update();
+
             pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + "\n");
         }
         pen.close();

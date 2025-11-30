@@ -27,12 +27,6 @@ public class Test extends LinearOpMode {
     public static Button spindexClockWise = new Button();
     public static Button spindexMode = new Button();
 
-    @Config
-    public static class IndexerConfig{
-        public static double speed = 0.1;
-        public static int range = 5;
-    }
-
     public void runOpMode(){
         spindex = new Spindex(hardwareMap);
         kicker = new Kicker(hardwareMap);
@@ -57,11 +51,13 @@ public class Test extends LinearOpMode {
             }
 
             if (gamepad1.right_bumper){
-                intake.update();
+                intake.setPower(1);
             }
-
-            if (gamepad1.left_bumper){
-                intake.update();
+            else if (gamepad1.left_bumper){
+                intake.setPower(-1);
+            }
+            else{
+                intake.setPower(0);
             }
 
             if (gamepad1.dpad_up){
