@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.p;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.*;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -15,19 +15,18 @@ public class Spindex {
     public static class SpindexValues{
         public static int p = 140;
         public static double speed = 0.1;
+        public static double[] intakePos = {0, 120, 240};
+        public static double[] outtakePos = {60, 180, 300};
     }
     private CRServo spindex = null;
     private static AnalogInput spindexPos = null;
-
-    private double[] intakePos = {0, 120, 240};
-    private double[] outtakePos = {60, 180, 300};
 
     private boolean mode = false;
     public int index = 0;
     public double targetPos = 0;
     //Stores position and current index of spindex
     public Spindex(HardwareMap hardwareMap){
-        spindex = hardwareMap.get(CRServo.class, "spindex");
+        spindex = hardwareMap.get(CRServo.class, "servo");
         spindexPos = hardwareMap.get(AnalogInput.class, "encoder");
         spindex.setDirection(DcMotorSimple.Direction.REVERSE);
     }
