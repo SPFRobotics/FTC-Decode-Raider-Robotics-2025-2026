@@ -59,7 +59,7 @@ public class TeleOpMain extends LinearOpMode {
     private Button spindexModeToggle = new Button();
     private Button spindexRightBumper = new Button();
     private Button spindexLeftBumper = new Button();
-    private Button kickstandToggle = new Button();
+    //private Button kickstandToggle = new Button();
     private Servo ledRight = null;
     private Servo ledLeft = null;
     private LedLights leftLED = null;
@@ -121,11 +121,10 @@ public class TeleOpMain extends LinearOpMode {
         // Initialize MecanumChassis for encoder-based centering
         chassis = new MecanumChassis(this);
 
-        //Initialize Telemetry/FTCdashboard
+        //Initialize Telemetry
 
         telemetry.setMsTransmissionInterval(16);
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+        dashboardTelemetry.setMsTransmissionInterval(16);
         waitForStart();
         kicker.down(false);
 
@@ -160,8 +159,8 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             //Simple toggle for the kickstand using gamepad1 left trigger
-            boolean kickstandRaised = kickstandToggle.toggle(gamepad1.left_trigger > 0.5);
-            Extension.kickStandUp(kickstandRaised);
+            //boolean kickstandRaised = kickstandToggle.toggle(gamepad1.left_trigger > 0.5);
+            //Extension.kickStandUp(kickstandRaised);
 
             boolean xButtonPressed = centeringButton.press(gamepad1.cross);
 
@@ -278,7 +277,7 @@ public class TeleOpMain extends LinearOpMode {
             if (a.getState() == true){
                 telemetry.addLine("Kicker Active");
             }
-            telemetry.addData("Kickstand Up", Extension.isKickstandUp());
+            //telemetry.addData("Kickstand Up", Extension.isKickstandUp());
             telemetry.addData("Runtime", runtime.toString());
             //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
             telemetry.addData("Outtake RPM: ", outtake.getRPM());
@@ -317,7 +316,7 @@ public class TeleOpMain extends LinearOpMode {
             if (a.getState() == true){
                 dashboardTelemetry.addLine("Kicker Active");
             }
-            dashboardTelemetry.addData("Kickstand Up", Extension.isKickstandUp());
+            //dashboardTelemetry.addData("Kickstand Up", Extension.isKickstandUp());
             dashboardTelemetry.addData("Runtime", runtime.toString());
             //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
             dashboardTelemetry.addData("Outtake RPM: ", outtake.getRPM());
