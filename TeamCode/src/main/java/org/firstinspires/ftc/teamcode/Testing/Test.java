@@ -6,7 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 
@@ -20,6 +22,7 @@ public class Test extends LinearOpMode {
     private Telemetry telemetry = dashboard.getTelemetry();
     private Spindex spindex = null;
     private Kicker kicker = null;
+    private Intake intake = null;
     public static Button spindexCounterClockWise = new Button();
     public static Button spindexClockWise = new Button();
     public static Button spindexMode = new Button();
@@ -33,6 +36,8 @@ public class Test extends LinearOpMode {
     public void runOpMode(){
         spindex = new Spindex(hardwareMap);
         kicker = new Kicker(hardwareMap);
+        intake = new Intake(hardwareMap);
+        Outtake outtake = new Outtake(hardwareMap);
         telemetry.setMsTransmissionInterval(1);
         waitForStart();
         while (opModeIsActive()){
@@ -48,6 +53,21 @@ public class Test extends LinearOpMode {
             }
             else if (gamepad1.a){
                 kicker.down(false);
+            }
+
+            if (gamepad1.right_bumper){
+                intake.update();
+            }
+
+            if (gamepad1.left_bumper){
+                intake.update();
+            }
+
+            if (gamepad1.dpad_up){
+                outtake.setRPM(3200);
+            }
+            if (gamepad1.dpad_down){
+                outtake.setRPM(0);
             }
 
 

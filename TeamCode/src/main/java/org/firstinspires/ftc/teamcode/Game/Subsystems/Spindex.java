@@ -15,8 +15,8 @@ public class Spindex {
     public static class SpindexValues{
         public static int p = 140;
         public static double speed = 0.1;
-        public static double[] intakePos = {0, 120, 240};
-        public static double[] outtakePos = {60, 180, 300};
+        public static double[] intakePos = {6, 126, 246};
+        public static double[] outtakePos = {68, 188, 308};
     }
     private CRServo spindex = null;
     private static AnalogInput spindexPos = null;
@@ -26,7 +26,7 @@ public class Spindex {
     public double targetPos = 0;
     //Stores position and current index of spindex
     public Spindex(HardwareMap hardwareMap){
-        spindex = hardwareMap.get(CRServo.class, "servo");
+        spindex = hardwareMap.get(CRServo.class, "spindex");
         spindexPos = hardwareMap.get(AnalogInput.class, "encoder");
         spindex.setDirection(DcMotorSimple.Direction.REVERSE);
     }
