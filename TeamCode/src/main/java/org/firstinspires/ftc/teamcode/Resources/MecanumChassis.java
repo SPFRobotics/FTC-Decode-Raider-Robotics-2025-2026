@@ -371,50 +371,6 @@ public class MecanumChassis {
         frontRight.setPower(0);
         opmode.sleep(500);
     }
-    /* public void rotate(double angle, double power) {
-        double stopError = 0.5;
-        double Kp = 0.5; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
-        double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        double targetAngle = startAngle + angle;
-        double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
-        double power1 = power;
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        // rotate until the target angle is reached
-        System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        System.out.printf("%f error = ", error);
-        while (opmode.opModeIsActive() && Math.abs(error) > stopError) {
-            //powerZero();
-            error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
-            // the closer the robot is to the target angle, the slower it rotates
-            //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
-            power1 = power * error * Kp;
-            power1 = Range.clip(power1,-0.5,0.5); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
-            opmode.telemetry.addData("power1",power1);
-            System.out.printf("%f power = ",power1);
-            opmode.telemetry.addData("error",error);
-            opmode.telemetry.addData("power", power);
-            opmode.telemetry.addData("Kp",Kp);
-
-            backLeft.setPower(power1);
-            backRight.setPower(-power1);
-            frontLeft.setPower(power1);
-            frontRight.setPower(-power1);
-            if (Math.abs(error) <= stopError) {
-                powerZero();
-            }
-            opmode.telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            opmode.telemetry.addData("target", targetAngle);
-            opmode.telemetry.update();
-            //double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
-            //rotate(angleDifference, power);
-        }
-        powerZero();
-        opmode.sleep(500);
-    } */
-
     public void wiggle(){
         move(1,"forward",3);
         move(1,"backward",3);
@@ -425,61 +381,6 @@ public class MecanumChassis {
         return wiggleCount;
     }
 
-    public void adjust(String direction, double power){
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if (direction.equals("forward")){
-            backLeft.setPower(power);
-            backRight.setPower(power);
-            frontLeft.setPower(power);
-            frontRight.setPower(power);
-        }
-        if (direction.equals("backward")){
-            backLeft.setPower(-power);
-            backRight.setPower(-power);
-            frontLeft.setPower(-power);
-            frontRight.setPower(-power);
-        }
-        if (direction.equals("left")){
-            backLeft.setPower(power);
-            backRight.setPower(-power);
-            frontLeft.setPower(-power);
-            frontRight.setPower(power);
-        }
-        if (direction.equals("right")){
-            backLeft.setPower(-power);
-            backRight.setPower(power);
-            frontLeft.setPower(power);
-            frontRight.setPower(-power);
-        }
-        if (direction.equals("backLeft")){
-            backLeft.setPower(0);
-            backRight.setPower(-power);
-            frontLeft.setPower(-power);
-            frontRight.setPower(0);
-        }
-        if (direction.equals("backRight")){
-            backLeft.setPower(-power);
-            backRight.setPower(0);
-            frontLeft.setPower(0);
-            frontRight.setPower(-power);
-        }
-        if (direction.equals("frontLeft")){
-            backLeft.setPower(power);
-            backRight.setPower(0);
-            frontLeft.setPower(0);
-            frontRight.setPower(power);
-        }
-        if (direction.equals("frontRight")){
-            backLeft.setPower(0);
-            backRight.setPower(power);
-            frontLeft.setPower(power);
-            frontRight.setPower(0);
-        }
-    }
-
     /**
      * Restore motors to manual control mode (RUN_WITHOUT_ENCODER)
      * This should be called after encoder-based movements to allow manual driving
@@ -487,7 +388,5 @@ public class MecanumChassis {
     public void restoreManualControl() {
         run_without_encoders_all();
     }
-
-
 }
 
