@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.*;
 
 public class ColorFinder {
 
-    private com.qualcomm.robotcore.hardware.ColorSensor hardwareColorSensor = null;
+    private ColorSensor hardwareColorSensor = null;
     
     // Constructor with HardwareMap - initializes the color sensor
     public ColorFinder(HardwareMap hardwareMap) {
-        hardwareColorSensor = hardwareMap.get(com.qualcomm.robotcore.hardware.ColorSensor.class, "colorSensor");
+        hardwareColorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
     }
     
     public int[] getColor() {

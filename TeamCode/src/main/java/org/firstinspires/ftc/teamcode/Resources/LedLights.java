@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 //ROYGBIV!!!
 public class LedLights {
-    private Servo ledServo;
+    private Servo ledServo = null;
 //Constructor
     public LedLights(String led, HardwareMap hardwareMap) {
-        hardwareMap.get(Servo.class, led);
+        ledServo = hardwareMap.get(Servo.class, led);
     }
 //Set red
     public void setRed() {
