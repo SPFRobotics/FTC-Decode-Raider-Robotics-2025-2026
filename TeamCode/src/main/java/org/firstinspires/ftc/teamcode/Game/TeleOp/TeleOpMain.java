@@ -285,7 +285,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Outtake RPM: ", outtake.getRPM());
             telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
-            telemetry.addData("Rumbleing:", gamepad2.isRumbling());
+            telemetry.addData("Rumbling:", gamepad2.isRumbling());
             telemetry.addLine("=== AUTO-CENTERING ===");
             telemetry.addLine("=== SPINDEX ===");
             telemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
