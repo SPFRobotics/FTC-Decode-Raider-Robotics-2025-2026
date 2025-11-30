@@ -164,9 +164,7 @@ public class TeleOpMain extends LinearOpMode {
             
 
             
-            // Debug: Show X button state
-            telemetry.addData("X Button State", gamepad1.x ? "PRESSED" : "not pressed");
-            telemetry.addData("X Button Press Detected", xButtonPressed ? "YES" : "NO");
+
 
             double y = gamepad1.left_stick_x*speedFactor;
             double x = -gamepad1.left_stick_y*speedFactor;
@@ -264,8 +262,8 @@ public class TeleOpMain extends LinearOpMode {
                     leftLED.setGreen();
                     rightLED.setGreen();
                 } else if (colorFinder.isBlue()) {
-                    leftLED.setBlue();
-                    rightLED.setBlue();
+                    leftLED.setViolet();
+                    rightLED.setViolet();
                 }
             }
 
