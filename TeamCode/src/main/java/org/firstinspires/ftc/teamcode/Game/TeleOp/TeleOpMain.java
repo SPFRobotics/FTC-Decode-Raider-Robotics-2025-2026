@@ -161,10 +161,6 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             boolean xButtonPressed = centeringButton.press(gamepad1.cross);
-            
-
-            
-
 
             double y = gamepad1.left_stick_x*speedFactor;
             double x = -gamepad1.left_stick_y*speedFactor;

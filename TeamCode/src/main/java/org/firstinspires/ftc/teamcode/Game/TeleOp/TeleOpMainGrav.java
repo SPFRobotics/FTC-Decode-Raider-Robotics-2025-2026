@@ -57,9 +57,7 @@ public class TeleOpMainGrav extends LinearOpMode {
     private Button square = new Button();
     //telemetry
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    Telemetry telemetry = dashboard.getTelemetry();;
-
-
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();
     private double setRPM = 0;
     private com.qualcomm.robotcore.hardware.ColorSensor colorSensor = null;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
@@ -87,7 +85,6 @@ public class TeleOpMainGrav extends LinearOpMode {
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Initialize subsystems
-        intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
         colorFinder = new ColorFinder(hardwareMap);
@@ -100,6 +97,7 @@ public class TeleOpMainGrav extends LinearOpMode {
         //Initialize Telemetry/FTCdashboard
 
         telemetry.setMsTransmissionInterval(16);
+        dashboardTelemetry.setMsTransmissionInterval(16);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -210,18 +208,16 @@ public class TeleOpMainGrav extends LinearOpMode {
             
             outtake.setRPM(setRPM);
 
-            // Additional Telemetry
+            // Driver hub
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
             telemetry.addLine("==========================================");
-            telemetry.addLine("=== DRIVE & INTAKE ===");
-            telemetry.addData("Intake Active", intake.isActive());
+            telemetry.addLine("=== DRIVE & OUTTAKE ===");
             telemetry.addData("Outtake Active", outtake.isActive());
             if (a.getState() == true){
                 telemetry.addLine("Kicker Active");
             }
             telemetry.addData("Runtime", runtime.toString());
-            //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
             telemetry.addData("Outtake RPM ", outtake.getRPM());
             telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
@@ -232,6 +228,28 @@ public class TeleOpMainGrav extends LinearOpMode {
             telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
             telemetry.update();
+
+            //Dashboard
+            dashboardTelemetry.addLine("==========================================");
+            dashboardTelemetry.addLine(bigThree.foward());
+            dashboardTelemetry.addLine("==========================================");
+            dashboardTelemetry.addLine("=== DRIVE & OUTTAKE ===");
+            dashboardTelemetry.addData("Outtake Active", outtake.isActive());
+            if (a.getState() == true){
+                dashboardTelemetry.addLine("Kicker Active");
+            }
+            dashboardTelemetry.addData("Runtime", runtime.toString());
+            dashboardTelemetry.addData("Outtake RPM ", outtake.getRPM());
+            dashboardTelemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
+            dashboardTelemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
+            dashboardTelemetry.addData("Rumbleing:", gamepad2.isRumbling());
+            dashboardTelemetry.addLine("=== AUTO-CENTERING ===");
+
+            dashboardTelemetry.addLine("==========================================");
+            dashboardTelemetry.addLine(daddyRyan.foward());
+            dashboardTelemetry.addLine("==========================================");
+            dashboardTelemetry.update();
+
             pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + "\n");
         }
         pen.close();

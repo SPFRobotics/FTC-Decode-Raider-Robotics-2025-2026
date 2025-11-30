@@ -19,7 +19,7 @@ public class Test extends LinearOpMode {
     //public Servo led = null;
     //public DistanceSensor distanceSensor = null;
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    private Telemetry telemetry = dashboard.getTelemetry();
+    private Telemetry dashboardTelemetry = dashboard.getTelemetry();
     private Spindex spindex = null;
     private Kicker kicker = null;
     private Intake intake = null;
@@ -38,6 +38,7 @@ public class Test extends LinearOpMode {
         kicker = new Kicker(hardwareMap);
         intake = new Intake(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
+        dashboardTelemetry.setMsTransmissionInterval(1);
         telemetry.setMsTransmissionInterval(1);
         waitForStart();
         while (opModeIsActive()){
@@ -74,6 +75,14 @@ public class Test extends LinearOpMode {
             boolean outtakeMode = spindexMode.toggle(gamepad1.options);
             spindex.lockPos(outtakeMode);
 
+            //Dashboard
+            dashboardTelemetry.addData("Current Position", Spindex.getPos());
+            dashboardTelemetry.addData("Target Position", spindex.targetPos);
+            dashboardTelemetry.addData("Index", spindex.getIndex());
+            dashboardTelemetry.addData("Mode", outtakeMode ? "OUTTAKE" : "INTAKE");
+            dashboardTelemetry.update();
+
+            //Driver Hub
             telemetry.addData("Current Position", Spindex.getPos());
             telemetry.addData("Target Position", spindex.targetPos);
             telemetry.addData("Index", spindex.getIndex());
