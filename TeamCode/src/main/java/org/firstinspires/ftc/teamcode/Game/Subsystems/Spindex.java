@@ -27,7 +27,7 @@ public class Spindex {
     //Stores position and current index of spindex
     public Spindex(HardwareMap hardwareMap){
         spindex = hardwareMap.get(CRServo.class, "spindex");
-        spindexPos = hardwareMap.get(AnalogInput.class, "encoder");
+        spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
         spindex.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 

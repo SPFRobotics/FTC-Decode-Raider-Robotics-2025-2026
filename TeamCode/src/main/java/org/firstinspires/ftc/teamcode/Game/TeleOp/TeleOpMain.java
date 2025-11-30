@@ -256,7 +256,7 @@ public class TeleOpMain extends LinearOpMode {
             }
             
             outtake.setRPM(setRPM);
-/*
+
 
             // Color detection and LED control
             if (colorFinder != null) {
@@ -268,7 +268,7 @@ public class TeleOpMain extends LinearOpMode {
                     rightLED.setBlue();
                 }
             }
-*/
+
 
             // Additional Telemetry
             telemetry.addLine("==========================================");
