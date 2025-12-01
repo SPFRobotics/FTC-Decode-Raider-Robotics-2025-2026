@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
@@ -20,6 +21,9 @@ public class AutoShortBlue extends LinearOpMode {
     private ElapsedTime masterClock = new ElapsedTime();
     private Kicker kicker = null;
     private Outtake outtake = null;
+    private Limelight limelight = null;
+    public int motif = -1;
+
     private boolean isActive = false;
     //change
 
@@ -28,9 +32,15 @@ public class AutoShortBlue extends LinearOpMode {
         robot.initializeMovement();
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
+        limelight = new Limelight(hardwareMap);
+
         // Reverse the left motors if needed
+        // get obilisk cod
+        //e
 
         waitForStart();
+        while (motif == -1) motif = limelight.getMotifId();
+
         robot.move(-.7,"backward",48);
         outtake.setRPM(Outtake.OuttakeSpeed.closeRPM-100);
         sleep(5000);
