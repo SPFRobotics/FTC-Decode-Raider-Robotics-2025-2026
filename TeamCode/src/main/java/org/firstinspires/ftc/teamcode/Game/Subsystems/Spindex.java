@@ -15,7 +15,7 @@ public class Spindex {
     public static class SpindexValues{
         public static int p = 140;
         public static double speed = 1;
-        public static double[] intakePos = {116, 136, 256};
+        public static double[] intakePos = {16, 136, 256};
         public static double[] outtakePos = {76, 197, 317};
     }
     private CRServo spindex = null;

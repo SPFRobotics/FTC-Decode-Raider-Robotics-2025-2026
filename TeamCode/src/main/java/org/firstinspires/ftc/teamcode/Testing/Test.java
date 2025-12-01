@@ -26,6 +26,7 @@ public class Test extends LinearOpMode {
     public static Button spindexCounterClockWise = new Button();
     public static Button spindexClockWise = new Button();
     public static Button spindexMode = new Button();
+    public static Button intakeButton = new Button();
 
     public void runOpMode(){
         spindex = new Spindex(hardwareMap);
@@ -50,18 +51,15 @@ public class Test extends LinearOpMode {
                 kicker.down(false);
             }
 
-            if (gamepad1.right_bumper){
+            if (intakeButton.toggle(gamepad1.right_bumper)){
                 intake.setPower(1);
-            }
-            else if (gamepad1.left_bumper){
-                intake.setPower(-1);
             }
             else{
                 intake.setPower(0);
             }
 
             if (gamepad1.dpad_up){
-                outtake.setRPM(3200);
+                outtake.setRPM(4000);
             }
             if (gamepad1.dpad_down){
                 outtake.setRPM(0);
