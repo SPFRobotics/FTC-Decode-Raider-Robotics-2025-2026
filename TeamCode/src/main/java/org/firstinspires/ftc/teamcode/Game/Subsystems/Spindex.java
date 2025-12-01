@@ -14,9 +14,9 @@ public class Spindex {
     @Config
     public static class SpindexValues{
         public static int p = 140;
-        //public static double speed = 1;
-        public static double[] intakePos = {6, 126, 246};
-        public static double[] outtakePos = {68, 188, 308};
+        public static double speed = 1;
+        public static double[] intakePos = {116, 136, 256};
+        public static double[] outtakePos = {76, 197, 317};
     }
     private CRServo spindex = null;
     private static AnalogInput spindexPos = null;
@@ -107,10 +107,10 @@ public class Spindex {
     //False = intake, true = outtake
     public void lockPos(boolean mode){
         if (!mode){
-            spindex.setPower(getMinDistance(intakePos)/SpindexValues.p);
+            spindex.setPower((getMinDistance(intakePos)/SpindexValues.p) * speed);
         }
         else{
-            spindex.setPower(getMinDistance(outtakePos)/SpindexValues.p);
+            spindex.setPower((getMinDistance(outtakePos)/SpindexValues.p) * speed);
         }
     }
 
