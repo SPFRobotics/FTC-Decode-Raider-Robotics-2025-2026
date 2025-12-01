@@ -107,10 +107,10 @@ public class Spindex {
     //False = intake, true = outtake
     public void lockPos(boolean mode){
         if (!mode){
-            spindex.setPower((getMinDistance(intakePos)/SpindexValues.p) * speed);
+            spindex.setPower(getMinDistance(intakePos)/SpindexValues.p);
         }
         else{
-            spindex.setPower((getMinDistance(outtakePos)/SpindexValues.p) * speed);
+            spindex.setPower(getMinDistance(outtakePos)/SpindexValues.p);
         }
     }
 
