@@ -163,26 +163,24 @@ public class TeleOpMain extends LinearOpMode {
             //Extension.kickStandUp(kickstandRaised);
 
             boolean xButtonPressed = centeringButton.press(gamepad1.cross);
-
-            double y = gamepad1.left_stick_x*speedFactor;
-            double x = -gamepad1.left_stick_y*speedFactor;
-            double rx = gamepad1.right_stick_x*speedFactor;
-
             //Field Oriented Drive
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
             //x = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
             //y = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-            
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
 
-            frontLeftDrive.setPower(frontLeftPower);
-            backLeftDrive.setPower(backLeftPower);
-            frontRightDrive.setPower(frontRightPower);
-            backRightDrive.setPower(backRightPower);
+            double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
+            double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
+
+            frontLeftDrive.setPower(y + x + rx);
+            backLeftDrive.setPower(y - x + rx);
+            frontRightDrive.setPower(y + x - rx);
+            backRightDrive.setPower(y - x - rx);
+
+            //ouble denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
+
+
 
             //Automate the kicker
             /*outtake.automate(a.toggle(gamepad2.a));
