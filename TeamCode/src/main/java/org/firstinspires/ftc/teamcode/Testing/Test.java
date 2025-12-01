@@ -20,8 +20,8 @@ import org.firstinspires.ftc.teamcode.Resources.LedLights;
 //@Disabled
 public class Test extends LinearOpMode {
     private ColorFinder colorFinder = new ColorFinder(hardwareMap);
-    LedLights leftLED = new LedLights("leftLED", hardwareMap);
-    LedLights rightLED = new LedLights("rightLED", hardwareMap);
+    //LedLights leftLED = new LedLights("leftLED", hardwareMap);
+    //LedLights rightLED = new LedLights("rightLED", hardwareMap);
     FtcDashboard dashboard = FtcDashboard.getInstance();
     private Telemetry dashboardTelemetry = dashboard.getTelemetry();
     private Spindex spindex = null;
@@ -71,7 +71,7 @@ public class Test extends LinearOpMode {
                 outtake.setRPM(2700);
             }
 
-            if (colorFinder.isGreen()){
+            /*if (colorFinder.isGreen()){
                 leftLED.setGreen();
                 rightLED.setGreen();
             }
@@ -82,7 +82,7 @@ public class Test extends LinearOpMode {
             else{
                 leftLED.turnOFF();
                 rightLED.turnOFF();
-            }
+            }*/
 
             boolean outtakeMode = spindexMode.toggle(gamepad1.options);
             spindex.lockPos(outtakeMode);
