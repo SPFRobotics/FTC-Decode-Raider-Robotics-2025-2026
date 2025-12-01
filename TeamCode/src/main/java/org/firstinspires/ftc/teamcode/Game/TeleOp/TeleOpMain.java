@@ -265,7 +265,7 @@ public class TeleOpMain extends LinearOpMode {
                     rightLED.setViolet();
                 }
             }
-
+/*
             // Driver Hub
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
@@ -290,7 +290,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Index", spindex.getIndex());
 
 
-            //Dashboard
+
             if (colorFinder != null) {
                 String detectedColor = "NONE";
                 if (colorFinder.isPurple()) {
@@ -300,6 +300,7 @@ public class TeleOpMain extends LinearOpMode {
                 }
                 telemetry.addData("Color Sensor", detectedColor);
             }
+
 
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());
@@ -314,9 +315,7 @@ public class TeleOpMain extends LinearOpMode {
             if (a.getState() == true){
                 dashboardTelemetry.addLine("Kicker Active");
             }
-            //dashboardTelemetry.addData("Kickstand Up", Extension.isKickstandUp());
             dashboardTelemetry.addData("Runtime", runtime.toString());
-            //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
             dashboardTelemetry.addData("Outtake RPM: ", outtake.getRPM());
             dashboardTelemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
             dashboardTelemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
@@ -346,6 +345,8 @@ public class TeleOpMain extends LinearOpMode {
 
             pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + "\n");
         }
+
+             */
         pen.close();
 
         telemetry.addData("Loop Time", timer.milliseconds());
@@ -353,4 +354,5 @@ public class TeleOpMain extends LinearOpMode {
         dashboardTelemetry.update();
         telemetry.update();
     }
+}
 }
