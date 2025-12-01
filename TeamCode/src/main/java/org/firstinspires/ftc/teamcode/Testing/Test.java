@@ -20,13 +20,14 @@ import org.firstinspires.ftc.teamcode.Resources.LedLights;
 //@Disabled
 public class Test extends LinearOpMode {
     private ColorFinder colorFinder = new ColorFinder(hardwareMap);
-    //public Servo led = null;
-    //public DistanceSensor distanceSensor = null;
+    LedLights leftLED = new LedLights("leftLED", hardwareMap);
+    LedLights rightLED = new LedLights("rightLED", hardwareMap);
     FtcDashboard dashboard = FtcDashboard.getInstance();
     private Telemetry dashboardTelemetry = dashboard.getTelemetry();
     private Spindex spindex = null;
     private Kicker kicker = null;
     private Intake intake = null;
+
     public static Button spindexCounterClockWise = new Button();
     public static Button spindexClockWise = new Button();
     public static Button spindexMode = new Button();
@@ -36,8 +37,6 @@ public class Test extends LinearOpMode {
         spindex = new Spindex(hardwareMap);
         kicker = new Kicker(hardwareMap);
         intake = new Intake(hardwareMap);
-        LedLights leftLED = new LedLights("leftLED", hardwareMap);
-        LedLights rightLED = new LedLights("rightLED", hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
         dashboardTelemetry.setMsTransmissionInterval(1);
         telemetry.setMsTransmissionInterval(1);

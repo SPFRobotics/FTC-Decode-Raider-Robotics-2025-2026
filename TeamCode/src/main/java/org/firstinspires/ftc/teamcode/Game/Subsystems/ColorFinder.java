@@ -44,7 +44,7 @@ public class ColorFinder {
         int hue = hsv[0];
         
         // Green: Wider range to account for variations
-        return hue >= 120 && hue <= 180;
+        return hue >= 155 && hue <= 160;
     }
     
     public boolean isBlue() {
