@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,6 +19,7 @@ public class Intake {
     public Intake(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
         intakeServo = hardwareMap.get(CRServo.class, "IntakeServo");
+        intakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
         //intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
