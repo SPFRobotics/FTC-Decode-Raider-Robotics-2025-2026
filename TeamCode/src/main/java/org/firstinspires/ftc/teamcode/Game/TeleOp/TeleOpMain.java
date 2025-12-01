@@ -142,7 +142,7 @@ public class TeleOpMain extends LinearOpMode {
         //limelight.start();
         //ledLeft.setPosition(0.5);
         //ledRight.setPosition(0.5);
-
+        ElapsedTime timer = new ElapsedTime();
         while (opModeIsActive()) {
             // Always ensure motors are in manual control mode for normal driving
             // This ensures they respond to direct power commands
@@ -255,7 +255,6 @@ public class TeleOpMain extends LinearOpMode {
             
             outtake.setRPM(setRPM);
 
-
             // Color detection and LED control
             if (colorFinder != null) {
                 if (colorFinder.isGreen()) {
@@ -299,13 +298,12 @@ public class TeleOpMain extends LinearOpMode {
                 } else if (colorFinder.isGreen()) {
                     detectedColor = "GREEN";
                 }
-                dashboardTelemetry.addData("Color Sensor", detectedColor);
+                telemetry.addData("Color Sensor", detectedColor);
             }
 
-            dashboardTelemetry.addLine("==========================================");
-            dashboardTelemetry.addLine(daddyRyan.foward());
-            dashboardTelemetry.addLine("==========================================");
-            dashboardTelemetry.update();
+            telemetry.addLine("==========================================");
+            telemetry.addLine(daddyRyan.foward());
+            telemetry.addLine("==========================================");
 
             dashboardTelemetry.addLine("==========================================");
             dashboardTelemetry.addLine(bigThree.foward());
@@ -349,5 +347,10 @@ public class TeleOpMain extends LinearOpMode {
             pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + "\n");
         }
         pen.close();
+
+        telemetry.addData("Loop Time", timer.milliseconds());
+        timer.reset();
+        dashboardTelemetry.update();
+        telemetry.update();
     }
 }

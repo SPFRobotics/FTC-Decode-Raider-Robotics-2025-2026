@@ -4,18 +4,22 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Resources.LedLights;
 
 @TeleOp(name="Test")
 //@Disabled
 public class Test extends LinearOpMode {
-    //public ColorSensor colorSensor = null;
+    private ColorFinder colorFinder = new ColorFinder(hardwareMap);
     //public Servo led = null;
     //public DistanceSensor distanceSensor = null;
     FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -32,10 +36,13 @@ public class Test extends LinearOpMode {
         spindex = new Spindex(hardwareMap);
         kicker = new Kicker(hardwareMap);
         intake = new Intake(hardwareMap);
+        LedLights leftLED = new LedLights("leftLED", hardwareMap);
+        LedLights rightLED = new LedLights("rightLED", hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
         dashboardTelemetry.setMsTransmissionInterval(1);
         telemetry.setMsTransmissionInterval(1);
         waitForStart();
+        ElapsedTime timer = new ElapsedTime();
         while (opModeIsActive()){
             if (spindexCounterClockWise.press(gamepad1.b)){
                 spindex.addIndex();
@@ -61,10 +68,22 @@ public class Test extends LinearOpMode {
             if (gamepad1.dpad_up){
                 outtake.setRPM(4000);
             }
-            if (gamepad1.dpad_down){
-                outtake.setRPM(0);
+            else if (gamepad1.dpad_down){
+                outtake.setRPM(2700);
             }
 
+            if (colorFinder.isGreen()){
+                leftLED.setGreen();
+                rightLED.setGreen();
+            }
+            else if (colorFinder.isPurple()){
+                leftLED.setViolet();
+                rightLED.setViolet();
+            }
+            else{
+                leftLED.turnOFF();
+                rightLED.turnOFF();
+            }
 
             boolean outtakeMode = spindexMode.toggle(gamepad1.options);
             spindex.lockPos(outtakeMode);
@@ -81,6 +100,8 @@ public class Test extends LinearOpMode {
             telemetry.addData("Target Position", spindex.targetPos);
             telemetry.addData("Index", spindex.getIndex());
             telemetry.addData("Mode", outtakeMode ? "OUTTAKE" : "INTAKE");
+            telemetry.addData("Loop Time", timer.milliseconds());
+            timer.reset();
             telemetry.update();
         }
     }
