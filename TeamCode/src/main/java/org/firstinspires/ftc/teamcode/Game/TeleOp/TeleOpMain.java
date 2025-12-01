@@ -45,7 +45,7 @@ public class TeleOpMain extends LinearOpMode {
     private IMU imu = null;
     private MecanumChassis chassis = null;
     private ColorFinder colorFinder = null;
-    private Extension extension = null;
+    //private Extension extension = null;
     private Spindex spindex = null;
     private boolean spindexOuttakeMode = false;
 
@@ -108,7 +108,7 @@ public class TeleOpMain extends LinearOpMode {
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
         colorFinder = new ColorFinder(hardwareMap);
-        extension = new Extension(hardwareMap);
+        //extension = new Extension(hardwareMap);
         spindex = new Spindex(hardwareMap);
 
         //extension = new Extension(hardwareMap);
