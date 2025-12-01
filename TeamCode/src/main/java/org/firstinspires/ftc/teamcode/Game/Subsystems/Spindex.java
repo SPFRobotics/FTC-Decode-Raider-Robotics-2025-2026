@@ -14,7 +14,7 @@ public class Spindex {
     @Config
     public static class SpindexValues{
         public static int p = 140;
-        public static double speed = 1;
+        //public static double speed = 1;
         public static double[] intakePos = {6, 126, 246};
         public static double[] outtakePos = {68, 188, 308};
     }
