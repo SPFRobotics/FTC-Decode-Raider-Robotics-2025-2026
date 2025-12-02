@@ -246,9 +246,6 @@ public class TeleOpMain extends LinearOpMode {
             if(outtakeClose.press(gamepad2.dpad_down)){
                 setRPM = Outtake.OuttakeSpeed.closeRPM;
             }
-            if (gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0){
-                setRPM = Outtake.OuttakeSpeed.reverseRPM;
-            }
             if (gamepad2.ps) {
                 setRPM = 0;
             }
