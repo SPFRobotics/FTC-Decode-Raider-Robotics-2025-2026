@@ -37,10 +37,12 @@ public class TeleOpMain extends LinearOpMode {
 
     private Intake intake = null;
     private ElapsedTime masterClock = new ElapsedTime();
+    private ElapsedTime ledClock = new ElapsedTime();
     private Outtake outtake = null;
     private Kicker kicker = null;
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
     private double speedFactor =  1;
+    private boolean colorFound = false;
     private Limelight limelight = null;
     private IMU imu = null;
     private MecanumChassis chassis = null;
@@ -204,7 +206,12 @@ public class TeleOpMain extends LinearOpMode {
             // Intake toggle on Square button
             boolean intakeActive = square.toggle(gamepad2.square);
             if (intakeActive) {
-                intake.setPower(1);
+                if (gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0){
+                    intake.setPower(-1);
+                }
+                else {
+                    intake.setPower(1);
+                }
             }
             else {
                 intake.setPower(0);
@@ -252,12 +259,22 @@ public class TeleOpMain extends LinearOpMode {
 
             // Color detection and LED control
             if (colorFinder != null) {
-                if (colorFinder.isGreen()) {
+                if (colorFinder.isGreen() && ledClock.milliseconds() >= 500) {
                     leftLED.setGreen();
                     rightLED.setGreen();
-                } else if (colorFinder.isPurple()) {
+                    colorFound = true;
+                } else if (colorFinder.isPurple() && ledClock.milliseconds() >= 500) {
                     leftLED.setViolet();
                     rightLED.setViolet();
+                    colorFound = true;
+                }
+                else{
+                    leftLED.turnOFF();
+                    rightLED.turnOFF();
+                    colorFound = false;
+                }
+                if (ledClock.milliseconds() >= 500 && !colorFound){
+                    ledClock.reset();
                 }
             }
 /*
