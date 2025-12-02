@@ -77,9 +77,9 @@ public class Outtake {
         return (outtakeMotor.getVelocity()*60)/28*((double)16/17);
     }
 
-    public void enableKickerCycle(boolean x){
+    public void enableKickerCycle(boolean x, double RPM){
         if (x){
-            if ((int)interval.seconds() >= 2) {
+            if ((int)interval.seconds() >= 2 && getRPM() >= RPM) {
                 kicker.up(true);
             }
             else if ((int)interval.seconds() >= 5){
