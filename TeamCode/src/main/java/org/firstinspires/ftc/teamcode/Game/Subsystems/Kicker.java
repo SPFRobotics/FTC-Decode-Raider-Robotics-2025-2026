@@ -16,10 +16,16 @@ public class Kicker {
 
 
     }
+    @Config
+    public static class KickerEncoderTargets{
+        public static double downAngleDegrees = 20;
+        public static double upAngleDegrees = 210;
+        public static double toleranceDegrees = 8;
+    }
     private Servo kicker = null;
     private static int state = 0;
 
-    private AnalogInput voltage = null;
+    private static AnalogInput voltage = null;
 
     public Kicker(HardwareMap hardwareMap){
         kicker = hardwareMap.get(Servo.class, "Kicker");
@@ -60,6 +66,32 @@ public class Kicker {
 
     public static int getState(){
         return state;
+    }
+
+    public static int getEncoderState(){
+        if (voltage == null){
+            return state;
+        }
+        double angle = getPos();
+        if (isWithinTolerance(angle, KickerEncoderTargets.upAngleDegrees)){
+            return 1;
+        }
+        if (isWithinTolerance(angle, KickerEncoderTargets.downAngleDegrees)){
+            return 0;
+        }
+        return state;
+    }
+
+    public static double getPos(){
+        return (int)(voltage.getVoltage() / 3.3 * 360);
+    }
+
+    private static boolean isWithinTolerance(double current, double target){
+        double diff = Math.abs(current - target);
+        if (diff > 180){
+            diff = 360 - diff;
+        }
+        return diff <= KickerEncoderTargets.toleranceDegrees;
     }
 
 }
