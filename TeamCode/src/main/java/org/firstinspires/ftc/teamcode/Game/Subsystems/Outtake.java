@@ -11,6 +11,7 @@ public class Outtake {
     public static class OuttakeSpeed{
         public static double farRPM = 3200;
         public static double closeRPM = 2700;
+        public static double sortRPM = 1000;
         public static double p = 100;
         public static double i = 0;
         public static double d = 0;
@@ -74,7 +75,7 @@ public class Outtake {
     }
 
     public double getRPM() {
-        return ((outtakeMotor.getVelocity()*60)/28)/1.1875;
+        return ((outtakeMotor.getVelocity()*60)/28);
     }
 
     public void enableKickerCycle(boolean x, double RPM){
@@ -88,7 +89,7 @@ public class Outtake {
             }
         }
         else{
-            kicker.up(true);
+            kicker.down(true);
             interval.reset();
         }
     }

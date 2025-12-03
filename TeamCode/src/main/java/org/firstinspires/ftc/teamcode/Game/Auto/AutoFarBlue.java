@@ -60,10 +60,7 @@ public class AutoFarBlue extends LinearOpMode {
             // Reverse the left motors if needed
         // get obilisk code
 
-        waitForStart();
-
-        while (motif == -1) motif = limelight.getMotifId();
-
+            waitForStart();
             robot.rotate(20.0,.1);
             outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
             masterClock.reset();
