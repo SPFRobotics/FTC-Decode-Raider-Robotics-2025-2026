@@ -25,7 +25,6 @@ public class AutoRedFar extends LinearOpMode {
     public int motif = -1;
 
     private boolean isActive = false;
-    //change
 
     public void runOpMode() {
         MecanumChassis robot = new MecanumChassis(this);
@@ -34,33 +33,30 @@ public class AutoRedFar extends LinearOpMode {
         kicker = new Kicker(hardwareMap);
         limelight = new Limelight(hardwareMap);
 
-        // Reverse the left motors if needed
-        // get obilisk code
         waitForStart();
 
-
         while (motif == -1) motif = limelight.getMotifId();
-        robot.rotate(-20.0,.1);
+
+        robot.rotate(-20.0, .1);
         outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
-        sleep(5000);
+        sleep(3000);
 
         while (opModeIsActive()) {
             outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-            if (outtake.getKickerCycleCount()==3 && robot.getWiggleCount() < 2){
+
+            // Removed wiggle logic — only kicker timing stays
+            if (outtake.getKickerCycleCount() == 3) {
                 kicker.down(true);
-                robot.wiggle();
             }
-            else if (robot.getWiggleCount() == 3){
-                kicker.up(true);
-            }
+
             if (outtake.getKickerCycleCount() == 4) {
+                kicker.up(true);
                 break;
             }
         }
-        if (opModeIsActive()){
-            robot.move(.9,"forward",20);
-        }
 
+        if (opModeIsActive()) {
+            robot.move(.9, "forward", 20);
+        }
     }
 }
-

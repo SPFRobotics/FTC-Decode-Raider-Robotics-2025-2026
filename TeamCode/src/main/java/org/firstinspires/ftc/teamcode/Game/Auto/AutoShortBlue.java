@@ -25,7 +25,6 @@ public class AutoShortBlue extends LinearOpMode {
     public int motif = -1;
 
     private boolean isActive = false;
-    //change
 
     public void runOpMode() {
         MecanumChassis robot = new MecanumChassis(this);
@@ -34,33 +33,30 @@ public class AutoShortBlue extends LinearOpMode {
         kicker = new Kicker(hardwareMap);
         limelight = new Limelight(hardwareMap);
 
-        // Reverse the left motors if needed
-        // get obilisk cod
-        //e
-
         waitForStart();
+
         while (motif == -1) motif = limelight.getMotifId();
 
-        robot.move(-.7,"backward",48);
-        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM-100);
-        sleep(5000);
-        while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM-100);
+        robot.move(-.7, "backward", 48);
+        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM - 100);
+        sleep(3000);
 
-            if (outtake.getKickerCycleCount()==3 && robot.getWiggleCount() < 2){
+        while (opModeIsActive()) {
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM - 100);
+
+
+            if (outtake.getKickerCycleCount() == 3) {
                 kicker.down(true);
-                robot.wiggle();
-            }
-            else if (robot.getWiggleCount() == 3){
-                kicker.up(true);
             }
 
             if (outtake.getKickerCycleCount() == 4) {
+                kicker.up(true);
                 break;
             }
         }
-        if (opModeIsActive()){
-            robot.move(.9,"left",20);
+
+        if (opModeIsActive()) {
+            robot.move(.9, "left", 20);
         }
     }
 }
