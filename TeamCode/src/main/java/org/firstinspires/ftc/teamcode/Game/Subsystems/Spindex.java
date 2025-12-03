@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Testing.Test;
 public class Spindex {
     @Config
     public static class SpindexValues{
-        public static int p = 140;
+        public static int p = 100;
         public static double speed = 1;
         public static double[] intakePos = {16, 136, 256};
         public static double[] outtakePos = {76, 197, 317};

@@ -11,8 +11,8 @@ public class Kicker {
         public static double downGrav = 0.05;
         public static double upGrav = 0.18;
 
-        public static double down = 1;
-        public static double up = 0.575;
+        public static double down = 0.575;
+        public static double up = 1;
 
 
     }
