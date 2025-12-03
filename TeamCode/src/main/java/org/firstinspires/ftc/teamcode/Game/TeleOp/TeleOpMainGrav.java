@@ -46,6 +46,7 @@ public class TeleOpMainGrav extends LinearOpMode {
     //Buttons
     private Button outtakeFar = new Button();
     private Button outtakeClose = new Button();
+    private Button outtakeSort = new Button();
     private Button triangle = new Button();
     private Button a = new Button();
     private Button centeringButton = new Button();
@@ -198,6 +199,9 @@ public class TeleOpMainGrav extends LinearOpMode {
             }
             if(outtakeClose.press(gamepad2.dpad_down)){
                 setRPM = Outtake.OuttakeSpeed.closeRPM;
+            }
+            if (outtakeSort.press(gamepad2.share)){
+                setRPM = Outtake.OuttakeSpeed.sortRPM;
             }
             if (gamepad2.ps) {
                 setRPM = 0;
