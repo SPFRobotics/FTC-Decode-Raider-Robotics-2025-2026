@@ -1,14 +1,17 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
@@ -19,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.LedLights;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;
+import org.w3c.dom.Element;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -50,12 +54,19 @@ public class TeleOpMainGrav extends LinearOpMode {
     private Button triangle = new Button();
     private Button a = new Button();
     private Button centeringButton = new Button();
+    private Button fieldCentric = new Button();
 
     private Button circle = new Button();// X button for encoder-based centering
 
-    private Servo ledRight = null;
-    private Servo ledLeft = null;
+    private LedLights rightLED = null;
+    private LedLights leftLED = null;
     private Button square = new Button();
+    //Color Detection
+    ElapsedTime ledClock = new ElapsedTime();
+    boolean colorFound = false;
+    //IMU
+    private IMU imu = null;
+
     //telemetry
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
@@ -74,8 +85,12 @@ public class TeleOpMainGrav extends LinearOpMode {
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
-        ledLeft = hardwareMap.get(Servo.class, "leftLED");
-        ledRight = hardwareMap.get(Servo.class, "rightLED");
+        imu = hardwareMap.get(IMU.class, "imu");
+
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
+        imu.initialize(parameters);
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -88,6 +103,8 @@ public class TeleOpMainGrav extends LinearOpMode {
         // Initialize subsystems
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
+        leftLED = new LedLights("leftLED", hardwareMap);
+        rightLED = new LedLights("rightLED", hardwareMap);
         colorFinder = new ColorFinder(hardwareMap);
         
         //limelight = new Limelight(hardwareMap, telemetry);
@@ -116,9 +133,6 @@ public class TeleOpMainGrav extends LinearOpMode {
 
         // Start limelight after waitForStart
         //limelight.start();
-        ledLeft.setPosition(0.5);
-        ledRight.setPosition(0.5);
-
         while (opModeIsActive()) {
             // Always ensure motors are in manual control mode for normal driving
             // This ensures they respond to direct power commands
@@ -146,12 +160,35 @@ public class TeleOpMainGrav extends LinearOpMode {
             double y = -gamepad1.left_stick_y*speedFactor;
             double x = gamepad1.left_stick_x*speedFactor;
             double rx = gamepad1.right_stick_x*speedFactor;
-            
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
+
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+            double denominator = 0;
+            double frontLeftPower = 0;
+            double backLeftPower = 0;
+            double frontRightPower = 0;
+            double backRightPower = 0;
+
+            if (gamepad1.options){
+                imu.resetYaw();
+            }
+
+            if (fieldCentric.toggle(gamepad1.touchpad)){
+                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                frontLeftPower = (y + x + rx) / denominator;
+                backLeftPower = (y - x + rx) / denominator;
+                frontRightPower = (y - x - rx) / denominator;
+                backRightPower = (y + x - rx) / denominator;
+            }
+            else{
+                denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+                frontLeftPower = (rotY + rotX + rx) / denominator;
+                backLeftPower = (rotY - rotX + rx) / denominator;
+                frontRightPower = (rotY - rotX - rx) / denominator;
+                backRightPower = (rotY + rotX - rx) / denominator;
+            }
 
             frontLeftDrive.setPower(frontLeftPower);
             backLeftDrive.setPower(backLeftPower);
@@ -186,7 +223,10 @@ public class TeleOpMainGrav extends LinearOpMode {
             if (setRPM == Outtake.OuttakeSpeed.closeRPM && outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
             }
-            else if (setRPM == Outtake.OuttakeSpeed.farRPM & outtake.getRPM() >= setRPM){
+            else if (setRPM == Outtake.OuttakeSpeed.farRPM && outtake.getRPM() >= setRPM){
+                gamepad2.rumble(100);
+            }
+            else if (setRPM == Outtake.OuttakeSpeed.sortRPM && outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
             }
             else{
@@ -208,6 +248,25 @@ public class TeleOpMainGrav extends LinearOpMode {
             }
             
             outtake.setRPM(setRPM);
+
+            if (colorFinder != null) {
+                if (colorFinder.isGreen() && ledClock.milliseconds() >= 500) {
+                    leftLED.setGreen();
+                    rightLED.setGreen();
+                    colorFound = true;
+                } else if (colorFinder.isPurple() && ledClock.milliseconds() >= 500) {
+                    leftLED.setViolet();
+                    rightLED.setViolet();
+                    colorFound = true;
+                } else {
+                    leftLED.turnOFF();
+                    rightLED.turnOFF();
+                    colorFound = false;
+                }
+                if (ledClock.milliseconds() >= 500 && !colorFound) {
+                    ledClock.reset();
+                }
+            }
 
             // Driver hub
             telemetry.addLine("==========================================");

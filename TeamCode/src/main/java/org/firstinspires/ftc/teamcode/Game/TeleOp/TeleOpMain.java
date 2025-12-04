@@ -186,7 +186,7 @@ public class TeleOpMain extends LinearOpMode {
             frontRightDrive.setPower(y + x - rx);
             backRightDrive.setPower(y - x - rx);
 
-            //ouble denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            //double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
 
             //Automate the kicker
