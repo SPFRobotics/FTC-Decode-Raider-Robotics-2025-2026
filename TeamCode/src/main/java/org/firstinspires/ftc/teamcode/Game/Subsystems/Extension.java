@@ -3,18 +3,20 @@ package org.firstinspires.ftc.teamcode.Game.Subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 public class Extension {
     @Config
     public static class KickstandValues {
-        public static double kickUp = 0.75;
-        public static double kickDown = 0.15;
+        // These are encoder counts for the motor when the kickstand is up or down.
+        public static int kickUpTicks = 0;
+        public static int kickDownTicks = -500;
+        public static int toleranceTicks = 15;
+        public static double kickPower = 0.5;
     }
 
     private static DcMotor extension1 = null;
     private static DcMotor extension2 = null;
-    private static Servo kickstand = null;
+    private static DcMotor kickstand = null;
     private static boolean kickstandIsUp = false;
 
     public Extension(HardwareMap hardwareMap) {
@@ -36,7 +38,12 @@ public class Extension {
     }
 
     private void setupKickstand(HardwareMap hardwareMap) {
-        kickstand = hardwareMap.get(Servo.class, "kickstand");
+        kickstand = hardwareMap.get(DcMotor.class, "kickstand");
+        kickstand.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        kickstand.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        kickstand.setTargetPosition(KickstandValues.kickDownTicks);
+        kickstand.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        kickstand.setPower(0);
     }
 
     public static void setPower(double power) {
@@ -52,17 +59,36 @@ public class Extension {
             return;
         }
 
-        double targetPosition;
+        int upTarget = KickstandValues.kickUpTicks;
+        int downTarget = KickstandValues.kickDownTicks;
+        int target;
         if (moveUp) {
-            targetPosition = KickstandValues.kickUp;
+            target = upTarget;
         } else {
-            targetPosition = KickstandValues.kickDown;
+            target = downTarget;
         }
-        kickstand.setPosition(targetPosition);
+
+        // Tell the motor to run to the chosen target using the encoder.
+        kickstand.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        kickstand.setTargetPosition(target);
+        kickstand.setPower(KickstandValues.kickPower);
         kickstandIsUp = moveUp;
     }
 
     public static boolean isKickstandUp() {
-        return kickstandIsUp;
+        if (kickstand == null) {
+            return false;
+        }
+        int currentTicks = kickstand.getCurrentPosition();
+        int goalTicks = KickstandValues.kickUpTicks;
+        int difference = Math.abs(currentTicks - goalTicks);
+        return difference <= KickstandValues.toleranceTicks;
+    }
+
+    public static int getKickstandPosition() {
+        if (kickstand == null) {
+            return 0;
+        }
+        return kickstand.getCurrentPosition();
     }
 }
