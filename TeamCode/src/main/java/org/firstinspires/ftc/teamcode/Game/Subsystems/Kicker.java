@@ -11,8 +11,8 @@ public class Kicker {
         public static double downGrav = 0.05;
         public static double upGrav = 0.18;
 
-        public static double down = 0.575;
-        public static double up = 1;
+        public static double down = 0.577;
+        public static double up = 0.8;
 
 
     }
@@ -25,11 +25,11 @@ public class Kicker {
     private Servo kicker = null;
     private static int state = 0;
 
-    private static AnalogInput voltage = null;
+    private static AnalogInput kickerPos = null;
 
     public Kicker(HardwareMap hardwareMap){
         kicker = hardwareMap.get(Servo.class, "Kicker");
-        voltage = hardwareMap.get(AnalogInput.class, "KickerPos");
+        kickerPos = hardwareMap.get(AnalogInput.class, "KickerPos");
         kicker.setDirection(Servo.Direction.REVERSE);
     }
 
@@ -60,7 +60,7 @@ public class Kicker {
     }
 
     public double volts(){
-         return voltage.getVoltage();
+         return kickerPos.getVoltage();
 
     }
 
@@ -69,7 +69,7 @@ public class Kicker {
     }
 
     public static int getEncoderState(){
-        if (voltage == null){
+        if (kickerPos == null){
             return state;
         }
         double angle = getPos();
@@ -83,7 +83,7 @@ public class Kicker {
     }
 
     public static double getPos(){
-        return (int)(voltage.getVoltage() / 3.3 * 360);
+        return (int)(kickerPos.getVoltage() / 3.3 * 360);
     }
 
     private static boolean isWithinTolerance(double current, double target){

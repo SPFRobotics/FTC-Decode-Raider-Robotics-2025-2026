@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.Resources.LedLights;
 @TeleOp(name="Test")
 //@Disabled
 public class Test extends LinearOpMode {
-    private ColorFinder colorFinder = new ColorFinder(hardwareMap);
+    //private ColorFinder colorFinder = new ColorFinder(hardwareMap);
     //LedLights leftLED = new LedLights("leftLED", hardwareMap);
     //LedLights rightLED = new LedLights("rightLED", hardwareMap);
     FtcDashboard dashboard = FtcDashboard.getInstance();
