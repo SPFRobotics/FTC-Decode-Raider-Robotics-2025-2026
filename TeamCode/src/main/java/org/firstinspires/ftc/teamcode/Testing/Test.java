@@ -8,14 +8,16 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.LedLights;
+
+import java.util.Arrays;
 
 @TeleOp(name="Test")
 //@Disabled
@@ -30,6 +32,8 @@ public class Test extends LinearOpMode {
     private Intake intake = null;
     private Limelight limelight = new Limelight(hardwareMap);
 
+    private ColorFinder color = new ColorFinder(hardwareMap);
+
     public static Button spindexCounterClockWise = new Button();
     public static Button spindexClockWise = new Button();
     public static Button spindexMode = new Button();
@@ -40,12 +44,19 @@ public class Test extends LinearOpMode {
         kicker = new Kicker(hardwareMap);
         intake = new Intake(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
+
+        color = new ColorFinder(hardwareMap);
         dashboardTelemetry.setMsTransmissionInterval(1);
         telemetry.setMsTransmissionInterval(1);
         waitForStart();
         ElapsedTime timer = new ElapsedTime();
         limelight.start();
         while (opModeIsActive()){
+
+        int[] currentColor = color.getColor();
+
+
+
             /*if (spindexCounterClockWise.press(gamepad1.b)){
                 spindex.addIndex();
             }
