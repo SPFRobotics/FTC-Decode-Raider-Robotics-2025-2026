@@ -52,19 +52,18 @@ public class AutoFarBlue extends LinearOpMode {
 
         while (opModeIsActive())
             kicker.down(true);
+        telemetry.addData("April Tag ID", motif);
+        telemetry.update();
             if (motif == (21)) {
 
                 if (kickerCycleCount == 1 || kickerCycleCount == 2 && colorFinder.isPurple()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                    kicker.down(true);
                 } else if (kickerCycleCount == 0 && colorFinder.isGreen()) {
 
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                    kicker.down(true);
 
                 } else {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.sortRPM);
-                    kicker.down(true);
                 }
             }
 
@@ -72,15 +71,12 @@ public class AutoFarBlue extends LinearOpMode {
 
                 if (kickerCycleCount == 0 || kickerCycleCount == 2 && colorFinder.isPurple()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                    kicker.down(true);
                 } else if (kickerCycleCount == 1 && colorFinder.isGreen()) {
 
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                    kicker.down(true);
 
                 } else {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.sortRPM);
-                    kicker.down(true);
                 }
 
                 if (motif == (23)) {
@@ -89,11 +85,9 @@ public class AutoFarBlue extends LinearOpMode {
                     } else if (kickerCycleCount == 2 && colorFinder.isGreen()) {
 
                         outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                        kicker.down(true);
 
                     } else {
                         outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.sortRPM);
-                        kicker.down(true);
                     }
                 }
             }
@@ -101,7 +95,5 @@ public class AutoFarBlue extends LinearOpMode {
             if (opModeIsActive() && kickerCycleCount==3) {
                 robot.move(.9, "forward", 20);
             }
-            telemetry.addData("April Tag ID", motif);
-            telemetry.update();
         }
     }
