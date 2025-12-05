@@ -52,7 +52,7 @@ public class AutoFarBlue extends LinearOpMode {
         while (opModeIsActive()) {
             int result = limelight.getMotifId();
 
-            if (result == 21) {
+            if (result == (21)) {
 
                 if (kickerCycleCount == 1 || kickerCycleCount == 2 && colorFinder.isPurple()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);

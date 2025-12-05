@@ -10,7 +10,7 @@ public class Limelight {
     public Limelight3A limelight;
 
     // Motif IDs
-    private static final int[] VALID_MOTIF_IDS = {21, 22, 33};
+    private static final int[] VALID_MOTIF_IDS = {21, 22, 23};
 
     // Shooting April Tags
     private static final int[] SHOOTING_TAG_IDS = {20, 24};
