@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import java.util.List;
 
 public class Limelight {
-    private Limelight3A limelight;
+    public Limelight3A limelight;
 
     // Motif IDs
     private static final int[] VALID_MOTIF_IDS = {21, 22, 33};
@@ -22,6 +22,8 @@ public class Limelight {
     }
 
     //Starts Limelight
+
+    
     public void start() {
         limelight.start();
     }

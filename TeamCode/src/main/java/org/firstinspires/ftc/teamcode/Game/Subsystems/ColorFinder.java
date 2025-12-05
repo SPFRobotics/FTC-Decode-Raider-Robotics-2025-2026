@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.*;
 
 public class ColorFinder {
 
-    private ColorSensor hardwareColorSensor = null;
+    public ColorSensor hardwareColorSensor = null;
     
     // Constructor with HardwareMap - initializes the color sensor
     public ColorFinder(HardwareMap hardwareMap) {
