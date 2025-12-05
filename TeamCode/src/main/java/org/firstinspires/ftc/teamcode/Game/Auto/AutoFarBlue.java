@@ -36,23 +36,23 @@ public class AutoFarBlue extends LinearOpMode {
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
         limelight = new Limelight(hardwareMap);
-
         limelight.start();
 
 
         waitForStart();
 
 
-        while (motif == -1) motif = limelight.getMotifId();
-        limelight.getMotifId();
+        while (motif == -1){
+            motif = limelight.getMotifId();
+        }
+        //limelight.getMotifId();
         robot.rotate(20.0, .1);
         outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
         sleep(3000);
 
-        while (opModeIsActive()) {
-            int result = limelight.getMotifId();
-
-            if (result == (21)) {
+        while (opModeIsActive())
+            kicker.down(true);
+            if (motif == (21)) {
 
                 if (kickerCycleCount == 1 || kickerCycleCount == 2 && colorFinder.isPurple()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
@@ -68,8 +68,7 @@ public class AutoFarBlue extends LinearOpMode {
                 }
             }
 
-
-            if (result == (22)) {
+            if (motif == (22)) {
 
                 if (kickerCycleCount == 0 || kickerCycleCount == 2 && colorFinder.isPurple()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
@@ -84,11 +83,9 @@ public class AutoFarBlue extends LinearOpMode {
                     kicker.down(true);
                 }
 
-                if (result == (23)) {
-
+                if (motif == (23)) {
                     if (kickerCycleCount == 0 || kickerCycleCount == 1 && colorFinder.isPurple()) {
                         outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                        kicker.down(true);
                     } else if (kickerCycleCount == 2 && colorFinder.isGreen()) {
 
                         outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
@@ -108,4 +105,3 @@ public class AutoFarBlue extends LinearOpMode {
             telemetry.update();
         }
     }
-}
