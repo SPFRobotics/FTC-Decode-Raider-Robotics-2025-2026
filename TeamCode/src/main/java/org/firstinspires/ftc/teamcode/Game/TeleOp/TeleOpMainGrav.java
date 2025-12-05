@@ -74,6 +74,7 @@ public class TeleOpMainGrav extends LinearOpMode {
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
     private double setRPM = 0;
     private int[] rgb = new int[3];
+    private int[] hsv = new int[3];
     private com.qualcomm.robotcore.hardware.ColorSensor colorSensor = null;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
@@ -138,6 +139,7 @@ public class TeleOpMainGrav extends LinearOpMode {
         // Start limelight after waitForStart
         //limelight.start();
         while (opModeIsActive()) {
+            hsv = colorFinder.rgbToHSV(rgb[0], rgb[1], rgb[2]);
             // Always ensure motors are in manual control mode for normal driving
             // This ensures they respond to direct power commands
             frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -312,7 +314,7 @@ public class TeleOpMainGrav extends LinearOpMode {
             dashboardTelemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
             dashboardTelemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
             dashboardTelemetry.addData("Rumbleing:", gamepad2.isRumbling());
-            dashboardTelemetry.addData("HSV", colorFinder.rgbToHSV(rgb[0], rgb[1], rgb[2]));
+            dashboardTelemetry.addLine("HUE: " + hsv[0]);
             dashboardTelemetry.addLine("=== AUTO-CENTERING ===");
 
             dashboardTelemetry.addLine("==========================================");
