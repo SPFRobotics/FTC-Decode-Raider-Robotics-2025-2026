@@ -9,7 +9,7 @@ public class Extension {
     public static class KickstandValues {
         // These are encoder counts for the motor when the kickstand is up or down.
         public static int kickUpTicks = 0;
-        public static int kickDownTicks = -500;
+        public static int kickDownTicks = 250;
         public static int toleranceTicks = 15;
         public static double kickPower = 0.5;
     }
@@ -25,9 +25,9 @@ public class Extension {
     }
 
     public Extension(HardwareMap hardwareMap, String choice) {
-        if ("motor".equals(choice)) {
+        if ("lift".equals(choice)) {
             setupMotors(hardwareMap);
-        } else if ("servo".equals(choice)) {
+        } else if ("kickstand".equals(choice)) {
             setupKickstand(hardwareMap);
         }
     }
@@ -46,7 +46,7 @@ public class Extension {
         kickstand.setPower(0);
     }
 
-    public static void setPower(double power) {
+    public void setPower(double power) {
         if (extension1 == null || extension2 == null) {
             return;
         }
@@ -54,7 +54,7 @@ public class Extension {
         extension2.setPower(power);
     }
 
-    public static void kickStandUp(boolean moveUp) {
+    public void kickStandUp(boolean moveUp) {
         if (kickstand == null) {
             return;
         }
@@ -85,7 +85,7 @@ public class Extension {
         return difference <= KickstandValues.toleranceTicks;
     }
 
-    public static int getKickstandPosition() {
+    public int getKickstandPosition() {
         if (kickstand == null) {
             return 0;
         }

@@ -55,6 +55,8 @@ public class TeleOpMainGrav extends LinearOpMode {
     private Button a = new Button();
     private Button centeringButton = new Button();
     private Button fieldCentric = new Button();
+    private Button leftBumper = new Button();
+    private Button rightBumper = new Button();
 
     private Button circle = new Button();// X button for encoder-based centering
 
@@ -103,6 +105,7 @@ public class TeleOpMainGrav extends LinearOpMode {
         // Initialize subsystems
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
+        Extension extension = new Extension(hardwareMap, "kickstand");
         leftLED = new LedLights("leftLED", hardwareMap);
         rightLED = new LedLights("rightLED", hardwareMap);
         colorFinder = new ColorFinder(hardwareMap);
@@ -266,6 +269,11 @@ public class TeleOpMainGrav extends LinearOpMode {
                 if (ledClock.milliseconds() >= 500 && !colorFound) {
                     ledClock.reset();
                 }
+            }
+
+            //Kickstand
+            if (gamepad1.left_bumper && gamepad1.right_bumper){
+                extension.kickStandUp(false);
             }
 
             // Driver hub

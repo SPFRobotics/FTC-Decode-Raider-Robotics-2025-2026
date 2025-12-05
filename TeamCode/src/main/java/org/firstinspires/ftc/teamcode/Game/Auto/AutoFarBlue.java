@@ -104,6 +104,8 @@ public class AutoFarBlue extends LinearOpMode {
             if (opModeIsActive() && kickerCycleCount==3) {
                 robot.move(.9, "forward", 20);
             }
+            telemetry.addData("April Tag ID", motif);
+            telemetry.update();
         }
     }
 }
