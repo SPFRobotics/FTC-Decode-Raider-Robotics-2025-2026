@@ -37,14 +37,11 @@ public class AutoFarBlue extends LinearOpMode {
         kicker = new Kicker(hardwareMap);
         limelight = new Limelight(hardwareMap);
         limelight.start();
-
-
         waitForStart();
 
-
-        while (motif == -1) {
+        /*while (motif == -1) {
             motif = limelight.getMotifId();
-        }
+        }*/
         //limelight.getMotifId();
         robot.rotate(20.0, .1);
         outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
@@ -52,11 +49,7 @@ public class AutoFarBlue extends LinearOpMode {
 
         while (opModeIsActive()) {
             kicker.down(true);
-            telemetry.addData("April Tag ID", motif);
-            telemetry.update();
-            telemetry.addData("Color: ", colorFinder);
-            telemetry.update();
-            if (motif == (21)) {
+            /*if (motif == (21)) {
 
                 if (kickerCycleCount == 1 || kickerCycleCount == 2 && colorFinder.isPurple()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
@@ -100,12 +93,15 @@ public class AutoFarBlue extends LinearOpMode {
                         outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.sortRPM);
                         kicker.up(true);
                     }
-                }
+                }*/
             }
 
             if (opModeIsActive() && kickerCycleCount == 3) {
                 robot.move(.9, "forward", 20);
             }
+            telemetry.addData("April Tag ID", motif);
+            telemetry.update();
+            telemetry.addData("Color: ", colorFinder);
+            telemetry.update();
         }
     }
-}

@@ -167,9 +167,9 @@ public class TeleOpMainGrav extends LinearOpMode {
             double x = gamepad1.left_stick_x*speedFactor;
             double rx = gamepad1.right_stick_x*speedFactor;
 
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+            //double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            //double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            //double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
             double denominator = 0;
             double frontLeftPower = 0;
@@ -177,24 +177,22 @@ public class TeleOpMainGrav extends LinearOpMode {
             double frontRightPower = 0;
             double backRightPower = 0;
 
-            if (gamepad1.options){
+            /*if (gamepad1.options){
                 imu.resetYaw();
-            }
+            }*/
 
-            if (fieldCentric.toggle(gamepad1.touchpad)){
-                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-                frontLeftPower = (y + x + rx) / denominator;
-                backLeftPower = (y - x + rx) / denominator;
-                frontRightPower = (y - x - rx) / denominator;
-                backRightPower = (y + x - rx) / denominator;
-            }
-            else{
+            denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            frontLeftPower = (y + x + rx) / denominator;
+            backLeftPower = (y - x + rx) / denominator;
+            frontRightPower = (y - x - rx) / denominator;
+            backRightPower = (y + x - rx) / denominator;
+            /*else{
                 denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
                 frontLeftPower = (rotY + rotX + rx) / denominator;
                 backLeftPower = (rotY - rotX + rx) / denominator;
                 frontRightPower = (rotY - rotX - rx) / denominator;
                 backRightPower = (rotY + rotX - rx) / denominator;
-            }
+            }*/
 
             frontLeftDrive.setPower(frontLeftPower);
             backLeftDrive.setPower(backLeftPower);
