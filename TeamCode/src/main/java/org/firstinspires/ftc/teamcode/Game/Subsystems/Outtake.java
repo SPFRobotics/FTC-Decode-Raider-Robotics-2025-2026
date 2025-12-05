@@ -76,16 +76,6 @@ public class Outtake {
             kicker.down(true);
 
         }
-
-
-
-
-
-
-
-
-
-
     }
 
     
@@ -148,7 +138,7 @@ public class Outtake {
     }
 
     public void setRPM(double rpm){
-        rpm *= 1.1875;
+        rpm *= 1.125;
         double tps = (rpm / 60.0) * 28;
         outtakeMotor.setVelocity(tps);
     }

@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 
 @Autonomous(name="Auto Short Blue")
 public class AutoShortBlue extends LinearOpMode {
@@ -32,7 +34,11 @@ public class AutoShortBlue extends LinearOpMode {
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
         limelight = new Limelight(hardwareMap);
-        limelight.start();
+
+        telemetry.setMsTransmissionInterval(16);
+
+
+        //limelight.start();
 
         waitForStart();
 
@@ -43,8 +49,6 @@ public class AutoShortBlue extends LinearOpMode {
 
         while (opModeIsActive()) {
             outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM - 100);
-
-
             if (outtake.getKickerCycleCount() == 3) {
                 kicker.down(true);
             }
