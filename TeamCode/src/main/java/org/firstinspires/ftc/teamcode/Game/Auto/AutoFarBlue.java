@@ -50,9 +50,9 @@ public class AutoFarBlue extends LinearOpMode {
         sleep(3000);
 
         while (opModeIsActive()) {
-            LLResult result = limelight.getLatestResult();
+            int result = limelight.getMotifId();
 
-            if (result.equals(21)) {
+            if (result == 21) {
 
                 if (kickerCycleCount == 1 || kickerCycleCount == 2 && colorFinder.isPurple()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
@@ -69,7 +69,7 @@ public class AutoFarBlue extends LinearOpMode {
             }
 
 
-            if (result.equals(22)) {
+            if (result == (22)) {
 
                 if (kickerCycleCount == 0 || kickerCycleCount == 2 && colorFinder.isPurple()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
@@ -84,7 +84,7 @@ public class AutoFarBlue extends LinearOpMode {
                     kicker.down(true);
                 }
 
-                if (result.equals(23)) {
+                if (result == (23)) {
 
                     if (kickerCycleCount == 0 || kickerCycleCount == 1 && colorFinder.isPurple()) {
                         outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
