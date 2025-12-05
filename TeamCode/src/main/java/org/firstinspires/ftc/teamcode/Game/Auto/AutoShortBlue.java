@@ -36,7 +36,6 @@ public class AutoShortBlue extends LinearOpMode {
 
         waitForStart();
 
-        while (motif == -1) motif = limelight.getMotifId();
 
         robot.move(-.7, "backward", 48);
         outtake.setRPM(Outtake.OuttakeSpeed.closeRPM - 100);

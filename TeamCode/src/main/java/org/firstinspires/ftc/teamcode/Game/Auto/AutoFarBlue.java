@@ -42,7 +42,7 @@ public class AutoFarBlue extends LinearOpMode {
         waitForStart();
 
 
-        while (motif == -1){
+        while (motif == -1) {
             motif = limelight.getMotifId();
         }
         //limelight.getMotifId();
@@ -50,7 +50,7 @@ public class AutoFarBlue extends LinearOpMode {
         outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
         sleep(3000);
 
-        while (opModeIsActive())
+        while (opModeIsActive()) {
             kicker.down(true);
             telemetry.addData("April Tag ID", motif);
             telemetry.update();
@@ -103,8 +103,9 @@ public class AutoFarBlue extends LinearOpMode {
                 }
             }
 
-            if (opModeIsActive() && kickerCycleCount==3) {
+            if (opModeIsActive() && kickerCycleCount == 3) {
                 robot.move(.9, "forward", 20);
             }
         }
     }
+}
