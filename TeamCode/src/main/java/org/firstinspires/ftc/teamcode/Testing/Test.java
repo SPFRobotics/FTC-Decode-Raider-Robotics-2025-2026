@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Resources.LedLights;
 @TeleOp(name="Test")
 //@Disabled
 public class Test extends LinearOpMode {
-    private ColorFinder colorFinder = new ColorFinder(hardwareMap);
+    //private ColorFinder colorFinder = new ColorFinder(hardwareMap);
     //LedLights leftLED = new LedLights("leftLED", hardwareMap);
     //LedLights rightLED = new LedLights("rightLED", hardwareMap);
     FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -27,6 +28,7 @@ public class Test extends LinearOpMode {
     private Spindex spindex = null;
     private Kicker kicker = null;
     private Intake intake = null;
+    private Limelight limelight = new Limelight(hardwareMap);
 
     public static Button spindexCounterClockWise = new Button();
     public static Button spindexClockWise = new Button();
@@ -42,8 +44,9 @@ public class Test extends LinearOpMode {
         telemetry.setMsTransmissionInterval(1);
         waitForStart();
         ElapsedTime timer = new ElapsedTime();
+        limelight.start();
         while (opModeIsActive()){
-            if (spindexCounterClockWise.press(gamepad1.b)){
+            /*if (spindexCounterClockWise.press(gamepad1.b)){
                 spindex.addIndex();
             }
             else if (spindexClockWise.press(gamepad1.x)){
@@ -82,7 +85,7 @@ public class Test extends LinearOpMode {
             else{
                 leftLED.turnOFF();
                 rightLED.turnOFF();
-            }*/
+            }
 
             boolean outtakeMode = spindexMode.toggle(gamepad1.options);
             spindex.lockPos(outtakeMode);
@@ -101,6 +104,9 @@ public class Test extends LinearOpMode {
             telemetry.addData("Mode", outtakeMode ? "OUTTAKE" : "INTAKE");
             telemetry.addData("Loop Time", timer.milliseconds());
             timer.reset();
+            telemetry.update();*/
+
+            telemetry.addData("Bot Pos", limelight.botpose());
             telemetry.update();
         }
     }

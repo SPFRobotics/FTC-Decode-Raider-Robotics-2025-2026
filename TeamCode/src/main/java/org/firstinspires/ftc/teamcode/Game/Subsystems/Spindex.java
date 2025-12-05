@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Testing.Test;
 public class Spindex {
     @Config
     public static class SpindexValues{
-        public static int p = 140;
+        public static int p = 180;
         public static double speed = 1;
         public static double[] intakePos = {16, 136, 256};
         public static double[] outtakePos = {76, 197, 317};
@@ -49,31 +49,8 @@ public class Spindex {
 
     //Gets the minimum distance to target accepts a list and is overloaded to accept a single value if needed
     private double getMinDistance(double[] positions){
-        double distance = 0;
-        double target = positions[getIndex()];
-        if (target + 180 > 360 ){
-            if (getPos() > target){
-                distance = target-getPos();
-            }
-            else if (getPos() <= (target + 180)%360){
-                distance = -(target+getPos());
-            }
-            else if (getPos() < target && getPos() > (target + 180)%360){
-                distance = target-getPos();
-            }
-        }
-        else{
-            if (getPos() > target && getPos() <= target+180){
-                distance = target-getPos();
-            }
-            else if (getPos() > target+180){
-                distance = (360-getPos())+target;
-            }
-            else if (getPos() < target){
-                distance = target-getPos();
-            }
-        }
-        return distance;
+        double diff = positions[((index%3)+3)%3]-getPos();
+        return ((diff+540)%360)-180;
     }
 
     private double getMinDistance(double x){
@@ -108,10 +85,16 @@ public class Spindex {
     public void lockPos(boolean mode){
         if (!mode){
             spindex.setPower(Math.min((getMinDistance(intakePos)/SpindexValues.p) * speed, 1));
+            this.mode = true;
         }
         else{
             spindex.setPower(Math.min((getMinDistance(outtakePos)/SpindexValues.p) * speed, 1));
+            this.mode = false;
         }
+    }
+
+    public boolean isIntake(){
+        return mode;
     }
 
     public void zero(){
@@ -121,6 +104,10 @@ public class Spindex {
 
     public void move(double x){
         spindex.setPower(x);
+    }
+
+    public void setPower(double power){
+        spindex.setPower(power);
     }
 
     public static double getPos(){
