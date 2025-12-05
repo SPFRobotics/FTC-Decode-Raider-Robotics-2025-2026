@@ -37,6 +37,8 @@ public class AutoFarBlue extends LinearOpMode {
         kicker = new Kicker(hardwareMap);
         limelight = new Limelight(hardwareMap);
 
+        limelight.start();
+
 
         waitForStart();
 

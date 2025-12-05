@@ -32,6 +32,7 @@ public class AutoRedFar extends LinearOpMode {
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
         limelight = new Limelight(hardwareMap);
+        limelight.start();
 
         waitForStart();
 
