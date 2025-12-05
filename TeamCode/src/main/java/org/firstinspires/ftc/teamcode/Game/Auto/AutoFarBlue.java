@@ -52,18 +52,22 @@ public class AutoFarBlue extends LinearOpMode {
 
         while (opModeIsActive())
             kicker.down(true);
-        telemetry.addData("April Tag ID", motif);
-        telemetry.update();
+            telemetry.addData("April Tag ID", motif);
+            telemetry.update();
+            telemetry.addData("Color: ", colorFinder);
+            telemetry.update();
             if (motif == (21)) {
 
                 if (kickerCycleCount == 1 || kickerCycleCount == 2 && colorFinder.isPurple()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+                    kicker.up(true);
                 } else if (kickerCycleCount == 0 && colorFinder.isGreen()) {
 
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-
+                    kicker.up(true);
                 } else {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.sortRPM);
+                    kicker.up(true);
                 }
             }
 
@@ -71,23 +75,30 @@ public class AutoFarBlue extends LinearOpMode {
 
                 if (kickerCycleCount == 0 || kickerCycleCount == 2 && colorFinder.isPurple()) {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+                    kicker.up(true);
                 } else if (kickerCycleCount == 1 && colorFinder.isGreen()) {
 
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+                    kicker.up(true);
 
                 } else {
                     outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.sortRPM);
+                    kicker.up(true);
                 }
 
                 if (motif == (23)) {
                     if (kickerCycleCount == 0 || kickerCycleCount == 1 && colorFinder.isPurple()) {
                         outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+                        kicker.up(true);
+                        sleep(1000);
                     } else if (kickerCycleCount == 2 && colorFinder.isGreen()) {
 
                         outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+                        kicker.up(true);
 
                     } else {
                         outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.sortRPM);
+                        kicker.up(true);
                     }
                 }
             }
