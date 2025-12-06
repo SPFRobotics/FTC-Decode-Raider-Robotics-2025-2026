@@ -45,7 +45,7 @@ public class AutoFarBlue extends LinearOpMode {
                 outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
                 if (outtake.getKickerCycleCount()==3 && robot.getWiggleCount() < 2){
                     kicker.down();
-                    robot.wiggle();
+                   // robot.wiggle();
                 }
                 else if (robot.getWiggleCount() == 3){
                     kicker.up();
