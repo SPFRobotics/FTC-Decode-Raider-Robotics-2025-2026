@@ -1,15 +1,13 @@
 package org.firstinspires.ftc.teamcode.Game.Auto;
 
-import com.qualcomm.hardware.limelightvision.LLResult;
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
@@ -23,85 +21,38 @@ public class AutoFarBlue extends LinearOpMode {
     private ElapsedTime masterClock = new ElapsedTime();
     private Kicker kicker = null;
     private Outtake outtake = null;
-    private Limelight limelight = null;
-    public int motif = -1;
-    private ColorFinder colorFinder = null;
-    private int kickerCycleCount = 0;
-
     private boolean isActive = false;
+    FtcDashboard dashboard = null;
+    //change
 
     public void runOpMode() {
+        //dashboard = FtcDashboard.getInstance();
+        //telemetry = dashboard.getTelemetry();
         MecanumChassis robot = new MecanumChassis(this);
         robot.initializeMovement();
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
-        limelight = new Limelight(hardwareMap);
-        limelight.start();
-        waitForStart();
 
-        /*while (motif == -1) {
-            motif = limelight.getMotifId();
-        }*/
-        //limelight.getMotifId();
-        robot.rotate(20.0, .1);
+        // Reverse the left motors if needed
+
+        waitForStart();
+        robot.rotate(20.0,.1);
         outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
-        sleep(3000);
+        sleep(5000);
+
 
         while (opModeIsActive()) {
-            kicker.down(true);
-            /*if (motif == (21)) {
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
 
-                if (kickerCycleCount == 1 || kickerCycleCount == 2 && colorFinder.isPurple()) {
-                    outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                    kicker.up(true);
-                } else if (kickerCycleCount == 0 && colorFinder.isGreen()) {
-
-                    outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                    kicker.up(true);
-                } else {
-                    outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.sortRPM);
-                    kicker.up(true);
-                }
+            if (outtake.getKickerCycleCount() == 4) {
+                break;
             }
-
-            if (motif == (22)) {
-
-                if (kickerCycleCount == 0 || kickerCycleCount == 2 && colorFinder.isPurple()) {
-                    outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                    kicker.up(true);
-                } else if (kickerCycleCount == 1 && colorFinder.isGreen()) {
-
-                    outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                    kicker.up(true);
-
-                } else {
-                    outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.sortRPM);
-                    kicker.up(true);
-                }
-
-                if (motif == (23)) {
-                    if (kickerCycleCount == 0 || kickerCycleCount == 1 && colorFinder.isPurple()) {
-                        outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                        kicker.up(true);
-                        sleep(1000);
-                    } else if (kickerCycleCount == 2 && colorFinder.isGreen()) {
-
-                        outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
-                        kicker.up(true);
-
-                    } else {
-                        outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.sortRPM);
-                        kicker.up(true);
-                    }
-                }*/
-            }
-
-            if (opModeIsActive() && kickerCycleCount == 3) {
-                robot.move(.9, "forward", 20);
-            }
-            telemetry.addData("April Tag ID", motif);
-            telemetry.update();
-            telemetry.addData("Color: ", colorFinder);
-            telemetry.update();
+            //System.out.printf(";%.3f;%d;%s%n", getRuntime(), (int)outtake.getRPM(), kicker.getState());
         }
+        if (opModeIsActive()){
+            robot.move(.9,"forward",20);
+        }
+
     }
+}
+
