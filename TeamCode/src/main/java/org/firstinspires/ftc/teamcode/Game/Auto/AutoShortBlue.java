@@ -12,6 +12,10 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 
 @Autonomous(name="Auto Short Blue")
 public class AutoShortBlue extends LinearOpMode {
@@ -25,6 +29,10 @@ public class AutoShortBlue extends LinearOpMode {
     private Outtake outtake = null;
     private Limelight limelight = null;
     public int motif = -1;
+    private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
+
+    public AutoShortBlue() throws FileNotFoundException, UnsupportedEncodingException {
+    }
 
     private boolean isActive = false;
 
@@ -42,25 +50,28 @@ public class AutoShortBlue extends LinearOpMode {
 
         waitForStart();
 
-
         robot.move(-.7, "backward", 48);
-        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM - 100);
-        sleep(3000);
+        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
+        //sleep(3000);
 
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM - 100);
-            if (outtake.getKickerCycleCount() == 3) {
-                kicker.down(true);
-            }
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM);
 
-            if (outtake.getKickerCycleCount() == 4) {
-                kicker.up(true);
+            if (outtake.getKickerCycleCount() == 3) {
                 break;
             }
+            telemetry.addData("Interval", outtake.getInverval());
+            telemetry.addData("RPM", outtake.getRPM());
+            telemetry.addData("Launched", outtake.launched);
+            telemetry.addData("Count", outtake.getKickerCycleCount());
+            telemetry.update();
+            pen.write((int)masterClock.milliseconds() + ":" + (int)outtake.getRPM() + ":" + Kicker.getState() + "\n");
         }
+        masterClock.reset();
 
         if (opModeIsActive()) {
             robot.move(.9, "left", 20);
         }
+        pen.close();
     }
 }

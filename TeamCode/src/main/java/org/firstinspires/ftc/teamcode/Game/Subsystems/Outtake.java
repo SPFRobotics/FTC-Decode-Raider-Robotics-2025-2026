@@ -22,8 +22,8 @@ public class Outtake {
 
     @Config
     public static class OuttakeSpeed{
-        public static double farRPM = 3200;
-        public static double closeRPM = 2700;
+        public static double farRPM = 3200*1.125;
+        public static double closeRPM = 2700*1.125;
         public static double sortRPM = 1000;
         public static double p = 100;
         public static double i = 0;
@@ -36,8 +36,9 @@ public class Outtake {
     public DcMotorEx outtakeMotor = null;
     private Kicker kicker = null;
     private boolean isActive = false;
+    public boolean launched = false;
 
-    public Limelight limelight = null; 
+    public Limelight limelight = null;
     private int encoderCount = 0;
     private boolean isFarLocation = true; // true = far (77%), false = short (55%)
     private boolean isBoosted = false; // Track if we're currently boosting
@@ -63,9 +64,9 @@ public class Outtake {
     }
 
 
-    
+
     public void ColorSort(){
-        
+
         limelight.getMotifId();
         LLResult result = limelight.getLatestResult();
         outtake.setRPM(Outtake.OuttakeSpeed.sortRPM);
@@ -78,17 +79,17 @@ public class Outtake {
         }
     }
 
-    
+
     // Switch between far and short locations
     public void switchLocation() {
         isFarLocation = !isFarLocation;
     }
-    
+
     // Get current location (true = far, false = short)
     public boolean isFarLocation() {
         return isFarLocation;
     }
-    
+
     // Get current location name
     public String getLocationName() {
         return isFarLocation ? "FAR" : "SHORT";
@@ -114,17 +115,23 @@ public class Outtake {
 
 
     public void enableKickerCycle(boolean x, double RPM){
+        double time = interval.seconds();
         if (x){
-            if ((int)interval.seconds() >= 2 && getRPM() >= RPM) {
+            if (time >= 2.0 && time < 3.0 && getRPM() >= RPM-500){
                 kicker.up(true);
+                launched = true;
             }
-            else if ((int)interval.seconds() >= 5){
-                kickerCycleCount++;
+            else if (time >= 3.0){
+                kicker.down(true);
+                if (launched){
+                    kickerCycleCount++;
+                }
+                launched = false;
                 interval.reset();
             }
         }
         else{
-            kicker.down(true);
+            kicker.up(true);
             interval.reset();
         }
     }
@@ -138,8 +145,11 @@ public class Outtake {
     }
 
     public void setRPM(double rpm){
-        rpm *= 1.125;
         double tps = (rpm / 60.0) * 28;
         outtakeMotor.setVelocity(tps);
+    }
+
+    public double getInverval(){
+        return interval.seconds();
     }
 }

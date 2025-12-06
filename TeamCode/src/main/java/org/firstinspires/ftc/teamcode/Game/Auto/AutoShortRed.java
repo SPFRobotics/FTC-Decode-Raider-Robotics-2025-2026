@@ -10,6 +10,12 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 
 @Autonomous(name="Auto Short Red")
 public class AutoShortRed extends LinearOpMode {
@@ -18,12 +24,16 @@ public class AutoShortRed extends LinearOpMode {
     private DcMotor backLeftDrive;
     private DcMotor backRightDrive;
     private DcMotorEx outtakeMotor = null;
-    private Limelight limelight = null;
-    public int motif = -1;
-
     private ElapsedTime masterClock = new ElapsedTime();
     private Kicker kicker = null;
     private Outtake outtake = null;
+    private Limelight limelight = null;
+    public int motif = -1;
+    private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
+
+    public AutoShortRed() throws FileNotFoundException, UnsupportedEncodingException {
+    }
+
     private boolean isActive = false;
 
     public void runOpMode() {
@@ -32,32 +42,35 @@ public class AutoShortRed extends LinearOpMode {
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
         limelight = new Limelight(hardwareMap);
-        limelight.start();
+
+        telemetry.setMsTransmissionInterval(16);
+
+
+        //limelight.start();
 
         waitForStart();
 
-        while (motif == -1) motif = limelight.getMotifId();
-
         robot.move(-.7, "backward", 48);
-        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM - 100);
-        sleep(3000);
+        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
+        //sleep(3000);
 
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM - 100);
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM);
 
-            // *** wiggle removed ***
             if (outtake.getKickerCycleCount() == 3) {
-                kicker.down(true);
-            }
-
-            if (outtake.getKickerCycleCount() == 4) {
-                kicker.up(true);
                 break;
             }
+            telemetry.addData("Interval", outtake.getInverval());
+            telemetry.addData("RPM", outtake.getRPM());
+            telemetry.addData("Launched", outtake.launched);
+            telemetry.update();
+            pen.write((int)masterClock.milliseconds() + ":" + (int)outtake.getRPM() + ":" + Kicker.getState() + "\n");
         }
+        masterClock.reset();
 
         if (opModeIsActive()) {
             robot.move(.9, "right", 20);
         }
+        pen.close();
     }
 }

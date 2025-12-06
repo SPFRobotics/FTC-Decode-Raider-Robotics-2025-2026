@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Game.Auto;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,12 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
 @Autonomous(name="Auto Red Long")
-public class AutoRedFar extends LinearOpMode {
+public class AutoFarRed extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
     private DcMotor backLeftDrive;
@@ -21,43 +21,38 @@ public class AutoRedFar extends LinearOpMode {
     private ElapsedTime masterClock = new ElapsedTime();
     private Kicker kicker = null;
     private Outtake outtake = null;
-    private Limelight limelight = null;
-    public int motif = -1;
-
     private boolean isActive = false;
+    FtcDashboard dashboard = null;
+    //change
 
     public void runOpMode() {
+        //dashboard = FtcDashboard.getInstance();
+        //telemetry = dashboard.getTelemetry();
         MecanumChassis robot = new MecanumChassis(this);
         robot.initializeMovement();
         outtake = new Outtake(hardwareMap);
         kicker = new Kicker(hardwareMap);
-        limelight = new Limelight(hardwareMap);
-        limelight.start();
+
+        // Reverse the left motors if needed
 
         waitForStart();
-
-        while (motif == -1) motif = limelight.getMotifId();
-
-        robot.rotate(-20.0, .1);
+        robot.rotate(-20.0,.1);
         outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
-        sleep(3000);
+        //sleep(3000);
+
 
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM-100);
 
-            // Removed wiggle logic — only kicker timing stays
             if (outtake.getKickerCycleCount() == 3) {
-                kicker.down(true);
-            }
-
-            if (outtake.getKickerCycleCount() == 4) {
-                kicker.up(true);
                 break;
             }
+            //System.out.printf(";%.3f;%d;%s%n", getRuntime(), (int)outtake.getRPM(), kicker.getState());
+        }
+        if (opModeIsActive()){
+            robot.move(.9,"forward",20);
         }
 
-        if (opModeIsActive()) {
-            robot.move(.9, "forward", 20);
-        }
     }
 }
+

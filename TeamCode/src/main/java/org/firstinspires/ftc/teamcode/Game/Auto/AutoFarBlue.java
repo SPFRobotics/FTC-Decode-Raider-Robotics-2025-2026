@@ -38,13 +38,13 @@ public class AutoFarBlue extends LinearOpMode {
         waitForStart();
         robot.rotate(20.0,.1);
         outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
-        sleep(5000);
+        //sleep(5000);
 
 
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM-100);
 
-            if (outtake.getKickerCycleCount() == 4) {
+            if (outtake.getKickerCycleCount() == 3) {
                 break;
             }
             //System.out.printf(";%.3f;%d;%s%n", getRuntime(), (int)outtake.getRPM(), kicker.getState());
