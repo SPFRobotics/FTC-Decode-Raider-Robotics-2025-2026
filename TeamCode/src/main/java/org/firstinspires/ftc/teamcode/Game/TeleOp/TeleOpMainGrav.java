@@ -55,8 +55,7 @@ public class TeleOpMainGrav extends LinearOpMode {
     private Button a = new Button();
     private Button centeringButton = new Button();
     private Button fieldCentric = new Button();
-    private Button leftBumper = new Button();
-    private Button rightBumper = new Button();
+    private Button toggleExtension = new Button();
 
     private Button circle = new Button();// X button for encoder-based centering
 
@@ -124,7 +123,7 @@ public class TeleOpMainGrav extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
-        kicker.up(true);
+        //kicker.up(true);
 
         // Initialize chassis movement after waitForStart
         // Note: This will reset encoders and initialize IMU
@@ -273,8 +272,11 @@ public class TeleOpMainGrav extends LinearOpMode {
             }
 
             //Kickstand
-            if (gamepad1.left_bumper && gamepad1.right_bumper){
+            if (toggleExtension.toggle(gamepad1.left_bumper && gamepad1.right_bumper)){
                 extension.kickStandUp(false);
+            }
+            else{
+                extension.kickStandUp(true);
             }
 
             // Driver hub

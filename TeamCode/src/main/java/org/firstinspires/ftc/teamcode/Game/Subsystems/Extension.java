@@ -54,6 +54,11 @@ public class Extension {
         extension2.setPower(power);
     }
 
+    public void disable(){
+        kickstand.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        kickstand.setPower(0);
+    }
+
     public void kickStandUp(boolean moveUp) {
         if (kickstand == null) {
             return;
