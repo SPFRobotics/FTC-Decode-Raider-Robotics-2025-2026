@@ -22,7 +22,7 @@ public class Outtake {
 
     @Config
     public static class OuttakeSpeed{
-        public static double farRPM = 3200*1.125;
+        public static double farRPM = 3300*1.125;
         public static double closeRPM = 2700*1.125;
         public static double sortRPM = 1000;
         public static double p = 100;

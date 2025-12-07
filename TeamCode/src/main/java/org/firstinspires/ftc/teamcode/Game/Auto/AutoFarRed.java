@@ -42,7 +42,7 @@ public class AutoFarRed extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM-100);
+            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
 
             if (outtake.getKickerCycleCount() == 3) {
                 break;
