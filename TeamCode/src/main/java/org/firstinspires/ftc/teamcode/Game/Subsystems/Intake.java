@@ -1,12 +1,16 @@
-package org.firstinspires.ftc.teamcode.Game.TeleOp;
+package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Intake {
 
     public DcMotor intakeMotor = null;
+    public CRServo intakeServo = null;
     private boolean isActive = false;
     private int encoderCount = 0;
 
@@ -14,36 +18,19 @@ public class Intake {
     // Constructor - initializes the intake motor
     public Intake(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
+        intakeServo = hardwareMap.get(CRServo.class, "IntakeServo");
+        intakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
         //intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 
-    // Update method - call this in the main loop with the gamepad
-    public void update() {
-        // Set motor power based on active state
-        if (isActive) {
-            intakeMotor.setPower(1.0); // Full power when active
-        } else {
-            intakeMotor.setPower(0.0); // Off when inactive
-        }
-    }
-
-    // Getter for active state
-    public boolean isActive() {
-        return isActive;
-    }
-
-    // Manual control methods (optional - for testing or manual override)
-    public void activate() {
-        isActive = true;
-    }
-
-    public void deactivate() {
-        isActive = false;
-    }
-
     public void setPower(double power) {
         intakeMotor.setPower(power);
+        intakeServo.setPower(power);
+    }
+
+    public double getPower(){
+        return intakeMotor.getPower();
     }
 
     public double getRPM(double encoderRes){
