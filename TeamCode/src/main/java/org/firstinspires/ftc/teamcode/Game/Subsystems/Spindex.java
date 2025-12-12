@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Testing.Test;
 
 public class Spindex {
@@ -29,6 +30,39 @@ public class Spindex {
         spindex = hardwareMap.get(CRServo.class, "spindex");
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
         spindex.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+
+
+    public void movetoPos(int target){
+
+        double currentPos = (spindexPos.getVoltage())/3.3*360;
+
+        double error = AngleUnit.normalizeDegrees(target - currentPos);
+
+        double sisn = Math.signum(error);
+
+        double Threshold = 30;
+
+        double maxPower = 0.1;
+
+        double tolorence = 5;
+
+        double kp = maxPower/Threshold;
+
+        if(Math.abs(error) > Threshold){
+
+            spindex.setPower(maxPower * sisn);
+
+        } else if (Math.abs(error) > tolorence) {
+
+            spindex.setPower(error * kp);
+
+        }else {
+            spindex.setPower(0);
+        }
+
+
     }
 
     public void addIndex(){

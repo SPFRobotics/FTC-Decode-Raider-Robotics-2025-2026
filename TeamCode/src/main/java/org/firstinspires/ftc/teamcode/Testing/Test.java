@@ -45,6 +45,10 @@ public class Test extends LinearOpMode {
         intake = new Intake(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
 
+
+
+
+
         color = new ColorFinder(hardwareMap);
         dashboardTelemetry.setMsTransmissionInterval(1);
         telemetry.setMsTransmissionInterval(1);
