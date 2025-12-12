@@ -121,7 +121,7 @@ public class Test extends LinearOpMode {
                 outtake.outtakeMotor.setVelocity(1000);
             }
             else if (gamepad1.ps){
-                outtake.setRPM(0);
+                outtake.outtakeMotor.setVelocity(0);
             }
 
             //telemetry.addData("Bot Pos", limelight.botpose());
