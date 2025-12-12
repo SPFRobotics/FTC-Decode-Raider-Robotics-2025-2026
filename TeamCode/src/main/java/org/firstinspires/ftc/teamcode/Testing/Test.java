@@ -27,33 +27,33 @@ public class Test extends LinearOpMode {
     //LedLights rightLED = new LedLights("rightLED", hardwareMap);
     FtcDashboard dashboard = FtcDashboard.getInstance();
     private Telemetry dashboardTelemetry = dashboard.getTelemetry();
-    private Spindex spindex = null;
-    private Kicker kicker = null;
-    private Intake intake = null;
-    private Limelight limelight = new Limelight(hardwareMap);
+    //private Spindex spindex = null;
+    //private Kicker kicker = null;
+    //private Intake intake = null;
+    //private Limelight limelight = new Limelight(hardwareMap);
 
-    private ColorFinder color = new ColorFinder(hardwareMap);
+    //private ColorFinder color = new ColorFinder(hardwareMap);
 
-    public static Button spindexCounterClockWise = new Button();
-    public static Button spindexClockWise = new Button();
-    public static Button spindexMode = new Button();
-    public static Button intakeButton = new Button();
+    //public static Button spindexCounterClockWise = new Button();
+    //public static Button spindexClockWise = new Button();
+    //public static Button spindexMode = new Button();
+    //public static Button intakeButton = new Button();
 
     public void runOpMode(){
-        spindex = new Spindex(hardwareMap);
-        kicker = new Kicker(hardwareMap);
-        intake = new Intake(hardwareMap);
+        //spindex = new Spindex(hardwareMap);
+        //kicker = new Kicker(hardwareMap);
+        //intake = new Intake(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
 
-        color = new ColorFinder(hardwareMap);
+        //color = new ColorFinder(hardwareMap);
         dashboardTelemetry.setMsTransmissionInterval(1);
         telemetry.setMsTransmissionInterval(1);
         waitForStart();
         ElapsedTime timer = new ElapsedTime();
-        limelight.start();
+        //limelight.start();
         while (opModeIsActive()){
 
-        int[] currentColor = color.getColor();
+        //int[] currentColor = color.getColor();
 
 
 
@@ -117,7 +117,15 @@ public class Test extends LinearOpMode {
             timer.reset();
             telemetry.update();*/
 
-            telemetry.addData("Bot Pos", limelight.botpose());
+            if (gamepad1.dpad_up){
+                outtake.outtakeMotor.setVelocity(1000);
+            }
+            else if (gamepad1.ps){
+                outtake.setRPM(0);
+            }
+
+            //telemetry.addData("Bot Pos", limelight.botpose());
+            telemetry.addData("RPM", outtake.outtakeMotor.getVelocity());
             telemetry.update();
         }
     }
