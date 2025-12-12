@@ -18,8 +18,6 @@ import org.openftc.apriltag.AprilTagDetection;
 import java.util.List;
 
 public class Outtake {
-    private Outtake outtake;
-
     @Config
     public static class OuttakeSpeed{
         public static double farRPM = 3300*1.125;
@@ -63,22 +61,19 @@ public class Outtake {
         limelight = new Limelight(hardwareMap);
     }
 
-
-
     public void ColorSort(){
 
         limelight.getMotifId();
         LLResult result = limelight.getLatestResult();
-        outtake.setRPM(Outtake.OuttakeSpeed.sortRPM);
+        setRPM(Outtake.OuttakeSpeed.sortRPM);
 
 
         if(result.equals(22)&& colorFinder.isGreen()&&kickerCycleCount==1||kickerCycleCount==3){
-            outtake.enableKickerCycle(true, OuttakeSpeed.sortRPM);
+            enableKickerCycle(true, OuttakeSpeed.sortRPM);
             kicker.down(true);
 
         }
     }
-
 
     // Switch between far and short locations
     public void switchLocation() {
