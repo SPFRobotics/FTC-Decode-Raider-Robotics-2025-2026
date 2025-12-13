@@ -227,7 +227,7 @@ public class TeleOpMain extends LinearOpMode {
                 spindex.subtractIndex();
             }
             spindexOuttakeMode = spindexModeToggle.toggle(gamepad2.circle);
-            spindex.lockPos(spindexOuttakeMode);
+            spindex.moveToPos();
 
             if (a.press(gamepad2.a)){
                 kicker.down(false);

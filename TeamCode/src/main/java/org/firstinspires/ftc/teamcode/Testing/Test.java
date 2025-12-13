@@ -16,14 +16,15 @@ public class Test extends LinearOpMode {
         public static int[] PIDF = {10, 3, 0, 0};
     }
     public void runOpMode(){
-        DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
+        DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "spindex");
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         waitForStart();
         while (opModeIsActive()){
             motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(PIDF[0], PIDF[1], PIDF[2], PIDF[3]));
-            //motor.setPower();
+            motor.setPower(gamepad1.right_trigger);
             telemetry.addData("Velocity", motor.getVelocity());
-            telemetry.addData("RPM", motor.getVelocity()*60/28);
+            telemetry.addData("RPM", motor.getVelocity()*60/motor.getMotorType().getTicksPerRev());
+            telemetry.addData("Power", motor.getPower());
             telemetry.addData("PID", motor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
             telemetry.update();
         }
