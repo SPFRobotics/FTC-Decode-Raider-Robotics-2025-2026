@@ -20,11 +20,11 @@ import java.util.List;
 public class Outtake {
     @Config
     public static class OuttakeSpeed{
-        public static double farRPM = 3300*1.125;
-        public static double closeRPM = 2700*1.125;
+        public static double farRPM = 3300;
+        public static double closeRPM = 2700;
         public static double sortRPM = 1000;
         public static double p = 100;
-        public static double i = 0;
+        public static double i = 3;
         public static double d = 0;
         public static double f = 0;
     }
@@ -54,14 +54,14 @@ public class Outtake {
     // Constructor - initializes the intake motor
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
-        outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        outtakeMotor.setVelocityPIDFCoefficients(OuttakeSpeed.p, OuttakeSpeed.i, OuttakeSpeed.d, OuttakeSpeed.f);
+        //outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //outtakeMotor.setVelocityPIDFCoefficients(OuttakeSpeed.p, OuttakeSpeed.i, OuttakeSpeed.d, OuttakeSpeed.f);
         //outtakeMotor.setPositionPIDFCoefficients(5);
         kicker = new Kicker(hardwareMap);
-        limelight = new Limelight(hardwareMap);
+        //limelight = new Limelight(hardwareMap);
     }
 
-    public void ColorSort(){
+    /*public void ColorSort(){
 
         limelight.getMotifId();
         LLResult result = limelight.getLatestResult();
@@ -73,7 +73,7 @@ public class Outtake {
             kicker.down(true);
 
         }
-    }
+    }*/
 
     // Switch between far and short locations
     public void switchLocation() {

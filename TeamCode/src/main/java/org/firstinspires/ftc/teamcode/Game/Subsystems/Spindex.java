@@ -140,9 +140,9 @@ public class Spindex {
         return mode;
     }
 
-    public void zero(){
+    /*public void zero(){
 
-    }
+    }*/
 
     public void move(double x){
         spindex.setPower(x);
