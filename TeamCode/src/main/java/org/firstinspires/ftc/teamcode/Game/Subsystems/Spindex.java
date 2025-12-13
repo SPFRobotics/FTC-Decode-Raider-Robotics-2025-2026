@@ -82,11 +82,17 @@ public class Spindex {
     }
 
     //Gets the minimum distance to target accepts a list and is overloaded to accept a single value if needed
+
+    /*
     private double getMinDistance(double[] positions){
         double diff = positions[((index%3)+3)%3]-getPos();
         return ((diff+540)%360)-180;
     }
 
+
+
+     */
+/*
     private double getMinDistance(double x){
         double distance = 0;
         double target = x;
@@ -115,6 +121,9 @@ public class Spindex {
         return distance;
     }
 
+
+
+
     //False = intake, true = outtake
     public void lockPos(boolean mode){
         if (!mode){
@@ -126,7 +135,7 @@ public class Spindex {
             this.mode = false;
         }
     }
-
+ */
     public boolean isIntake(){
         return mode;
     }
