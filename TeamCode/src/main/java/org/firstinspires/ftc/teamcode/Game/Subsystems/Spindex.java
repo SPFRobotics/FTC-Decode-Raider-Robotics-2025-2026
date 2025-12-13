@@ -34,7 +34,7 @@ public class Spindex {
 
 
 
-    public void movetoPos(int target){
+    public void moveToPos(int target){
 
         double currentPos = (spindexPos.getVoltage())/3.3*360;
 
@@ -141,8 +141,7 @@ public class Spindex {
     }
 
     public void zero(){
-        double minDistance = getMinDistance(0);
-        spindex.setPower(minDistance/p);
+
     }
 
     public void move(double x){

@@ -1,15 +1,20 @@
 package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Turret {
 
     public CRServo rotation = null;
+
+    public AnalogInput rotateEnconder = null;
     private Limelight limelight = null;
 
-    // Piecewise P-control (mirrors Spindex.movetoPos approach)
+    // Piecewise P-control
     private static final double thresholdDeg = 30.0; // full power when outside this error
     private static final double toleranceDeg = 1.0;  // stop when inside this error
     private static final double maxPower = 0.5;      // cap CRServo power
@@ -73,6 +78,39 @@ public class Turret {
 
 
     }
+
+
+    public void moveToPos(int target){
+
+        double currentPos = (rotateEnconder.getVoltage())/3.3*360;
+
+        double error = AngleUnit.normalizeDegrees(target - currentPos);
+
+        double sign = Math.signum(error);
+
+        double Threshold = 30;
+
+        double maxPower = 0.1;
+
+        double tolorence = 5;
+
+        double kp = maxPower/Threshold;
+
+        if(Math.abs(error) > Threshold){
+
+            rotation.setPower(maxPower * sign);
+
+        } else if (Math.abs(error) > tolorence) {
+
+            rotation.setPower(error * kp);
+
+        }else {
+            rotation.setPower(0);
+        }
+
+
+    }
+
 
 
 }
