@@ -40,7 +40,7 @@ public class Spindex {
 
         double error = AngleUnit.normalizeDegrees(target - currentPos);
 
-        double sisn = Math.signum(error);
+        double sign = Math.signum(error);
 
         double Threshold = 30;
 
@@ -52,7 +52,7 @@ public class Spindex {
 
         if(Math.abs(error) > Threshold){
 
-            spindex.setPower(maxPower * sisn);
+            spindex.setPower(maxPower * sign);
 
         } else if (Math.abs(error) > tolorence) {
 
