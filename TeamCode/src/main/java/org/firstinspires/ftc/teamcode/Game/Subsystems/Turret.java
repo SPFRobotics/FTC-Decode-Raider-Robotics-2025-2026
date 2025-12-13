@@ -9,10 +9,12 @@ public class Turret {
     public CRServo rotation = null;
     private Limelight limelight = null;
 
-    private static final double kP = 0.015;      // proportional gain for tx error -> servo power
-    private static final double tolerance = 1.0; // degrees of tx considered "centered"
-    private static final double maxP = 0.5;       // cap CRServo power to avoid overshoot
-    private static final double searchP = 0.12;   // slow scan speed when tag not seen
+    // Piecewise P-control (mirrors Spindex.movetoPos approach)
+    private static final double thresholdDeg = 30.0; // full power when outside this error
+    private static final double toleranceDeg = 1.0;  // stop when inside this error
+    private static final double maxPower = 0.5;      // cap CRServo power
+    private static final double kP = maxPower / thresholdDeg; // proportional slope inside threshold
+    private static final double searchP = 0.12;      // slow scan speed when tag not seen
 
     public Turret(HardwareMap hardwareMap){
 
@@ -50,22 +52,23 @@ public class Turret {
         }
 
         // tx is horizontal offset in degrees: positive = target to the right, negative = left.
-        double tx = result.getTx();
+        double error = result.getTx();
+        double sign = Math.signum(error);
 
-        // Simple P-control to drive the offset toward zero.
-        double power = tx * kP;
-
-        // Clamp power to keep motion smooth and safe.
-        if (power > maxP) power = maxP;
-        if (power < -maxP) power = -maxP;
-
-        // Stop when inside tolerance.
-        if (Math.abs(tx) < tolerance) {
-            rotation.setPower(0);
+        // Full power outside the threshold.
+        if (Math.abs(error) > thresholdDeg) {
+            rotation.setPower(maxPower * sign);
             return;
         }
 
-        rotation.setPower(power);
+        // Scaled power inside threshold but outside tolerance.
+        if (Math.abs(error) > toleranceDeg) {
+            rotation.setPower(error * kP);
+            return;
+        }
+
+        // Stop when inside tolerance.
+        rotation.setPower(0);
 
 
 
