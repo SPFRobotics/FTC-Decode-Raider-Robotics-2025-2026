@@ -25,7 +25,7 @@ public class Spindex {
     }
     //Servo encoder
     private static AnalogInput spindexPos = null;
-    private DcMotor spindexMotor = null;
+    public DcMotor spindexMotor = null;
     private CRServo spindexServo = null;
     //Stores weather the spindex is an intake or outtake mode
     private boolean mode = false;
