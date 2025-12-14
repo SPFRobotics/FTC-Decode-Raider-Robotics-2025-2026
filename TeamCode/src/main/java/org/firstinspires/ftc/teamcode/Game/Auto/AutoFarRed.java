@@ -31,7 +31,7 @@ public class AutoFarRed extends LinearOpMode {
         MecanumChassis robot = new MecanumChassis(this);
         robot.initializeMovement();
         outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap);
+        kicker = new Kicker(hardwareMap, true);
 
         // Reverse the left motors if needed
 

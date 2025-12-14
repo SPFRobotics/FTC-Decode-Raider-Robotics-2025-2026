@@ -110,7 +110,7 @@ public class TeleOpMain extends LinearOpMode {
         // Initialize subsystems
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap);
+        kicker = new Kicker(hardwareMap, false);
         colorFinder = new ColorFinder(hardwareMap);
         //extension = new Extension(hardwareMap);
         spindex = new Spindex(hardwareMap, true);
@@ -130,7 +130,7 @@ public class TeleOpMain extends LinearOpMode {
         telemetry.setMsTransmissionInterval(16);
         dashboardTelemetry.setMsTransmissionInterval(16);
         waitForStart();
-        kicker.down(false);
+        kicker.down();
 
         // Initialize chassis movement after waitForStart
         // Note: This will reset encoders and initialize IMU
@@ -230,10 +230,10 @@ public class TeleOpMain extends LinearOpMode {
             //spindex.moveToPos();
 
             if (a.press(gamepad2.a)){
-                kicker.down(false);
+                kicker.down();
             }
             else if (triangle.press(gamepad2.y)){
-                kicker.up(false);
+                kicker.up();
             }
 
             if (setRPM == Outtake.OuttakeSpeed.closeRPM && outtake.getRPM() >= setRPM){

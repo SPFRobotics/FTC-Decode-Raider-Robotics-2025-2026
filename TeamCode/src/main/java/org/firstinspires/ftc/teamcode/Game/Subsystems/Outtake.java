@@ -57,7 +57,7 @@ public class Outtake {
         //outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //outtakeMotor.setVelocityPIDFCoefficients(OuttakeSpeed.p, OuttakeSpeed.i, OuttakeSpeed.d, OuttakeSpeed.f);
         //outtakeMotor.setPositionPIDFCoefficients(5);
-        kicker = new Kicker(hardwareMap);
+        kicker = new Kicker(hardwareMap, true);
         //limelight = new Limelight(hardwareMap);
     }
 
@@ -113,11 +113,11 @@ public class Outtake {
         double time = interval.seconds();
         if (x){
             if (time >= 2.0 && time < 3.0 && getRPM() >= RPM-500){
-                kicker.up(true);
+                kicker.up();
                 launched = true;
             }
             else if (time >= 3.0){
-                kicker.down(true);
+                kicker.down();
                 if (launched){
                     kickerCycleCount++;
                 }
@@ -126,7 +126,7 @@ public class Outtake {
             }
         }
         else{
-            kicker.up(true);
+            kicker.up();
             interval.reset();
         }
     }

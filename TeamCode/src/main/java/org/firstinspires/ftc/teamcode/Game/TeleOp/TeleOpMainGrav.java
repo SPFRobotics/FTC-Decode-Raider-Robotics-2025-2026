@@ -105,7 +105,7 @@ public class TeleOpMainGrav extends LinearOpMode {
 
         // Initialize subsystems
         outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap);
+        kicker = new Kicker(hardwareMap, true);
         Extension extension = new Extension(hardwareMap, "kickstand");
         leftLED = new LedLights("leftLED", hardwareMap);
         rightLED = new LedLights("rightLED", hardwareMap);
@@ -217,10 +217,10 @@ public class TeleOpMainGrav extends LinearOpMode {
             }*/
 
             if (a.press(gamepad2.a)){
-                kicker.down(true);
+                kicker.down();
             }
             else if (triangle.press(gamepad2.y)){
-                kicker.up(true);
+                kicker.up();
             }
 
             if (setRPM == Outtake.OuttakeSpeed.closeRPM && outtake.getRPM() >= setRPM){

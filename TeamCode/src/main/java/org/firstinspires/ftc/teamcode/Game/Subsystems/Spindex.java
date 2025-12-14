@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Testing.Test;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.Threshold;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.maxPower;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.tolorence;
 
 public class Spindex {
     //Servo encoder
@@ -27,8 +28,9 @@ public class Spindex {
     private double currentPos = 0;
     @Config
     public static class SpindexValues{
-        public static double maxPower = 0.6;
-        public static double Threshold = 125;
+        public static double maxPower = 0.75;
+        public static double Threshold = 100;
+        public static double tolorence = 5;
         public static double[] intakePos = {0, 120, 240};
         public static double[] outtakePos = {60, 180, 300};
     }
@@ -58,8 +60,6 @@ public class Spindex {
             double error = AngleUnit.normalizeDegrees(target - currentPos);
 
             double sign = Math.signum(error);
-
-            double tolorence = 5;
 
             double kp = maxPower/Threshold;
 
