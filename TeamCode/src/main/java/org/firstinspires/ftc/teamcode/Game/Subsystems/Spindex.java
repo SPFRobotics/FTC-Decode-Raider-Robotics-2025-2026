@@ -18,19 +18,21 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 public class Spindex {
     //Servo encoder
     private static AnalogInput spindexPos = null;
-    public DcMotor spindexMotor = null;
+    private DcMotor spindexMotor = null;
     private CRServo spindexServo = null;
     //Stores weather the spindex is an intake or outtake mode
     private boolean mode = false;
     //Stores weather the class is using a motor or servo
     private boolean motor = false;
     //Stores position and current index of spindex
-    public int index = 0;
-    public double currentPos = 0;
+    private int index = 0;
+    private double currentPos = 0;
     @Config
     public static class SpindexValues{
-        public static double maxPower = 0;
-        public static double Threshold = 30;
+        public static double maxPower = 0.6;
+        public static double Threshold = 150;
+        public static double[] intakePos = {0, 120, 240};
+        public static double[] outtakePos = {60, 180, 300};
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
@@ -53,14 +55,11 @@ public class Spindex {
     //Moves the servo or motor to the target position by finding the shortest path
     public void moveToPos(double target) {
         if (motor){
-
             currentPos = Math.floorMod((int)(spindexMotor.getCurrentPosition()/537.7*360), 360);
 
             double error = AngleUnit.normalizeDegrees(target - currentPos);
 
             double sign = Math.signum(error);
-
-            //double Threshold = 30;
 
             double tolorence = 5;
 
@@ -84,10 +83,6 @@ public class Spindex {
             double error = AngleUnit.normalizeDegrees(target - currentPos);
 
             double sign = Math.signum(error);
-
-            double Threshold = 30;
-
-            double maxPower = 0.1;
 
             double tolorence = 5;
 
@@ -114,6 +109,7 @@ public class Spindex {
     public void subtractIndex(){
         index--;
     }
+
     //Locks on position based on the index
     public boolean getLockPos(){
         return mode;
