@@ -42,6 +42,7 @@ public class Spindex {
             spindexMotor = hardwareMap.get(DcMotor.class, "spindex");
             spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            spindexServo.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         else{
             spindexServo = hardwareMap.get(CRServo.class, "spindex");
