@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.*;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -14,15 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Testing.Test;
 
 public class Spindex {
-    @Config
-    public static class SpindexValues{
-        public static int p = 180;
-        public static double speed = 1;
-
-        //Intake and outtake positions of spindex stored as a list
-        public static double[] intakePos = {16, 136, 256};
-        public static double[] outtakePos = {76, 197, 317};
-    }
     //Servo encoder
     private static AnalogInput spindexPos = null;
     public DcMotor spindexMotor = null;
