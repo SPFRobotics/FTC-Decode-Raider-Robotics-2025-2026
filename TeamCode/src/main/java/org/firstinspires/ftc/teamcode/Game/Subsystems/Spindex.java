@@ -54,7 +54,8 @@ public class Spindex {
     //Moves the servo or motor to the target position by finding the shortest path
     public void moveToPos(double target) {
         if (motor){
-            double currentPos = Math.floorMod((int)(spindexMotor.getCurrentPosition()/spindexMotor.getMotorType().getTicksPerRev()), 360);
+
+            double currentPos = spindexMotor.getCurrentPosition()*360/spindexMotor.getMotorType().getTicksPerRev();
 
             double error = AngleUnit.normalizeDegrees(target - currentPos);
 
