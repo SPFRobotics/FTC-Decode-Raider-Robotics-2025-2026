@@ -113,7 +113,7 @@ public class TeleOpMain extends LinearOpMode {
         kicker = new Kicker(hardwareMap);
         colorFinder = new ColorFinder(hardwareMap);
         //extension = new Extension(hardwareMap);
-        spindex = new Spindex(hardwareMap);
+        spindex = new Spindex(hardwareMap, true);
 
         //extension = new Extension(hardwareMap);
         //limelight = new Limelight(hardwareMap, telemetry);

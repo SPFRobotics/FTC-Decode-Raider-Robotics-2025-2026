@@ -5,8 +5,10 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Testing.Test;
@@ -16,53 +18,95 @@ public class Spindex {
     public static class SpindexValues{
         public static int p = 180;
         public static double speed = 1;
+
+        //Intake and outtake positions of spindex stored as a list
         public static double[] intakePos = {16, 136, 256};
         public static double[] outtakePos = {76, 197, 317};
     }
-    private CRServo spindex = null;
+    //Servo encoder
     private static AnalogInput spindexPos = null;
-
+    private DcMotor spindexMotor = null;
+    private CRServo spindexServo = null;
+    //Stores weather the spindex is an intake or outtake mode
     private boolean mode = false;
+    //Stores weather the class is using a motor or servo
+    private boolean motor = false;
+    //Stores position and current index of spindex
     public int index = 0;
     public double targetPos = 0;
-    //Stores position and current index of spindex
-    public Spindex(HardwareMap hardwareMap){
-        spindex = hardwareMap.get(CRServo.class, "spindex");
-        spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
-        spindex.setDirection(DcMotorSimple.Direction.REVERSE);
+
+    //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
+    public Spindex(HardwareMap hardwareMap, boolean motor){
+        this.motor = motor;
+        if (motor){
+            spindexMotor = hardwareMap.get(DcMotor.class, "spindex");
+            spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        else{
+            spindexServo = hardwareMap.get(CRServo.class, "spindex");
+            spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
+            spindexServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
     }
 
 
+    //Moves the servo or motor to the target position by finding the shortest path
+    public void moveToPos(double target) {
+        if (motor){
+            double currentPos = Math.floorMod(spindexMotor.getCurrentPosition(), 360);
 
-    public void moveToPos(int target){
+            double error = AngleUnit.normalizeDegrees(target - currentPos);
 
-        double currentPos = (spindexPos.getVoltage())/3.3*360;
+            double sign = Math.signum(error);
 
-        double error = AngleUnit.normalizeDegrees(target - currentPos);
+            double Threshold = 30;
 
-        double sign = Math.signum(error);
+            double maxPower = 0.1;
 
-        double Threshold = 30;
+            double tolorence = 5;
 
-        double maxPower = 0.1;
+            double kp = maxPower/Threshold;
 
-        double tolorence = 5;
+            if(Math.abs(error) > Threshold){
 
-        double kp = maxPower/Threshold;
+                spindexServo.setPower(maxPower * sign);
 
-        if(Math.abs(error) > Threshold){
+            } else if (Math.abs(error) > tolorence) {
 
-            spindex.setPower(maxPower * sign);
+                spindexServo.setPower(error * kp);
 
-        } else if (Math.abs(error) > tolorence) {
-
-            spindex.setPower(error * kp);
-
-        }else {
-            spindex.setPower(0);
+            }else {
+                spindexServo.setPower(0);
+            }
         }
+        else{
+            double currentPos = (spindexPos.getVoltage())/3.3*360;
 
+            double error = AngleUnit.normalizeDegrees(target - currentPos);
 
+            double sign = Math.signum(error);
+
+            double Threshold = 30;
+
+            double maxPower = 0.1;
+
+            double tolorence = 5;
+
+            double kp = maxPower/Threshold;
+
+            if(Math.abs(error) > Threshold){
+
+                spindexServo.setPower(maxPower * sign);
+
+            } else if (Math.abs(error) > tolorence) {
+
+                spindexServo.setPower(error * kp);
+
+            }else {
+                spindexServo.setPower(0);
+            }
+        }
     }
 
     public void addIndex(){
@@ -144,12 +188,13 @@ public class Spindex {
 
     }*/
 
-    public void move(double x){
-        spindex.setPower(x);
-    }
-
     public void setPower(double power){
-        spindex.setPower(power);
+        if (motor){
+            spindexMotor.setPower(power);
+        }
+        else{
+            spindexServo.setPower(power);
+        }
     }
 
     public static double getPos(){
