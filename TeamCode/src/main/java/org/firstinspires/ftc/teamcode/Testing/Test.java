@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Testing;
 import static org.firstinspires.ftc.teamcode.Testing.Test.Testing.PIDF;
-import static org.firstinspires.ftc.teamcode.Testing.Test.Testing.outtakePos;
+import static org.firstinspires.ftc.teamcode.Testing.Test.Testing.intakePos;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -20,7 +20,7 @@ public class Test extends LinearOpMode {
     @Config
     public static class Testing{
         public static int[] PIDF = {10, 3, 0, 0};
-        public static double[] outtakePos = {16, 136, 256};
+        public static double[] intakePos = {0, 120, 240};
     }
     private int index = 0;
     private Button moveSpindex = new Button();
@@ -33,7 +33,7 @@ public class Test extends LinearOpMode {
             if (moveSpindex.press(gamepad1.a)){
                 index++;
             }
-            spindex.moveToPos(outtakePos[Math.floorMod(index, 3)]);
+            spindex.moveToPos(intakePos[Math.floorMod(index, 3)]);
             telemetry.getMsTransmissionInterval();
             telemetry.addData("Spindex Pos", spindex.getPos());
             telemetry.addLine(bigThree.foward());
