@@ -40,8 +40,8 @@ public class Spindex {
         this.motor = motor;
         if (motor){
             spindexMotor = hardwareMap.get(DcMotor.class, "spindex");
-            spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         else{
             spindexServo = hardwareMap.get(CRServo.class, "spindex");
