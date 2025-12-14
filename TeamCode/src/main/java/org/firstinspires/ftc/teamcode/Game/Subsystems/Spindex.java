@@ -60,8 +60,6 @@ public class Spindex {
 
             double Threshold = 30;
 
-            maxPower = 0.1;
-
             double tolorence = 5;
 
             double kp = maxPower/Threshold;
