@@ -199,11 +199,6 @@ public class Spindex {
     }
 
     public double getPos(){
-        if (motor){
-            return currentPos;
-        }
-        else{
-            return (int)(spindexPos.getVoltage() / 3.3 * 360);
-        }
+        return currentPos;
     }
 }
