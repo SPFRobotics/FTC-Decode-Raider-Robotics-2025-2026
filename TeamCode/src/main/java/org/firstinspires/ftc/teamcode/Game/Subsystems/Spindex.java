@@ -109,86 +109,8 @@ public class Spindex {
     public void subtractIndex(){
         index--;
     }
-
-    //Locks on position based on the index
-    public boolean getLockPos(){
-        return mode;
-    }
-
     public int getIndex(){
         return Math.floorMod(index, 3);
-    }
-
-    //Gets the minimum distance to target accepts a list and is overloaded to accept a single value if needed
-
-    /*
-    private double getMinDistance(double[] positions){
-        double diff = positions[((index%3)+3)%3]-getPos();
-        return ((diff+540)%360)-180;
-    }
-
-
-
-     */
-/*
-    private double getMinDistance(double x){
-        double distance = 0;
-        double target = x;
-        if (target + 180 > 360 ){
-            if (getPos() > target){
-                distance = target-getPos();
-            }
-            else if (getPos() <= (target + 180)%360){
-                distance = -(target+getPos());
-            }
-            else if (getPos() < target && getPos() > (target + 180)%360){
-                distance = target-getPos();
-            }
-        }
-        else{
-            if (getPos() > target && getPos() <= target+180){
-                distance = target-getPos();
-            }
-            else if (getPos() > target+180){
-                distance = (360-getPos())+target;
-            }
-            else if (getPos() < target){
-                distance = target-getPos();
-            }
-        }
-        return distance;
-    }
-
-
-
-
-    //False = intake, true = outtake
-    public void lockPos(boolean mode){
-        if (!mode){
-            spindex.setPower(Math.min((getMinDistance(intakePos)/SpindexValues.p) * speed, 1));
-            this.mode = true;
-        }
-        else{
-            spindex.setPower(Math.min((getMinDistance(outtakePos)/SpindexValues.p) * speed, 1));
-            this.mode = false;
-        }
-    }
- */
-    public boolean isIntake(){
-        return mode;
-    }
-
-    /*public void zero(){
-
-    }*/
-
-    public void setPower(double power){
-        if (motor){
-            spindexMotor.setPower(power);
-        }
-        else{
-            spindexServo.setPower(power);
-        }
     }
 
     public double getPos(){
