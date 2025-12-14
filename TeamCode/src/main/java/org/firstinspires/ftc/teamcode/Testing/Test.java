@@ -34,7 +34,7 @@ public class Test extends LinearOpMode {
                 index++;
             }
             spindex.moveToPos(50);
-            telemetry.addData("Spindex Pos", spindex.spindexMotor);
+            telemetry.addData("Spindex Pos", spindex.spindexMotor.getCurrentPosition());
             telemetry.addLine(bigThree.foward());
             telemetry.addLine(daddyRyan.foward());
             telemetry.update();
