@@ -6,11 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerGrav;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -26,7 +25,7 @@ public class AutoShortRed extends LinearOpMode {
     private DcMotor backRightDrive;
     private DcMotorEx outtakeMotor = null;
     private ElapsedTime masterClock = new ElapsedTime();
-    private Kicker kicker = null;
+    private KickerGrav kickerGrav = null;
     private Outtake outtake = null;
     private Limelight limelight = null;
     public int motif = -1;
@@ -41,7 +40,7 @@ public class AutoShortRed extends LinearOpMode {
         MecanumChassis robot = new MecanumChassis(this);
         robot.initializeMovement();
         outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap, true);
+        kickerGrav = new KickerGrav(hardwareMap);
         limelight = new Limelight(hardwareMap);
 
         telemetry.setMsTransmissionInterval(16);
@@ -65,7 +64,7 @@ public class AutoShortRed extends LinearOpMode {
             telemetry.addData("RPM", outtake.getRPM());
             telemetry.addData("Launched", outtake.launched);
             telemetry.update();
-            pen.write((int)masterClock.milliseconds() + ":" + (int)outtake.getRPM() + ":" + Kicker.getState() + "\n");
+            pen.write((int)masterClock.milliseconds() + ":" + (int)outtake.getRPM() + ":" + KickerGrav.getState() + "\n");
         }
         masterClock.reset();
 

@@ -2,20 +2,17 @@ package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerGrav;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.Button;
@@ -23,7 +20,6 @@ import org.firstinspires.ftc.teamcode.Resources.LedLights;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
-import org.w3c.dom.Element;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -41,7 +37,7 @@ public class TeleOpMainGrav extends LinearOpMode {
     private Intake intake = null;
     private ElapsedTime masterClock = new ElapsedTime();
     private Outtake outtake = null;
-    private Kicker kicker = null;
+    private KickerGrav kickerGrav = null;
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
     private double speedFactor =  1;
     private Limelight limelight = null;
@@ -106,7 +102,7 @@ public class TeleOpMainGrav extends LinearOpMode {
 
         // Initialize subsystems
         outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap, true);
+        kickerGrav = new KickerGrav(hardwareMap);
         Extension extension = new Extension(hardwareMap, "kickstand");
         leftLED = new LedLights("leftLED", hardwareMap);
         rightLED = new LedLights("rightLED", hardwareMap);
@@ -218,10 +214,10 @@ public class TeleOpMainGrav extends LinearOpMode {
             }*/
 
             if (a.press(gamepad2.a)){
-                kicker.down();
+                kickerGrav.down();
             }
             else if (triangle.press(gamepad2.y)){
-                kicker.up();
+                kickerGrav.up();
             }
 
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){

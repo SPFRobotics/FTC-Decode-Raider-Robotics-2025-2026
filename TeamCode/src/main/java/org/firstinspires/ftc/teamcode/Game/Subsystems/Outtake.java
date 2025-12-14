@@ -1,22 +1,12 @@
 package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.openftc.apriltag.AprilTagDetection;
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 
-import java.util.List;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 
 public class Outtake {
     @Config
@@ -34,7 +24,7 @@ public class Outtake {
     private ColorFinder colorFinder = null;
     public ColorSensor hardwareColorSensor = null;
     public DcMotorEx outtakeMotor = null;
-    private Kicker kicker = null;
+    private KickerGrav kickerGrav = null;
     private boolean isActive = false;
     public boolean launched = false;
 
@@ -58,7 +48,7 @@ public class Outtake {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         //outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
-        kicker = new Kicker(hardwareMap, true);
+        kickerGrav = new KickerGrav(hardwareMap);
         //limelight = new Limelight(hardwareMap);
     }
 
@@ -115,11 +105,11 @@ public class Outtake {
         double time = interval.seconds();
         if (x){
             if (time >= 2.0 && time < 3.0 && getRPM() >= RPM-500){
-                kicker.up();
+                kickerGrav.up();
                 launched = true;
             }
             else if (time >= 3.0){
-                kicker.down();
+                kickerGrav.down();
                 if (launched){
                     kickerCycleCount++;
                 }
@@ -128,7 +118,7 @@ public class Outtake {
             }
         }
         else{
-            kicker.up();
+            kickerGrav.up();
             interval.reset();
         }
     }

@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -13,9 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerGrav;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
@@ -42,7 +40,7 @@ public class TeleOpMain extends LinearOpMode {
     private ElapsedTime masterClock = new ElapsedTime();
     private ElapsedTime ledClock = new ElapsedTime();
     private Outtake outtake = null;
-    private Kicker kicker = null;
+    private KickerGrav kickerGrav = null;
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
     private double speedFactor =  1;
     private boolean colorFound = false;
@@ -111,7 +109,7 @@ public class TeleOpMain extends LinearOpMode {
         // Initialize subsystems
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap, false);
+        kickerGrav = new KickerGrav(hardwareMap);
         colorFinder = new ColorFinder(hardwareMap);
         //extension = new Extension(hardwareMap);
         spindex = new Spindex(hardwareMap, true);
@@ -131,7 +129,7 @@ public class TeleOpMain extends LinearOpMode {
         telemetry.setMsTransmissionInterval(16);
         dashboardTelemetry.setMsTransmissionInterval(16);
         waitForStart();
-        kicker.down();
+        kickerGrav.down();
 
         // Initialize chassis movement after waitForStart
         // Note: This will reset encoders and initialize IMU
@@ -231,10 +229,10 @@ public class TeleOpMain extends LinearOpMode {
             //spindex.moveToPos();
 
             if (a.press(gamepad2.a)){
-                kicker.down();
+                kickerGrav.down();
             }
             else if (triangle.press(gamepad2.y)){
-                kicker.up();
+                kickerGrav.up();
             }
 
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){

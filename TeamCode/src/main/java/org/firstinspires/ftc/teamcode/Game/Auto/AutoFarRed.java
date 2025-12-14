@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerGrav;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
@@ -20,7 +20,7 @@ public class AutoFarRed extends LinearOpMode {
     private DcMotor backRightDrive;
     private DcMotorEx outtakeMotor = null;
     private ElapsedTime masterClock = new ElapsedTime();
-    private Kicker kicker = null;
+    private KickerGrav kickerGrav = null;
     private Outtake outtake = null;
     private boolean isActive = false;
     FtcDashboard dashboard = null;
@@ -32,7 +32,7 @@ public class AutoFarRed extends LinearOpMode {
         MecanumChassis robot = new MecanumChassis(this);
         robot.initializeMovement();
         outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap, true);
+        kickerGrav = new KickerGrav(hardwareMap);
 
         // Reverse the left motors if needed
 
