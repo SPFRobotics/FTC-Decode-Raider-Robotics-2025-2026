@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.LedLights;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 import org.w3c.dom.Element;
 
 import java.io.FileNotFoundException;
@@ -223,13 +224,13 @@ public class TeleOpMainGrav extends LinearOpMode {
                 kicker.up();
             }
 
-            if (setRPM == Outtake.OuttakeSpeed.closeRPM && outtake.getRPM() >= setRPM){
+            if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
             }
-            else if (setRPM == Outtake.OuttakeSpeed.farRPM && outtake.getRPM() >= setRPM){
+            else if (setRPM == farRPM && outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
             }
-            else if (setRPM == Outtake.OuttakeSpeed.sortRPM && outtake.getRPM() >= setRPM){
+            else if (setRPM == sortRPM && outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
             }
             else{
@@ -238,13 +239,13 @@ public class TeleOpMainGrav extends LinearOpMode {
 
             // Outtake control - right trigger
             if (outtakeFar.press(gamepad2.dpad_up)) {
-                setRPM = Outtake.OuttakeSpeed.farRPM;
+                setRPM = farRPM;
             }
             if(outtakeClose.press(gamepad2.dpad_down)){
-                setRPM = Outtake.OuttakeSpeed.closeRPM;
+                setRPM = closeRPM;
             }
             if (outtakeSort.press(gamepad2.share)){
-                setRPM = Outtake.OuttakeSpeed.sortRPM;
+                setRPM = sortRPM;
             }
             if (gamepad2.ps) {
                 setRPM = 0;

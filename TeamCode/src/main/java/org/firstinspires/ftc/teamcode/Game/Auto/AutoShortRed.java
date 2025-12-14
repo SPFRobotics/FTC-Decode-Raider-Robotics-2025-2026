@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 
 
 @Autonomous(name="Auto Short Red")
@@ -51,11 +52,11 @@ public class AutoShortRed extends LinearOpMode {
         waitForStart();
 
         robot.move(-.7, "backward", 48);
-        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
+        outtake.setRPM(closeRPM);
         //sleep(3000);
 
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM);
+            outtake.enableKickerCycle(true, closeRPM);
 
             if (outtake.getKickerCycleCount() == 3) {
                 break;

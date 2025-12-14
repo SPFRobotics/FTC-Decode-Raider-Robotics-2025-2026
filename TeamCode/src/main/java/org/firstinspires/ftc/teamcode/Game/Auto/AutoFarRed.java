@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 
 @Autonomous(name="Auto Red Long")
 public class AutoFarRed extends LinearOpMode {
@@ -37,12 +38,12 @@ public class AutoFarRed extends LinearOpMode {
 
         waitForStart();
         robot.rotate(-20.0,.1);
-        outtake.setRPM(Outtake.OuttakeSpeed.farRPM);
+        outtake.setRPM(farRPM);
         //sleep(3000);
 
 
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
+            outtake.enableKickerCycle(true, farRPM);
 
             if (outtake.getKickerCycleCount() == 3) {
                 break;

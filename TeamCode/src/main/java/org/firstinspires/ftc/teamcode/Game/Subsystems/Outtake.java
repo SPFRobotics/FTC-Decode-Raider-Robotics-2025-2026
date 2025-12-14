@@ -14,12 +14,13 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.openftc.apriltag.AprilTagDetection;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 
 import java.util.List;
 
 public class Outtake {
     @Config
-    public static class OuttakeSpeed{
+    public static class OuttakeConfig{
         public static double farRPM = 3300;
         public static double closeRPM = 2700;
         public static double sortRPM = 1000;
@@ -27,6 +28,7 @@ public class Outtake {
         public static double i = 3;
         public static double d = 0;
         public static double f = 0;
+        public static double gearRatio = 1.0625;
     }
 
     private ColorFinder colorFinder = null;
@@ -55,8 +57,7 @@ public class Outtake {
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         //outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //outtakeMotor.setVelocityPIDFCoefficients(OuttakeSpeed.p, OuttakeSpeed.i, OuttakeSpeed.d, OuttakeSpeed.f);
-        //outtakeMotor.setPositionPIDFCoefficients(5);
+        outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
         kicker = new Kicker(hardwareMap, true);
         //limelight = new Limelight(hardwareMap);
     }
@@ -104,8 +105,9 @@ public class Outtake {
         isActive = false;
     }
 
+    //This returns the speed of the flywheel NOT the motor itself
     public double getRPM() {
-        return ((outtakeMotor.getVelocity()*60)/28);
+        return ((outtakeMotor.getVelocity()*60)/28/gearRatio);
     }
 
 
@@ -139,9 +141,10 @@ public class Outtake {
         return interval.seconds();
     }
 
+    //This sets the speed of the flywheel to the correct RPM NOT the motor itself
     public void setRPM(double rpm){
         double tps = (rpm / 60.0) * 28;
-        outtakeMotor.setVelocity(tps);
+        outtakeMotor.setVelocity(tps*gearRatio);
     }
 
     public double getInverval(){

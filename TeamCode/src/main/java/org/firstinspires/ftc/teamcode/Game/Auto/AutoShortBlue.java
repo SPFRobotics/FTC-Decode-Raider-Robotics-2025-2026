@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -51,11 +51,11 @@ public class AutoShortBlue extends LinearOpMode {
         waitForStart();
 
         robot.move(-.7, "backward", 48);
-        outtake.setRPM(Outtake.OuttakeSpeed.closeRPM);
+        outtake.setRPM(closeRPM);
         //sleep(3000);
 
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.closeRPM);
+            outtake.enableKickerCycle(true, closeRPM);
 
             if (outtake.getKickerCycleCount() == 3) {
                 break;

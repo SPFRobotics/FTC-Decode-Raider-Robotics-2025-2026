@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 
-@Disabled
+@TeleOp
 public class OuttakeTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
