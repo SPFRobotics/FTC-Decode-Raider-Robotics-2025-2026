@@ -30,7 +30,7 @@ public class Test extends LinearOpMode {
         Spindex spindex = new Spindex(hardwareMap, true);
         waitForStart();
         while (opModeIsActive()){
-            if (moveSpindex.toggle(gamepad1.a)){
+            if (moveSpindex.press(gamepad1.a)){
                 index++;
             }
             spindex.moveToPos(outtakePos[Math.floorMod(index, 3)]);
