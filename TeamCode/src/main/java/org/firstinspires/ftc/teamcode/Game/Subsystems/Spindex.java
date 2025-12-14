@@ -20,8 +20,6 @@ public class Spindex {
     private static AnalogInput spindexPos = null;
     private DcMotor spindexMotor = null;
     private CRServo spindexServo = null;
-    //Stores weather the spindex is an intake or outtake mode
-    private boolean mode = false;
     //Stores weather the class is using a motor or servo
     private boolean motor = false;
     //Stores position and current index of spindex
