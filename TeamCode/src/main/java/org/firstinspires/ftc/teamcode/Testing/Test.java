@@ -29,13 +29,14 @@ public class Test extends LinearOpMode {
             }
             if (option.toggle(gamepad1.options)){
                 spindex.moveToPos(outtakePos[spindex.getIndex()]);
+                telemetry.addData("Target", outtakePos[spindex.getIndex()]);
             }
             else{
                 spindex.moveToPos(intakePos[spindex.getIndex()]);
+                telemetry.addData("Target", intakePos[spindex.getIndex()]);
             }
-            telemetry.getMsTransmissionInterval();
+            telemetry.setMsTransmissionInterval(16);
             telemetry.addData("Spindex Pos", spindex.getPos());
-            telemetry.addData("Target", intakePos[spindex.getIndex()]);
             telemetry.addLine(bigThree.foward());
             telemetry.addLine(daddyRyan.foward());
             telemetry.update();

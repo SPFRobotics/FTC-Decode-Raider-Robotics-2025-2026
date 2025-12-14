@@ -28,7 +28,7 @@ public class Spindex {
     @Config
     public static class SpindexValues{
         public static double maxPower = 0.6;
-        public static double Threshold = 150;
+        public static double Threshold = 125;
         public static double[] intakePos = {0, 120, 240};
         public static double[] outtakePos = {60, 180, 300};
     }
