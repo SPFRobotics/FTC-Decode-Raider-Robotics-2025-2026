@@ -70,14 +70,14 @@ public class Spindex {
 
             if(Math.abs(error) > Threshold){
 
-                spindexServo.setPower(maxPower * sign);
+                spindexMotor.setPower(maxPower * sign);
 
             } else if (Math.abs(error) > tolorence) {
 
-                spindexServo.setPower(error * kp);
+                spindexMotor.setPower(error * kp);
 
             }else {
-                spindexServo.setPower(0);
+                spindexMotor.setPower(0);
             }
         }
         else{
