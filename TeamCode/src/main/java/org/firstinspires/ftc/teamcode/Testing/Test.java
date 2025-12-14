@@ -16,6 +16,7 @@ public class Test extends LinearOpMode {
     public static class Testing{
         public static int[] PIDF = {10, 3, 0, 0};
         public static double[] intakePos = {0, 120, 240};
+        public static double[] outtakePos = {60, 180, 300};
     }
     private int index = 0;
     private Button moveSpindex = new Button();

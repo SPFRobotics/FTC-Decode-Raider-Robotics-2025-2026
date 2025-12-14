@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Testing.Test;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.maxPower;
 
 public class Spindex {
     //Servo encoder
@@ -24,6 +26,10 @@ public class Spindex {
     //Stores position and current index of spindex
     public int index = 0;
     public double currentPos = 0;
+    @Config
+    public static class SpindexValues{
+        public static double maxPower = 0;
+    }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
     public Spindex(HardwareMap hardwareMap, boolean motor){
@@ -54,7 +60,7 @@ public class Spindex {
 
             double Threshold = 30;
 
-            double maxPower = 0.1;
+            maxPower = 0.1;
 
             double tolorence = 5;
 
