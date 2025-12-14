@@ -33,7 +33,7 @@ public class Test extends LinearOpMode {
             if (moveSpindex.press(gamepad1.a)){
                 index++;
             }
-            spindex.moveToPos(outtakePos[Math.floorMod(index, 3)]);
+            spindex.moveToPos(50);
             telemetry.addLine(bigThree.foward());
             telemetry.addLine(daddyRyan.foward());
             telemetry.update();
