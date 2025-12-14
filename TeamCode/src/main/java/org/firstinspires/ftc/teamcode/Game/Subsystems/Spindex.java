@@ -33,7 +33,7 @@ public class Spindex {
     private boolean motor = false;
     //Stores position and current index of spindex
     public int index = 0;
-    public double targetPos = 0;
+    public int currentPos = 0;
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
     public Spindex(HardwareMap hardwareMap, boolean motor){
@@ -197,7 +197,12 @@ public class Spindex {
         }
     }
 
-    public static double getPos(){
-        return (int)(spindexPos.getVoltage() / 3.3 * 360);
+    public double getPos(){
+        if (motor){
+            return currentPos;
+        }
+        else{
+            return (int)(spindexPos.getVoltage() / 3.3 * 360);
+        }
     }
 }

@@ -33,9 +33,9 @@ public class Test extends LinearOpMode {
             if (moveSpindex.press(gamepad1.a)){
                 index++;
             }
-            spindex.moveToPos(50);
+            spindex.moveToPos(outtakePos[Math.floorMod(index, 3)]);
             telemetry.getMsTransmissionInterval();
-            telemetry.addData("Spindex Pos", Math.floorMod(spindex.spindexMotor.getCurrentPosition(), 360));
+            telemetry.addData("Spindex Pos", spindex.getPos());
             telemetry.addLine(bigThree.foward());
             telemetry.addLine(daddyRyan.foward());
             telemetry.update();
