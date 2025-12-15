@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
+import static com.bylazar.panels.Panels.*;
+
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.bylazar.panels.Panels;
+import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -12,9 +16,11 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import com.bylazar.telemetry.PanelsTelemetry;
 
 @TeleOp
 public class OuttakeTesting extends LinearOpMode {
+    private TelemetryManager telemetryM;
     PrintWriter pen = new PrintWriter("/sdcard/outtake.txt");
 
     public OuttakeTesting() throws FileNotFoundException {
@@ -22,6 +28,7 @@ public class OuttakeTesting extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
         Outtake outtake = new Outtake(hardwareMap);
         FtcDashboard dash = FtcDashboard.getInstance();
         Telemetry telemetry = dash.getTelemetry();
@@ -39,7 +46,10 @@ public class OuttakeTesting extends LinearOpMode {
                 outtake.setRPM(0);
             }
             pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + "\n");
+            telemetryM.addData("RPM", outtake.getRPM());
+            telemetryM.debug("RPM", outtake.getRPM());
             telemetry.addData("RPM", outtake.getRPM());
+            telemetryM.update();
             telemetry.update();
         }
         pen.close();
