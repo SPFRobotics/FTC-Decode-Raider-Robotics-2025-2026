@@ -41,6 +41,10 @@ public class Limelight {
             return -1;
         }
 
+
+
+
+
         List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
 
         if (fiducialResults == null || fiducialResults.isEmpty()) {
@@ -62,7 +66,14 @@ public class Limelight {
         // No valid motif detected
         return -1;
     }
+    public double getDistanceFromTag(){
+        LLResult llResult = limelight.getLatestResult();
+        double scale = 0;// we need to calculate this
 
+        double distance = scale/llResult.getTa();
+
+        return distance;
+    }
     //Gets Robot Field Coordinates
     public Pose3D botpose() {
         LLResult result = limelight.getLatestResult();
