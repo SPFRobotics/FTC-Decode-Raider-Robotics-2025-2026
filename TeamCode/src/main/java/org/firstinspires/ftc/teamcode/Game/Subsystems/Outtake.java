@@ -1,23 +1,44 @@
-package org.firstinspires.ftc.teamcode.Game.TeleOp;
+package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.openftc.apriltag.AprilTagDetection;
 
-import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
+import java.util.List;
 
 public class Outtake {
+    private Outtake outtake;
+
     @Config
     public static class OuttakeSpeed{
-        public static double farRPM = 3200;
-        public static double closeRPM = 2700;
-        public static double reverseRPM = -200;
+        public static double farRPM = 3300*1.125;
+        public static double closeRPM = 2700*1.125;
+        public static double sortRPM = 1000;
+        public static double p = 100;
+        public static double i = 0;
+        public static double d = 0;
+        public static double f = 0;
     }
+
+    private ColorFinder colorFinder = null;
+    public ColorSensor hardwareColorSensor = null;
     public DcMotorEx outtakeMotor = null;
     private Kicker kicker = null;
     private boolean isActive = false;
+    public boolean launched = false;
+
+    public Limelight limelight = null;
     private int encoderCount = 0;
     private boolean isFarLocation = true; // true = far (77%), false = short (55%)
     private boolean isBoosted = false; // Track if we're currently boosting
@@ -27,7 +48,7 @@ public class Outtake {
     private int kickerCycleCount = 0;
 
     //The "E"ncoder "R"esolution our current motor runs at.
-    private final int motorER = 28;
+    int motorER = 28;
 
     private ElapsedTime clock = new ElapsedTime();
     //Interval in seconds of outtake cycle
@@ -36,20 +57,39 @@ public class Outtake {
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        outtakeMotor.setVelocityPIDFCoefficients(OuttakeSpeed.p, OuttakeSpeed.i, OuttakeSpeed.d, OuttakeSpeed.f);
+        //outtakeMotor.setPositionPIDFCoefficients(5);
         kicker = new Kicker(hardwareMap);
+        limelight = new Limelight(hardwareMap);
     }
 
-    
+
+
+    public void ColorSort(){
+
+        limelight.getMotifId();
+        LLResult result = limelight.getLatestResult();
+        outtake.setRPM(Outtake.OuttakeSpeed.sortRPM);
+
+
+        if(result.equals(22)&& colorFinder.isGreen()&&kickerCycleCount==1||kickerCycleCount==3){
+            outtake.enableKickerCycle(true, OuttakeSpeed.sortRPM);
+            kicker.down(true);
+
+        }
+    }
+
+
     // Switch between far and short locations
     public void switchLocation() {
         isFarLocation = !isFarLocation;
     }
-    
+
     // Get current location (true = far, false = short)
     public boolean isFarLocation() {
         return isFarLocation;
     }
-    
+
     // Get current location name
     public String getLocationName() {
         return isFarLocation ? "FAR" : "SHORT";
@@ -70,25 +110,28 @@ public class Outtake {
     }
 
     public double getRPM() {
-        return (outtakeMotor.getVelocity()*60)/motorER;
+        return ((outtakeMotor.getVelocity()*60)/28);
     }
 
-    public void enableKickerCycle(boolean x, double RPM){
-        if (x){
-            if ((int)interval.seconds() == 0){
-                kicker.down();
 
+    public void enableKickerCycle(boolean x, double RPM){
+        double time = interval.seconds();
+        if (x){
+            if (time >= 2.0 && time < 3.0 && getRPM() >= RPM-500){
+                kicker.up(true);
+                launched = true;
             }
-            else if ((int)interval.seconds() >= 2 && getRPM() >= RPM) {
-                kicker.up();
-            }
-            else if ((int)interval.seconds() >= 5){
-                kickerCycleCount++;
+            else if (time >= 3.0){
+                kicker.down(true);
+                if (launched){
+                    kickerCycleCount++;
+                }
+                launched = false;
                 interval.reset();
             }
         }
         else{
-            kicker.up();
+            kicker.up(true);
             interval.reset();
         }
     }
@@ -102,12 +145,11 @@ public class Outtake {
     }
 
     public void setRPM(double rpm){
-        double tps = (rpm/60)*motorER;
+        double tps = (rpm / 60.0) * 28;
         outtakeMotor.setVelocity(tps);
-
     }
 
-
-
-
+    public double getInverval(){
+        return interval.seconds();
+    }
 }
