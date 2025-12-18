@@ -51,7 +51,32 @@ public class AutoFarBlue extends LinearOpMode {
             //System.out.printf(";%.3f;%d;%s%n", getRuntime(), (int)outtake.getRPM(), kicker.getState());
         }
         if (opModeIsActive()){
+            robot.rotate(-20.0 ,.1);
             robot.move(.9,"forward",20);
+            robot.rotate(90.0,.3);
+            robot.move(.9,"forward",30);
+            robot.move(.9,"backward",30);
+            robot.rotate(-90.0,.3);
+            robot.move(.9,"forward",67);
+            robot.rotate(25.0,.3);
+            //shoot
+            robot.move(.9,"backward",47);
+            robot.rotate(90.0,.3);
+            robot.move(.9,"forward",30);
+            robot.move(.9,"backward",30);
+            robot.rotate(-90.0,.3);
+            robot.move(.9,"forward",47);
+            robot.rotate(25.0,.3);
+            //shoot
+            robot.move(.9,"backward",27);
+            robot.rotate(90.0,.3);
+            robot.move(.9,"forward",30);
+            //intake
+            robot.move(.9,"backward",30);
+            robot.rotate(-90.0,.3);
+            robot.move(.9,"forward",27);
+            robot.rotate(25.0,.3);
+            //shoot
         }
 
     }
