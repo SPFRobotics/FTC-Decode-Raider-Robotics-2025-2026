@@ -9,6 +9,8 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 
@@ -34,6 +36,7 @@ public class BlueShortPath extends OpMode {
     private int pathState = DONE; // Current autonomous path state (state machine)
     private Paths paths; // Paths defined in the Paths class
     private Intake intake;
+    private Outtake outtake = new Outtake(hardwareMap);
 
     @Override
     public void init() {
@@ -193,6 +196,7 @@ public class BlueShortPath extends OpMode {
                     pathState = BACK_TO_SHOOT_FIRST;
                     break;
                 case BACK_TO_SHOOT_FIRST:
+                    outtake.setRPM(3200);
                     follower.followPath(paths.runToSecondIntakePos);
                     pathState = RUN_TO_SECOND;
                     break;
