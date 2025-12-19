@@ -68,12 +68,20 @@ public class Limelight {
     }
     public double getDistanceFromTag() {
         LLResult llResult = limelight.getLatestResult();
-        if (llResult == null || !llResult.isValid() || llResult.getTa() == 0) {
+        if (llResult == null || !llResult.isValid()) {
             return Double.NaN;
         }
 
         double ta = llResult.getTa();
-        return 4074.1 * Math.pow(ta, -1.983649);
+
+        if (ta <= 0.0 || Double.isNaN(ta) || Double.isInfinite(ta)) {
+            return Double.NaN;
+        }
+
+        // Distance = 3.389053 + (2010.070947)/(1 + (TA/0.002749054)^0.5809567)
+        return 3.389053
+                + (2010.070947
+                / (1.0 + Math.pow(ta / 0.002749054, 0.5809567)));
     }
 
     //Gets Robot Field Coordinates
