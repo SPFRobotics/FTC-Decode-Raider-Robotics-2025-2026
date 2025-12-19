@@ -36,7 +36,7 @@ public class BlueShortPath extends OpMode {
     private int pathState = DONE; // Current autonomous path state (state machine)
     private Paths paths; // Paths defined in the Paths class
     private Intake intake;
-    private Outtake outtake = new Outtake(hardwareMap);
+    //private Outtake outtake = new Outtake(hardwareMap);
 
     @Override
     public void init() {
@@ -196,7 +196,7 @@ public class BlueShortPath extends OpMode {
                     pathState = BACK_TO_SHOOT_FIRST;
                     break;
                 case BACK_TO_SHOOT_FIRST:
-                    outtake.setRPM(3200);
+                    //outtake.setRPM(3200);
                     follower.followPath(paths.runToSecondIntakePos);
                     pathState = RUN_TO_SECOND;
                     break;
