@@ -66,14 +66,16 @@ public class Limelight {
         // No valid motif detected
         return -1;
     }
-    public double getDistanceFromTag(){
+    public double getDistanceFromTag() {
         LLResult llResult = limelight.getLatestResult();
-        double scale = 0;// we need to calculate this
+        if (llResult == null || !llResult.isValid() || llResult.getTa() == 0) {
+            return Double.NaN;
+        }
 
-        double distance = scale/llResult.getTa();
-
-        return distance;
+        double ta = llResult.getTa();
+        return 4074.1 * Math.pow(ta, -1.983649);
     }
+
     //Gets Robot Field Coordinates
     public Pose3D botpose() {
         LLResult result = limelight.getLatestResult();

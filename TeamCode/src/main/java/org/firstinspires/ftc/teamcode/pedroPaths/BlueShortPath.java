@@ -1,84 +1,228 @@
-
 package org.firstinspires.ftc.teamcode.pedroPaths;
 
+import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-    public final class BlueShortPath  {
+@Autonomous(name = "Blue Short Path", group = "Autonomous")
+@Configurable // Panels
+public class BlueShortPath extends OpMode {
 
-        private BlueShortPath() {}
+    private static final int RUN_FROM_WALL = 0;
+    private static final int RUN_TO_FIRST = 1;
+    private static final int INTAKE_FIRST = 2;
+    private static final int BACK_TO_SHOOT_FIRST = 3;
+    private static final int RUN_TO_SECOND = 4;
+    private static final int INTAKE_SECOND = 5;
+    private static final int BACK_TO_SHOOT_SECOND = 6;
+    private static final int RUN_TO_THIRD = 7;
+    private static final int INTAKE_THIRD = 8;
+    private static final int BACK_TO_SHOOT_THIRD = 9;
+    private static final int LEAVE = 10;
+    private static final int DONE = 11;
 
-        // Start pose from your .pp export
-        public static final Pose START = new Pose(40.0, 136.0, Math.toRadians(90.0));
+    private TelemetryManager panelsTelemetry; // Panels Telemetry instance
+    public Follower follower; // Pedro Pathing follower instance
+    private int pathState = DONE; // Current autonomous path state (state machine)
+    private Paths paths; // Paths defined in the Paths class
 
-        /**
-         * Call: follower.followPath(BlueShortPath.build(follower));
-         */
-        public static PathChain build(Follower follower) {
+    @Override
+    public void init() {
+        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
-            // Waypoints (endpoints of each segment)
-            Pose p1  = new Pose(73.0,  76.0,  Math.toRadians(142.0));
-            Pose p2  = new Pose(40.0,  85.0,  Math.toRadians(180.0));
-            Pose p3  = new Pose(16.6,  85.0,  Math.toRadians(180.0));
-            Pose p4  = new Pose(78.0,  72.0,  Math.toRadians(142.0));
-            Pose p5  = new Pose(65.0,  58.0,  Math.toRadians(180.0));
-            Pose p6  = new Pose(15.0,  60.0,  0.0);                 // tangential heading; pose heading not used
-            Pose p7  = new Pose(78.0,  72.0,  Math.toRadians(142.0));
-            Pose p8  = new Pose(60.0,  32.0,  Math.toRadians(180.0));
-            Pose p9  = new Pose(13.0,  35.0,  0.0);                 // tangential heading; pose heading not used
-            Pose p10 = new Pose(78.0,  72.0,  Math.toRadians(142.0));
-            Pose p11 = new Pose(82.0,  54.0,  Math.toRadians(270.0));
+        follower = Constants.createFollower(hardwareMap);
+        // Start where the first generated path begins so the follower does not jump
+        follower.setStartingPose(new Pose(34.3, 135.0, Math.toRadians(90)));
 
-            return follower.pathBuilder()
+        paths = new Paths(follower); // Build paths
 
-                    // 1) Run From Wall: START -> p1, linear 90 -> 142
-                    .addPath(new BezierLine(START, p1))
-                    .setLinearHeadingInterpolation(Math.toRadians(90.0), Math.toRadians(142.0))
+        panelsTelemetry.debug("Status", "Initialized");
+        panelsTelemetry.update(telemetry);
+    }
 
-                    // 2) Run to first Intake pos: p1 -> p2, linear 142 -> 180
-                    .addPath(new BezierLine(p1, p2))
-                    .setLinearHeadingInterpolation(Math.toRadians(142.0), Math.toRadians(180.0))
+    @Override
+    public void loop() {
+        follower.update(); // Update Pedro Pathing
+        pathState = autonomousPathUpdate(); // Update autonomous state machine
 
-                    // 3) Intake: p2 -> p3, constant 180
-                    .addPath(new BezierLine(p2, p3))
-                    .setConstantHeadingInterpolation(Math.toRadians(180.0))
+        // Log values to Panels and Driver Station
+        panelsTelemetry.debug("Path State", pathState);
+        panelsTelemetry.debug("X", follower.getPose().getX());
+        panelsTelemetry.debug("Y", follower.getPose().getY());
+        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
+        panelsTelemetry.update(telemetry);
+    }
 
-                    // 4) Go back to shooting pos: p3 -> p4, linear 180 -> 142
-                    .addPath(new BezierLine(p3, p4))
-                    .setLinearHeadingInterpolation(Math.toRadians(180.0), Math.toRadians(142.0))
+    public static class Paths {
 
-                    // 5) run to second intake pos: p4 -> p5, linear 142 -> 180
-                    .addPath(new BezierLine(p4, p5))
-                    .setLinearHeadingInterpolation(Math.toRadians(142.0), Math.toRadians(180.0))
+        public final PathChain runFromWall;
+        public final PathChain runToFirstIntakePos;
+        public final PathChain intakeFirst;
+        public final PathChain goBackToShootingFirst;
+        public final PathChain runToSecondIntakePos;
+        public final PathChain intakeSecond;
+        public final PathChain goBackToShootingSecond;
+        public final PathChain runToThirdIntakePos;
+        public final PathChain intakeThird;
+        public final PathChain goBackToShootingThird;
+        public final PathChain leave;
 
-                    // 6) intake: p5 -> p6, tangential
-                    .addPath(new BezierLine(p5, p6))
+        public Paths(Follower follower) {
+            runFromWall = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(34.300, 135.000), new Pose(73.000, 76.000))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(142))
+                    .build();
+
+            runToFirstIntakePos = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(73.000, 76.000), new Pose(47.500, 85.000))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(142), Math.toRadians(180))
+                    .build();
+
+            intakeFirst = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(47.500, 85.000), new Pose(16.600, 85.000))
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .build();
+
+            goBackToShootingFirst = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(16.600, 85.000), new Pose(73.000, 76.000))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(142))
+                    .build();
+
+            runToSecondIntakePos = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(73.000, 76.000), new Pose(47.500, 60.000))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(142), Math.toRadians(180))
+                    .build();
+
+            intakeSecond = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(47.500, 60.000), new Pose(15.000, 60.000))
+                    )
                     .setTangentHeadingInterpolation()
+                    .build();
 
-                    // 7) Go back to shooting pos: p6 -> p7, linear 180 -> 142
-                    .addPath(new BezierLine(p6, p7))
-                    .setLinearHeadingInterpolation(Math.toRadians(180.0), Math.toRadians(142.0))
+            goBackToShootingSecond = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(15.000, 60.000), new Pose(73.000, 76.000))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(142))
+                    .build();
 
-                    // 8) Run to third intake pos: p7 -> p8, linear 142 -> 180
-                    .addPath(new BezierLine(p7, p8))
-                    .setLinearHeadingInterpolation(Math.toRadians(142.0), Math.toRadians(180.0))
+            runToThirdIntakePos = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(73.000, 76.000), new Pose(47.500, 35.000))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(142), Math.toRadians(180))
+                    .build();
 
-                    // 9) intake: p8 -> p9, tangential
-                    .addPath(new BezierLine(p8, p9))
+            intakeThird = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(47.500, 35.000), new Pose(13.000, 35.000))
+                    )
                     .setTangentHeadingInterpolation()
+                    .build();
 
-                    // 10) go back to shooting pos: p9 -> p10, linear 180 -> 142
-                    .addPath(new BezierLine(p9, p10))
-                    .setLinearHeadingInterpolation(Math.toRadians(180.0), Math.toRadians(142.0))
+            goBackToShootingThird = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(13.000, 35.000), new Pose(73.000, 76.000))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(142))
+                    .build();
 
-                    // 11) Leave: p10 -> p11, linear 142 -> 270
-                    .addPath(new BezierLine(p10, p11))
-                    .setLinearHeadingInterpolation(Math.toRadians(142.0), Math.toRadians(270.0))
-
+            leave = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(73.000, 76.000), new Pose(55.000, 55.000))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(142), Math.toRadians(142))
                     .build();
         }
     }
 
+    public int autonomousPathUpdate() {
+        // Simple sequential state machine: move to the next path once the current one finishes.
+        if (pathState == DONE) {
+            // First loop after init: kick off the run-from-wall path.
+            follower.followPath(paths.runFromWall);
+            return RUN_FROM_WALL;
+        }
 
+        if (!follower.isBusy()) {
+            switch (pathState) {
+                case RUN_FROM_WALL:
+                    follower.followPath(paths.runToFirstIntakePos);
+                    pathState = RUN_TO_FIRST;
+                    break;
+                case RUN_TO_FIRST:
+                    follower.followPath(paths.intakeFirst);
+                    pathState = INTAKE_FIRST;
+                    break;
+                case INTAKE_FIRST:
+                    follower.followPath(paths.goBackToShootingFirst);
+                    pathState = BACK_TO_SHOOT_FIRST;
+                    break;
+                case BACK_TO_SHOOT_FIRST:
+                    follower.followPath(paths.runToSecondIntakePos);
+                    pathState = RUN_TO_SECOND;
+                    break;
+                case RUN_TO_SECOND:
+                    follower.followPath(paths.intakeSecond);
+                    pathState = INTAKE_SECOND;
+                    break;
+                case INTAKE_SECOND:
+                    follower.followPath(paths.goBackToShootingSecond);
+                    pathState = BACK_TO_SHOOT_SECOND;
+                    break;
+                case BACK_TO_SHOOT_SECOND:
+                    follower.followPath(paths.runToThirdIntakePos);
+                    pathState = RUN_TO_THIRD;
+                    break;
+                case RUN_TO_THIRD:
+                    follower.followPath(paths.intakeThird);
+                    pathState = INTAKE_THIRD;
+                    break;
+                case INTAKE_THIRD:
+                    follower.followPath(paths.goBackToShootingThird);
+                    pathState = BACK_TO_SHOOT_THIRD;
+                    break;
+                case BACK_TO_SHOOT_THIRD:
+                    follower.followPath(paths.leave);
+                    pathState = LEAVE;
+                    break;
+                case LEAVE:
+                    pathState = DONE;
+                    requestOpModeStop();
+                    break;
+                default:
+                    pathState = DONE;
+            }
+        }
+        return pathState;
+    }
+}
