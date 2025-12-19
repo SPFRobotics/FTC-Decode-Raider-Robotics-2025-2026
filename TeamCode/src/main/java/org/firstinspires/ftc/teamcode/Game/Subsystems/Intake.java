@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Intake {
 
     public DcMotor intakeMotor = null;
-    public CRServo intakeServo = null;
     private boolean isActive = false;
     private int encoderCount = 0;
 
@@ -18,20 +17,23 @@ public class Intake {
     // Constructor - initializes the intake motor
     public Intake(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
-        intakeServo = hardwareMap.get(CRServo.class, "IntakeServo");
-        intakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
         //intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 
     public void setPower(double power) {
         intakeMotor.setPower(power);
-        intakeServo.setPower(power);
     }
 
     public double getPower(){
         return intakeMotor.getPower();
     }
+
+
+    public void intakeOn(){intakeMotor.setPower(1);}
+
+    public void intakeOff(){intakeMotor.setPower(0);}
+
 
     public double getRPM(double encoderRes){
         int currentPos = intakeMotor.getCurrentPosition();
