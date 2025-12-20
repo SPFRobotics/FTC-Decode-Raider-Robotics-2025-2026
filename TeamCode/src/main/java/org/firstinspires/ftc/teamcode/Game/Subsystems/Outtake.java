@@ -130,6 +130,15 @@ public class Outtake {
         return kickerCycleCount;
     }
 
+    public void resetKickerCycle(){
+        kickerCycleCount = 0;
+        launched = false;
+        interval.reset();
+        if (kickerGrav != null){
+            kickerGrav.down();
+        }
+    }
+
     public double getCurrentCycleTime(){
         return interval.seconds();
     }
