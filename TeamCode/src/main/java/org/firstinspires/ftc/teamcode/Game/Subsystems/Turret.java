@@ -12,7 +12,10 @@ public class Turret {
 
     public CRServo rotation = null;
 
+    public Outtake outtake = null;
+
     public Servo hood = null;
+
 
     public AnalogInput rotateEnconder = null;
     private Limelight limelight = null;
@@ -29,6 +32,7 @@ public class Turret {
         rotation = hardwareMap.get(CRServo.class, "turretServo");
         hood = hardwareMap.get(Servo.class,"hoodServo");
         limelight = new Limelight(hardwareMap);
+        outtake = new Outtake(hardwareMap);
         limelight.start();
 
     }
@@ -117,7 +121,16 @@ public class Turret {
 
 
 
+    public void autoHoodPos(){
 
+        double distance = limelight.getDistanceFromTag();
+        double RPM = outtake.getRPM();
+
+
+
+    }
+
+    public void setHoodPos(double x){hood.setPosition(x);}
 
 
 
