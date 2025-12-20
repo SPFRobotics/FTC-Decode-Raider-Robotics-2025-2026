@@ -36,13 +36,14 @@ public class BlueShortPath extends OpMode {
     private int pathState = DONE; // Current autonomous path state (state machine)
     private Paths paths; // Paths defined in the Paths class
     private Intake intake;
-    private Outtake outtake = new Outtake(hardwareMap);
+    private  Outtake outtake;
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         intake = new Intake(hardwareMap);
+         outtake = new Outtake(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         // Start where the first generated path begins so the follower does not jump
         follower.setStartingPose(new Pose(34.3, 135.0, Math.toRadians(90)));
@@ -176,8 +177,13 @@ public class BlueShortPath extends OpMode {
         if (pathState == DONE) {
             // First loop after init: kick off the run-from-wall path.
             follower.followPath(paths.runFromWall);
+            boolean finish = false;
+
             return RUN_FROM_WALL;
+
+            
         }
+
 
         if (!follower.isBusy()) {
             switch (pathState) {
@@ -196,7 +202,7 @@ public class BlueShortPath extends OpMode {
                     pathState = BACK_TO_SHOOT_FIRST;
                     break;
                 case BACK_TO_SHOOT_FIRST:
-                    outtake.setRPM(3200);
+                    //outtake.setRPM(3200);
                     follower.followPath(paths.runToSecondIntakePos);
                     pathState = RUN_TO_SECOND;
                     break;

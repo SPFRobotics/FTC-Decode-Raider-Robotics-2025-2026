@@ -101,7 +101,7 @@ public class Outtake {
     }
 
 
-    public void enableKickerCycle(boolean x, double RPM){
+    public boolean enableKickerCycle(boolean x, double RPM){
         double time = interval.seconds();
         if (x){
             if (time >= 2.0 && time < 3.0 && getRPM() >= RPM-500){
@@ -121,6 +121,9 @@ public class Outtake {
             kickerGrav.up();
             interval.reset();
         }
+
+
+        return true;
     }
 
     public int getKickerCycleCount(){
@@ -129,6 +132,16 @@ public class Outtake {
 
     public double getCurrentCycleTime(){
         return interval.seconds();
+    }
+
+    public void shortAuto(){
+        double RPM = 2700;
+
+
+        setRPM(RPM);
+        enableKickerCycle(true,RPM);
+
+
     }
 
     //This sets the speed of the flywheel to the correct RPM NOT the motor itself

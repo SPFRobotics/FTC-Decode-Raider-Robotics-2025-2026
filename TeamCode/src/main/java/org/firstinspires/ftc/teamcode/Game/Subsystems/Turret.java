@@ -4,12 +4,15 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Turret {
 
     public CRServo rotation = null;
+
+    public Servo hood = null;
 
     public AnalogInput rotateEnconder = null;
     private Limelight limelight = null;
@@ -23,7 +26,8 @@ public class Turret {
 
     public Turret(HardwareMap hardwareMap){
 
-        rotation = hardwareMap.get(CRServo.class, "TurretServo");
+        rotation = hardwareMap.get(CRServo.class, "turretServo");
+        hood = hardwareMap.get(Servo.class,"hoodServo");
         limelight = new Limelight(hardwareMap);
         limelight.start();
 
@@ -110,6 +114,10 @@ public class Turret {
 
 
     }
+
+
+
+
 
 
 
