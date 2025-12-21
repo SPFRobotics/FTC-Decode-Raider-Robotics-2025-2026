@@ -18,8 +18,8 @@ public class KickerSpindex {
 
     //Accepts boolean for if we are using the gravity feed or spindex design
     public KickerSpindex(HardwareMap hardwareMap){
-        leftKicker = hardwareMap.get(Servo.class, "leftKicker");
-        rightKicker = hardwareMap.get(Servo.class, "rightKicker");
+        leftKicker = hardwareMap.get(Servo.class, "kickerLeft");
+        rightKicker = hardwareMap.get(Servo.class, "kickerRight");
         leftKicker.setDirection(Servo.Direction.REVERSE);
     }
 

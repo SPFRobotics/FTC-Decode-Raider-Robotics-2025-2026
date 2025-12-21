@@ -10,6 +10,7 @@ public class ColorFinder {
     // Constructor with HardwareMap - initializes the color sensor
     public ColorFinder(HardwareMap hardwareMap) {
         hardwareColorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        DistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, "colorSensor");
     }
     
     public int[] getColor() {
@@ -21,6 +22,10 @@ public class ColorFinder {
         int b = Math.min(hardwareColorSensor.blue(), 255);
         return new int[]{r, g, b};
     }
+
+    /*public double getDistance(){
+        hardwareColorSensor.
+    }*/
     
     public boolean isPurple() {
         if (hardwareColorSensor == null) {

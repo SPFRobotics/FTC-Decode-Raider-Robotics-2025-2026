@@ -26,6 +26,7 @@ public class Spindex {
     //Stores position and current index of spindex
     private int index = 0;
     private double currentPos = 0;
+    private double error = 0;
     @Config
     public static class SpindexValues{
         public static double maxPower = 0.75;
@@ -42,7 +43,7 @@ public class Spindex {
             spindexMotor = hardwareMap.get(DcMotor.class, "spindex");
             spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            //spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         else{
             spindexServo = hardwareMap.get(CRServo.class, "spindex");
@@ -57,7 +58,7 @@ public class Spindex {
         if (motor){
             currentPos = Math.floorMod((int)((double)spindexMotor.getCurrentPosition()/8192*360), 360);
 
-            double error = AngleUnit.normalizeDegrees(target - currentPos);
+            error = AngleUnit.normalizeDegrees(target - currentPos);
 
             double sign = Math.signum(error);
 
@@ -113,5 +114,13 @@ public class Spindex {
 
     public double getPos(){
         return currentPos;
+    }
+
+    public double getPower(){
+        return spindexMotor.getPower();
+    }
+
+    public double getError(){
+        return error;
     }
 }

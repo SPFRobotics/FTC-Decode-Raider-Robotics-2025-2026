@@ -14,6 +14,9 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 @TeleOp(name="Test")
 //@Disabled
 public class Test extends LinearOpMode {
@@ -23,11 +26,17 @@ public class Test extends LinearOpMode {
     private Button option = new Button();
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
+    private PrintWriter pen = new PrintWriter("/sdcard/spindex.txt");
+
+    public Test() throws FileNotFoundException {
+    }
+
     public void runOpMode(){
         //limelight = new Limelight(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap, true);
         //KickerSpindex kicker = new KickerSpindex(hardwareMap);
         Intake intake = new Intake(hardwareMap);
+        KickerSpindex kicker = new KickerSpindex(hardwareMap);
 
         waitForStart();
         while (opModeIsActive()) {
@@ -38,7 +47,6 @@ public class Test extends LinearOpMode {
                 intake.intakeOff();
             }
             //limelight.start();
-
 
             if (circle.press(gamepad1.circle)) {
                 spindex.addIndex();
@@ -52,14 +60,16 @@ public class Test extends LinearOpMode {
                 spindex.moveToPos(intakePos[spindex.getIndex()]);
                 telemetry.addData("Target", intakePos[spindex.getIndex()]);
             }
+
+            kicker.zero();
+
             telemetry.setMsTransmissionInterval(16);
             telemetry.addData("Spindex Pos", spindex.getPos());
             telemetry.addData("Pos", spindex.spindexMotor.getCurrentPosition());
             telemetry.addLine(bigThree.foward());
             telemetry.addLine(daddyRyan.foward());
             telemetry.update();
-
-
+            pen.write(spindex.getPos() + ":" + spindex.getError() + ":" + spindex.getPower() + "\n");
 
             /*LLResult llresult = limelight.getLatestResult();
             Pose3D botpose = null;
@@ -76,5 +86,6 @@ public class Test extends LinearOpMode {
             telemetry.addData("Distance", limelight.getDistanceFromTag());
             telemetry.update();*/
         }
+        pen.close();
     }
 }
