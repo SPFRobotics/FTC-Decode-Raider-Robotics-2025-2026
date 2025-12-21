@@ -19,6 +19,8 @@ public class Outtake {
         public static double d = 0;
         public static double f = 0;
         public static double gearRatio = 1.0625;
+
+        public static double kickerWaitTIme = 2;
     }
 
     private ColorFinder colorFinder = null;
@@ -104,11 +106,11 @@ public class Outtake {
     public void enableKickerCycle(boolean x, double RPM){
         double time = interval.seconds();
         if (x){
-            if (time >= 2.0 && time < 3.0 && getRPM() >= RPM-500){
+            if (time >= kickerWaitTIme && time < kickerWaitTIme+1 && getRPM() >= RPM-500){
                 kickerGrav.up();
                 launched = true;
             }
-            else if (time >= 3.0){
+            else if (time >= kickerWaitTIme+1){
                 kickerGrav.down();
                 if (launched){
                     kickerCycleCount++;
@@ -121,14 +123,35 @@ public class Outtake {
             kickerGrav.up();
             interval.reset();
         }
+
+
     }
 
     public int getKickerCycleCount(){
         return kickerCycleCount;
     }
 
+    public void resetKickerCycle(){
+        kickerCycleCount = 0;
+        launched = false;
+        interval.reset();
+        if (kickerGrav != null){
+            kickerGrav.down();
+        }
+    }
+
     public double getCurrentCycleTime(){
         return interval.seconds();
+    }
+
+    public void shortAuto(){
+        double RPM = 2700;
+
+
+        setRPM(RPM);
+        enableKickerCycle(true,RPM);
+
+
     }
 
     //This sets the speed of the flywheel to the correct RPM NOT the motor itself

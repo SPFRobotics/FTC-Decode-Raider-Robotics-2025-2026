@@ -30,19 +30,25 @@ public class BlueShortPath extends OpMode {
     private static final int BACK_TO_SHOOT_THIRD = 9;
     private static final int LEAVE = 10;
     private static final int DONE = 11;
+    private static final int SHOOT_FIRST = 12;
+    private static final int SHOOT_SECOND = 13;
+    private static final int SHOOT_THIRD = 14;
+
+    private static final double SHOOT_RPM = 3200;
 
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
     private int pathState = DONE; // Current autonomous path state (state machine)
     private Paths paths; // Paths defined in the Paths class
     private Intake intake;
-    //private Outtake outtake = new Outtake(hardwareMap);
+    private Outtake outtake;
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         intake = new Intake(hardwareMap);
+        outtake = new Outtake(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         // Start where the first generated path begins so the follower does not jump
         follower.setStartingPose(new Pose(34.3, 135.0, Math.toRadians(90)));
@@ -192,13 +198,23 @@ public class BlueShortPath extends OpMode {
                     break;
                 case INTAKE_FIRST:
                     intake.intakeOff();
+                    outtake.setRPM(SHOOT_RPM);
                     follower.followPath(paths.goBackToShootingFirst);
                     pathState = BACK_TO_SHOOT_FIRST;
                     break;
                 case BACK_TO_SHOOT_FIRST:
-                    //outtake.setRPM(3200);
-                    follower.followPath(paths.runToSecondIntakePos);
-                    pathState = RUN_TO_SECOND;
+                    outtake.resetKickerCycle();
+                    pathState = SHOOT_FIRST;
+                    break;
+                case SHOOT_FIRST:
+                    outtake.setRPM(SHOOT_RPM);
+                    outtake.enableKickerCycle(true, SHOOT_RPM);
+                    if (outtake.getKickerCycleCount() >= 3) {
+                        outtake.setRPM(0);
+                        outtake.resetKickerCycle();
+                        follower.followPath(paths.runToSecondIntakePos);
+                        pathState = RUN_TO_SECOND;
+                    }
                     break;
                 case RUN_TO_SECOND:
                     intake.intakeOn();
@@ -207,12 +223,23 @@ public class BlueShortPath extends OpMode {
                     break;
                 case INTAKE_SECOND:
                     intake.intakeOff();
+                    outtake.setRPM(SHOOT_RPM);
                     follower.followPath(paths.goBackToShootingSecond);
                     pathState = BACK_TO_SHOOT_SECOND;
                     break;
                 case BACK_TO_SHOOT_SECOND:
-                    follower.followPath(paths.runToThirdIntakePos);
-                    pathState = RUN_TO_THIRD;
+                    outtake.resetKickerCycle();
+                    pathState = SHOOT_SECOND;
+                    break;
+                case SHOOT_SECOND:
+                    outtake.setRPM(SHOOT_RPM);
+                    outtake.enableKickerCycle(true, SHOOT_RPM);
+                    if (outtake.getKickerCycleCount() >= 3) {
+                        outtake.setRPM(0);
+                        outtake.resetKickerCycle();
+                        follower.followPath(paths.runToThirdIntakePos);
+                        pathState = RUN_TO_THIRD;
+                    }
                     break;
                 case RUN_TO_THIRD:
                     intake.intakeOn();
@@ -221,16 +248,27 @@ public class BlueShortPath extends OpMode {
                     break;
                 case INTAKE_THIRD:
                     intake.intakeOff();
+                    outtake.setRPM(SHOOT_RPM);
                     follower.followPath(paths.goBackToShootingThird);
                     pathState = BACK_TO_SHOOT_THIRD;
                     break;
                 case BACK_TO_SHOOT_THIRD:
-                    intake.intakeOff();
-                    follower.followPath(paths.leave);
-                    pathState = LEAVE;
+                    outtake.resetKickerCycle();
+                    pathState = SHOOT_THIRD;
+                    break;
+                case SHOOT_THIRD:
+                    outtake.setRPM(SHOOT_RPM);
+                    outtake.enableKickerCycle(true, SHOOT_RPM);
+                    if (outtake.getKickerCycleCount() >= 3) {
+                        outtake.setRPM(0);
+                        outtake.resetKickerCycle();
+                        follower.followPath(paths.leave);
+                        pathState = LEAVE;
+                    }
                     break;
                 case LEAVE:
                     intake.intakeOff();
+                    outtake.setRPM(0);
                     pathState = DONE;
                     requestOpModeStop();
                     break;
