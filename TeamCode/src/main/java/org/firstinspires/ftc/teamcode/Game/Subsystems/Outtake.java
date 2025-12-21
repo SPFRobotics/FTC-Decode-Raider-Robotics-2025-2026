@@ -19,6 +19,8 @@ public class Outtake {
         public static double d = 0;
         public static double f = 0;
         public static double gearRatio = 1.0625;
+
+        public static double kickerWaitTIme = 2;
     }
 
     private ColorFinder colorFinder = null;
@@ -101,14 +103,14 @@ public class Outtake {
     }
 
 
-    public boolean enableKickerCycle(boolean x, double RPM){
+    public void enableKickerCycle(boolean x, double RPM){
         double time = interval.seconds();
         if (x){
-            if (time >= 2.0 && time < 3.0 && getRPM() >= RPM-500){
+            if (time >= kickerWaitTIme && time < kickerWaitTIme+1 && getRPM() >= RPM-500){
                 kickerGrav.up();
                 launched = true;
             }
-            else if (time >= 3.0){
+            else if (time >= kickerWaitTIme+1){
                 kickerGrav.down();
                 if (launched){
                     kickerCycleCount++;
@@ -123,7 +125,6 @@ public class Outtake {
         }
 
 
-        return true;
     }
 
     public int getKickerCycleCount(){
