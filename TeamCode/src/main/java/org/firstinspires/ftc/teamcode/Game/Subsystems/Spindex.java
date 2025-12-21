@@ -19,7 +19,7 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 public class Spindex {
     //Servo encoder
     private static AnalogInput spindexPos = null;
-    private DcMotor spindexMotor = null;
+    public DcMotor spindexMotor = null;
     private CRServo spindexServo = null;
     //Stores weather the class is using a motor or servo
     private boolean motor = false;
@@ -55,7 +55,7 @@ public class Spindex {
     //Moves the servo or motor to the target position by finding the shortest path
     public void moveToPos(double target) {
         if (motor){
-            currentPos = Math.floorMod((int)(spindexMotor.getCurrentPosition()/537.7*360), 360);
+            currentPos = Math.floorMod((int)((double)spindexMotor.getCurrentPosition()/8192*360), 360);
 
             double error = AngleUnit.normalizeDegrees(target - currentPos);
 
