@@ -21,6 +21,7 @@ public class Outtake {
         public static double gearRatio = 1.0625;
 
         public static double kickerWaitTIme = 2;
+        public static double kickerSettleTime = 0.2;
     }
 
     private ColorFinder colorFinder = null;
@@ -38,6 +39,9 @@ public class Outtake {
     private int updateCounter = 0; // Counter for RPM checking interval
     private double lastRPM = 0; // Store last RPM reading
     private int kickerCycleCount = 0;
+    private enum KickerCycleState { IDLE, WAITING_FOR_READY, MOVING_UP, MOVING_DOWN, SETTLING }
+    private KickerCycleState kickerState = KickerCycleState.IDLE;
+    private ElapsedTime kickerStateTimer = new ElapsedTime();
 
     //The "E"ncoder "R"esolution our current motor runs at.
     int motorER = 28;
@@ -104,27 +108,53 @@ public class Outtake {
 
 
     public void enableKickerCycle(boolean x, double RPM){
-        double time = interval.seconds();
-        if (x){
-            if (time >= kickerWaitTIme && time < kickerWaitTIme+1 && getRPM() >= RPM-500){
-                kickerGrav.up();
-                launched = true;
-            }
-            else if (time >= kickerWaitTIme+1){
-                kickerGrav.down();
-                if (launched){
-                    kickerCycleCount++;
-                }
-                launched = false;
-                interval.reset();
-            }
-        }
-        else{
+        if (!x){
+            resetKickerCycle();
             kickerGrav.up();
+            return;
+        }
+
+        if (kickerState == KickerCycleState.IDLE){
+            kickerState = KickerCycleState.WAITING_FOR_READY;
+            kickerStateTimer.reset();
             interval.reset();
         }
 
-
+        switch (kickerState){
+            case WAITING_FOR_READY:
+                if (interval.seconds() >= kickerWaitTIme && getRPM() >= RPM-500){
+                    kickerGrav.up();
+                    kickerState = KickerCycleState.MOVING_UP;
+                    kickerStateTimer.reset();
+                }
+                break;
+            case MOVING_UP:
+                if (kickerGrav.isAtUpPosition()){
+                    launched = true;
+                    kickerGrav.down();
+                    kickerState = KickerCycleState.MOVING_DOWN;
+                    kickerStateTimer.reset();
+                }
+                break;
+            case MOVING_DOWN:
+                if (kickerGrav.isAtDownPosition()){
+                    kickerState = KickerCycleState.SETTLING;
+                    kickerStateTimer.reset();
+                }
+                break;
+            case SETTLING:
+                if (kickerStateTimer.seconds() >= kickerSettleTime){
+                    if (launched){
+                        kickerCycleCount++;
+                    }
+                    launched = false;
+                    interval.reset();
+                    kickerState = KickerCycleState.WAITING_FOR_READY;
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     public int getKickerCycleCount(){
@@ -135,6 +165,8 @@ public class Outtake {
         kickerCycleCount = 0;
         launched = false;
         interval.reset();
+        kickerStateTimer.reset();
+        kickerState = KickerCycleState.IDLE;
         if (kickerGrav != null){
             kickerGrav.down();
         }
