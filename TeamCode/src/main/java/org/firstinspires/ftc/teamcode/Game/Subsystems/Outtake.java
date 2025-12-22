@@ -171,6 +171,10 @@ public class Outtake {
         return kickerCycleCount;
     }
 
+    public String getKickerState(){
+        return kickerState.name();
+    }
+
     public void resetKickerCycle(){
         kickerCycleCount = 0;
         launched = false;
