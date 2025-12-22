@@ -8,8 +8,9 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex.Kicke
 public class KickerSpindex {
     @Config
     public static class KickerConfig{
-        public static double down = 0.577;
-        public static double up = 0.8;
+        public static double down = 0.25;
+        public static double up = 0.39;
+        public static double offset = 0.4;
     }
     private Servo leftKicker = null;
     private Servo rightKicker = null;
@@ -26,13 +27,13 @@ public class KickerSpindex {
     public void up(){
         state = 1;
         leftKicker.setPosition(up);
-        rightKicker.setPosition(up);
+        rightKicker.setPosition(up+offset);
     }
 
     public void down(){
         state = 0;
         leftKicker.setPosition(down);
-        rightKicker.setPosition(down);
+        rightKicker.setPosition(down+offset);
     }
 
     public void zero(){
