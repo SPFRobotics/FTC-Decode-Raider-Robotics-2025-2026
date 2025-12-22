@@ -37,7 +37,7 @@ public class AutoFarRed extends LinearOpMode {
         // Reverse the left motors if needed
 
         waitForStart();
-        robot.rotate(-20.0,.1);
+        //robot.rotate(-20.0,.1);
         outtake.setRPM(farRPM);
         //sleep(3000);
 
