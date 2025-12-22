@@ -48,6 +48,7 @@ public class AutoFarRed extends LinearOpMode {
             telemetry.addData("KickerState", outtake.getKickerState());
             telemetry.addData("KickerCycles", outtake.getKickerCycleCount());
             telemetry.addData("OuttakeRPM", outtake.getRPM());
+            telemetry.addData("kicker position", kickerGrav.getPos());
             telemetry.update();
 
             if (outtake.getKickerCycleCount() == 3) {
