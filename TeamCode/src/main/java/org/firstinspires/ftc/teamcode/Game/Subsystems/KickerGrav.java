@@ -11,6 +11,10 @@ public class KickerGrav {
     public static class KickerConfig{
         public static double down = 0.05;
         public static double up = 0.18;
+        // Encoder targets (in degrees) and tolerance for the analog-feedback servo
+        public static double encoderDownDegrees = 0;
+        public static double encoderUpDegrees = 40;
+        public static double encoderToleranceDegrees = 3;
     }
     private Servo kicker = null;
     private AnalogInput servoPos = null;
@@ -30,7 +34,7 @@ public class KickerGrav {
     }
 
     public void down(){
-        
+        state = 0;
         kicker.setPosition(down);
     }
 
@@ -44,8 +48,15 @@ public class KickerGrav {
     }
 
 
-    public int getPos(){
+    public double getPos(){
+        return (servoPos.getVoltage()/3.3)*360.0;
+    }
 
-        return (int)((servoPos.getVoltage())/3.3*360);
+    public boolean isAtUpPosition(){
+        return Math.abs(getPos() - encoderUpDegrees) <= encoderToleranceDegrees;
+    }
+
+    public boolean isAtDownPosition(){
+        return Math.abs(getPos() - encoderDownDegrees) <= encoderToleranceDegrees;
     }
 }
