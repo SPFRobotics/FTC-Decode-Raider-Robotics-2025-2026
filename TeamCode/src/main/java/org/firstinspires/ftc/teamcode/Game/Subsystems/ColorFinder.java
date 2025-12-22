@@ -3,29 +3,29 @@ package org.firstinspires.ftc.teamcode.Game.Subsystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.*;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 public class ColorFinder {
 
     public ColorSensor hardwareColorSensor = null;
+    public DistanceSensor distanceSensor = null;
     
     // Constructor with HardwareMap - initializes the color sensor
     public ColorFinder(HardwareMap hardwareMap) {
         hardwareColorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
-        DistanceSensor distanceSensor = hardwareMap.get(DistanceSensor.class, "colorSensor");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "colorSensor");
     }
     
     public int[] getColor() {
-        if (hardwareColorSensor == null) {
-            return new int[]{0, 0, 0};
-        }
         int r = Math.min(hardwareColorSensor.red(), 255);
         int g = Math.min(hardwareColorSensor.green(), 255);
         int b = Math.min(hardwareColorSensor.blue(), 255);
         return new int[]{r, g, b};
     }
 
-    /*public double getDistance(){
-        hardwareColorSensor.
-    }*/
+    public double getDistance(){
+        return distanceSensor.getDistance(DistanceUnit.CM);
+    }
     
     public boolean isPurple() {
         if (hardwareColorSensor == null) {

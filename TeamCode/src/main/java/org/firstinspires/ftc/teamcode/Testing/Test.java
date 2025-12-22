@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerGrav;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
@@ -27,6 +28,11 @@ public class Test extends LinearOpMode {
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
     private PrintWriter pen = new PrintWriter("/sdcard/spindex.txt");
+    ColorFinder colorSensor = null;
+    private int rgb[];
+    int hsv[];
+
+
 
     public Test() throws FileNotFoundException {
     }
@@ -37,10 +43,13 @@ public class Test extends LinearOpMode {
         //KickerSpindex kicker = new KickerSpindex(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
+        colorSensor = new ColorFinder(hardwareMap);
 
         waitForStart();
         while (opModeIsActive()) {
-            if (gamepad1.a){
+            rgb = colorSensor.getColor();
+            hsv = colorSensor.rgbToHSV(rgb[0], rgb[1], rgb[2]);
+            if (gamepad1.right_bumper){
                 intake.intakeOn();
             }
             else {
@@ -61,11 +70,18 @@ public class Test extends LinearOpMode {
                 telemetry.addData("Target", intakePos[spindex.getIndex()]);
             }
 
-            kicker.zero();
+            if (gamepad1.triangle){
+                kicker.up();
+            }
+            else if (gamepad1.cross){
+                kicker.down();
+            }
 
             telemetry.setMsTransmissionInterval(16);
             telemetry.addData("Spindex Pos", spindex.getPos());
             telemetry.addData("Pos", spindex.spindexMotor.getCurrentPosition());
+            telemetry.addData("Distance", colorSensor.getDistance());
+            telemetry.addData("Color:", hsv[0]);
             telemetry.addLine(bigThree.foward());
             telemetry.addLine(daddyRyan.foward());
             telemetry.update();
