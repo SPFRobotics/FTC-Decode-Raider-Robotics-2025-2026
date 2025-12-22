@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
@@ -23,11 +24,15 @@ import java.io.PrintWriter;
 public class Test extends LinearOpMode {
     private Button circle = new Button();
     private Button square = new Button();
+    private DigitalChannel button = null;
+    private Button kickerButton = new Button();
+    private int ballCount = 0;
     //private Limelight limelight;
     private Button option = new Button();
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
     private PrintWriter pen = new PrintWriter("/sdcard/spindex.txt");
+
     ColorFinder colorSensor = null;
     private int rgb[];
     int hsv[];
@@ -44,12 +49,13 @@ public class Test extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
+        button = hardwareMap.get(DigitalChannel.class, "button");
 
         waitForStart();
         while (opModeIsActive()) {
             rgb = colorSensor.getColor();
             hsv = colorSensor.rgbToHSV(rgb[0], rgb[1], rgb[2]);
-            if (gamepad1.right_bumper){
+            if (button.getState()){
                 intake.intakeOn();
             }
             else {
@@ -57,11 +63,11 @@ public class Test extends LinearOpMode {
             }
             //limelight.start();
 
-            if (circle.press(gamepad1.circle)) {
+            if (colorSensor.getDistance() <= 3 && spindex.getPower() == 0 && ballCount < 3) {
                 spindex.addIndex();
-            } else if (square.press(gamepad1.square)) {
-                spindex.subtractIndex();
+                ballCount++;
             }
+
             if (option.toggle(gamepad1.options)) {
                 spindex.moveToPos(outtakePos[spindex.getIndex()]);
                 telemetry.addData("Target", outtakePos[spindex.getIndex()]);
@@ -70,12 +76,7 @@ public class Test extends LinearOpMode {
                 telemetry.addData("Target", intakePos[spindex.getIndex()]);
             }
 
-            if (gamepad1.triangle){
-                kicker.up();
-            }
-            else if (gamepad1.cross){
-                kicker.down();
-            }
+            //kicker.automate(kickerButton.press(!button.getState()));
 
             telemetry.setMsTransmissionInterval(16);
             telemetry.addData("Spindex Pos", spindex.getPos());
@@ -84,6 +85,7 @@ public class Test extends LinearOpMode {
             telemetry.addData("Color:", hsv[0]);
             telemetry.addLine(bigThree.foward());
             telemetry.addLine(daddyRyan.foward());
+            telemetry.addData("Button State", button.getState());
             telemetry.update();
             pen.write(spindex.getPos() + ":" + spindex.getError() + ":" + spindex.getPower() + "\n");
 
