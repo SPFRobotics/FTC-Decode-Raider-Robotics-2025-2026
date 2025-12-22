@@ -69,7 +69,6 @@ public class Spindex {
                 spindexMotor.setPower(maxPower * sign);
 
             } else if (Math.abs(error) > tolorence) {
-
                 spindexMotor.setPower(error * kp);
 
             }else {

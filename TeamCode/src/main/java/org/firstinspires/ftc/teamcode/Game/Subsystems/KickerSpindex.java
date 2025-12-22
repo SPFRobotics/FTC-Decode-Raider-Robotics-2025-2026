@@ -48,7 +48,7 @@ public class KickerSpindex {
             done = false;
             kickerClock.reset();
         }
-        if (kickerClock.milliseconds() >= 0.5){
+        if (kickerClock.milliseconds() >= 500){
             down();
             done = true;
         }

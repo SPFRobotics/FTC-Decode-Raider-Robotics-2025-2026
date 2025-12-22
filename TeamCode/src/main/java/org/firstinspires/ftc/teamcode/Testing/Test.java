@@ -50,12 +50,13 @@ public class Test extends LinearOpMode {
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
         button = hardwareMap.get(DigitalChannel.class, "button");
+        Button intakeButton = new Button();
 
         waitForStart();
         while (opModeIsActive()) {
             rgb = colorSensor.getColor();
             hsv = colorSensor.rgbToHSV(rgb[0], rgb[1], rgb[2]);
-            if (button.getState()){
+            if (intakeButton.toggle(gamepad1.right_bumper)){
                 intake.intakeOn();
             }
             else {
@@ -76,7 +77,7 @@ public class Test extends LinearOpMode {
                 telemetry.addData("Target", intakePos[spindex.getIndex()]);
             }
 
-            //kicker.automate(kickerButton.press(!button.getState()));
+            kicker.automate(kickerButton.press(gamepad1.a));
 
             telemetry.setMsTransmissionInterval(16);
             telemetry.addData("Spindex Pos", spindex.getPos());
