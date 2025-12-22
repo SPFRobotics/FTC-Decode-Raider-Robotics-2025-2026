@@ -39,7 +39,7 @@ public class Outtake {
     private int updateCounter = 0; // Counter for RPM checking interval
     private double lastRPM = 0; // Store last RPM reading
     private int kickerCycleCount = 0;
-    private enum KickerCycleState { IDLE, WAITING_FOR_READY, MOVING_UP, MOVING_DOWN, SETTLING }
+    private enum KickerCycleState { IDLE, ENSURE_DOWN, DOWN_SETTLE, WAIT_FOR_RPM, MOVING_UP, MOVING_DOWN }
     private KickerCycleState kickerState = KickerCycleState.IDLE;
     private ElapsedTime kickerStateTimer = new ElapsedTime();
 
@@ -115,14 +115,30 @@ public class Outtake {
         }
 
         if (kickerState == KickerCycleState.IDLE){
-            kickerState = KickerCycleState.WAITING_FOR_READY;
+            kickerState = KickerCycleState.ENSURE_DOWN;
             kickerStateTimer.reset();
             interval.reset();
+            kickerGrav.down();
         }
 
         switch (kickerState){
-            case WAITING_FOR_READY:
-                if (interval.seconds() >= kickerWaitTIme && getRPM() >= RPM-500){
+            case ENSURE_DOWN:
+                // Make sure we are at the down encoder position before starting the shot cycle
+                kickerGrav.down();
+                if (kickerGrav.isAtDownPosition()){
+                    kickerState = KickerCycleState.DOWN_SETTLE;
+                    kickerStateTimer.reset();
+                }
+                break;
+            case DOWN_SETTLE:
+                // Give the ball a moment to roll onto the kicker while down
+                if (kickerStateTimer.seconds() >= kickerSettleTime){
+                    kickerState = KickerCycleState.WAIT_FOR_RPM;
+                }
+                break;
+            case WAIT_FOR_RPM:
+                // Only fire when flywheel is at speed based on RPM feedback
+                if (getRPM() >= RPM - 500){
                     kickerGrav.up();
                     kickerState = KickerCycleState.MOVING_UP;
                     kickerStateTimer.reset();
@@ -138,18 +154,12 @@ public class Outtake {
                 break;
             case MOVING_DOWN:
                 if (kickerGrav.isAtDownPosition()){
-                    kickerState = KickerCycleState.SETTLING;
-                    kickerStateTimer.reset();
-                }
-                break;
-            case SETTLING:
-                if (kickerStateTimer.seconds() >= kickerSettleTime){
                     if (launched){
                         kickerCycleCount++;
+                        launched = false;
                     }
-                    launched = false;
-                    interval.reset();
-                    kickerState = KickerCycleState.WAITING_FOR_READY;
+                    kickerState = KickerCycleState.DOWN_SETTLE;
+                    kickerStateTimer.reset();
                 }
                 break;
             default:
