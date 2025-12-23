@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerGrav;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;
@@ -48,8 +49,8 @@ public class Test extends LinearOpMode {
         //KickerSpindex kicker = new KickerSpindex(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
+        Outtake outtake = new Outtake(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
-        button = hardwareMap.get(DigitalChannel.class, "button");
         Button intakeButton = new Button();
 
         waitForStart();
@@ -75,6 +76,16 @@ public class Test extends LinearOpMode {
             } else {
                 spindex.moveToPos(intakePos[spindex.getIndex()]);
                 telemetry.addData("Target", intakePos[spindex.getIndex()]);
+            }
+
+            if (gamepad1.dpad_up){
+                outtake.setRPM(Outtake.OuttakeConfig.farRPM);
+            }
+            else if (gamepad1.dpad_down) {
+                outtake.setRPM(Outtake.OuttakeConfig.closeRPM);
+            }
+            else{
+                outtake.setRPM(0);
             }
 
             kicker.automate(kickerButton.press(gamepad1.a));
