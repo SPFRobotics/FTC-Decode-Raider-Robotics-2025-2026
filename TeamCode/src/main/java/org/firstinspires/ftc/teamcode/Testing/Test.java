@@ -47,7 +47,7 @@ public class Test extends LinearOpMode {
         Spindex spindex = new Spindex(hardwareMap, true);
         Intake intake = new Intake(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
-        Outtake outtake = new Outtake(hardwareMap);
+        Outtake outtake = new Outtake(hardwareMap, true);
         colorSensor = new ColorFinder(hardwareMap);
         Button intakeButton = new Button();
 

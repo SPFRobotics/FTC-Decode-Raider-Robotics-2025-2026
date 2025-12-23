@@ -50,9 +50,17 @@ public class Outtake {
     //Interval in seconds of outtake cycle
     private ElapsedTime interval = new ElapsedTime();
     // Constructor - initializes the intake motor
+    public Outtake(HardwareMap hardwareMap, boolean grav) {
+        outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
+        outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
+        if (grav){
+            kickerGrav = new KickerGrav(hardwareMap);
+        }
+        //limelight = new Limelight(hardwareMap);
+    }
+
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
-        //outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
         kickerGrav = new KickerGrav(hardwareMap);
         //limelight = new Limelight(hardwareMap);
