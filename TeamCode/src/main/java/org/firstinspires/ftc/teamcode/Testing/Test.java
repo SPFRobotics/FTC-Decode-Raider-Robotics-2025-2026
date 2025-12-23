@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerGrav;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
@@ -46,7 +45,6 @@ public class Test extends LinearOpMode {
     public void runOpMode(){
         //limelight = new Limelight(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap, true);
-        //KickerSpindex kicker = new KickerSpindex(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
