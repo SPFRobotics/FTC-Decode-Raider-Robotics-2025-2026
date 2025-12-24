@@ -208,6 +208,10 @@ public class Outtake {
 
     }
 
+    public double getPower(){
+        return outtakeMotor.getPower();
+    }
+
     //This sets the speed of the flywheel to the correct RPM NOT the motor itself
     public void setRPM(double rpm){
         double tps = (rpm / 60.0) * 28;

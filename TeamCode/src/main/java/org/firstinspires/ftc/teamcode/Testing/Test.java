@@ -99,6 +99,8 @@ public class Test extends LinearOpMode {
             telemetry.addData("Pos", spindex.spindexMotor.getCurrentPosition());
             telemetry.addData("Distance", colorSensor.getDistance());
             telemetry.addData("Color:", hsv[0]);
+            telemetry.addData("Outtke Power", outtake.getPower());
+            telemetry.addData("Outtake RPM", outtake.getRPM());
             telemetry.addLine(bigThree.foward());
             telemetry.addLine(daddyRyan.foward());
             telemetry.update();
