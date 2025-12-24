@@ -24,7 +24,6 @@ import java.io.PrintWriter;
 public class Test extends LinearOpMode {
     private Button circle = new Button();
     private Button square = new Button();
-    private DigitalChannel button = null;
     private Button kickerButton = new Button();
     private int ballCount = 0;
     //private Limelight limelight;
@@ -95,7 +94,6 @@ public class Test extends LinearOpMode {
             telemetry.addData("Color:", hsv[0]);
             telemetry.addLine(bigThree.foward());
             telemetry.addLine(daddyRyan.foward());
-            telemetry.addData("Button State", button.getState());
             telemetry.update();
             pen.write(spindex.getPos() + ":" + spindex.getError() + ":" + spindex.getPower() + "\n");
 
