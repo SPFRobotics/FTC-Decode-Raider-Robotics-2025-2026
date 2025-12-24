@@ -67,6 +67,13 @@ public class Test extends LinearOpMode {
                 ballCount++;
             }
 
+            if (square.press(gamepad1.square)){
+                spindex.addIndex();
+            }
+            else if (circle.press(gamepad1.circle)){
+                spindex.subtractIndex();
+            }
+
             if (option.toggle(gamepad1.options)) {
                 spindex.moveToPos(outtakePos[spindex.getIndex()]);
                 telemetry.addData("Target", outtakePos[spindex.getIndex()]);
