@@ -81,7 +81,7 @@ public class Test extends LinearOpMode {
             else if (gamepad1.dpad_down) {
                 outtake.setRPM(Outtake.OuttakeConfig.closeRPM);
             }
-            else{
+            else if (gamepad1.ps){
                 outtake.setRPM(0);
             }
 
