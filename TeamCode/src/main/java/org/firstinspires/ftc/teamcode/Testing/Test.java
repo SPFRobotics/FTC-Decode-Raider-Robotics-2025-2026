@@ -36,8 +36,6 @@ public class Test extends LinearOpMode {
     private int rgb[];
     int hsv[];
 
-
-
     public Test() throws FileNotFoundException {
     }
 
@@ -60,9 +58,8 @@ public class Test extends LinearOpMode {
             else {
                 intake.intakeOff();
             }
-            //limelight.start();
 
-            if (colorSensor.getDistance() <= 3 && spindex.getPower() == 0 && ballCount < 3) {
+            if (colorSensor.getDistance() <= 6.5 && spindex.getPower() == 0 && ballCount < 3) {
                 spindex.addIndex();
                 ballCount++;
             }

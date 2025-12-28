@@ -25,7 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-@TeleOp(name="Tele-Op Grav")
+//@TeleOp(name="Tele-Op Grav")
 public class TeleOpMainGrav extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;

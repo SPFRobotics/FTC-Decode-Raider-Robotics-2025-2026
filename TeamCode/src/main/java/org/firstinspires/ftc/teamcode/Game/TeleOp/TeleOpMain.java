@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerGrav;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
@@ -29,7 +29,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 @TeleOp(name="Tele-Op Main")
-
 public class TeleOpMain extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
@@ -41,14 +40,14 @@ public class TeleOpMain extends LinearOpMode {
     private ElapsedTime masterClock = new ElapsedTime();
     private ElapsedTime ledClock = new ElapsedTime();
     private Outtake outtake = null;
-    private KickerGrav kickerGrav = null;
+    private KickerSpindex kicker = null;
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
+    private int ballCount = 0;
     private double speedFactor =  1;
     private boolean colorFound = false;
     private Limelight limelight = null;
-    private IMU imu = null;
     private MecanumChassis chassis = null;
-    private ColorFinder colorFinder = null;
+    private ColorFinder colorSensor = null;
     //private Extension extension = null;
     private Spindex spindex = null;
     private boolean spindexOuttakeMode = false;
@@ -74,9 +73,7 @@ public class TeleOpMain extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();;
 
-
     private double setRPM = 0;
-    private com.qualcomm.robotcore.hardware.ColorSensor colorSensor = null;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
@@ -92,12 +89,6 @@ public class TeleOpMain extends LinearOpMode {
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
         ledLeft = hardwareMap.get(Servo.class, "leftLED");
         ledRight = hardwareMap.get(Servo.class, "rightLED");
-        imu = hardwareMap.get(IMU.class, "imu");
-
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        imu.initialize(parameters);
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -108,46 +99,28 @@ public class TeleOpMain extends LinearOpMode {
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Initialize subsystems
-        intake = new Intake(hardwareMap);
-        outtake = new Outtake(hardwareMap);
-        kickerGrav = new KickerGrav(hardwareMap);
-        colorFinder = new ColorFinder(hardwareMap);
-        //extension = new Extension(hardwareMap);
-        spindex = new Spindex(hardwareMap, true);
+        Intake intake = new Intake(hardwareMap);
+        Outtake outtake = new Outtake(hardwareMap, false);
+        KickerSpindex kicker = new KickerSpindex(hardwareMap);
+        colorSensor = new ColorFinder(hardwareMap);
+        Spindex spindex = new Spindex(hardwareMap, true);
 
-        //extension = new Extension(hardwareMap);
-        //limelight = new Limelight(hardwareMap, telemetry);
-        
+
         // Initialize LED Lights
         leftLED = new LedLights("leftLED", hardwareMap);
         rightLED = new LedLights("rightLED", hardwareMap);
-        
-        // Initialize MecanumChassis for encoder-based centering
-        chassis = new MecanumChassis(this);
 
         //Initialize Telemetry
 
         telemetry.setMsTransmissionInterval(16);
         dashboardTelemetry.setMsTransmissionInterval(16);
         waitForStart();
-        kickerGrav.down();
 
-        // Initialize chassis movement after waitForStart
-        // Note: This will reset encoders and initialize IMU
-        // The IMU orientation in MecanumChassis may differ from Limelight's orientation
-        // If there are issues, you may need to align the IMU orientations
-        chassis.initializeMovement();
-        
-        // Ensure motors are in manual control mode for TeleOp driving
-        // This allows direct power control without encoder interference
-        chassis.restoreManualControl();
-
-        // Start limelight after waitForStart
-        //limelight.start();
-        //ledLeft.setPosition(0.5);
-        //ledRight.setPosition(0.5);
         ElapsedTime timer = new ElapsedTime();
         while (opModeIsActive()) {
+            int[] rgb = colorSensor.getColor();
+            int[] hsv = colorSensor.rgbToHSV(rgb[0], rgb[1], rgb[2]);
+
             // Always ensure motors are in manual control mode for normal driving
             // This ensures they respond to direct power commands
             frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -162,16 +135,6 @@ public class TeleOpMain extends LinearOpMode {
                 speedFactor = 1;
             }
 
-            //Simple toggle for the kickstand using gamepad1 left trigger
-            //boolean kickstandRaised = kickstandToggle.toggle(gamepad1.left_trigger > 0.5);
-            //Extension.kickStandUp(kickstandRaised);
-
-            boolean xButtonPressed = centeringButton.press(gamepad1.cross);
-            //Field Oriented Drive
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-            //x = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-            //y = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
             double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
             double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
@@ -181,32 +144,8 @@ public class TeleOpMain extends LinearOpMode {
             frontRightDrive.setPower(y + x - rx);
             backRightDrive.setPower(y - x - rx);
 
-            //ouble denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-
-
-
-
-            //Automate the kicker
-            /*outtake.automate(a.toggle(gamepad2.a));
-            if (a.getState() && rumbled == false){
-                rumbled = true;
-                gamepad2.rumbleBlips(1);
-            }
-            else if (!a.getState() && rumbled == true){
-                rumbled = false;
-                gamepad2.rumbleBlips(2);
-            }*/
-            /* Extension trigger mapping is currently unused; leave stubbed for future reference.
-            while(gamepad1.left_trigger>0.1 && gamepad2.left_trigger>0.1){
-                Extension.setPower(1);
-            }
-            while(gamepad1.right_trigger>0.1 && gamepad2.right_trigger>0.1){
-                Extension.setPower(-1);
-            }
-            */
-
             // Intake toggle on Square button
-            boolean intakeActive = square.toggle(gamepad2.square);
+            boolean intakeActive = square.toggle(gamepad2.right_trigger > 0);
             if (intakeActive) {
                 if (gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0){
                     intake.setPower(-1);
@@ -229,11 +168,16 @@ public class TeleOpMain extends LinearOpMode {
             spindexOuttakeMode = spindexModeToggle.toggle(gamepad2.circle);
             //spindex.moveToPos();
 
+            if (colorSensor.getDistance() <= 3 && spindex.getPower() == 0 && ballCount < 3) {
+                spindex.addIndex();
+                ballCount++;
+            }
+
             if (a.press(gamepad2.a)){
-                kickerGrav.down();
+                kicker.down();
             }
             else if (triangle.press(gamepad2.y)){
-                kickerGrav.up();
+                kicker.up();
             }
 
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
@@ -258,29 +202,6 @@ public class TeleOpMain extends LinearOpMode {
             }
             
             outtake.setRPM(setRPM);
-
-            // Color detection and LED control
-            if (colorFinder != null) {
-                if (colorFinder.isGreen() && ledClock.milliseconds() >= 500) {
-                    leftLED.setGreen();
-                    rightLED.setGreen();
-                    colorFound = true;
-                } else if (colorFinder.isPurple() && ledClock.milliseconds() >= 500) {
-                    leftLED.setViolet();
-                    rightLED.setViolet();
-                    colorFound = true;
-                }
-                else{
-                    leftLED.turnOFF();
-                    rightLED.turnOFF();
-                    colorFound = false;
-                }
-                if (ledClock.milliseconds() >= 500 && !colorFound){
-                    ledClock.reset();
-                }
-            }
-
-
 
 /*
             // Driver Hub
@@ -365,7 +286,7 @@ public class TeleOpMain extends LinearOpMode {
 
              */
         pen.close();
-
+        telemetry.addData("Color:", hsv[0]);
         telemetry.addData("Loop Time", timer.milliseconds());
         timer.reset();
         dashboardTelemetry.update();
