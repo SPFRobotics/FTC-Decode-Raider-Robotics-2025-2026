@@ -33,6 +33,9 @@ public class Test extends LinearOpMode {
     private PrintWriter pen = new PrintWriter("/sdcard/spindex.txt");
 
     ColorFinder colorSensor = null;
+
+    //Keeps track of what ball is in what location. E = Empty, P = Purple, G = Green
+    private char[] colorList = {'E', 'E', 'E'};
     private int rgb[];
     int hsv[];
 
