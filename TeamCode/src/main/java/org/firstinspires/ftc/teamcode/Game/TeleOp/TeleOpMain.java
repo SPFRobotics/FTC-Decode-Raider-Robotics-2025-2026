@@ -71,7 +71,7 @@ public class TeleOpMain extends LinearOpMode {
     private Button square = new Button();
     //telemetry
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    Telemetry dashboardTelemetry = dashboard.getTelemetry();;
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
     private double setRPM = 0;
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
@@ -168,6 +168,7 @@ public class TeleOpMain extends LinearOpMode {
             spindexOuttakeMode = spindexModeToggle.toggle(gamepad2.circle);
             //spindex.moveToPos();
 
+            //Controls spindex loading using the color sensor
             if (colorSensor.getDistance() <= 3 && spindex.getPower() == 0 && ballCount < 3) {
                 spindex.addIndex();
                 ballCount++;

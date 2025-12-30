@@ -37,7 +37,7 @@ public class Test extends LinearOpMode {
     //Keeps track of what ball is in what location. E = Empty, P = Purple, G = Green
     private char[] colorList = {'E', 'E', 'E'};
     private int rgb[];
-    int hsv[];
+    private int hsv[];
 
     public Test() throws FileNotFoundException {
     }
