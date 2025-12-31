@@ -45,6 +45,8 @@ public class Test extends LinearOpMode {
     private int ballCount = 0;
     private double speedFactor =  1;
     private boolean colorFound = false;
+    //Used to check if all 3 balls have been launched
+    private boolean launched = true;
     private Limelight limelight = null;
     private MecanumChassis chassis = null;
     private ColorFinder colorSensor = null;
@@ -235,11 +237,7 @@ public class Test extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
-
-            pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + "\n");
-        }
-
-            pen.close();
             telemetry.update();
         }
     }
+}
