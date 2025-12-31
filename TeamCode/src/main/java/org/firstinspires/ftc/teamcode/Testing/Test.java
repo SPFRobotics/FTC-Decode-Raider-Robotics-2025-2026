@@ -168,8 +168,15 @@ public class Test extends LinearOpMode {
             spindexOuttakeMode = spindexModeToggle.toggle(gamepad1.circle);
 
 
-            if (kicker.automate(gamepad1.crossWasPressed())){
+            if (kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
                 spindex.addIndex();
+            }
+
+            if (spindexOuttakeMode){
+                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
+            }
+            else{
+                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
             }
 
             //Controls spindex loading using the color sensor
@@ -202,7 +209,7 @@ public class Test extends LinearOpMode {
 
             outtake.setRPM(setRPM);
 
-/*
+
             // Driver Hub
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
@@ -223,20 +230,8 @@ public class Test extends LinearOpMode {
             telemetry.addLine("=== AUTO-CENTERING ===");
             telemetry.addLine("=== SPINDEX ===");
             telemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
-            telemetry.addData("Current Position", Spindex.getPos());
             telemetry.addData("Index", spindex.getIndex());
 
-
-
-            if (colorFinder != null) {
-                String detectedColor = "NONE";
-                if (colorFinder.isPurple()) {
-                    detectedColor = "PURPLE";
-                } else if (colorFinder.isGreen()) {
-                    detectedColor = "GREEN";
-                }
-                telemetry.addData("Color Sensor", detectedColor);
-            }
 
 
             telemetry.addLine("==========================================");
@@ -260,20 +255,8 @@ public class Test extends LinearOpMode {
             dashboardTelemetry.addLine("=== AUTO-CENTERING ===");
             dashboardTelemetry.addLine("=== SPINDEX ===");
             dashboardTelemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
-            dashboardTelemetry.addData("Current Position", Spindex.getPos());
             dashboardTelemetry.addData("Index", spindex.getIndex());
 
-
-
-            if (colorFinder != null) {
-                String detectedColor = "NONE";
-                if (colorFinder.isPurple()) {
-                    detectedColor = "PURPLE";
-                } else if (colorFinder.isGreen()) {
-                    detectedColor = "GREEN";
-                }
-                dashboardTelemetry.addData("Color Sensor", detectedColor);
-            }
 
             dashboardTelemetry.addLine("==========================================");
             dashboardTelemetry.addLine(daddyRyan.foward());
@@ -283,13 +266,10 @@ public class Test extends LinearOpMode {
             pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + "\n");
         }
 
-             */
             pen.close();
-            telemetry.addData("Color:", hsv[0]);
             telemetry.addData("Loop Time", timer.milliseconds());
             timer.reset();
             dashboardTelemetry.update();
             telemetry.update();
         }
     }
-}
