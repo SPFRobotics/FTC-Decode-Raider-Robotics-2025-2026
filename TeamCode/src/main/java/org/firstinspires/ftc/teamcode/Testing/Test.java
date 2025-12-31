@@ -230,6 +230,7 @@ public class Test extends LinearOpMode {
             telemetry.addData("Index", spindex.getIndex());
             telemetry.addData("Spindex", spindex.getPos());
             telemetry.addData("Distance", colorSensor.getDistance());
+            telemetry.addData("Current", spindex.getAmps());
 
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());
