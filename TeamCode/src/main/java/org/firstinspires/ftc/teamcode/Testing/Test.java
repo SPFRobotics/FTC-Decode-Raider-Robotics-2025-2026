@@ -144,7 +144,7 @@ public class Test extends LinearOpMode {
             // Intake toggle on Square button
             boolean intakeActive = square.toggle(gamepad1.right_trigger > 0);
             if (intakeActive) {
-                if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0){
+                if (gamepad1.left_trigger > 0){
                     intake.setPower(-1);
                 }
                 else {
