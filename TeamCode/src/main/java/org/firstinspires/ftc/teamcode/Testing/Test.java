@@ -177,7 +177,7 @@ public class Test extends LinearOpMode {
             }
 
             //Controls spindex loading using the color sensor
-            if (colorSensor.getDistance() <= 3 && spindex.getPower() == 0 && ballCount < 3) {
+            if (colorSensor.getDistance() <= 6.5 && spindex.getPower() == 0 && ballCount < 3) {
                 spindex.addIndex();
                 ballCount++;
             }
@@ -229,6 +229,7 @@ public class Test extends LinearOpMode {
             telemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
             telemetry.addData("Index", spindex.getIndex());
             telemetry.addData("Spindex", spindex.getPos());
+            telemetry.addData("Distance", colorSensor.getDistance());
 
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());
