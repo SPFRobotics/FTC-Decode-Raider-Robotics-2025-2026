@@ -42,7 +42,7 @@ public class KickerSpindex {
     }
 
     //Automates the motions of moving the kicker up and down combining the two methods allowing both to be done with the click of a button
-    public void automate(boolean button){
+    public boolean automate(boolean button){
         if (done && button){
             up();
             done = false;
@@ -52,6 +52,7 @@ public class KickerSpindex {
             down();
             done = true;
         }
+        return done;
     }
 
     public void zero(){

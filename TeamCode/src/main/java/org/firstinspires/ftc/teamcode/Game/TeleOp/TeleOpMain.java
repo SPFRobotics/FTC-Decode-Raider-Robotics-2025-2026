@@ -28,7 +28,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-@TeleOp(name="Tele-Op Main")
+@Disabled
+//@TeleOp(name="Tele-Op Main")
 public class TeleOpMain extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
@@ -169,10 +170,10 @@ public class TeleOpMain extends LinearOpMode {
             //spindex.moveToPos();
 
             //Controls spindex loading using the color sensor
-            if (colorSensor.getDistance() <= 3 && spindex.getPower() == 0 && ballCount < 3) {
+            /*if (colorSensor.getDistance() <= 3 && spindex.getPower() == 0 && ballCount < 3) {
                 spindex.addIndex();
                 ballCount++;
-            }
+            }*/
 
             if (a.press(gamepad2.a)){
                 kicker.down();
