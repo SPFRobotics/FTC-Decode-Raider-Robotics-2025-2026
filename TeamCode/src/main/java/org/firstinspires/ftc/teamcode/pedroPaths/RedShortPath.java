@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.pedroPaths;
-
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
@@ -9,11 +8,12 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Autonomous(name = "Red Short Path", group = "Autonomous")
-@Configurable // Panels
+@Configurable
 public class RedShortPath extends OpMode {
 
     private static final int RUN_FROM_WALL = 0;
@@ -28,23 +28,30 @@ public class RedShortPath extends OpMode {
     private static final int BACK_TO_SHOOT_THIRD = 9;
     private static final int LEAVE = 10;
     private static final int DONE = 11;
+    private static final int SHOOT_FIRST = 12;
+    private static final int SHOOT_SECOND = 13;
+    private static final int SHOOT_THIRD = 14;
 
-    private TelemetryManager panelsTelemetry; // Panels Telemetry instance
-    public Follower follower; // Pedro Pathing follower instance
-    private int pathState = DONE; // Current autonomous path state (state machine)
-    private Paths paths; // Paths defined in the Paths class
+    private static final double SHOOT_RPM = 3200;
+
+    private TelemetryManager panelsTelemetry;
+    public Follower follower;
+    private int pathState = DONE;
+    private Paths paths;
     private Intake intake;
+    private Outtake outtake;
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         intake = new Intake(hardwareMap);
-        follower = Constants.createFollower(hardwareMap);
-        // Align with first path start to avoid pose jump
-        follower.setStartingPose(new Pose(110.1, 134.8, Math.toRadians(270)));
+        outtake = new Outtake(hardwareMap);
 
-        paths = new Paths(follower); // Build paths
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(34.3, 135.0, Math.toRadians(90)));
+
+        paths = new Paths(follower);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -52,10 +59,9 @@ public class RedShortPath extends OpMode {
 
     @Override
     public void loop() {
-        follower.update(); // Update Pedro Pathing
-        pathState = autonomousPathUpdate(); // Update autonomous state machine
+        follower.update();
+        pathState = autonomousPathUpdate();
 
-        // Log values to Panels and Driver Station
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("X", follower.getPose().getX());
         panelsTelemetry.debug("Y", follower.getPose().getY());
@@ -78,98 +84,66 @@ public class RedShortPath extends OpMode {
         public final PathChain leave;
 
         public Paths(Follower follower) {
-            runFromWall = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(110.100, 134.800), new Pose(73.000, 76.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(270), Math.toRadians(41))
+
+            runFromWall = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(34.300, 135.000), new Pose(73.000, 76.000)))
+                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(142))
                     .build();
 
-            runToFirstIntakePos = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(73.000, 76.000), new Pose(98.900, 85.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(41), Math.toRadians(360))
+            runToFirstIntakePos = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(73.000, 76.000), new Pose(47.500, 85.000)))
+                    .setLinearHeadingInterpolation(Math.toRadians(142), Math.toRadians(180))
                     .build();
 
-            intakeFirst = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(98.900, 85.000), new Pose(129.600, 85.000))
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(360))
+            intakeFirst = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(47.500, 85.000), new Pose(16.600, 85.000)))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            goBackToShootingFirst = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(129.600, 85.000), new Pose(71.000, 76.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(41))
+            goBackToShootingFirst = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(16.600, 85.000), new Pose(73.000, 76.000)))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(142))
                     .build();
 
-            runToSecondIntakePos = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(71.000, 76.000), new Pose(98.900, 60.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(41), Math.toRadians(360))
+            runToSecondIntakePos = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(73.000, 76.000), new Pose(47.500, 60.000)))
+                    .setLinearHeadingInterpolation(Math.toRadians(142), Math.toRadians(180))
                     .build();
 
-            intakeSecond = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(98.900, 60.000), new Pose(129.000, 60.000))
-                    )
+            intakeSecond = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(47.500, 60.000), new Pose(15.000, 60.000)))
                     .setTangentHeadingInterpolation()
                     .build();
 
-            goBackToShootingSecond = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(129.000, 60.000), new Pose(71.000, 76.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(41))
+            goBackToShootingSecond = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(15.000, 60.000), new Pose(73.000, 76.000)))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(142))
                     .build();
 
-            runToThirdIntakePos = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(71.000, 76.000), new Pose(98.900, 35.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(41), Math.toRadians(360))
+            runToThirdIntakePos = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(73.000, 76.000), new Pose(47.500, 35.000)))
+                    .setLinearHeadingInterpolation(Math.toRadians(142), Math.toRadians(180))
                     .build();
 
-            intakeThird = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(98.900, 35.000), new Pose(131.000, 35.000))
-                    )
+            intakeThird = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(47.500, 35.000), new Pose(13.000, 35.000)))
                     .setTangentHeadingInterpolation()
                     .build();
 
-            goBackToShootingThird = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(131.000, 35.000), new Pose(71.000, 76.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(41))
+            goBackToShootingThird = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(13.000, 35.000), new Pose(73.000, 76.000)))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(142))
                     .build();
 
-            leave = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(71.000, 76.000), new Pose(89.000, 55.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(41), Math.toRadians(41))
+            leave = follower.pathBuilder()
+                    .addPath(new BezierLine(new Pose(73.000, 76.000), new Pose(55.000, 55.000)))
+                    .setLinearHeadingInterpolation(Math.toRadians(142), Math.toRadians(142))
                     .build();
         }
     }
 
     public int autonomousPathUpdate() {
-        // Simple sequential state machine: advance when the current path finishes.
+
         if (pathState == DONE) {
             follower.followPath(paths.runFromWall);
             return RUN_FROM_WALL;
@@ -177,62 +151,112 @@ public class RedShortPath extends OpMode {
 
         if (!follower.isBusy()) {
             switch (pathState) {
+
                 case RUN_FROM_WALL:
                     follower.followPath(paths.runToFirstIntakePos);
                     pathState = RUN_TO_FIRST;
                     break;
+
                 case RUN_TO_FIRST:
                     intake.intakeOn();
                     follower.followPath(paths.intakeFirst);
                     pathState = INTAKE_FIRST;
                     break;
+
                 case INTAKE_FIRST:
                     intake.intakeOff();
+                    outtake.setRPM(SHOOT_RPM);
                     follower.followPath(paths.goBackToShootingFirst);
                     pathState = BACK_TO_SHOOT_FIRST;
                     break;
+
                 case BACK_TO_SHOOT_FIRST:
-                    follower.followPath(paths.runToSecondIntakePos);
-                    pathState = RUN_TO_SECOND;
+                    outtake.resetKickerCycle();
+                    pathState = SHOOT_FIRST;
                     break;
+
+                case SHOOT_FIRST:
+                    outtake.setRPM(SHOOT_RPM);
+                    outtake.enableKickerCycle(true, SHOOT_RPM);
+                    if (outtake.getKickerCycleCount() >= 3) {
+                        outtake.setRPM(0);
+                        outtake.resetKickerCycle();
+                        follower.followPath(paths.runToSecondIntakePos);
+                        pathState = RUN_TO_SECOND;
+                    }
+                    break;
+
                 case RUN_TO_SECOND:
                     intake.intakeOn();
                     follower.followPath(paths.intakeSecond);
                     pathState = INTAKE_SECOND;
                     break;
+
                 case INTAKE_SECOND:
                     intake.intakeOff();
+                    outtake.setRPM(SHOOT_RPM);
                     follower.followPath(paths.goBackToShootingSecond);
                     pathState = BACK_TO_SHOOT_SECOND;
                     break;
+
                 case BACK_TO_SHOOT_SECOND:
-                    follower.followPath(paths.runToThirdIntakePos);
-                    pathState = RUN_TO_THIRD;
+                    outtake.resetKickerCycle();
+                    pathState = SHOOT_SECOND;
                     break;
+
+                case SHOOT_SECOND:
+                    outtake.setRPM(SHOOT_RPM);
+                    outtake.enableKickerCycle(true, SHOOT_RPM);
+                    if (outtake.getKickerCycleCount() >= 3) {
+                        outtake.setRPM(0);
+                        outtake.resetKickerCycle();
+                        follower.followPath(paths.runToThirdIntakePos);
+                        pathState = RUN_TO_THIRD;
+                    }
+                    break;
+
                 case RUN_TO_THIRD:
                     intake.intakeOn();
                     follower.followPath(paths.intakeThird);
                     pathState = INTAKE_THIRD;
                     break;
+
                 case INTAKE_THIRD:
                     intake.intakeOff();
+                    outtake.setRPM(SHOOT_RPM);
                     follower.followPath(paths.goBackToShootingThird);
                     pathState = BACK_TO_SHOOT_THIRD;
                     break;
+
                 case BACK_TO_SHOOT_THIRD:
-                    intake.intakeOff();
-                    follower.followPath(paths.leave);
-                    pathState = LEAVE;
+                    outtake.resetKickerCycle();
+                    pathState = SHOOT_THIRD;
                     break;
+
+                case SHOOT_THIRD:
+                    outtake.setRPM(SHOOT_RPM);
+                    outtake.enableKickerCycle(true, SHOOT_RPM);
+                    if (outtake.getKickerCycleCount() >= 3) {
+                        outtake.setRPM(0);
+                        outtake.resetKickerCycle();
+                        follower.followPath(paths.leave);
+                        pathState = LEAVE;
+                    }
+                    break;
+
                 case LEAVE:
                     intake.intakeOff();
+                    outtake.setRPM(0);
                     pathState = DONE;
                     requestOpModeStop();
                     break;
+
                 default:
                     pathState = DONE;
+                    break;
             }
         }
+
         return pathState;
     }
 }
