@@ -5,21 +5,25 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.Resources.Unit;
 import org.firstinspires.ftc.teamcode.Testing.Test;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.Threshold;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.maxPower;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.tolorence;
 
+
 public class Spindex {
     //Servo encoder
     private static AnalogInput spindexPos = null;
-    public DcMotor spindexMotor = null;
+    public DcMotorEx spindexMotor = null;
     private CRServo spindexServo = null;
     //Stores weather the class is using a motor or servo
     private boolean motor = false;
@@ -40,7 +44,7 @@ public class Spindex {
     public Spindex(HardwareMap hardwareMap, boolean motor){
         this.motor = motor;
         if (motor){
-            spindexMotor = hardwareMap.get(DcMotor.class, "spindex");
+            spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
             spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -121,5 +125,9 @@ public class Spindex {
 
     public double getError(){
         return error;
+    }
+
+    public double getAmps(){
+        return spindexMotor.getCurrent(CurrentUnit.AMPS);
     }
 }
