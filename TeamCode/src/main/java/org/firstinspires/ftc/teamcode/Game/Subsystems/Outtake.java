@@ -16,7 +16,7 @@ public class Outtake {
         public static double farRPM = 3200;
         public static double closeRPM = 2700;
         public static double sortRPM = 1000;
-        public static double p = 265;
+        public static double p = 268;
         public static double i = 14.99;
         public static double d = 0;
         public static double f = 14.99;
