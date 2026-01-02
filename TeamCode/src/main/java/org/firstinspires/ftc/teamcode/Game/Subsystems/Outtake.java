@@ -4,6 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
@@ -14,10 +16,10 @@ public class Outtake {
         public static double farRPM = 3200;
         public static double closeRPM = 2700;
         public static double sortRPM = 1000;
-        public static double p = 100;
-        public static double i = 3;
+        public static double p = 265;
+        public static double i = 14.99;
         public static double d = 0;
-        public static double f = 0;
+        public static double f = 14.99;
         public static double gearRatio = 1.0625;
 
         public static double kickerWaitTIme = 2;
@@ -52,7 +54,11 @@ public class Outtake {
     // Constructor - initializes the intake motor
     public Outtake(HardwareMap hardwareMap, boolean grav) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
-        outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
+
+
+        PIDFCoefficients pdif = new PIDFCoefficients(p, 0, 0, f);
+        outtakeMotor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pdif);
+        //outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
         if (grav){
             kickerGrav = new KickerGrav(hardwareMap);
         }

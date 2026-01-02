@@ -13,6 +13,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
+
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.intakePos;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.outtakePos;
 
 @Autonomous(name = "Blue Short Path", group = "Autonomous")
 @Configurable // Panels
@@ -42,6 +47,11 @@ public class BlueShortPath extends OpMode {
     private Paths paths; // Paths defined in the Paths class
     private Intake intake;
     private Outtake outtake;
+    private Spindex spindex;
+    private int spindexSlot = 0;
+    private ColorFinder colorSensor;
+    private int ballCount = 0;
+    private static final double INTAKE_DISTANCE_CM = 3.0;
 
     @Override
     public void init() {
@@ -49,6 +59,8 @@ public class BlueShortPath extends OpMode {
 
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
+        spindex = new Spindex(hardwareMap, true);
+        colorSensor = new ColorFinder(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         // Start where the first generated path begins so the follower does not jump
         follower.setStartingPose(new Pose(34.3, 135.0, Math.toRadians(90)));
@@ -62,7 +74,9 @@ public class BlueShortPath extends OpMode {
     @Override
     public void loop() {
         follower.update(); // Update Pedro Pathing
+        checkIntakeAndAdvanceSpindex();
         pathState = autonomousPathUpdate(); // Update autonomous state machine
+        updateSpindexTarget();
 
         // Log values to Panels and Driver Station
         panelsTelemetry.debug("Path State", pathState);
@@ -277,5 +291,42 @@ public class BlueShortPath extends OpMode {
             }
         }
         return pathState;
+    }
+
+    // Position the spindex based on the current autonomous state and slot.
+    private void updateSpindexTarget() {
+        if (spindex == null) return;
+
+        switch (pathState) {
+            case INTAKE_FIRST:
+            case INTAKE_SECOND:
+            case INTAKE_THIRD:
+                spindex.moveToPos(intakePos[spindexSlot]);
+                break;
+            case BACK_TO_SHOOT_FIRST:
+            case SHOOT_FIRST:
+            case BACK_TO_SHOOT_SECOND:
+            case SHOOT_SECOND:
+            case BACK_TO_SHOOT_THIRD:
+            case SHOOT_THIRD:
+                spindex.moveToPos(outtakePos[spindexSlot]);
+                break;
+            default:
+                // Hold current slot/position; no move call needed.
+                break;
+        }
+    }
+
+    // Mimic test TeleOp behavior: when a ball is detected close and spindex is idle, advance slot.
+    private void checkIntakeAndAdvanceSpindex() {
+        if (spindex == null || colorSensor == null) return;
+
+        boolean inIntakeState = pathState == INTAKE_FIRST || pathState == INTAKE_SECOND || pathState == INTAKE_THIRD;
+        if (!inIntakeState) return;
+
+        if (colorSensor.getDistance() <= INTAKE_DISTANCE_CM && spindex.getPower() == 0 && ballCount < 3) {
+            spindexSlot = (spindexSlot + 1) % 3;
+            ballCount++;
+        }
     }
 }

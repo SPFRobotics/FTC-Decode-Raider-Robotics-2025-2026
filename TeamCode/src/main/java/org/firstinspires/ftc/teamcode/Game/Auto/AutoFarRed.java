@@ -38,12 +38,12 @@ public class AutoFarRed extends LinearOpMode {
 
         waitForStart();
         //robot.rotate(-20.0,.1);
-        outtake.setRPM(farRPM);
+        outtake.setRPM(3200);
         //sleep(3000);
 
 
         while (opModeIsActive()) {
-            outtake.enableKickerCycle(true, farRPM);
+            outtake.enableKickerCycle(true, 3200);
 
             telemetry.addData("KickerState", outtake.getKickerState());
             telemetry.addData("KickerCycles", outtake.getKickerCycleCount());
