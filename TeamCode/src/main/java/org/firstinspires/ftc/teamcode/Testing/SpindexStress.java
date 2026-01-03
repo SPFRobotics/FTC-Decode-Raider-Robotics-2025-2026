@@ -8,10 +8,10 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 @TeleOp
 public class SpindexStress extends LinearOpMode {
     public void runOpMode(){
-        Spindex spindex = new Spindex(hardwareMap, true);
+        Spindex spindex = new Spindex(hardwareMap);
         waitForStart();
         while (opModeIsActive()){
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], false);
             spindex.addIndex();
         }
     }

@@ -103,7 +103,7 @@ public class Test extends LinearOpMode {
         Outtake outtake = new Outtake(hardwareMap, false);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
-        Spindex spindex = new Spindex(hardwareMap, true);
+        Spindex spindex = new Spindex(hardwareMap);
 
 
         // Initialize LED Lights
@@ -166,16 +166,15 @@ public class Test extends LinearOpMode {
             }
             spindexOuttakeMode = spindexModeToggle.toggle(gamepad1.circle);
 
-
             if (kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
                 //spindex.addIndex();
             }
 
             if (spindexOuttakeMode){
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
+                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
             }
             else{
-                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
+                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
             }
 
             //Controls spindex loading using the color sensor
@@ -226,11 +225,12 @@ public class Test extends LinearOpMode {
             telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
             telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
             telemetry.addData("Rumbling:", gamepad2.isRumbling());
-            telemetry.addLine("=== AUTO-CENTERING ===");
+            telemetry.addLine("=== AUTO-CENK,TERING ===");
             telemetry.addLine("=== SPINDEX ===");
             telemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
             telemetry.addData("Index", spindex.getIndex());
             telemetry.addData("Spindex", spindex.getPos());
+            telemetry.addData("Voltage", spindex.getVoltage());
             telemetry.addData("Distance", colorSensor.getDistance());
             telemetry.addData("Current", spindex.getAmps());
 
