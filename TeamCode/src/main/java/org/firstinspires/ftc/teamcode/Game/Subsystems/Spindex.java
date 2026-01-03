@@ -19,7 +19,6 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.maxPower;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.tolorence;
 
-
 public class Spindex {
     //Servo encoder
     private static AnalogInput spindexPos = null;
@@ -29,6 +28,7 @@ public class Spindex {
     private int index = 0;
     private double currentPos = 0;
     private double error = 0;
+    private static char[] ballPositions = {'E', 'E', 'E'};
     @Config
     public static class SpindexValues{
         public static double maxPower = 0.75;
@@ -102,8 +102,16 @@ public class Spindex {
     public void subtractIndex(){
         index--;
     }
+
+    public void setIndex(int i){
+        index = i;
+    }
     public int getIndex(){
         return Math.floorMod(index, 3);
+    }
+
+    public char[] getBallPositions(){
+        return ballPositions;
     }
 
     public double getPos(){

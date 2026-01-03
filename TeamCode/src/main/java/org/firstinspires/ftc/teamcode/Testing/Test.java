@@ -166,7 +166,7 @@ public class Test extends LinearOpMode {
             }
             spindexOuttakeMode = spindexModeToggle.toggle(gamepad1.circle);
 
-            if (kicker.automate(gamepad1.crossWasPressed() && !spindexOuttakeMode)){
+            if (kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
                 //spindex.addIndex();
             }
 
@@ -178,7 +178,7 @@ public class Test extends LinearOpMode {
             }
 
             //Controls spindex loading using the color sensor
-            if (colorSensor.getDistance() <= 6.5 && spindex.getPower() == 0 && ballCount < 3) {
+            if (colorSensor.getDistance() <= 5.7 && spindex.getPower() == 0 && ballCount < 3) {
                 spindex.addIndex();
                 ballCount++;
             }
@@ -213,27 +213,22 @@ public class Test extends LinearOpMode {
             telemetry.addLine(bigThree.foward());
             telemetry.addLine("==========================================");
             telemetry.addLine("=== DRIVE & INTAKE ===");
-            telemetry.addData("Intake Active", intake);
             telemetry.addData("Outtake Active", outtake.isActive());
             if (a.getState() == true){
                 telemetry.addLine("Kicker Active");
             }
-            //telemetry.addData("Kickstand Up", Extension.isKickstandUp());
             telemetry.addData("Runtime", runtime.toString());
-            //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
             telemetry.addData("Outtake RPM: ", outtake.getRPM());
             telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
-            telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
             telemetry.addData("Rumbling:", gamepad2.isRumbling());
-            telemetry.addLine("=== AUTO-CENK,TERING ===");
             telemetry.addLine("=== SPINDEX ===");
             telemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
             telemetry.addData("Index", spindex.getIndex());
             telemetry.addData("Spindex", spindex.getPos());
             telemetry.addData("Voltage", spindex.getVoltage());
             telemetry.addData("Distance", colorSensor.getDistance());
+            telemetry.addData("Hue:", hsv[0]);
             telemetry.addData("Current", spindex.getAmps());
-
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
