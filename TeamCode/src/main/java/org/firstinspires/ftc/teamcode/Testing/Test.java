@@ -166,7 +166,7 @@ public class Test extends LinearOpMode {
             }
             spindexOuttakeMode = spindexModeToggle.toggle(gamepad1.circle);
 
-            if (kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
+            if (kicker.automate(gamepad1.crossWasPressed() && !spindexOuttakeMode)){
                 //spindex.addIndex();
             }
 
