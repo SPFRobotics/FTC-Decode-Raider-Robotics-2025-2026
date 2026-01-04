@@ -41,6 +41,8 @@ public class KickerSpindex {
         rightKicker.setPosition(down+offset);
     }
 
+
+
     //Automates the motions of moving the kicker up and down combining the two methods allowing both to be done with the click of a button
     public boolean automate(boolean button){
         if (done && button){
