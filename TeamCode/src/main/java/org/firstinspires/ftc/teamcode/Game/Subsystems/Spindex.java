@@ -28,7 +28,7 @@ public class Spindex {
     private static int index = 0;
     private double currentPos = 0;
     private double error = 0;
-    private static char[] slotStatus = {'E', 'E', 'E'};
+    private static char[] slotStatus = {'P', 'P', 'G'};
     @Config
     public static class SpindexValues{
         public static double maxPower = 0.75;

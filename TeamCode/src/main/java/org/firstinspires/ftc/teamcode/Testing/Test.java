@@ -80,13 +80,16 @@ public class Test extends LinearOpMode {
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
 
+    FtcDashboard dash = FtcDashboard.getInstance();
+    Telemetry telemetry = dash.getTelemetry();
+
     public Test() throws FileNotFoundException, UnsupportedEncodingException {
     }
 
     @Config
     public static class TestValues {
         public static double ballDistance = 5.7;
-        public static boolean disable = false;
+        public static boolean disable = true;
     }
 
     @Override
@@ -177,6 +180,7 @@ public class Test extends LinearOpMode {
             spindexOuttakeMode = spindexModeToggle.toggle(gamepad1.circle);
 
             if (kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
+                spindex.setSlotEmpty(spindex.getIndex());
                 //spindex.addIndex();
             }
 
@@ -187,17 +191,19 @@ public class Test extends LinearOpMode {
                 spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
             }
 
-            if (gamepad1.square && spindexOuttakeMode){
+            if (gamepad1.square){
                 for (int i = 0; i < 3; i++){
                     if (slotStatus[i] == 'P'){
-                        spindex.setIndex(i);
+                        spindex.setIndex((i+1)%3);
+                        break;
                     }
                 }
             }
-            else if (gamepad1.triangle && spindexOuttakeMode){
+            else if (gamepad1.triangle){
                 for (int i = 0; i < 3; i++){
                     if (slotStatus[i] == 'G'){
-                        spindex.setIndex(i);
+                        spindex.setIndex((i+1)%3);
+                        break;
                     }
                 }
             }
@@ -208,10 +214,10 @@ public class Test extends LinearOpMode {
                 ballCount++;
             }
 
-            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && slotStatus[spindex.getIndex()] == 'E'){
+            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindexOuttakeMode){
                 spindex.setSlotGreen(spindex.getIndex());
             }
-            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && slotStatus[spindex.getIndex()] == 'E'){
+            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindexOuttakeMode){
                 spindex.setSlotPurple(spindex.getIndex());
             }
 
