@@ -30,6 +30,8 @@ public class Outtake {
     public ColorSensor hardwareColorSensor = null;
     public DcMotorEx outtakeMotor = null;
     private KickerGrav kickerGrav = null;
+
+    private KickerSpindex kickerSpindex = null;
     private boolean isActive = false;
     public boolean launched = false;
 
@@ -69,6 +71,7 @@ public class Outtake {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
         kickerGrav = new KickerGrav(hardwareMap);
+        kickerSpindex = new KickerSpindex(hardwareMap);
         //limelight = new Limelight(hardwareMap);
     }
 
@@ -122,62 +125,47 @@ public class Outtake {
 
 
     public void enableKickerCycle(boolean x, double RPM){
-        if (!x){
-            resetKickerCycle();
-            kickerGrav.up();
-            return;
-        }
-
-        if (kickerState == KickerCycleState.IDLE){
-            kickerState = KickerCycleState.ENSURE_DOWN;
-            kickerStateTimer.reset();
-            interval.reset();
-            kickerGrav.down();
-        }
-
-        switch (kickerState){
-            case ENSURE_DOWN:
-                // Make sure we are at the down encoder position before starting the shot cycle
+        double time = interval.seconds();
+        if (x){
+            if (time >= 1 && time < 2 && getRPM() >= RPM-500){
+                kickerGrav.up();
+                launched = true;
+            }
+            else if (time >= 2){
                 kickerGrav.down();
-                if (kickerGrav.isAtDownPosition()){
-                    kickerState = KickerCycleState.DOWN_SETTLE;
-                    kickerStateTimer.reset();
+                if (launched){
+                    kickerCycleCount++;
                 }
-                break;
-            case DOWN_SETTLE:
-                // Give the ball a moment to roll onto the kicker while down
-                if (kickerStateTimer.seconds() >= kickerSettleTime){
-                    kickerState = KickerCycleState.WAIT_FOR_RPM;
+                launched = false;
+                interval.reset();
+            }
+        }
+        else{
+            kickerGrav.up();
+            interval.reset();
+        }
+    }
+
+
+    public void enableSpindexKickerCycle(boolean x, double RPM){
+        double time = interval.seconds();
+        if (x){
+            if (time >= 1 && time < 2 && getRPM() >= RPM-500){
+                kickerSpindex.up();
+                launched = true;
+            }
+            else if (time >= 2){
+                kickerSpindex.down();
+                if (launched){
+                    kickerCycleCount++;
                 }
-                break;
-            case WAIT_FOR_RPM:
-                // Only fire when flywheel is at speed based on RPM feedback
-                if (getRPM() >= RPM - 500){
-                    kickerGrav.up();
-                    kickerState = KickerCycleState.MOVING_UP;
-                    kickerStateTimer.reset();
-                }
-                break;
-            case MOVING_UP:
-                if (kickerGrav.isAtUpPosition()){
-                    launched = true;
-                    kickerGrav.down();
-                    kickerState = KickerCycleState.MOVING_DOWN;
-                    kickerStateTimer.reset();
-                }
-                break;
-            case MOVING_DOWN:
-                if (kickerGrav.isAtDownPosition()){
-                    if (launched){
-                        kickerCycleCount++;
-                        launched = false;
-                    }
-                    kickerState = KickerCycleState.DOWN_SETTLE;
-                    kickerStateTimer.reset();
-                }
-                break;
-            default:
-                break;
+                launched = false;
+                interval.reset();
+            }
+        }
+        else{
+            kickerSpindex.up();
+            interval.reset();
         }
     }
 
