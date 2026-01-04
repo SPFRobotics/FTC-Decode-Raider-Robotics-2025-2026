@@ -25,14 +25,14 @@ public class Spindex {
     public DcMotorEx spindexMotor = null;
     //Stores weather the class is using a motor or servo
     //Stores position and current index of spindex
-    private int index = 0;
+    private static int index = 0;
     private double currentPos = 0;
     private double error = 0;
-    private static char[] ballPositions = {'E', 'E', 'E'};
+    private static char[] slotStatus = {'E', 'E', 'E'};
     @Config
     public static class SpindexValues{
         public static double maxPower = 0.75;
-        public static double Threshold = 100;
+        public static double Threshold = 125;
         public static double tolorence = 5;
         public static double[] intakePos = {0, 120, 240};
         public static double[] outtakePos = {60, 180, 300};
@@ -45,6 +45,8 @@ public class Spindex {
         spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
+        slotStatus = new char[]{'E', 'E', 'E'};
+        index = 0;
     }
 
 
@@ -110,9 +112,22 @@ public class Spindex {
         return Math.floorMod(index, 3);
     }
 
-    public char[] getBallPositions(){
-        return ballPositions;
+    public char[] getSlotStatus (){
+        return slotStatus;
     }
+
+    //Methods used to set the color of the balls at the current index, detection is handled in the "main" code
+    /*########################################*/
+    public void setSlotEmpty(int i){
+        slotStatus[i] = 'E';
+    }
+    public void setSlotPurple(int i){
+        slotStatus[i] = 'P';
+    }
+    public void setSlotGreen(int i){
+        slotStatus[i] = 'G';
+    }
+    /*########################################*/
 
     public double getPos(){
         return currentPos;

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
@@ -50,7 +52,6 @@ public class Test extends LinearOpMode {
     private Limelight limelight = null;
     private MecanumChassis chassis = null;
     private ColorFinder colorSensor = null;
-    //private Extension extension = null;
     private Spindex spindex = null;
     private boolean spindexOuttakeMode = false;
 
@@ -64,7 +65,8 @@ public class Test extends LinearOpMode {
     private Button spindexModeToggle = new Button();
     private Button spindexRightBumper = new Button();
     private Button spindexLeftBumper = new Button();
-    //private Button kickstandToggle = new Button();
+    private Button kickstandToggle = new Button();
+    private Button extensionToggle = new Button();
     private Servo ledRight = null;
     private Servo ledLeft = null;
     private LedLights leftLED = null;
@@ -79,6 +81,12 @@ public class Test extends LinearOpMode {
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
 
     public Test() throws FileNotFoundException, UnsupportedEncodingException {
+    }
+
+    @Config
+    public static class TestValues {
+        public static double ballDistance = 5.7;
+        public static boolean disable = false;
     }
 
     @Override
@@ -104,6 +112,7 @@ public class Test extends LinearOpMode {
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
+        Extension extension = new Extension(hardwareMap, "kickstand");
 
 
         // Initialize LED Lights
@@ -119,6 +128,7 @@ public class Test extends LinearOpMode {
         while (opModeIsActive()) {
             int[] rgb = colorSensor.getColor();
             int[] hsv = colorSensor.rgbToHSV(rgb[0], rgb[1], rgb[2]);
+            char[] slotStatus = spindex.getSlotStatus();
 
             // Always ensure motors are in manual control mode for normal driving
             // This ensures they respond to direct power commands
@@ -177,10 +187,32 @@ public class Test extends LinearOpMode {
                 spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
             }
 
+            if (gamepad1.square && spindexOuttakeMode){
+                for (int i = 0; i < 3; i++){
+                    if (slotStatus[i] == 'P'){
+                        spindex.setIndex(i);
+                    }
+                }
+            }
+            else if (gamepad1.triangle && spindexOuttakeMode){
+                for (int i = 0; i < 3; i++){
+                    if (slotStatus[i] == 'G'){
+                        spindex.setIndex(i);
+                    }
+                }
+            }
+
             //Controls spindex loading using the color sensor
-            if (colorSensor.getDistance() <= 5.7 && spindex.getPower() == 0 && ballCount < 3) {
+            if (colorSensor.getDistance() <= TestValues.ballDistance && spindex.getPower() == 0 && ballCount < 3 && !TestValues.disable) {
                 spindex.addIndex();
                 ballCount++;
+            }
+
+            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && slotStatus[spindex.getIndex()] == 'E'){
+                spindex.setSlotGreen(spindex.getIndex());
+            }
+            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && slotStatus[spindex.getIndex()] == 'E'){
+                spindex.setSlotPurple(spindex.getIndex());
             }
 
 
@@ -207,6 +239,13 @@ public class Test extends LinearOpMode {
 
             outtake.setRPM(setRPM);
 
+            if (extensionToggle.toggle(gamepad1.share)){
+                extension.kickStandUp(false );
+            }
+            else{
+                extension.kickStandUp(true);
+            }
+
 
             // Driver Hub
             telemetry.addLine("==========================================");
@@ -228,6 +267,7 @@ public class Test extends LinearOpMode {
             telemetry.addData("Voltage", spindex.getVoltage());
             telemetry.addData("Distance", colorSensor.getDistance());
             telemetry.addData("Hue:", hsv[0]);
+            telemetry.addData("Slot Status", slotStatus[0] + ", " + slotStatus[1] + ", " + slotStatus[2]);
             telemetry.addData("Current", spindex.getAmps());
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());
