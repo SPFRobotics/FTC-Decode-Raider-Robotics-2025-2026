@@ -59,7 +59,7 @@ public class SpindexTestPath extends OpMode {
 
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
-        spindex = new Spindex(hardwareMap, true);
+        spindex = new Spindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         // Start where the first generated path begins so the follower does not jump
