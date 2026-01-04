@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Extension {
@@ -9,7 +10,7 @@ public class Extension {
     public static class KickstandValues {
         // These are encoder counts for the motor when the kickstand is up or down.
         public static int kickUpTicks = 0;
-        public static int kickDownTicks = 250;
+        public static int kickDownTicks = 650;
         public static int toleranceTicks = 15;
         public static double kickPower = 0.5;
     }
@@ -44,6 +45,7 @@ public class Extension {
         kickstand.setTargetPosition(KickstandValues.kickDownTicks);
         kickstand.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         kickstand.setPower(0);
+        kickstand.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void setPower(double power) {

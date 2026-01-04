@@ -37,7 +37,7 @@ public class ColorFinder {
         
         // Purple: Wider range to account for variations (original was 200-220)
         // Purple can also appear near the wrap-around (270-360)
-        return (hue >= 190 && hue <= 240) || (hue >= 270 && hue <= 360);
+        return (hue >= 180 && hue <= 240);
     }
     
     public boolean isGreen() {
@@ -49,7 +49,7 @@ public class ColorFinder {
         int hue = hsv[0];
         
         // Green: Wider range to account for variations
-        return hue >= 155 && hue <= 160;
+        return hue >= 150 && hue <= 160;
     }
     
     public boolean isBlue() {

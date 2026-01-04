@@ -104,7 +104,7 @@ public class TeleOpMain extends LinearOpMode {
         Outtake outtake = new Outtake(hardwareMap, false);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
-        Spindex spindex = new Spindex(hardwareMap, true);
+        Spindex spindex = new Spindex(hardwareMap);
 
 
         // Initialize LED Lights

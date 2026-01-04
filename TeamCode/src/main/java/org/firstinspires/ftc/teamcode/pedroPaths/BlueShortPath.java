@@ -59,7 +59,7 @@ public class BlueShortPath extends OpMode {
 
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
-        spindex = new Spindex(hardwareMap, true);
+        spindex = new Spindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         // Start where the first generated path begins so the follower does not jump
@@ -301,7 +301,7 @@ public class BlueShortPath extends OpMode {
             case INTAKE_FIRST:
             case INTAKE_SECOND:
             case INTAKE_THIRD:
-                spindex.moveToPos(intakePos[spindexSlot]);
+                spindex.moveToPos(intakePos[spindexSlot], true);
                 break;
             case BACK_TO_SHOOT_FIRST:
             case SHOOT_FIRST:
@@ -309,7 +309,7 @@ public class BlueShortPath extends OpMode {
             case SHOOT_SECOND:
             case BACK_TO_SHOOT_THIRD:
             case SHOOT_THIRD:
-                spindex.moveToPos(outtakePos[spindexSlot]);
+                spindex.moveToPos(outtakePos[spindexSlot], true);
                 break;
             default:
                 // Hold current slot/position; no move call needed.

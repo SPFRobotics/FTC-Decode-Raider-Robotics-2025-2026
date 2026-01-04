@@ -19,47 +19,40 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.maxPower;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.tolorence;
 
-
 public class Spindex {
     //Servo encoder
     private static AnalogInput spindexPos = null;
     public DcMotorEx spindexMotor = null;
-    private CRServo spindexServo = null;
     //Stores weather the class is using a motor or servo
-    private boolean motor = false;
     //Stores position and current index of spindex
-    private int index = 0;
+    private static int index = 0;
     private double currentPos = 0;
     private double error = 0;
+    private static char[] slotStatus = {'P', 'P', 'G'};
     @Config
     public static class SpindexValues{
         public static double maxPower = 0.75;
-        public static double Threshold = 100;
+        public static double Threshold = 125;
         public static double tolorence = 5;
         public static double[] intakePos = {0, 120, 240};
         public static double[] outtakePos = {60, 180, 300};
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
-    public Spindex(HardwareMap hardwareMap, boolean motor){
-        this.motor = motor;
-        if (motor){
-            spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
-            spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        }
-        else{
-            spindexServo = hardwareMap.get(CRServo.class, "spindex");
-            spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
-            spindexServo.setDirection(DcMotorSimple.Direction.REVERSE);
-        }
+    public Spindex(HardwareMap hardwareMap){
+        spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
+        spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
+        slotStatus = new char[]{'E', 'E', 'E'};
+        index = 0;
     }
 
 
     //Moves the servo or motor to the target position by finding the shortest path
-    public void moveToPos(double target) {
-        if (motor){
+    public void moveToPos(double target, boolean absEncoder) {
+        if (!absEncoder){
             currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/537.7*360);
 
             error = AngleUnit.normalizeDegrees(target - currentPos);
@@ -69,13 +62,13 @@ public class Spindex {
             double kp = maxPower/Threshold;
 
             if(Math.abs(error) > Threshold){
-
                 spindexMotor.setPower(maxPower * sign);
-
-            } else if (Math.abs(error) > tolorence) {
+            }
+            else if (Math.abs(error) > tolorence) {
                 spindexMotor.setPower(error * kp);
 
-            }else {
+            }
+            else {
                 spindexMotor.setPower(0);
             }
         }
@@ -92,14 +85,14 @@ public class Spindex {
 
             if(Math.abs(error) > Threshold){
 
-                spindexServo.setPower(maxPower * sign);
+                spindexMotor.setPower(maxPower * sign);
 
             } else if (Math.abs(error) > tolorence) {
 
-                spindexServo.setPower(error * kp);
+                spindexMotor.setPower(error * kp);
 
             }else {
-                spindexServo.setPower(0);
+                spindexMotor.setPower(0);
             }
         }
     }
@@ -111,12 +104,37 @@ public class Spindex {
     public void subtractIndex(){
         index--;
     }
+
+    public void setIndex(int i){
+        index = i;
+    }
     public int getIndex(){
         return Math.floorMod(index, 3);
     }
 
+    public char[] getSlotStatus (){
+        return slotStatus;
+    }
+
+    //Methods used to set the color of the balls at the current index, detection is handled in the "main" code
+    /*########################################*/
+    public void setSlotEmpty(int i){
+        slotStatus[i] = 'E';
+    }
+    public void setSlotPurple(int i){
+        slotStatus[i] = 'P';
+    }
+    public void setSlotGreen(int i){
+        slotStatus[i] = 'G';
+    }
+    /*########################################*/
+
     public double getPos(){
         return currentPos;
+    }
+
+    public double getVoltage(){
+        return spindexPos.getVoltage();
     }
 
     public double getPower(){
