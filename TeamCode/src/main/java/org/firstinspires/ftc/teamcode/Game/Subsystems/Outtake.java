@@ -150,11 +150,11 @@ public class Outtake {
     public void enableSpindexKickerCycle(boolean x, double RPM){
         double time = interval.seconds();
         if (x){
-            if (time >= 1 && time < 2 && getRPM() >= RPM-500){
+            if (time >= .5 && time < .8 && getRPM() >= RPM-500){
                 kickerSpindex.up();
                 launched = true;
             }
-            else if (time >= 2){
+            else if (time >= .8){
                 kickerSpindex.down();
                 if (launched){
                     kickerCycleCount++;

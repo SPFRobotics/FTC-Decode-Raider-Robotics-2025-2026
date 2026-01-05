@@ -14,12 +14,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-        .mass(10.25)
+        .mass(8.62)
             .forwardZeroPowerAcceleration(-34.83144111804443)
             .lateralZeroPowerAcceleration(53.31811698147531)
             .translationalPIDFCoefficients(new PIDFCoefficients(0.07,0,0.022,0))
-            ;
 
+            ;
 
 
     public static MecanumConstants driveConstants = new MecanumConstants()
@@ -32,8 +32,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(55.59317897615013)
-            .yVelocity(35.39638307253173)
+            .xVelocity(46.028932854133906)
+            .yVelocity(35.62949286963164)
             ;
 
 
@@ -41,14 +41,14 @@ public class Constants {
             .forwardTicksToInches(0.0019882943822326186)
             .strafeTicksToInches(0.0019882943822326186)
             .turnTicksToInches(0.0679857024584986)
-            .leftPodY(2.5)
-            .rightPodY(-2.5)
-            .strafePodX(-3.5)
+            .leftPodY(7.5)
+            .rightPodY(-7.5)
+            .strafePodX(8)
             .leftEncoder_HardwareMapName("backLeftDrive")
             .rightEncoder_HardwareMapName("frontRightDrive")
             .strafeEncoder_HardwareMapName("backRightDrive")
-            .leftEncoderDirection(Encoder.REVERSE)
-            .rightEncoderDirection(Encoder.REVERSE)
+            .leftEncoderDirection(Encoder.FORWARD)
+            .rightEncoderDirection(Encoder.FORWARD)
             .strafeEncoderDirection(Encoder.FORWARD)
             .IMU_HardwareMapName("imu")
             .IMU_Orientation(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.LEFT));

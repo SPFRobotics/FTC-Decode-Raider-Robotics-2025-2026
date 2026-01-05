@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedroPaths;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -31,6 +32,12 @@ public class TestPath extends OpMode {
         follower.setStartingPose(new Pose(0.0, 0.0, 0.0));
 
         // Short path to exercise the Pedro follower; keeps the system "busy" once.
+        warmupPath = follower.pathBuilder()
+                .addPath(new BezierLine(
+                        new Pose(0.0, 0.0, 0.0),
+                        new Pose(-10.0, 0.0, 0.0)))
+                .setConstantHeadingInterpolation(0.0)
+                .build();
 
         telemetry.addData("Status", "Ready to run kicker 3x with Pedro");
         telemetry.update();
