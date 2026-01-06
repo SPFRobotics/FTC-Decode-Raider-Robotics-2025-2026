@@ -19,6 +19,7 @@ public class Limelight {
     public Limelight(HardwareMap hardwareMap) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
+        limelight.start();
     }
 
     //Starts Limelight

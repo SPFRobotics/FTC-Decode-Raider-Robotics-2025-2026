@@ -9,6 +9,8 @@ public class ColorFinder {
 
     public ColorSensor hardwareColorSensor = null;
     public DistanceSensor distanceSensor = null;
+    private static final int MIN_SAT = 10; // percent
+    private static final int MIN_VAL = 5;  // percent
     
     // Constructor with HardwareMap - initializes the color sensor
     public ColorFinder(HardwareMap hardwareMap) {
@@ -34,10 +36,10 @@ public class ColorFinder {
         int[] rgb = getColor();
         int[] hsv = rgbToHSV(rgb[0], rgb[1], rgb[2]);
         int hue = hsv[0];
+        if (hsv[1] < MIN_SAT || hsv[2] < MIN_VAL) return false;
         
-        // Purple: Wider range to account for variations (original was 200-220)
-        // Purple can also appear near the wrap-around (270-360)
-        return (hue >= 180 && hue <= 240);
+        // Purple range: main band 240-320 plus wrap 0-30
+        return (hue >= 240 && hue <= 320) || (hue >= 0 && hue <= 30);
     }
     
     public boolean isGreen() {
@@ -47,9 +49,10 @@ public class ColorFinder {
         int[] rgb = getColor();
         int[] hsv = rgbToHSV(rgb[0], rgb[1], rgb[2]);
         int hue = hsv[0];
+        if (hsv[1] < MIN_SAT || hsv[2] < MIN_VAL) return false;
         
-        // Green: Wider range to account for variations
-        return hue >= 150 && hue <= 160;
+        // Green range: 90-170 covers typical FTC game pieces
+        return hue >= 90 && hue <= 170;
     }
     
     public boolean isBlue() {

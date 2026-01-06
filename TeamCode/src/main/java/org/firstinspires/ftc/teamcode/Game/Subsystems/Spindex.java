@@ -33,7 +33,7 @@ public class Spindex {
     public static class SpindexValues{
         public static double maxPower = 0.75;
         public static double Threshold = 125;
-        public static double tolorence = 5;
+        public static double tolorence = 3;
         public static double[] intakePos = {0, 120, 240};
         public static double[] outtakePos = {60, 180, 300};
     }

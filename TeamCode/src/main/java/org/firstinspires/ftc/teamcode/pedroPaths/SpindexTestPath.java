@@ -3,9 +3,14 @@ package org.firstinspires.ftc.teamcode.pedroPaths;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
@@ -21,28 +26,45 @@ public class SpindexTestPath extends OpMode {
     private static final int SHOOTING = 1;
     private static final int ADVANCING = 2;
     private static final int DONE = 3;
-    private static final double INTAKE_DISTANCE_CM = 5.0;
-    private static final double RELEASE_DISTANCE_CM = 6.0;
+    private static final double INTAKE_DISTANCE_CM = 7.0;
+    private static final double RELEASE_DISTANCE_CM = 8.0;
+    private static final char COLOR_P = 'P';
+    private static final char COLOR_G = 'G';
+    private static final char COLOR_U = 'U';
+    private static final char COLOR_E = 'E';
 
+    private TelemetryManager panelsTelemetry;
     private Outtake outtake;
     private Spindex spindex;
     private Intake intake;
 
     private KickerSpindex kicker;
     private ColorFinder colorSensor;
+    private Limelight limelight;
     private int state = DONE;
     private int shotIndex = 0;      // which slot we are on (0,1,2)
     private int lastCycleCount = 0; // last observed kicker cycle
     private int ballCount = 0;
     private boolean ballLatched = false;
+    private final char[] slotColors = {COLOR_E, COLOR_E, COLOR_E};
+    private final int[] shootOrder = {0, 1, 2};
+    private boolean usingFallback = false;
+    private String fallbackReason = "not set";
+    private int motifId = -1;
+    private String lastFidList = "";
+    private boolean llValid = false;
+    private int fidCount = 0;
 
     @Override
     public void init() {
+        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         outtake = new Outtake(hardwareMap);
         spindex = new Spindex(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         intake = new Intake(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
+        limelight = new Limelight(hardwareMap);
+        limelight.start();
 
         outtake.resetKickerCycle();
         outtake.setRPM(SHOOT_RPM);
@@ -53,8 +75,8 @@ public class SpindexTestPath extends OpMode {
         spindex.setIndex(shotIndex);
         state = INTAKING;
 
-        telemetry.addData("Status", "Shooting 3 via spindex (no drive)");
-        telemetry.update();
+        panelsTelemetry.debug("Status", "Shooting 3 via spindex (no drive)");
+        panelsTelemetry.update(telemetry);
     }
 
     @Override
@@ -78,6 +100,8 @@ public class SpindexTestPath extends OpMode {
 
                 double distance = colorSensor != null ? colorSensor.getDistance() : Double.POSITIVE_INFINITY;
                 if (distance <= INTAKE_DISTANCE_CM && !ballLatched && ballCount < 3 && spindex.getPower() == 0) {
+                    int slot = spindex.getIndex();
+                    slotColors[slot] = detectColor();
                     ballLatched = true;
                     ballCount++;
                     spindex.addIndex();
@@ -89,15 +113,16 @@ public class SpindexTestPath extends OpMode {
                     intake.intakeOff();
                     outtake.resetKickerCycle();
                     outtake.setRPM(SHOOT_RPM);
+                    determineShootOrder();
                     shotIndex = 0;
                     lastCycleCount = currentCycles;
-                    spindex.setIndex(0);
+                    spindex.setIndex(shootOrder[shotIndex]);
                     state = SHOOTING;
                 }
                 break;
 
             case SHOOTING:
-                spindex.setIndex(shotIndex);
+                spindex.setIndex(shootOrder[shotIndex]);
                 double targetAngle = outtakePos[spindex.getIndex()];
                 spindex.moveToPos(targetAngle, true);
                 double error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
@@ -126,7 +151,7 @@ public class SpindexTestPath extends OpMode {
 
             case ADVANCING:
                 // Spin to next slot before arming kicker again
-                spindex.setIndex(shotIndex);
+                spindex.setIndex(shootOrder[shotIndex]);
                 targetAngle = outtakePos[spindex.getIndex()];
                 spindex.moveToPos(targetAngle, true);
                 error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
@@ -141,12 +166,111 @@ public class SpindexTestPath extends OpMode {
                 break;
         }
 
-        telemetry.addData("State", state);
-        telemetry.addData("SpindexIndex", spindex.getIndex());
-        telemetry.addData("Cycles", outtake.getKickerCycleCount());
-        telemetry.addData("RPM", outtake.getRPM());
-        telemetry.addData("CycleTime", outtake.getCurrentCycleTime());
-        telemetry.update();
+        panelsTelemetry.debug("State", state);
+        panelsTelemetry.debug("SpindexIndex", spindex.getIndex());
+        panelsTelemetry.debug("MotifId", motifId);
+        panelsTelemetry.debug("FidList", lastFidList);
+        panelsTelemetry.debug("LLValid", llValid);
+        panelsTelemetry.debug("FidCount", fidCount);
+        panelsTelemetry.debug("SlotColors", new String(slotColors));
+        panelsTelemetry.debug("Order", String.format("%d%d%d", shootOrder[0], shootOrder[1], shootOrder[2]));
+        panelsTelemetry.debug("Fallback", usingFallback ? fallbackReason : "none");
+        panelsTelemetry.debug("Cycles", outtake.getKickerCycleCount());
+        panelsTelemetry.debug("RPM", outtake.getRPM());
+        panelsTelemetry.debug("CycleTime", outtake.getCurrentCycleTime());
+        panelsTelemetry.update(telemetry);
+    }
+
+    private char detectColor() {
+        if (colorSensor == null) {
+            return COLOR_U;
+        }
+        if (colorSensor.isGreen()) {
+            return COLOR_G;
+        }
+        if (colorSensor.isPurple()) {
+            return COLOR_P;
+        }
+        return COLOR_U;
+    }
+
+    private void determineShootOrder() {
+        usingFallback = false;
+        fallbackReason = "none";
+        motifId = detectMotifInline();
+
+        char[] desiredPattern;
+        if (motifId == 21) {
+            desiredPattern = new char[]{COLOR_G, COLOR_P, COLOR_P};
+        } else if (motifId == 22) {
+            desiredPattern = new char[]{COLOR_P, COLOR_G, COLOR_P};
+        } else if (motifId == 23) {
+            desiredPattern = new char[]{COLOR_P, COLOR_P, COLOR_G};
+        } else {
+            desiredPattern = null;
+        }
+
+        boolean success = desiredPattern != null && buildOrder(desiredPattern);
+        if (!success) {
+            usingFallback = true;
+            fallbackReason = desiredPattern == null ? "motif_invalid_or_missing" : "pattern_unachievable";
+            shootOrder[0] = 0;
+            shootOrder[1] = 1;
+            shootOrder[2] = 2;
+        }
+    }
+
+    private int detectMotifInline() {
+        if (limelight == null) return -1;
+        LLResult result = limelight.getLatestResult();
+        if (result == null) {
+            llValid = false;
+            fidCount = 0;
+            lastFidList = "null";
+            return -1;
+        }
+        llValid = result.isValid();
+        java.util.List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+        if (fiducials == null || fiducials.isEmpty()) {
+            fidCount = 0;
+            lastFidList = "";
+            return -1;
+        }
+        fidCount = fiducials.size();
+        StringBuilder sb = new StringBuilder();
+        for (LLResultTypes.FiducialResult f : fiducials) {
+            int id = f.getFiducialId();
+            if (sb.length() > 0) sb.append(",");
+            sb.append(id);
+            if (id == 21 || id == 22 || id == 23) {
+                lastFidList = sb.toString();
+                return id;
+            }
+        }
+        lastFidList = sb.toString();
+        return -1;
+    }
+
+    private boolean buildOrder(char[] desired) {
+        boolean[] used = new boolean[3];
+        for (int i = 0; i < desired.length; i++) {
+            int idx = findSlot(desired[i], used);
+            if (idx == -1) {
+                return false;
+            }
+            shootOrder[i] = idx;
+            used[idx] = true;
+        }
+        return true;
+    }
+
+    private int findSlot(char desiredColor, boolean[] used) {
+        for (int i = 0; i < slotColors.length; i++) {
+            if (!used[i] && slotColors[i] == desiredColor) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
 
