@@ -51,6 +51,7 @@ public class SpindexTestPath extends OpMode {
     private boolean usingFallback = false;
     private String fallbackReason = "not set";
     private int motifId = -1;
+    private int lastDetectedMotif = -1;
     private String lastFidList = "";
     private boolean llValid = false;
     private int fidCount = 0;
@@ -81,6 +82,11 @@ public class SpindexTestPath extends OpMode {
 
     @Override
     public void loop() {
+        int detected = detectMotifInline();
+        if (detected != -1) {
+            lastDetectedMotif = detected;
+        }
+        motifId = lastDetectedMotif;
         int currentCycles = outtake.getKickerCycleCount();
 
         // Early exit when all shots are done
@@ -197,7 +203,7 @@ public class SpindexTestPath extends OpMode {
     private void determineShootOrder() {
         usingFallback = false;
         fallbackReason = "none";
-        motifId = detectMotifInline();
+        motifId = lastDetectedMotif != -1 ? lastDetectedMotif : detectMotifInline();
 
         char[] desiredPattern;
         if (motifId == 21) {
