@@ -90,6 +90,7 @@ public class Test extends LinearOpMode {
     public static class TestValues {
         public static double ballDistance = 5.7;
         public static boolean disable = true;
+        public static int myass = 1;
     }
 
     @Override
@@ -179,8 +180,8 @@ public class Test extends LinearOpMode {
             }
             spindexOuttakeMode = spindexModeToggle.toggle(gamepad1.circle);
 
-            if (kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
-                spindex.setSlotEmpty(spindex.getIndex());
+            if (!kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
+                spindex.setSlotEmpty(Math.floorMod(spindex.getIndex()-1, 3));
                 //spindex.addIndex();
             }
 
@@ -214,10 +215,10 @@ public class Test extends LinearOpMode {
                 ballCount++;
             }
 
-            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindexOuttakeMode){
+            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4 && !spindexOuttakeMode && spindex.getPower() == 0 && slotStatus[spindex.getIndex()] == 'E'){
                 spindex.setSlotGreen(spindex.getIndex());
             }
-            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindexOuttakeMode){
+            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4 && !spindexOuttakeMode && spindex.getPower() == 0 && slotStatus[spindex.getIndex()] == 'E'){
                 spindex.setSlotPurple(spindex.getIndex());
             }
 
@@ -254,6 +255,7 @@ public class Test extends LinearOpMode {
 
 
             // Driver Hub
+            telemetry.addData("WORK PLS: ", Math.floorMod(spindex.getIndex()+TestValues.myass, 3));
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
             telemetry.addLine("==========================================");

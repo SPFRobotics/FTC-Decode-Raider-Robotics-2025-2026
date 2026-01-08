@@ -28,11 +28,11 @@ public class Spindex {
     private static int index = 0;
     private double currentPos = 0;
     private double error = 0;
-    private static char[] slotStatus = {'P', 'P', 'G'};
+    private static char[] slotStatus = {'E', 'E', 'E'};
     @Config
     public static class SpindexValues{
-        public static double maxPower = 0.75;
-        public static double Threshold = 125;
+        public static double maxPower = 1;
+        public static double Threshold = 200;
         public static double tolorence = 3;
         public static double[] intakePos = {0, 120, 240};
         public static double[] outtakePos = {60, 180, 300};
@@ -119,13 +119,13 @@ public class Spindex {
     //Methods used to set the color of the balls at the current index, detection is handled in the "main" code
     /*########################################*/
     public void setSlotEmpty(int i){
-        slotStatus[i] = 'E';
+        slotStatus[getIndex()] = 'E';
     }
     public void setSlotPurple(int i){
-        slotStatus[i] = 'P';
+        slotStatus[getIndex()] = 'P';
     }
     public void setSlotGreen(int i){
-        slotStatus[i] = 'G';
+        slotStatus[getIndex()] = 'G';
     }
     /*########################################*/
 

@@ -39,7 +39,7 @@ public class ColorFinder {
         if (hsv[1] < MIN_SAT || hsv[2] < MIN_VAL) return false;
         
         // Purple range: main band 240-320 plus wrap 0-30
-        return (hue >= 240 && hue <= 320) || (hue >= 0 && hue <= 30);
+        return (hue >= 180 && hue <= 200);
     }
     
     public boolean isGreen() {
