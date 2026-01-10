@@ -275,7 +275,7 @@ public class Test extends LinearOpMode {
             telemetry.addData("Hue:", hsv[0]);
             telemetry.addData("Slot Status", slotStatus[0] + ", " + slotStatus[1] + ", " + slotStatus[2]);
             telemetry.addData("Current", spindex.getAmps());
-            telemetry.addData("Kickstand Pos", kickstand.getPosition());
+            telemetry.addData("Kickstand Position", kickstand.getPosition());
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
