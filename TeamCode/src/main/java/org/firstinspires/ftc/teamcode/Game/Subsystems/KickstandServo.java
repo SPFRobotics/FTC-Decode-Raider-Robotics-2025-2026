@@ -11,7 +11,7 @@ public class KickstandServo {
     /*##############FTCDASHBOARD##############*/
     @Config
     public static class KickstandServoConfig{
-        public static double power = 0;
+        public static double power = 1;
         public static double up = 0;
         public static double down = 0;
         public static double threshold = 3;
@@ -60,7 +60,7 @@ public class KickstandServo {
         double difference = Math.abs(down-getPosition());
 
         if (difference > threshold){
-            setPower(power);
+            setPower(-power);
         }
     }
     /*#################################################*/
