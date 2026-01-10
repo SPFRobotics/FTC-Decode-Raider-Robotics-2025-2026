@@ -42,7 +42,7 @@ public class KickstandServo {
     }
 
     public double getPosition(){
-        return kickstandPos.getVoltage()*3.3/360;
+        return kickstandPos.getVoltage()/3.3*360;
     }
 
     //Up as in being in the "idle" position
