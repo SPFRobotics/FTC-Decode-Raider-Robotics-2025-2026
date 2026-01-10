@@ -43,7 +43,7 @@ public class KickstandServo {
     }
 
     public double getPosition(){
-        return kickstandPos.getVoltage()/3.3*360;
+        return (kickstandPos.getVoltage()/3.3*360.0)*(2.0/15.0);
     }
 
     public double getDifference(){
