@@ -55,7 +55,7 @@ public class Test extends LinearOpMode {
     private MecanumChassis chassis = null;
     private ColorFinder colorSensor = null;
     private Spindex spindex = null;
-    private boolean spindexOuttakeMode = false;
+    //private boolean spindexOuttakeMode = false;
 
     //Buttons
     private Button outtakeFar = new Button();
@@ -187,7 +187,7 @@ public class Test extends LinearOpMode {
             }
             spindex.setMode(spindexModeToggle.toggle(gamepad1.circle));
 
-            if (kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
+            if (kicker.automate(gamepad1.crossWasPressed() && spindex.getMode())){
                 spindex.setSlotEmpty(spindex.getIndex());
             }
 
@@ -221,10 +221,10 @@ public class Test extends LinearOpMode {
                 ballCount++;
             }
 
-            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindexOuttakeMode){
+            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
                 spindex.setSlotGreen(spindex.getIndex());
             }
-            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindexOuttakeMode){
+            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
                 spindex.setSlotPurple(spindex.getIndex());
             }
 
