@@ -7,11 +7,13 @@ public class UpdateSpindex extends Thread{
     }
 
     public void run(){
-        if (spindex.getMode()){
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
-        }
-        else{
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
+        for(;;){
+            if (spindex.getMode()){
+                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
+            }
+            else{
+                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
+            }
         }
     }
 }
