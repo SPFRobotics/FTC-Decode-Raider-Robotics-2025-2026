@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.KickerGrav.KickerConfig.*;
 
 
-public class KickerGrav {
+public final class KickerGrav {
     @Config
     public static class KickerConfig{
         public static double down = 0.05;

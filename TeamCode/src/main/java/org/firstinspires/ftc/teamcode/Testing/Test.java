@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.KickstandServo;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
@@ -115,7 +116,7 @@ public class Test extends LinearOpMode {
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
-        Extension extension = new Extension(hardwareMap, "kickstand");
+        KickstandServo kickstand = new KickstandServo(hardwareMap);
 
 
         // Initialize LED Lights
@@ -245,10 +246,10 @@ public class Test extends LinearOpMode {
             outtake.setRPM(setRPM);
 
             if (extensionToggle.toggle(gamepad1.share)){
-                extension.kickStandUp(false );
+                kickstand.up();
             }
             else{
-                extension.kickStandUp(true);
+                kickstand.down();
             }
 
 
