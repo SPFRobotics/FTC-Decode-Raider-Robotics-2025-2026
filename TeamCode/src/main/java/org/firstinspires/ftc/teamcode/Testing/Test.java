@@ -249,8 +249,6 @@ public class Test extends LinearOpMode {
                 kickstand.setPower(1);
             }
 
-
-
             // Driver Hub
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
