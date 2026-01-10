@@ -80,8 +80,8 @@ public class Test extends LinearOpMode {
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
 
-    FtcDashboard dash = FtcDashboard.getInstance();
-    Telemetry telemetry = dash.getTelemetry();
+    //FtcDashboard dash = FtcDashboard.getInstance();
+    //Telemetry telemetry = dash.getTelemetry();
 
     public Test() throws FileNotFoundException, UnsupportedEncodingException {
     }
@@ -89,8 +89,7 @@ public class Test extends LinearOpMode {
     @Config
     public static class TestValues {
         public static double ballDistance = 5.7;
-        public static boolean disable = true;
-        public static int myass = 1;
+        public static boolean disable = false;
     }
 
     @Override
@@ -154,8 +153,8 @@ public class Test extends LinearOpMode {
 
             frontLeftDrive.setPower(y + x + rx);
             backLeftDrive.setPower(y - x + rx);
-            frontRightDrive.setPower(y + x - rx);
-            backRightDrive.setPower(y - x - rx);
+            frontRightDrive.setPower(y - x - rx);
+            backRightDrive.setPower(y + x - rx);
 
             // Intake toggle on Square button
             boolean intakeActive = square.toggle(gamepad1.right_trigger > 0);
@@ -180,9 +179,8 @@ public class Test extends LinearOpMode {
             }
             spindexOuttakeMode = spindexModeToggle.toggle(gamepad1.circle);
 
-            if (!kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
-                spindex.setSlotEmpty(Math.floorMod(spindex.getIndex()-1, 3));
-                //spindex.addIndex();
+            if (kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
+                spindex.setSlotEmpty(spindex.getIndex());
             }
 
             if (spindexOuttakeMode){
@@ -215,10 +213,10 @@ public class Test extends LinearOpMode {
                 ballCount++;
             }
 
-            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4 && !spindexOuttakeMode && spindex.getPower() == 0 && slotStatus[spindex.getIndex()] == 'E'){
+            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindexOuttakeMode){
                 spindex.setSlotGreen(spindex.getIndex());
             }
-            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4 && !spindexOuttakeMode && spindex.getPower() == 0 && slotStatus[spindex.getIndex()] == 'E'){
+            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindexOuttakeMode){
                 spindex.setSlotPurple(spindex.getIndex());
             }
 
@@ -255,7 +253,6 @@ public class Test extends LinearOpMode {
 
 
             // Driver Hub
-            telemetry.addData("WORK PLS: ", Math.floorMod(spindex.getIndex()+TestValues.myass, 3));
             telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
             telemetry.addLine("==========================================");

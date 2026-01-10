@@ -73,9 +73,9 @@ public class Spindex {
             }
         }
         else{
-            currentPos = (int)((spindexPos.getVoltage())/3.3*360);
+            currentPos = spindexPos.getVoltage()/3.3*360.0;
 
-            double error = AngleUnit.normalizeDegrees(target - currentPos);
+            error = AngleUnit.normalizeDegrees(target - currentPos);
 
             double sign = Math.signum(error);
 
