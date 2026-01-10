@@ -23,6 +23,7 @@ public class KickstandServo {
     CRServo kickstand = null;
     AnalogInput kickstandPos = null;
     double currentPos = 0;
+    double difference = 0;
     /*###########################################*/
 
     public KickstandServo(HardwareMap hardwareMap){
@@ -45,10 +46,14 @@ public class KickstandServo {
         return kickstandPos.getVoltage()/3.3*360;
     }
 
+    public double getDifference(){
+        return difference;
+    }
+
     //Up as in being in the "idle" position
     public void up(){
         currentPos = getPosition();
-        double difference = Math.abs(up-currentPos);
+        difference = Math.abs(up-currentPos);
 
         if (difference > threshold){
             setPower(power);
@@ -60,7 +65,7 @@ public class KickstandServo {
 
     public void down(){
         currentPos = getPosition();
-        double difference = Math.abs(down-currentPos);
+        difference = Math.abs(down-currentPos);
 
         if (difference > threshold){
             setPower(-power);
