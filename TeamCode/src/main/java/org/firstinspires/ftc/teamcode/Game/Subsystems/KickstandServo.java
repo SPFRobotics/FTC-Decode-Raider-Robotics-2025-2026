@@ -48,19 +48,25 @@ public class KickstandServo {
     //Up as in being in the "idle" position
     public void up(){
         currentPos = getPosition();
-        double difference = Math.abs(up-getPosition());
+        double difference = Math.abs(up-currentPos);
 
         if (difference > threshold){
             setPower(power);
+        }
+        else{
+            setPower(0);
         }
     }
 
     public void down(){
         currentPos = getPosition();
-        double difference = Math.abs(down-getPosition());
+        double difference = Math.abs(down-currentPos);
 
         if (difference > threshold){
             setPower(-power);
+        }
+        else{
+            setPower(0);
         }
     }
     /*#################################################*/
