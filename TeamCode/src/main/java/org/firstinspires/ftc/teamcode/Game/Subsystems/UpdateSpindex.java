@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
 public class UpdateSpindex extends Thread{
     Spindex spindex = null;
+
     public UpdateSpindex(Spindex spindex){
         this.spindex = spindex;
     }
