@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.KickstandServo;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.LedLights;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
@@ -116,6 +117,7 @@ public class Test extends LinearOpMode {
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
+        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
 
 
@@ -129,6 +131,11 @@ public class Test extends LinearOpMode {
         waitForStart();
 
         ElapsedTime timer = new ElapsedTime();
+
+        if (opModeIsActive()){
+            updateSpindex.start();
+        }
+
         while (opModeIsActive()) {
             int[] rgb = colorSensor.getColor();
             int[] hsv = colorSensor.rgbToHSV(rgb[0], rgb[1], rgb[2]);
@@ -178,18 +185,18 @@ public class Test extends LinearOpMode {
             if (spindexLeftBumper.press(gamepad1.left_bumper)) {
                 spindex.subtractIndex();
             }
-            spindexOuttakeMode = spindexModeToggle.toggle(gamepad1.circle);
+            spindex.setMode(spindexModeToggle.toggle(gamepad1.circle));
 
             if (kicker.automate(gamepad1.crossWasPressed() && spindexOuttakeMode)){
                 spindex.setSlotEmpty(spindex.getIndex());
             }
 
-            if (spindexOuttakeMode){
+            /*if (spindexOuttakeMode){
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
             }
             else{
                 spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
-            }
+            }*/
 
             if (gamepad1.square){
                 for (int i = 0; i < 3; i++){
@@ -261,6 +268,7 @@ public class Test extends LinearOpMode {
             if (a.getState() == true){
                 telemetry.addLine("Kicker Active");
             }
+            telemetry.addLine(a.getState() ? "Kicker Active" : Kicker Not Active");
             telemetry.addData("Runtime", runtime.toString());
             telemetry.addData("Outtake RPM: ", outtake.getRPM());
             telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));

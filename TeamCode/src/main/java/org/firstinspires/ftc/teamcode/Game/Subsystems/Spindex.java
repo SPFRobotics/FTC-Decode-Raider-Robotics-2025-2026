@@ -28,6 +28,7 @@ public class Spindex {
     private static int index = 0;
     private double currentPos = 0;
     private double error = 0;
+    private boolean outtakeMode = true;
     private static char[] slotStatus = {'E', 'E', 'E'};
     @Config
     public static class SpindexValues{
@@ -129,6 +130,9 @@ public class Spindex {
     }
     /*########################################*/
 
+    public void setMode(boolean outtake){
+        outtakeMode = outtake;
+    }
     public double getPos(){
         return currentPos;
     }
@@ -147,5 +151,9 @@ public class Spindex {
 
     public double getAmps(){
         return spindexMotor.getCurrent(CurrentUnit.AMPS);
+    }
+
+    public boolean getMode(){
+        return outtakeMode;
     }
 }
