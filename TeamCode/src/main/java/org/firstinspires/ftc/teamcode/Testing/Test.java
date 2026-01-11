@@ -263,6 +263,7 @@ public class Test extends LinearOpMode {
             // Driver Hub
             telemetry.addLine("==========================================");
             telemetry.addData("Loop Time: ", loopTime.milliseconds());
+            telemetry.addData("Kickstand Position: ", kickstand.getPosition());
             telemetry.addLine("==========================================");
             telemetry.update();
         }
