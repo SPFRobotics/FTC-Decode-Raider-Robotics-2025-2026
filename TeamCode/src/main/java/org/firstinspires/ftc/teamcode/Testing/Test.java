@@ -134,10 +134,7 @@ public class Test extends LinearOpMode {
         rightLED = new LedLights("rightLED", hardwareMap);
 
         //Initialize Telemetry
-
-        telemetry.setMsTransmissionInterval(16);
         waitForStart();
-
         ElapsedTime timer = new ElapsedTime();
 
         if (opModeIsActive()){
@@ -219,7 +216,7 @@ public class Test extends LinearOpMode {
             }
 
             //Controls spindex loading using the color sensor
-            if (colorSensor.getDistance() <= TestValues.ballDistance && spindex.getPower() == 0 && ballCount < 3 && !TestValues.disable) {
+            /*if (colorSensor.getDistance() <= TestValues.ballDistance && spindex.getPower() == 0 && ballCount < 3 && !TestValues.disable) {
                 spindex.addIndex();
                 ballCount++;
             }
@@ -260,7 +257,7 @@ public class Test extends LinearOpMode {
             }
             else{
                 kickstand.down();
-            }
+            }*/
 
             // Driver Hub
             telemetry.addLine("==========================================");
