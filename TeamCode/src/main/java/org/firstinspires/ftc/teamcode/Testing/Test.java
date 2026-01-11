@@ -138,6 +138,7 @@ public class Test extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
+            ElapsedTime loopTime = new ElapsedTime();
             int[] rgb = colorSensor.getColor();
             int[] hsv = colorSensor.rgbToHSV(rgb[0], rgb[1], rgb[2]);
             char[] slotStatus = spindex.getSlotStatus();
@@ -260,33 +261,9 @@ public class Test extends LinearOpMode {
                 kickstand.down();
             }
 
-            telemetry.addLine(beeMovie.foward());
             // Driver Hub
             telemetry.addLine("==========================================");
-            telemetry.addLine(bigThree.foward());
-            telemetry.addLine("==========================================");
-            telemetry.addLine("=== DRIVE & INTAKE ===");
-            telemetry.addData("Outtake Active", outtake.isActive());
-            if (a.getState() == true){
-                telemetry.addLine("Kicker Active");
-            }
-            telemetry.addData("Runtime", runtime.toString());
-            telemetry.addData("Outtake RPM: ", outtake.getRPM());
-            telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
-            telemetry.addData("Rumbling:", gamepad2.isRumbling());
-            telemetry.addLine("=== SPINDEX ===");
-            telemetry.addData("Mode", spindex.getMode() ? "OUTTAKE" : "INTAKE");
-            telemetry.addData("Index", spindex.getIndex());
-            telemetry.addData("Spindex", spindex.getPos());
-            telemetry.addData("Voltage", spindex.getVoltage());
-            telemetry.addData("Distance", colorSensor.getDistance());
-            telemetry.addData("Hue:", hsv[0]);
-            telemetry.addData("Slot Status", slotStatus[0] + ", " + slotStatus[1] + ", " + slotStatus[2]);
-            telemetry.addData("Current", spindex.getAmps());
-            telemetry.addData("Kickstand Position", kickstand.getPosition());
-            telemetry.addData("Kickstand Difference", kickstand.getDifference());
-            telemetry.addLine("==========================================");
-            telemetry.addLine(daddyRyan.foward());
+            telemetry.addData("Loop Time: ", loopTime.milliseconds());
             telemetry.addLine("==========================================");
             telemetry.update();
         }
