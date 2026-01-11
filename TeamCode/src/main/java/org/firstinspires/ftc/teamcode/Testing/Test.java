@@ -253,11 +253,11 @@ public class Test extends LinearOpMode {
             }
             outtake.setRPM(setRPM);
 
-            if (gamepad1.share){
-                kickstand.setPower(1);
+            if (kickstandToggle.toggle(gamepad1.share)){
+                kickstand.up();
             }
             else{
-                kickstand.setPower(0);
+                kickstand.down();
             }
 
             // Driver Hub
