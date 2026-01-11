@@ -264,10 +264,8 @@ public class Test extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.addData("Loop Time: ", loopTime.milliseconds());
             telemetry.addLine("==========================================");
-            if (spindex.getPower() > 0){
-                telemetry.update();
-            }
+            telemetry.update();
         }
-        spindex.exitProgram();
+        //spindex.exitProgram();
     }
 }
