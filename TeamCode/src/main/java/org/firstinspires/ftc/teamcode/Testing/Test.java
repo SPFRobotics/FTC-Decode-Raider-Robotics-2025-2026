@@ -125,7 +125,7 @@ public class Test extends LinearOpMode {
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
-        //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
 
 
@@ -138,7 +138,7 @@ public class Test extends LinearOpMode {
         ElapsedTime timer = new ElapsedTime();
 
         if (opModeIsActive()){
-            //updateSpindex.start();
+            updateSpindex.start();
         }
 
         while (opModeIsActive()) {
@@ -191,12 +191,12 @@ public class Test extends LinearOpMode {
                 spindex.setSlotEmpty(spindex.getIndex());
             }
 
-            if (spindex.getMode()){
+            /*if (spindex.getMode()){
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
             }
             else{
                 spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
-            }
+            }*/
 
             if (gamepad1.square){
                 for (int i = 0; i < 3; i++){
@@ -266,6 +266,6 @@ public class Test extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.update();
         }
-        //spindex.exitProgram();
+        spindex.exitProgram();
     }
 }
