@@ -125,7 +125,7 @@ public class Test extends LinearOpMode {
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
 
 
@@ -138,7 +138,7 @@ public class Test extends LinearOpMode {
         ElapsedTime timer = new ElapsedTime();
 
         if (opModeIsActive()){
-            updateSpindex.start();
+            //updateSpindex.start();
         }
 
         while (opModeIsActive()) {
@@ -191,12 +191,12 @@ public class Test extends LinearOpMode {
                 spindex.setSlotEmpty(spindex.getIndex());
             }
 
-            /*if (spindexOuttakeMode){
+            if (spindex.getMode()){
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
             }
             else{
                 spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
-            }*/
+            }
 
             if (gamepad1.square){
                 for (int i = 0; i < 3; i++){
@@ -216,17 +216,19 @@ public class Test extends LinearOpMode {
             }
 
             //Controls spindex loading using the color sensor
-            /*if (colorSensor.getDistance() <= TestValues.ballDistance && spindex.getPower() == 0 && ballCount < 3 && !TestValues.disable) {
-                spindex.addIndex();
-                ballCount++;
-            }
+            if (spindex.getPower() == 0){
+                if (colorSensor.getDistance() <= TestValues.ballDistance && ballCount < 3 && !TestValues.disable) {
+                    spindex.addIndex();
+                    ballCount++;
+                }
 
-            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
-                spindex.setSlotGreen(spindex.getIndex());
+                if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
+                    spindex.setSlotGreen(spindex.getIndex());
+                }
+                else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
+                    spindex.setSlotPurple(spindex.getIndex());
+                }
             }
-            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
-                spindex.setSlotPurple(spindex.getIndex());
-            }*/
 
 
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
@@ -249,7 +251,6 @@ public class Test extends LinearOpMode {
             if (gamepad1.ps) {
                 setRPM = 0;
             }
-
             outtake.setRPM(setRPM);
 
             if (kickstandToggle.toggle(gamepad1.share)){
