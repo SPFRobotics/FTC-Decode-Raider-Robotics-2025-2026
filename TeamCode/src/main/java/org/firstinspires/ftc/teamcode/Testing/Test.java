@@ -216,16 +216,16 @@ public class Test extends LinearOpMode {
             }
 
             //Controls spindex loading using the color sensor
-            if (spindex.getPower() == 0){
-                if (colorSensor.getDistance() <= TestValues.ballDistance && ballCount < 3 && !TestValues.disable) {
+            double distance = colorSensor.getDistance();
+            if (spindex.getPower() == 0 && distance < 5.1 && distance > 4.5){
+                if (distance <= TestValues.ballDistance && ballCount < 3 && !TestValues.disable) {
                     spindex.addIndex();
                     ballCount++;
                 }
-
-                if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
+                if (colorSensor.isGreen() && !spindex.getMode()){
                     spindex.setSlotGreen(spindex.getIndex());
                 }
-                else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
+                else if (colorSensor.isPurple() && !spindex.getMode()){
                     spindex.setSlotPurple(spindex.getIndex());
                 }
             }
@@ -262,8 +262,9 @@ public class Test extends LinearOpMode {
 
             // Driver Hub
             telemetry.addLine("==========================================");
-            telemetry.addData("Loop Time: ", loopTime.milliseconds());
-            telemetry.addData("Kickstand Position: ", kickstand.getPosition());
+            telemetry.addData("Loop Time", loopTime.milliseconds());
+            telemetry.addData("Kickstand Position", kickstand.getPosition());
+            telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
             beeMovie.foward();
             telemetry.addLine("==========================================");
             telemetry.update();
