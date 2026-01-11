@@ -264,6 +264,7 @@ public class Test extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.addData("Loop Time: ", loopTime.milliseconds());
             telemetry.addData("Kickstand Position: ", kickstand.getPosition());
+            beeMovie.foward();
             telemetry.addLine("==========================================");
             telemetry.update();
         }
