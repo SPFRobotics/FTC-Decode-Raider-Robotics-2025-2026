@@ -8,7 +8,7 @@ public class UpdateSpindex extends Thread{
     }
 
     public void run(){
-        for(;;){
+        while (spindex.getProgramState()){
             if (spindex.getMode()){
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
             }

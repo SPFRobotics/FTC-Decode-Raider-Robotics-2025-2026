@@ -29,6 +29,8 @@ public class Spindex {
     private double currentPos = 0;
     private double error = 0;
     private boolean outtakeMode = true;
+    private boolean terminate = false;
+
     private static char[] slotStatus = {'E', 'E', 'E'};
     @Config
     public static class SpindexValues{
@@ -135,6 +137,14 @@ public class Spindex {
     }
     public double getPos(){
         return currentPos;
+    }
+
+    public void exitProgram(){
+        terminate = true;
+    }
+
+    public boolean getProgramState(){
+        return terminate;
     }
 
     public double getVoltage(){

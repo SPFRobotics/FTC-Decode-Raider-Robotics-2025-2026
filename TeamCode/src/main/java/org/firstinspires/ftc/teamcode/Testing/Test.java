@@ -289,5 +289,6 @@ public class Test extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.update();*/
         }
+        spindex.exitProgram();
     }
 }
