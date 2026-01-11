@@ -256,6 +256,9 @@ public class Test extends LinearOpMode {
             if (gamepad1.share){
                 kickstand.setPower(1);
             }
+            else{
+                kickstand.setPower(0);
+            }
 
             // Driver Hub
             telemetry.addLine("==========================================");
