@@ -15,7 +15,7 @@ public class KickstandServo {
         public static double up = 0;
         public static double down = 0;
         public static double threshold = 3;
-        public static boolean reverseDir = false;
+        public static boolean reverseDir = true;
     }
     /*########################################*/
 
