@@ -226,7 +226,7 @@ public class Test extends LinearOpMode {
             }
             else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
                 spindex.setSlotPurple(spindex.getIndex());
-            }
+            }*/
 
 
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
@@ -257,7 +257,7 @@ public class Test extends LinearOpMode {
             }
             else{
                 kickstand.down();
-            }*/
+            }
 
             // Driver Hub
             telemetry.addLine("==========================================");
