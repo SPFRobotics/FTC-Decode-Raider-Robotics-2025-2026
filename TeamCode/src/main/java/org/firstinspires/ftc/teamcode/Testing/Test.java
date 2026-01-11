@@ -260,7 +260,7 @@ public class Test extends LinearOpMode {
             }
 
             // Driver Hub
-            /*telemetry.addLine("==========================================");
+            telemetry.addLine("==========================================");
             telemetry.addLine(bigThree.foward());
             telemetry.addLine("==========================================");
             telemetry.addLine("=== DRIVE & INTAKE ===");
@@ -268,13 +268,12 @@ public class Test extends LinearOpMode {
             if (a.getState() == true){
                 telemetry.addLine("Kicker Active");
             }
-            telemetry.addLine(a.getState() ? "Kicker Active" : Kicker Not Active");
             telemetry.addData("Runtime", runtime.toString());
             telemetry.addData("Outtake RPM: ", outtake.getRPM());
             telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
             telemetry.addData("Rumbling:", gamepad2.isRumbling());
             telemetry.addLine("=== SPINDEX ===");
-            telemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
+            telemetry.addData("Mode", spindex.getMode() ? "OUTTAKE" : "INTAKE");
             telemetry.addData("Index", spindex.getIndex());
             telemetry.addData("Spindex", spindex.getPos());
             telemetry.addData("Voltage", spindex.getVoltage());
@@ -287,7 +286,7 @@ public class Test extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.addLine(daddyRyan.foward());
             telemetry.addLine("==========================================");
-            telemetry.update();*/
+            telemetry.update();
         }
         spindex.exitProgram();
     }
