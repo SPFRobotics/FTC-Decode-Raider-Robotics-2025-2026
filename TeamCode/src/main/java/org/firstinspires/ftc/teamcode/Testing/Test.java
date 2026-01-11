@@ -112,6 +112,13 @@ public class Test extends LinearOpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        // Always ensure motors are in manual control mode for normal driving
+        // This ensures they respond to direct power commands
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         // Initialize subsystems
         Intake intake = new Intake(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap, false);
@@ -143,12 +150,6 @@ public class Test extends LinearOpMode {
             int[] hsv = colorSensor.rgbToHSV(rgb[0], rgb[1], rgb[2]);
             char[] slotStatus = spindex.getSlotStatus();
 
-            // Always ensure motors are in manual control mode for normal driving
-            // This ensures they respond to direct power commands
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
                 speedFactor = 0.5;
