@@ -217,7 +217,7 @@ public class Test extends LinearOpMode {
 
             //Controls spindex loading using the color sensor
             double distance = colorSensor.getDistance();
-            if (spindex.getPower() == 0 && distance < 5.1 && distance > 4.5){
+            if (spindex.getPower() == 0 && distance < Spindex.SpindexValues.){
                 if (ballCount < 3 && !TestValues.disable) {
                     spindex.addIndex();
                     ballCount++;

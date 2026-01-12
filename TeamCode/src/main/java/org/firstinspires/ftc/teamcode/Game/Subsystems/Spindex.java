@@ -40,6 +40,7 @@ public class Spindex {
         public static double tolorence = 3;
         public static double[] intakePos = {0, 120, 240};
         public static double[] outtakePos = {60, 180, 300};
+        public static double ballDistance = 0;
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
