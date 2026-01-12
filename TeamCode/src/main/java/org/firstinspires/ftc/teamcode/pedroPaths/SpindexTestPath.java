@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.intakePos;
@@ -37,7 +36,6 @@ public class SpindexTestPath extends OpMode {
     private TelemetryManager panelsTelemetry;
     private Outtake outtake;
     private Spindex spindex;
-    private UpdateSpindex updateSpindex;
     private Intake intake;
 
     private KickerSpindex kicker;
@@ -63,7 +61,6 @@ public class SpindexTestPath extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         outtake = new Outtake(hardwareMap);
         spindex = new Spindex(hardwareMap);
-        updateSpindex = new UpdateSpindex(spindex);
         kicker = new KickerSpindex(hardwareMap);
         intake = new Intake(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
@@ -76,28 +73,11 @@ public class SpindexTestPath extends OpMode {
         ballCount = 0;
         shotIndex = 0;
         lastCycleCount = 0;
-        spindex.setMode(false);
         spindex.setIndex(shotIndex);
         state = INTAKING;
 
         panelsTelemetry.debug("Status", "Shooting 3 via spindex (no drive)");
         panelsTelemetry.update(telemetry);
-    }
-
-    @Override
-    public void start() {
-        super.start();
-        if (updateSpindex != null && !updateSpindex.isAlive()) {
-            updateSpindex.start();
-        }
-    }
-
-    @Override
-    public void stop() {
-        if (spindex != null) {
-            spindex.exitProgram();
-        }
-        super.stop();
     }
 
     @Override
@@ -120,8 +100,10 @@ public class SpindexTestPath extends OpMode {
 
         switch (state) {
             case INTAKING:
-                spindex.setMode(false);
                 spindex.setIndex(ballCount % 3);
+                double intakeTarget = intakePos[spindex.getIndex()];
+                spindex.moveToPos(intakeTarget, true);
+
                 double distance = colorSensor != null ? colorSensor.getDistance() : Double.POSITIVE_INFINITY;
                 if (distance <= INTAKE_DISTANCE_CM && !ballLatched && ballCount < 3 && spindex.getPower() == 0) {
                     int slot = spindex.getIndex();
@@ -146,9 +128,9 @@ public class SpindexTestPath extends OpMode {
                 break;
 
             case SHOOTING:
-                spindex.setMode(true);
                 spindex.setIndex(shootOrder[shotIndex]);
                 double targetAngle = outtakePos[spindex.getIndex()];
+                spindex.moveToPos(targetAngle, true);
                 double error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
                 boolean aligned = error <= Spindex.SpindexValues.tolorence;
 
@@ -174,10 +156,10 @@ public class SpindexTestPath extends OpMode {
                 break;
 
             case ADVANCING:
-                spindex.setMode(true);
                 // Spin to next slot before arming kicker again
                 spindex.setIndex(shootOrder[shotIndex]);
                 targetAngle = outtakePos[spindex.getIndex()];
+                spindex.moveToPos(targetAngle, true);
                 error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
                 if (error <= Spindex.SpindexValues.tolorence) {
                     state = SHOOTING;
