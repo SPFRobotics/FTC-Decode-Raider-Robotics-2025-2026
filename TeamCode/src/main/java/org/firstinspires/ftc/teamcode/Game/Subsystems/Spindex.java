@@ -26,6 +26,7 @@ public class Spindex {
     //Stores weather the class is using a motor or servo
     //Stores position and current index of spindex
     private static int index = 0;
+    private double threadLoopTime = 0;
     private double currentPos = 0;
     private double error = 0;
     private boolean outtakeMode = true;
@@ -35,10 +36,11 @@ public class Spindex {
     @Config
     public static class SpindexValues{
         public static double maxPower = 1;
-        public static double Threshold = 50;
+        public static double Threshold = 150;
         public static double tolorence = 3;
         public static double[] intakePos = {0, 120, 240};
         public static double[] outtakePos = {60, 180, 300};
+        public static double ballDistanceThreshold = 5.7;
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
@@ -135,8 +137,17 @@ public class Spindex {
     public void setMode(boolean outtake){
         outtakeMode = outtake;
     }
+
     public double getPos(){
         return currentPos;
+    }
+
+    public void storeThreadLoopTime(double milliseconds){
+        threadLoopTime = milliseconds;
+    }
+
+    public double getThreadLoopTime(){
+        return threadLoopTime;
     }
 
     public void exitProgram(){

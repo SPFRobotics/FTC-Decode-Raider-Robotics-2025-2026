@@ -112,6 +112,13 @@ public class Test extends LinearOpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        // Always ensure motors are in manual control mode for normal driving
+        // This ensures they respond to direct power commands
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         // Initialize subsystems
         Intake intake = new Intake(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap, false);
@@ -127,10 +134,7 @@ public class Test extends LinearOpMode {
         rightLED = new LedLights("rightLED", hardwareMap);
 
         //Initialize Telemetry
-
-        telemetry.setMsTransmissionInterval(16);
         waitForStart();
-
         ElapsedTime timer = new ElapsedTime();
 
         if (opModeIsActive()){
@@ -138,16 +142,11 @@ public class Test extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
+            ElapsedTime loopTime = new ElapsedTime();
             int[] rgb = colorSensor.getColor();
             int[] hsv = colorSensor.rgbToHSV(rgb[0], rgb[1], rgb[2]);
             char[] slotStatus = spindex.getSlotStatus();
 
-            // Always ensure motors are in manual control mode for normal driving
-            // This ensures they respond to direct power commands
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
                 speedFactor = 0.5;
@@ -192,7 +191,7 @@ public class Test extends LinearOpMode {
                 spindex.setSlotEmpty(spindex.getIndex());
             }
 
-            /*if (spindexOuttakeMode){
+            /*if (spindex.getMode()){
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
             }
             else{
@@ -217,16 +216,18 @@ public class Test extends LinearOpMode {
             }
 
             //Controls spindex loading using the color sensor
-            if (colorSensor.getDistance() <= TestValues.ballDistance && spindex.getPower() == 0 && ballCount < 3 && !TestValues.disable) {
-                spindex.addIndex();
-                ballCount++;
-            }
-
-            if (colorSensor.isGreen() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
-                spindex.setSlotGreen(spindex.getIndex());
-            }
-            else if (colorSensor.isPurple() && colorSensor.getDistance() < 5.1 && colorSensor.getDistance() > 4.5 && !spindex.getMode()){
-                spindex.setSlotPurple(spindex.getIndex());
+            double distance = colorSensor.getDistance();
+            if (spindex.getPower() == 0 && distance < Spindex.SpindexValues.ballDistance){
+                if (ballCount < 3 && !TestValues.disable) {
+                    spindex.addIndex();
+                    ballCount++;
+                }
+                if (colorSensor.isGreen() && !spindex.getMode()){
+                    spindex.setSlotGreen(spindex.getIndex());
+                }
+                else if (colorSensor.isPurple() && !spindex.getMode()){
+                    spindex.setSlotPurple(spindex.getIndex());
+                }
             }
 
 
@@ -250,43 +251,21 @@ public class Test extends LinearOpMode {
             if (gamepad1.ps) {
                 setRPM = 0;
             }
-
             outtake.setRPM(setRPM);
 
-            if (kickstandToggle.toggle(gamepad1.share)){
-                kickstand.up();
+            if (gamepad1.share){
+                kickstand.setPower(1);
             }
             else{
-                kickstand.down();
+                kickstand.setPower(0);
             }
 
-            telemetry.addLine(beeMovie.foward());
             // Driver Hub
             telemetry.addLine("==========================================");
-            telemetry.addLine(bigThree.foward());
-            telemetry.addLine("==========================================");
-            telemetry.addLine("=== DRIVE & INTAKE ===");
-            telemetry.addData("Outtake Active", outtake.isActive());
-            if (a.getState() == true){
-                telemetry.addLine("Kicker Active");
-            }
-            telemetry.addData("Runtime", runtime.toString());
-            telemetry.addData("Outtake RPM: ", outtake.getRPM());
-            telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
-            telemetry.addData("Rumbling:", gamepad2.isRumbling());
-            telemetry.addLine("=== SPINDEX ===");
-            telemetry.addData("Mode", spindex.getMode() ? "OUTTAKE" : "INTAKE");
-            telemetry.addData("Index", spindex.getIndex());
-            telemetry.addData("Spindex", spindex.getPos());
-            telemetry.addData("Voltage", spindex.getVoltage());
-            telemetry.addData("Distance", colorSensor.getDistance());
-            telemetry.addData("Hue:", hsv[0]);
-            telemetry.addData("Slot Status", slotStatus[0] + ", " + slotStatus[1] + ", " + slotStatus[2]);
-            telemetry.addData("Current", spindex.getAmps());
+            telemetry.addData("Loop Time", loopTime.milliseconds());
             telemetry.addData("Kickstand Position", kickstand.getPosition());
-            telemetry.addData("Kickstand Difference", kickstand.getDifference());
-            telemetry.addLine("==========================================");
-            telemetry.addLine(daddyRyan.foward());
+            telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
+            beeMovie.foward();
             telemetry.addLine("==========================================");
             telemetry.update();
         }
