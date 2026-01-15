@@ -157,11 +157,12 @@ public class Test extends LinearOpMode {
             double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
             double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
+            double revLimit = 0.85;
 
-            frontLeftDrive.setPower(y + x + rx);
-            backLeftDrive.setPower(y - x + rx);
-            frontRightDrive.setPower(y - x - rx);
-            backRightDrive.setPower(y + x - rx);
+           frontLeftDrive.setPower((y + x + rx)*revLimit);
+            backLeftDrive.setPower((y - x + rx)*revLimit);
+            frontRightDrive.setPower((y - x - rx)*revLimit);
+            backRightDrive.setPower((y + x - rx)*revLimit);
 
             // Intake toggle on Square button
             boolean intakeActive = square.toggle(gamepad1.right_trigger > 0);
