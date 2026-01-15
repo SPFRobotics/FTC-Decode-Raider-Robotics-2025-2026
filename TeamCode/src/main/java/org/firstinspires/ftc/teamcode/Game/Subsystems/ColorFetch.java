@@ -25,6 +25,7 @@ public class ColorFetch {
     /******************************************************************************************/
 
     /**************************************Methods*********************************************/
+    //Returns an array with the three HSV values (Hue, Saturation and Value)
     public float[] getHSVArray(){
         int colorInteger = colorSensor.getNormalizedColors().toColor();
         float[] hsv = new float[3];
