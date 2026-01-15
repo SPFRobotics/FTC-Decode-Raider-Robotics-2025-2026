@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
@@ -124,6 +125,7 @@ public class Test extends LinearOpMode {
         Outtake outtake = new Outtake(hardwareMap, false);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
+        ColorFetch normColorSensor = new ColorFetch(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
         UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
@@ -135,16 +137,13 @@ public class Test extends LinearOpMode {
 
         //Initialize Telemetry
         waitForStart();
-        ElapsedTime timer = new ElapsedTime();
-
+        telemetry.setMsTransmissionInterval(16);
         if (opModeIsActive()){
             updateSpindex.start();
         }
 
         while (opModeIsActive()) {
             ElapsedTime loopTime = new ElapsedTime();
-            int[] rgb = colorSensor.getColor();
-            int[] hsv = colorSensor.rgbToHSV(rgb[0], rgb[1], rgb[2]);
             char[] slotStatus = spindex.getSlotStatus();
 
 
@@ -216,7 +215,7 @@ public class Test extends LinearOpMode {
             }
 
             //Controls spindex loading using the color sensor
-            double distance = colorSensor.getDistance();
+            /*double distance = colorSensor.getDistance();
             if (spindex.getPower() == 0 && distance < Spindex.SpindexValues.ballDistanceThreshold){
                 if (ballCount < 3 && !TestValues.disable) {
                     spindex.addIndex();
@@ -228,7 +227,7 @@ public class Test extends LinearOpMode {
                 else if (colorSensor.isPurple() && !spindex.getMode()){
                     spindex.setSlotPurple(spindex.getIndex());
                 }
-            }
+            }*/
 
 
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
@@ -265,7 +264,8 @@ public class Test extends LinearOpMode {
             telemetry.addData("Loop Time", loopTime.milliseconds());
             telemetry.addData("Kickstand Position", kickstand.getPosition());
             telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
-            beeMovie.foward();
+            telemetry.addData("Hue", normColorSensor.getHue());
+            telemetry.addData("Distance", normColorSensor.getDistance());
             telemetry.addLine("==========================================");
             telemetry.update();
         }

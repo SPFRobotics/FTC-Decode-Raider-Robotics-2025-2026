@@ -104,17 +104,19 @@ public class Spindex {
 
     public void addIndex(){
         index++;
+        index = Math.floorMod(index, 3);
     }
 
     public void subtractIndex(){
         index--;
+        index = Math.floorMod(index, 3);
     }
 
     public void setIndex(int i){
         index = i;
     }
     public int getIndex(){
-        return Math.floorMod(index, 3);
+        return index;
     }
 
     public char[] getSlotStatus (){
