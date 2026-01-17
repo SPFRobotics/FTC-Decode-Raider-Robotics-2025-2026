@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Game.Subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -56,6 +57,7 @@ public class Outtake {
     // Constructor - initializes the intake motor
     public Outtake(HardwareMap hardwareMap, boolean grav) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
+        outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         PIDFCoefficients pdif = new PIDFCoefficients(p, 0, 0, f);

@@ -160,8 +160,8 @@ public class Test extends LinearOpMode {
 
             frontLeftDrive.setPower(y + x + rx);
             backLeftDrive.setPower(y - x + rx);
-            frontRightDrive.setPower(y - x - rx);
-            backRightDrive.setPower(y + x - rx);
+            frontRightDrive.setPower(y + x - rx);
+            backRightDrive.setPower(y - x - rx);
 
             // Intake toggle on Square button
             boolean intakeActive = square.toggle(gamepad1.right_trigger > 0);
