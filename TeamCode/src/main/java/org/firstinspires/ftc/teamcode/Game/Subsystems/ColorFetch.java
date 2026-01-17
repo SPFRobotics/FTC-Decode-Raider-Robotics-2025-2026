@@ -21,6 +21,7 @@ public class ColorFetch {
     public ColorFetch(HardwareMap hardwareMap){
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "colorSensor");
+        colorSensor.setGain(3.0f);
     }
     /******************************************************************************************/
 
@@ -38,13 +39,17 @@ public class ColorFetch {
         return getHSVArray()[0];
     }
 
+    public float getSaturation(){
+        return getHSVArray()[1];
+    }
+
     /*Gets relevant colors. Returns P if purple G if green and E if empty*/
     public char getColor(){
         float hue = getHue();
-        if (hue >= 200 && hue <= 240){
+        if (hue >= 200.0f && hue <= 240.0f){
             return 'P';
         }
-        else if (hue >= 150 && hue <= 160){
+        else if (hue >= 100.0f && hue <= 170.0f){
             return 'G';
         }
         else{
