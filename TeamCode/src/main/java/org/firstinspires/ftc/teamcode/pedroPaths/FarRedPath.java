@@ -12,9 +12,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Far Red Path", group = "Autonomous")
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues;
+
+@Autonomous(name = "Far Red", group = "Autonomous")
 @Configurable
 public class FarRedPath extends OpMode {
 
@@ -38,6 +41,7 @@ public class FarRedPath extends OpMode {
     private static final int DONE = 14;
 
     private static final double SHOOT_RPM = 3200;
+    private static final boolean USE_ABS_ENCODER = true;
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -46,6 +50,10 @@ public class FarRedPath extends OpMode {
 
     private Intake intake;
     private Outtake outtake;
+    private Spindex spindex;
+
+    // target angle in degrees for the spindex
+    private double spindexTargetDeg = 0.0;
 
     @Override
     public void init() {
@@ -53,6 +61,11 @@ public class FarRedPath extends OpMode {
 
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
+        spindex = new Spindex(hardwareMap);
+
+        // start on first slot in intake mode
+        spindex.setIndex(0);
+        spindexTargetDeg = SpindexValues.intakePos[spindex.getIndex()];
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(83.381, 9.353, Math.toRadians(90)));
@@ -66,12 +79,20 @@ public class FarRedPath extends OpMode {
     @Override
     public void loop() {
         follower.update();
+
+        // always drive the spindex toward its current target
+        spindex.moveToPos(spindexTargetDeg, USE_ABS_ENCODER);
+
         pathState = autonomousPathUpdate();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("X", follower.getPose().getX());
         panelsTelemetry.debug("Y", follower.getPose().getY());
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
+        panelsTelemetry.debug("Spindex Index", spindex.getIndex());
+        panelsTelemetry.debug("Spindex Target", spindexTargetDeg);
+        panelsTelemetry.debug("Spindex Pos", spindex.getPos());
+        panelsTelemetry.debug("Spindex Error", spindex.getError());
         panelsTelemetry.update(telemetry);
     }
 
@@ -151,9 +172,14 @@ public class FarRedPath extends OpMode {
         }
     }
 
+    private boolean spindexAligned() {
+        return Math.abs(spindex.getError()) <= SpindexValues.tolorence;
+    }
+
     public int autonomousPathUpdate() {
 
         if (pathState == DONE) {
+            spindexTargetDeg = SpindexValues.intakePos[spindex.getIndex()];
             follower.followPath(paths.runToFirstIntakePos);
             return RUN_TO_FIRST;
         }
@@ -163,6 +189,7 @@ public class FarRedPath extends OpMode {
 
                 case RUN_TO_FIRST:
                     intake.intakeOn();
+                    spindexTargetDeg = SpindexValues.intakePos[spindex.getIndex()];
                     follower.followPath(paths.intakeFirst);
                     pathState = INTAKE_FIRST;
                     break;
@@ -179,23 +206,37 @@ public class FarRedPath extends OpMode {
                     break;
 
                 case TURN_TO_SHOOT_FIRST:
+                    spindexTargetDeg = SpindexValues.outtakePos[spindex.getIndex()];
                     outtake.resetKickerCycle();
                     pathState = SHOOT_FIRST;
                     break;
 
                 case SHOOT_FIRST:
-                    outtake.setRPM(SHOOT_RPM);
-                    outtake.enableKickerCycle(true, SHOOT_RPM);
-                    if (outtake.getKickerCycleCount() >= 3) {
+                    if (!spindexAligned()) {
                         outtake.setRPM(0);
-                        outtake.resetKickerCycle();
-                        follower.followPath(paths.runToSecondIntakePos);
-                        pathState = RUN_TO_SECOND;
+                        outtake.enableKickerCycle(false, SHOOT_RPM);
+                    } else {
+                        outtake.setRPM(SHOOT_RPM);
+                        outtake.enableKickerCycle(true, SHOOT_RPM);
+
+                        if (outtake.getKickerCycleCount() >= 3) {
+                            outtake.setRPM(0);
+                            outtake.resetKickerCycle();
+
+                            spindex.setSlotEmpty(spindex.getIndex());
+                            spindex.addIndex();
+
+                            spindexTargetDeg = SpindexValues.intakePos[spindex.getIndex()];
+
+                            follower.followPath(paths.runToSecondIntakePos);
+                            pathState = RUN_TO_SECOND;
+                        }
                     }
                     break;
 
                 case RUN_TO_SECOND:
                     intake.intakeOn();
+                    spindexTargetDeg = SpindexValues.intakePos[spindex.getIndex()];
                     follower.followPath(paths.intakeSecond);
                     pathState = INTAKE_SECOND;
                     break;
@@ -207,23 +248,37 @@ public class FarRedPath extends OpMode {
                     break;
 
                 case BACK_TO_SHOOT_SECOND:
+                    spindexTargetDeg = SpindexValues.outtakePos[spindex.getIndex()];
                     outtake.resetKickerCycle();
                     pathState = SHOOT_SECOND;
                     break;
 
                 case SHOOT_SECOND:
-                    outtake.setRPM(SHOOT_RPM);
-                    outtake.enableKickerCycle(true, SHOOT_RPM);
-                    if (outtake.getKickerCycleCount() >= 3) {
+                    if (!spindexAligned()) {
                         outtake.setRPM(0);
-                        outtake.resetKickerCycle();
-                        follower.followPath(paths.runToThirdIntakePos);
-                        pathState = RUN_TO_THIRD;
+                        outtake.enableKickerCycle(false, SHOOT_RPM);
+                    } else {
+                        outtake.setRPM(SHOOT_RPM);
+                        outtake.enableKickerCycle(true, SHOOT_RPM);
+
+                        if (outtake.getKickerCycleCount() >= 3) {
+                            outtake.setRPM(0);
+                            outtake.resetKickerCycle();
+
+                            spindex.setSlotEmpty(spindex.getIndex());
+                            spindex.addIndex();
+
+                            spindexTargetDeg = SpindexValues.intakePos[spindex.getIndex()];
+
+                            follower.followPath(paths.runToThirdIntakePos);
+                            pathState = RUN_TO_THIRD;
+                        }
                     }
                     break;
 
                 case RUN_TO_THIRD:
                     intake.intakeOn();
+                    spindexTargetDeg = SpindexValues.intakePos[spindex.getIndex()];
                     follower.followPath(paths.intakeThird);
                     pathState = INTAKE_THIRD;
                     break;
@@ -235,18 +290,29 @@ public class FarRedPath extends OpMode {
                     break;
 
                 case BACK_TO_SHOOT_THIRD:
+                    spindexTargetDeg = SpindexValues.outtakePos[spindex.getIndex()];
                     outtake.resetKickerCycle();
                     pathState = SHOOT_THIRD;
                     break;
 
                 case SHOOT_THIRD:
-                    outtake.setRPM(SHOOT_RPM);
-                    outtake.enableKickerCycle(true, SHOOT_RPM);
-                    if (outtake.getKickerCycleCount() >= 3) {
+                    if (!spindexAligned()) {
                         outtake.setRPM(0);
-                        outtake.resetKickerCycle();
-                        follower.followPath(paths.leave);
-                        pathState = LEAVE;
+                        outtake.enableKickerCycle(false, SHOOT_RPM);
+                    } else {
+                        outtake.setRPM(SHOOT_RPM);
+                        outtake.enableKickerCycle(true, SHOOT_RPM);
+
+                        if (outtake.getKickerCycleCount() >= 3) {
+                            outtake.setRPM(0);
+                            outtake.resetKickerCycle();
+
+                            spindex.setSlotEmpty(spindex.getIndex());
+                            spindex.addIndex();
+
+                            follower.followPath(paths.leave);
+                            pathState = LEAVE;
+                        }
                     }
                     break;
 

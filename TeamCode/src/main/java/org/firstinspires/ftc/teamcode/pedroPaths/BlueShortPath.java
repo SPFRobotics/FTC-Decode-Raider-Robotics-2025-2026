@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.intakePos;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.outtakePos;
 
-@Autonomous(name = "Blue Short Path", group = "Autonomous")
+@Autonomous(name = "Blue Short", group = "Autonomous")
 @Configurable // Panels
 public class BlueShortPath extends OpMode {
 

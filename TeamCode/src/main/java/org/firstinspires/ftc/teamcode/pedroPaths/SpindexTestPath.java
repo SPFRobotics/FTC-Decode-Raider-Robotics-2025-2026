@@ -21,7 +21,7 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 @Autonomous(name = "Cam UwU path", group = "Autonomous")
 public class SpindexTestPath extends OpMode {
 
-    private static final double SHOOT_RPM = Outtake.OuttakeConfig.farRPM;
+    private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final int INTAKING = 0;
     private static final int SHOOTING = 1;
     private static final int ADVANCING = 2;
@@ -88,6 +88,7 @@ public class SpindexTestPath extends OpMode {
         }
         motifId = lastDetectedMotif;
         int currentCycles = outtake.getKickerCycleCount();
+        intake.intakeOn();
 
         // Early exit when all shots are done
         if (state == DONE || shotIndex >= 3) {
@@ -116,7 +117,7 @@ public class SpindexTestPath extends OpMode {
                 }
 
                 if (ballCount >= 3) {
-                    intake.intakeOff();
+                    //intake.intakeOff();
                     outtake.resetKickerCycle();
                     outtake.setRPM(SHOOT_RPM);
                     determineShootOrder();

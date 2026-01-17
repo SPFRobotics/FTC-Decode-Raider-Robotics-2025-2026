@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Game.Auto;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,7 +13,8 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 
-@Autonomous(name="Auto Blue Long")
+@Disabled
+        //(name="Auto Blue Long")
 public class AutoFarBlue extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
