@@ -54,7 +54,6 @@ public class Test extends LinearOpMode {
     private boolean launched = true;
     private Limelight limelight = null;
     private MecanumChassis chassis = null;
-    private ColorFinder colorSensor = null;
     private Spindex spindex = null;
     //private boolean spindexOuttakeMode = false;
 
@@ -124,8 +123,7 @@ public class Test extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap, false);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
-        colorSensor = new ColorFinder(hardwareMap);
-        ColorFetch normColorSensor = new ColorFetch(hardwareMap);
+        ColorFetch colorSensor = new ColorFetch(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
         UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
@@ -142,8 +140,9 @@ public class Test extends LinearOpMode {
             updateSpindex.start();
         }
 
+        ElapsedTime loopTime = new ElapsedTime();
         while (opModeIsActive()) {
-            ElapsedTime loopTime = new ElapsedTime();
+            loopTime.reset();
             char[] slotStatus = spindex.getSlotStatus();
 
 
@@ -186,8 +185,8 @@ public class Test extends LinearOpMode {
             }
             spindex.setMode(spindexModeToggle.toggle(gamepad1.circle));
 
-            if (kicker.automate(gamepad1.crossWasPressed() && spindex.getMode())){
-                spindex.setSlotEmpty(spindex.getIndex());
+            if (!kicker.automate(gamepad1.crossWasPressed() && !spindex.isOuttakeing())){
+                spindex.clearSlot(spindex.getIndex());
             }
 
             /*if (spindex.getMode()){
@@ -214,7 +213,7 @@ public class Test extends LinearOpMode {
                 }
             }
 
-            //Controls spindex loading using the color sensor
+            //Controls spindex loading using the ColorFinder class
             /*double distance = colorSensor.getDistance();
             if (spindex.getPower() == 0 && distance < Spindex.SpindexValues.ballDistanceThreshold){
                 if (ballCount < 3 && !TestValues.disable) {
@@ -228,6 +227,10 @@ public class Test extends LinearOpMode {
                     spindex.setSlotPurple(spindex.getIndex());
                 }
             }*/
+
+            if (spindex.getPower() == 0 && !spindex.isOuttakeing()){
+                spindex.setSlotStatus(colorSensor.getColor());
+            }
 
 
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
@@ -264,8 +267,9 @@ public class Test extends LinearOpMode {
             telemetry.addData("Loop Time", loopTime.milliseconds());
             telemetry.addData("Kickstand Position", kickstand.getPosition());
             telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
-            telemetry.addData("Hue", normColorSensor.getHue());
-            telemetry.addData("Distance", normColorSensor.getDistance());
+            telemetry.addData("Hue", colorSensor.getHSVArray()[0] + " " + colorSensor.getHSVArray()[1] + " " + colorSensor.getHSVArray()[2]);
+            telemetry.addData("Distance", colorSensor.getDistance());
+            telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
             telemetry.addLine("==========================================");
             telemetry.update();
         }

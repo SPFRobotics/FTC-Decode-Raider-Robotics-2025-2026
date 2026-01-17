@@ -13,7 +13,7 @@ public class UpdateSpindex extends Thread{
         ElapsedTime loopTime = new ElapsedTime();
         while (!spindex.getProgramState()){
             loopTime.reset();
-            if (spindex.getMode()){
+            if (spindex.isOuttakeing()){
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
             }
             else{

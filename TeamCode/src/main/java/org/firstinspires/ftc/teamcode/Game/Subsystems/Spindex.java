@@ -29,7 +29,7 @@ public class Spindex {
     private double threadLoopTime = 0;
     private double currentPos = 0;
     private double error = 0;
-    private boolean outtakeMode = true;
+    private boolean outtakeMode = false;
     private boolean terminate = false;
 
     private static char[] slotStatus = {'E', 'E', 'E'};
@@ -40,7 +40,8 @@ public class Spindex {
         public static double tolorence = 3;
         public static double[] intakePos = {0, 120, 240};
         public static double[] outtakePos = {60, 180, 300};
-        public static double ballDistanceThreshold = 5.7;
+        public static double ballDistanceThreshold = 2;
+        public static double slotTimer = 500;
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
@@ -125,14 +126,15 @@ public class Spindex {
 
     //Methods used to set the color of the balls at the current index, detection is handled in the "main" code
     /*########################################*/
-    public void setSlotEmpty(int i){
-        slotStatus[getIndex()] = 'E';
+    public void setSlotStatus(char color){
+        int currentIndex = getIndex();
+        if (slotStatus[currentIndex] == 'E'){
+            slotStatus[currentIndex] = color;
+        }
     }
-    public void setSlotPurple(int i){
-        slotStatus[getIndex()] = 'P';
-    }
-    public void setSlotGreen(int i){
-        slotStatus[getIndex()] = 'G';
+
+    public void clearSlot(int index){
+        slotStatus[index] = 'E';
     }
     /*########################################*/
 
@@ -176,7 +178,7 @@ public class Spindex {
         return spindexMotor.getCurrent(CurrentUnit.AMPS);
     }
 
-    public boolean getMode(){
+    public boolean isOuttakeing(){
         return outtakeMode;
     }
 }
