@@ -153,9 +153,9 @@ public class Test extends LinearOpMode {
                 speedFactor = 1;
             }
 
-            double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
-            double x = gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
+            double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
+            double x = gamepad1.left_stick_x * speedFactor;
+            double rx = gamepad1.right_stick_x * speedFactor;
 
             frontLeftDrive.setPower(y + x + rx);
             backLeftDrive.setPower(y - x + rx);
@@ -265,7 +265,7 @@ public class Test extends LinearOpMode {
             // Driver Hub
             telemetry.addLine("==========================================");
             telemetry.addData("Loop Time", loopTime.milliseconds());
-            telemetry.addData("Kickstand Position", kickstand.getPosition());
+            telemetry.addData("Kickstand Position", kickstand.getVoltage());
             telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
             telemetry.addData("Hue", colorSensor.getHSVArray()[0] + " " + colorSensor.getHSVArray()[1] + " " + colorSensor.getHSVArray()[2]);
             telemetry.addData("Distance", colorSensor.getDistance());

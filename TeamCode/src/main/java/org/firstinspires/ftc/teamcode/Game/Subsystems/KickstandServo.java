@@ -29,6 +29,7 @@ public class KickstandServo {
     public KickstandServo(HardwareMap hardwareMap){
         kickstand = hardwareMap.get(CRServo.class, "kickstand");
         kickstandPos = hardwareMap.get(AnalogInput.class, "kickstandPos");
+        kickstand.setPower(0);
         if (reverseDir){
             kickstand.setDirection(DcMotorSimple.Direction.REVERSE);
         }
@@ -43,7 +44,11 @@ public class KickstandServo {
     }
 
     public double getPosition(){
-        return (kickstandPos.getVoltage()/3.3*360.0)*(2.0/15.0);
+        return (kickstandPos.getVoltage()/3.3*360.0);
+    }
+
+    public double getVoltage(){
+        return kickstandPos.getVoltage();
     }
 
     public double getDifference(){
