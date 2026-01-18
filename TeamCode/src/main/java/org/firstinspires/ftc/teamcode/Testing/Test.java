@@ -161,6 +161,7 @@ public class Test extends LinearOpMode {
             backLeftDrive.setPower(y - x + rx);
             frontRightDrive.setPower(y - x - rx);
             backRightDrive.setPower(y + x - rx);
+            backRightDrive.setPower(y + x - rx);
 
             // Intake toggle on Square button
             boolean intakeActive = square.toggle(gamepad1.right_trigger > 0);
@@ -185,7 +186,7 @@ public class Test extends LinearOpMode {
             }
             spindex.setMode(spindexModeToggle.toggle(gamepad1.circle));
 
-            if (!kicker.automate(gamepad1.crossWasPressed() && !spindex.isOuttakeing())){
+            if (kicker.automate(gamepad1.crossWasPressed() && spindex.isOuttakeing())){
                 spindex.clearSlot(spindex.getIndex());
             }
 
