@@ -229,7 +229,7 @@ public class Test extends LinearOpMode {
             }*/
 
             if (spindex.getPower() == 0 && !spindex.isOuttakeing()){
-                spindex.setSlotStatus(colorSensor.getColor());
+                spindex.setSlotStatus(colorSensor.getColor(), colorSensor.getDistance(), colorSensor.getHue());
             }
 
 
@@ -270,6 +270,8 @@ public class Test extends LinearOpMode {
             telemetry.addData("Hue", colorSensor.getHSVArray()[0] + " " + colorSensor.getHSVArray()[1] + " " + colorSensor.getHSVArray()[2]);
             telemetry.addData("Distance", colorSensor.getDistance());
             telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+            telemetry.addData("Slot Distance", spindex.temp[0] + " " + spindex.temp[1] + " " + spindex.temp[2]);
+            telemetry.addData("Slot Distance", spindex.tempColor[0] + " " + spindex.tempColor[1] + " " + spindex.tempColor[2]);
             telemetry.addLine("==========================================");
             telemetry.update();
         }
