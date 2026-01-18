@@ -51,6 +51,7 @@ public class Spindex {
         spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
         spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
         slotStatus = new char[]{'E', 'E', 'E'};

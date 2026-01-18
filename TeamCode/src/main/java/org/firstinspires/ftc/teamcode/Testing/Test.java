@@ -112,6 +112,7 @@ public class Test extends LinearOpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
         // Always ensure motors are in manual control mode for normal driving
         // This ensures they respond to direct power commands
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
