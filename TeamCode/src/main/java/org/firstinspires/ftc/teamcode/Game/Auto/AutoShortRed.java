@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -17,7 +18,8 @@ import java.io.UnsupportedEncodingException;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 
 
-@Autonomous(name="Auto Short Red")
+@Disabled
+        //(name="Auto Short Red")
 public class AutoShortRed extends LinearOpMode {
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
