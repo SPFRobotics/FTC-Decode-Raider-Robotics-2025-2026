@@ -227,7 +227,7 @@ public class FarBluePath extends OpMode {
                             outtake.setRPM(0);
                             outtake.resetKickerCycle();
 
-                            spindex.setSlotEmpty(spindex.getIndex());
+                            spindex.clearSlot(spindex.getIndex());
                             spindex.addIndex();
 
                             follower.followPath(paths.runToSecondIntakePos);
@@ -270,7 +270,7 @@ public class FarBluePath extends OpMode {
                             outtake.setRPM(0);
                             outtake.resetKickerCycle();
 
-                            spindex.setSlotEmpty(spindex.getIndex());
+                            spindex.clearSlot(spindex.getIndex());
                             spindex.addIndex();
 
                             follower.followPath(paths.runToThirdIntakePos);
@@ -311,7 +311,7 @@ public class FarBluePath extends OpMode {
                             outtake.setRPM(0);
                             outtake.resetKickerCycle();
 
-                            spindex.setSlotEmpty(spindex.getIndex());
+                            spindex.clearSlot(spindex.getIndex());
                             spindex.addIndex();
 
                             follower.followPath(paths.leave);

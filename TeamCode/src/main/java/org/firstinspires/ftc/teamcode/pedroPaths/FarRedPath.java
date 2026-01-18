@@ -223,7 +223,7 @@ public class FarRedPath extends OpMode {
                             outtake.setRPM(0);
                             outtake.resetKickerCycle();
 
-                            spindex.setSlotEmpty(spindex.getIndex());
+                            spindex.clearSlot(spindex.getIndex());
                             spindex.addIndex();
 
                             spindexTargetDeg = SpindexValues.intakePos[spindex.getIndex()];
@@ -265,7 +265,7 @@ public class FarRedPath extends OpMode {
                             outtake.setRPM(0);
                             outtake.resetKickerCycle();
 
-                            spindex.setSlotEmpty(spindex.getIndex());
+                            spindex.clearSlot(spindex.getIndex());
                             spindex.addIndex();
 
                             spindexTargetDeg = SpindexValues.intakePos[spindex.getIndex()];
@@ -307,7 +307,7 @@ public class FarRedPath extends OpMode {
                             outtake.setRPM(0);
                             outtake.resetKickerCycle();
 
-                            spindex.setSlotEmpty(spindex.getIndex());
+                            spindex.clearSlot(spindex.getIndex());
                             spindex.addIndex();
 
                             follower.followPath(paths.leave);

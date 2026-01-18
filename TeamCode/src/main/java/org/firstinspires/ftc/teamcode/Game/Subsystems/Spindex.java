@@ -39,7 +39,7 @@ public class Spindex {
         public static double Threshold = 150;
         public static double tolorence = 3;
         public static double[] intakePos = {0, 120, 240};
-        public static double[] outtakePos = {60, 180, 300};
+        public static double[] outtakePos = {180, 300, 120};
         public static double ballDistanceThreshold = 2;
         public static double slotTimer = 500;
     }
