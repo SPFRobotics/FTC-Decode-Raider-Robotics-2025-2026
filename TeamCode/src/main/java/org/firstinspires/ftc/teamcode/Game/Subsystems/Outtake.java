@@ -57,7 +57,6 @@ public class Outtake {
     // Constructor - initializes the intake motor
     public Outtake(HardwareMap hardwareMap, boolean grav) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
-        outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         PIDFCoefficients pdif = new PIDFCoefficients(p, 0, 0, f);

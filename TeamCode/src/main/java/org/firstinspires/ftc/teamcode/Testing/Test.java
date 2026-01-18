@@ -112,6 +112,7 @@ public class Test extends LinearOpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
         // Always ensure motors are in manual control mode for normal driving
         // This ensures they respond to direct power commands
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -159,8 +160,8 @@ public class Test extends LinearOpMode {
 
             frontLeftDrive.setPower(y + x + rx);
             backLeftDrive.setPower(y - x + rx);
-            frontRightDrive.setPower(y + x - rx);
-            backRightDrive.setPower(y - x - rx);
+            frontRightDrive.setPower(y - x - rx);
+            backRightDrive.setPower(y + x - rx);
 
             // Intake toggle on Square button
             boolean intakeActive = square.toggle(gamepad1.right_trigger > 0);
@@ -185,7 +186,7 @@ public class Test extends LinearOpMode {
             }
             spindex.setMode(spindexModeToggle.toggle(gamepad1.circle));
 
-            if (!kicker.automate(gamepad1.crossWasPressed() && !spindex.isOuttakeing())){
+            if (kicker.automate(gamepad1.crossWasPressed() && spindex.isOuttakeing())){
                 spindex.clearSlot(spindex.getIndex());
             }
 
