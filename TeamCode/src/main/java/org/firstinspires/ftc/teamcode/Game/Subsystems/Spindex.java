@@ -34,8 +34,6 @@ public class Spindex {
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
     private boolean[] slotStatus = {false, false, false};
-    public double tempColor[] = {0, 0, 0};
-    public double temp[] = {0, 0, 0};
     @Config
     public static class SpindexValues{
         public static double maxPower = 1;
@@ -130,19 +128,21 @@ public class Spindex {
 
     //Methods used to set the color of the balls at the current index, detection is handled in the "main" code
     /*########################################*/
-    public void setSlotStatus(char color, double distance, double colorVal){
+    public void setSlotColorStatus(char color){
         int currentIndex = getIndex();
-        if (slotStatus[currentIndex] == 'E'){
-            slotStatus[currentIndex] = color;
-            temp[currentIndex] = distance;
-            tempColor[currentIndex] = colorVal;
+        if (slotColorStatus[currentIndex] == 'E'){
+            slotColorStatus[currentIndex] = color;
         }
     }
 
     public void clearSlot(int index){
-        slotStatus[index] = 'E';
+        slotColorStatus[index] = 'E';
     }
     /*########################################*/
+
+    public boolean[] getSlotStatus{
+
+    }
 
     public void setMode(boolean outtake){
         outtakeMode = outtake;

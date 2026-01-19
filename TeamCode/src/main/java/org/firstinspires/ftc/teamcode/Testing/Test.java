@@ -144,8 +144,6 @@ public class Test extends LinearOpMode {
         ElapsedTime loopTime = new ElapsedTime();
         while (opModeIsActive()) {
             loopTime.reset();
-            char[] slotStatus = spindex.getSlotStatus();
-
 
             if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
                 speedFactor = 0.5;
@@ -198,22 +196,7 @@ public class Test extends LinearOpMode {
                 spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
             }*/
 
-            if (gamepad1.square){
-                for (int i = 0; i < 3; i++){
-                    if (slotStatus[i] == 'P'){
-                        spindex.setIndex((i+1)%3);
-                        break;
-                    }
-                }
-            }
-            else if (gamepad1.triangle){
-                for (int i = 0; i < 3; i++){
-                    if (slotStatus[i] == 'G'){
-                        spindex.setIndex((i+1)%3);
-                        break;
-                    }
-                }
-            }
+
 
             //Controls spindex loading using the ColorFinder class
             /*double distance = colorSensor.getDistance();
@@ -229,10 +212,6 @@ public class Test extends LinearOpMode {
                     spindex.setSlotPurple(spindex.getIndex());
                 }
             }*/
-
-            if (spindex.getPower() == 0 && !spindex.isOuttakeing()){
-                spindex.setSlotStatus(colorSensor.getColor(), colorSensor.getDistance(), colorSensor.getHue());
-            }
 
 
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
@@ -271,9 +250,6 @@ public class Test extends LinearOpMode {
             telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
             telemetry.addData("Hue", colorSensor.getHSVArray()[0] + " " + colorSensor.getHSVArray()[1] + " " + colorSensor.getHSVArray()[2]);
             telemetry.addData("Distance", colorSensor.getDistance());
-            telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
-            telemetry.addData("Slot Distance", spindex.temp[0] + " " + spindex.temp[1] + " " + spindex.temp[2]);
-            telemetry.addData("Slot Distance", spindex.tempColor[0] + " " + spindex.tempColor[1] + " " + spindex.tempColor[2]);
             telemetry.addLine("==========================================");
             telemetry.update();
         }
