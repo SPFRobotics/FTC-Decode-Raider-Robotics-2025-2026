@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "JoshTele")
+@Disabled
+
+        //(name = "JoshTele")
 public class JoshMotor extends LinearOpMode {
 
     private DcMotor joshMotor;
