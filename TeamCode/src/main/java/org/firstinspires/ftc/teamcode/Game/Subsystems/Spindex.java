@@ -170,7 +170,7 @@ public class Spindex {
             addBall(getIndex());
         }
 
-        if (isAutoLoading()) {
+        if (isAutoLoading() && slotStatus[getIndex()]) {
             for (int i = 0; i < slotStatus.length; i++) {
                 if (!slotStatus[i]) {
                     setIndex(i);
