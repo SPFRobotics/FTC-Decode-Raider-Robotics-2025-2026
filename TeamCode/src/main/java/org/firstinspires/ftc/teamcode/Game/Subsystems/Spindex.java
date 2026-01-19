@@ -32,7 +32,8 @@ public class Spindex {
     private boolean outtakeMode = false;
     private boolean terminate = false;
 
-    private static char[] slotStatus = {'E', 'E', 'E'};
+    private char[] slotColorStatus = {'E', 'E', 'E'};
+    private boolean[] slotStatus = {false, false, false};
     public double tempColor[] = {0, 0, 0};
     public double temp[] = {0, 0, 0};
     @Config
@@ -54,7 +55,6 @@ public class Spindex {
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
-        slotStatus = new char[]{'E', 'E', 'E'};
         index = 0;
     }
 
@@ -123,8 +123,9 @@ public class Spindex {
         return index;
     }
 
-    public char[] getSlotStatus (){
-        return slotStatus;
+
+    public char[] getSlotColorStatus (){
+        return slotColorStatus;
     }
 
     //Methods used to set the color of the balls at the current index, detection is handled in the "main" code
