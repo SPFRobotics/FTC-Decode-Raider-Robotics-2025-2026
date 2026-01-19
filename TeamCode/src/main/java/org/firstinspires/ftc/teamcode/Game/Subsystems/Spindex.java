@@ -22,7 +22,9 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 public class Spindex {
     //Servo encoder
     private static AnalogInput spindexPos = null;
-    public DcMotorEx spindexMotor = null;
+    private DcMotorEx spindexMotor = null;
+    private ColorFetch colorSensor = null;
+
     //Stores weather the class is using a motor or servo
     //Stores position and current index of spindex
     private static int index = 0;
@@ -30,7 +32,9 @@ public class Spindex {
     private double currentPos = 0;
     private double error = 0;
     private boolean outtakeMode = false;
+    private boolean autoLoadMode = true;
     private boolean terminate = false;
+    private boolean atTarget = false;
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
     private boolean[] slotStatus = {false, false, false};
@@ -41,7 +45,10 @@ public class Spindex {
         public static double tolorence = 3;
         public static double[] intakePos = {0, 120, 240};
         public static double[] outtakePos = {180, 300, 60};
-        public static double ballDistanceThreshold = 2;
+
+        //Distance/Color sensor
+        public static double ballDistanceThreshold = 3.3;
+        public static double spindexPowerThreshold = 0.1;
         public static double slotTimer = 500;
     }
 
@@ -70,13 +77,16 @@ public class Spindex {
 
             if(Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
+                setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
                 spindexMotor.setPower(error * kp);
+                setTargetStatus(false);
 
             }
             else {
                 spindexMotor.setPower(0);
+                setTargetStatus(true);
             }
         }
         else{
@@ -90,16 +100,17 @@ public class Spindex {
 
             double kp = maxPower/Threshold;
 
-            if(Math.abs(error) > Threshold){
-
+            if (Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
-
-            } else if (Math.abs(error) > tolorence) {
-
+                setTargetStatus(false);
+            }
+            else if (Math.abs(error) > tolorence) {
                 spindexMotor.setPower(error * kp);
-
-            }else {
+                setTargetStatus(false);
+            }
+            else {
                 spindexMotor.setPower(0);
+                setTargetStatus(true);
             }
         }
     }
@@ -140,12 +151,46 @@ public class Spindex {
     }
     /*########################################*/
 
-    public boolean[] getSlotStatus{
+    /****Methods to control ball detection, not color****/
+    public void addBall(int index){
+        slotStatus[index] = true;
+    }
 
+    public void clearBall(int index){
+        slotStatus[index] = false;
+    }
+
+    public boolean[] getSlotStatus(){
+        return slotStatus;
+    }
+
+    public void autoLoad(ColorFetch colorSensor){
+        double ballDistance = colorSensor.getDistance();
+        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && atTarget() && getPower() < SpindexValues.spindexPowerThreshold && ballDistance < SpindexValues.ballDistanceThreshold){
+            addBall(getIndex());
+        }
+
+        if (isAutoLoading()) {
+            for (int i = 0; i < slotStatus.length; i++) {
+                if (!slotStatus[i]) {
+                    setIndex(i);
+                    break;
+                }
+            }
+        }
+    }
+    /****************************************************/
+
+    public void setTargetStatus(boolean x){
+        atTarget = x;
     }
 
     public void setMode(boolean outtake){
         outtakeMode = outtake;
+    }
+
+    public void setAutoLoadMode(boolean x){
+        autoLoadMode = x;
     }
 
     public double getPos(){
@@ -186,5 +231,13 @@ public class Spindex {
 
     public boolean isOuttakeing(){
         return outtakeMode;
+    }
+
+    public boolean isAutoLoading(){
+        return autoLoadMode;
+    }
+
+    public boolean atTarget(){
+        return atTarget;
     }
 }
