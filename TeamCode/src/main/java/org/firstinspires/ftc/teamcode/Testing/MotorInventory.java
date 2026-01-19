@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@TeleOp(name="MotorInventory")
+@Disabled
+        //(name="MotorInventory")
 public class MotorInventory extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

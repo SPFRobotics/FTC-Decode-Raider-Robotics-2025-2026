@@ -18,7 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import com.bylazar.telemetry.PanelsTelemetry;
 
-@TeleOp
+@Disabled
 public class OuttakeTesting extends LinearOpMode {
     private TelemetryManager telemetryM;
     PrintWriter pen = new PrintWriter("/sdcard/outtake.txt");

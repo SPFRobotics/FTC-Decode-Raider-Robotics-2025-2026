@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp
+@DIsabled
 public class BoreEncoder extends LinearOpMode {
     public void runOpMode(){
         DcMotor encoder = hardwareMap.get(DcMotor.class, "encoder");

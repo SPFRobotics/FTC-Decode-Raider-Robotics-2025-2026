@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 
-@TeleOp
+@Disabled
 public class SpindexStress extends LinearOpMode {
     public void runOpMode(){
         Spindex spindex = new Spindex(hardwareMap);

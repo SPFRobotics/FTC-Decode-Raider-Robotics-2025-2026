@@ -15,9 +15,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
         .mass(11.39)
-            //.forwardZeroPowerAcceleration(-34.83144111804443)
-            //.lateralZeroPowerAcceleration(53.31811698147531)
-            //translationalPIDFCoefficients(new PIDFCoefficients(0.07,0,0.022,0))
+            .forwardZeroPowerAcceleration(-25.290104309295202)
+            .lateralZeroPowerAcceleration(-47.20751581701416)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.05,0,0.022,0.0257))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.4,0,0.001,0.043))
 
             ;
 
@@ -32,28 +33,31 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            //.xVelocity(46.028932854133906)
-            //.yVelocity(35.62949286963164)
+            .xVelocity(49.74989534858262)
+            .yVelocity(45.51668057321178)
             ;
 
 
     public static ThreeWheelIMUConstants localizerConstants = new ThreeWheelIMUConstants()
-            .forwardTicksToInches(0.0019793)
-            .strafeTicksToInches(0.0019793)
-            .turnTicksToInches(0.0019793)
+            .forwardTicksToInches(0.0019857261078399307)
+            .strafeTicksToInches(0.0019857261078399307)
+            .turnTicksToInches(0.0019857261078399307)
             .leftPodY(7.5)
             .rightPodY(-7.5)
-            .strafePodX(8)
+            .strafePodX(-7.75)
             .leftEncoder_HardwareMapName("backLeftDrive")
             .rightEncoder_HardwareMapName("backRightDrive")
             .strafeEncoder_HardwareMapName("frontRightDrive")
-            .leftEncoderDirection(Encoder.REVERSE)
-            .rightEncoderDirection(Encoder.REVERSE)
-            .strafeEncoderDirection(Encoder.REVERSE)
+            .leftEncoderDirection(Encoder.FORWARD)
+            .rightEncoderDirection(Encoder.FORWARD)
+            .strafeEncoderDirection(Encoder.FORWARD)
             .IMU_HardwareMapName("imu")
             .IMU_Orientation(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99,
+            100,
+            1,
+            1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
