@@ -55,19 +55,7 @@ public class Outtake {
     //Interval in seconds of outtake cycle
     private ElapsedTime interval = new ElapsedTime();
     // Constructor - initializes the intake motor
-    public Outtake(HardwareMap hardwareMap, boolean grav) {
-        outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
-        //outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
-        PIDFCoefficients pdif = new PIDFCoefficients(p, 0, 0, f);
-        outtakeMotor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pdif);
-        //outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
-        if (grav){
-            kickerGrav = new KickerGrav(hardwareMap);
-        }
-        //limelight = new Limelight(hardwareMap);
-    }
 
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
@@ -75,6 +63,19 @@ public class Outtake {
         kickerGrav = new KickerGrav(hardwareMap);
         kickerSpindex = new KickerSpindex(hardwareMap);
         //limelight = new Limelight(hardwareMap);
+    }
+
+    // Constructor for spindex-only (no KickerGrav servo needed)
+    public Outtake(HardwareMap hardwareMap, boolean useSpindexOnly) {
+        outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
+        outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
+        if (useSpindexOnly) {
+            kickerSpindex = new KickerSpindex(hardwareMap);
+            kickerGrav = null;
+        } else {
+            kickerGrav = new KickerGrav(hardwareMap);
+            kickerSpindex = new KickerSpindex(hardwareMap);
+        }
     }
 
     /*public void ColorSort(){
@@ -187,6 +188,9 @@ public class Outtake {
         kickerState = KickerCycleState.IDLE;
         if (kickerGrav != null){
             kickerGrav.down();
+        }
+        if (kickerSpindex != null){
+            kickerSpindex.down();
         }
     }
 

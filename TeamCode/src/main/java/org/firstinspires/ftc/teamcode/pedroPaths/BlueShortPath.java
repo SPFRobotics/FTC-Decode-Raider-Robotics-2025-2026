@@ -15,7 +15,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.intakePos;
@@ -26,7 +25,7 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 public class BlueShortPath extends OpMode {
 
     private static final int RUN_FROM_WALL = 0;
-    private static final int SHOOT_PRELOAD = 1;  // NEW: Shoot preloaded balls first
+    private static final int SHOOT_PRELOAD = 1;  // Shoot preloaded balls first
     private static final int RUN_TO_FIRST = 2;
     private static final int INTAKE_FIRST = 3;
     private static final int BACK_TO_SHOOT_FIRST = 4;
@@ -53,7 +52,6 @@ public class BlueShortPath extends OpMode {
     private Intake intake;
     private Outtake outtake;
     private Spindex spindex;
-    private KickerSpindex kicker;
     private int spindexSlot = 0;
     private ColorFinder colorSensor;
     private int ballCount = 0;
@@ -65,9 +63,9 @@ public class BlueShortPath extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         intake = new Intake(hardwareMap);
-        outtake = new Outtake(hardwareMap);
+        // Use spindex-only constructor (no KickerGrav servo needed)
+        outtake = new Outtake(hardwareMap, true);
         spindex = new Spindex(hardwareMap);
-        kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         // Start where the first generated path begins so the follower does not jump
@@ -230,26 +228,25 @@ public class BlueShortPath extends OpMode {
                     spindexSlot = 0;
                     pathState = SHOOT_PRELOAD;
                     break;
-
+                    
                 case SHOOT_PRELOAD:
                     // Shoot the 3 preloaded balls
                     outtake.setRPM(SHOOT_RPM);
                     double targetAngle = outtakePos[spindexSlot];
                     double error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
                     boolean aligned = error <= Spindex.SpindexValues.tolorence;
-
+                    
                     if (aligned) {
                         outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
                     }
-
+                    
                     if (currentCycles > lastCycleCount) {
                         lastCycleCount = currentCycles;
                         spindexSlot = (spindexSlot + 1) % 3;
                     }
-
+                    
                     if (outtake.getKickerCycleCount() >= 3) {
                         outtake.setRPM(0);
-                        kicker.down();
                         outtake.resetKickerCycle();
                         lastCycleCount = 0;
                         ballCount = 0;
@@ -259,7 +256,7 @@ public class BlueShortPath extends OpMode {
                         pathState = RUN_TO_FIRST;
                     }
                     break;
-
+                    
                 case RUN_TO_FIRST:
                     intake.intakeOn();
                     follower.followPath(paths.intakeFirst);
@@ -281,19 +278,18 @@ public class BlueShortPath extends OpMode {
                     targetAngle = outtakePos[spindexSlot];
                     error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
                     aligned = error <= Spindex.SpindexValues.tolorence;
-
+                    
                     if (aligned) {
                         outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
                     }
-
+                    
                     if (currentCycles > lastCycleCount) {
                         lastCycleCount = currentCycles;
                         spindexSlot = (spindexSlot + 1) % 3;
                     }
-
+                    
                     if (outtake.getKickerCycleCount() >= 3) {
                         outtake.setRPM(0);
-                        kicker.down();
                         outtake.resetKickerCycle();
                         lastCycleCount = 0;
                         ballCount = 0;
@@ -324,19 +320,18 @@ public class BlueShortPath extends OpMode {
                     targetAngle = outtakePos[spindexSlot];
                     error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
                     aligned = error <= Spindex.SpindexValues.tolorence;
-
+                    
                     if (aligned) {
                         outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
                     }
-
+                    
                     if (currentCycles > lastCycleCount) {
                         lastCycleCount = currentCycles;
                         spindexSlot = (spindexSlot + 1) % 3;
                     }
-
+                    
                     if (outtake.getKickerCycleCount() >= 3) {
                         outtake.setRPM(0);
-                        kicker.down();
                         outtake.resetKickerCycle();
                         lastCycleCount = 0;
                         ballCount = 0;
@@ -367,19 +362,18 @@ public class BlueShortPath extends OpMode {
                     targetAngle = outtakePos[spindexSlot];
                     error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
                     aligned = error <= Spindex.SpindexValues.tolorence;
-
+                    
                     if (aligned) {
                         outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
                     }
-
+                    
                     if (currentCycles > lastCycleCount) {
                         lastCycleCount = currentCycles;
                         spindexSlot = (spindexSlot + 1) % 3;
                     }
-
+                    
                     if (outtake.getKickerCycleCount() >= 3) {
                         outtake.setRPM(0);
-                        kicker.down();
                         outtake.resetKickerCycle();
                         follower.followPath(paths.leave);
                         pathState = LEAVE;
@@ -434,7 +428,7 @@ public class BlueShortPath extends OpMode {
         if (!inIntakeState) return;
 
         double distance = colorSensor.getDistance();
-
+        
         // Ball detection with latching (like SpindexTestPath)
         if (distance <= INTAKE_DISTANCE_CM && !ballLatched && ballCount < 3 && spindex.getPower() == 0) {
             ballLatched = true;
