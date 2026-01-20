@@ -41,7 +41,7 @@ public class BlueShortPath extends OpMode {
     private static final int LEAVE = 14;
     private static final int DONE = 15;
 
-    private static final double SHOOT_RPM = 3200;
+    private static final double SHOOT_RPM = 2700;
     private static final double INTAKE_DISTANCE_CM = 5.7;
     private static final double RELEASE_DISTANCE_CM = 7;
 
@@ -219,42 +219,60 @@ public class BlueShortPath extends OpMode {
 
         int currentCycles = outtake.getKickerCycleCount();
 
+        // Handle shooting states separately (they run every loop while stationary)
+        if (pathState == SHOOT_PRELOAD || pathState == SHOOT_FIRST || 
+            pathState == SHOOT_SECOND || pathState == SHOOT_THIRD) {
+            
+            outtake.setRPM(SHOOT_RPM);
+            double targetAngle = outtakePos[spindexSlot];
+            double error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
+            boolean aligned = error <= Spindex.SpindexValues.tolorence;
+            
+            if (aligned) {
+                outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
+            }
+            
+            if (currentCycles > lastCycleCount) {
+                lastCycleCount = currentCycles;
+                spindexSlot = (spindexSlot + 1) % 3;
+            }
+            
+            if (outtake.getKickerCycleCount() >= 3) {
+                outtake.setRPM(0);
+                outtake.resetKickerCycle();
+                lastCycleCount = 0;
+                ballCount = 0;
+                spindexSlot = 0;
+                ballLatched = false;
+                
+                // Transition to next path based on which shooting state we're in
+                if (pathState == SHOOT_PRELOAD) {
+                    follower.followPath(paths.runToFirstIntakePos);
+                    pathState = RUN_TO_FIRST;
+                } else if (pathState == SHOOT_FIRST) {
+                    follower.followPath(paths.runToSecondIntakePos);
+                    pathState = RUN_TO_SECOND;
+                } else if (pathState == SHOOT_SECOND) {
+                    follower.followPath(paths.runToThirdIntakePos);
+                    pathState = RUN_TO_THIRD;
+                } else if (pathState == SHOOT_THIRD) {
+                    follower.followPath(paths.leave);
+                    pathState = LEAVE;
+                }
+            }
+            return pathState;
+        }
+
+        // Handle path-based state transitions (only when follower finishes a path)
         if (!follower.isBusy()) {
             switch (pathState) {
                 case RUN_FROM_WALL:
-                    // Arrived at shooting position - shoot preloaded balls
+                    // Arrived at shooting position - hold position and shoot preloaded balls
+                    follower.holdPoint(new Pose(73.000, 76.000, Math.toRadians(142)));
                     outtake.resetKickerCycle();
                     lastCycleCount = 0;
                     spindexSlot = 0;
                     pathState = SHOOT_PRELOAD;
-                    break;
-                    
-                case SHOOT_PRELOAD:
-                    // Shoot the 3 preloaded balls
-                    outtake.setRPM(SHOOT_RPM);
-                    double targetAngle = outtakePos[spindexSlot];
-                    double error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
-                    boolean aligned = error <= Spindex.SpindexValues.tolorence;
-                    
-                    if (aligned) {
-                        outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
-                    }
-                    
-                    if (currentCycles > lastCycleCount) {
-                        lastCycleCount = currentCycles;
-                        spindexSlot = (spindexSlot + 1) % 3;
-                    }
-                    
-                    if (outtake.getKickerCycleCount() >= 3) {
-                        outtake.setRPM(0);
-                        outtake.resetKickerCycle();
-                        lastCycleCount = 0;
-                        ballCount = 0;
-                        spindexSlot = 0;
-                        ballLatched = false;
-                        follower.followPath(paths.runToFirstIntakePos);
-                        pathState = RUN_TO_FIRST;
-                    }
                     break;
                     
                 case RUN_TO_FIRST:
@@ -269,36 +287,12 @@ public class BlueShortPath extends OpMode {
                     pathState = BACK_TO_SHOOT_FIRST;
                     break;
                 case BACK_TO_SHOOT_FIRST:
+                    follower.holdPoint(new Pose(73.000, 76.000, Math.toRadians(142)));
                     outtake.resetKickerCycle();
                     lastCycleCount = 0;
                     pathState = SHOOT_FIRST;
                     break;
-                case SHOOT_FIRST:
-                    outtake.setRPM(SHOOT_RPM);
-                    targetAngle = outtakePos[spindexSlot];
-                    error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
-                    aligned = error <= Spindex.SpindexValues.tolorence;
                     
-                    if (aligned) {
-                        outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
-                    }
-                    
-                    if (currentCycles > lastCycleCount) {
-                        lastCycleCount = currentCycles;
-                        spindexSlot = (spindexSlot + 1) % 3;
-                    }
-                    
-                    if (outtake.getKickerCycleCount() >= 3) {
-                        outtake.setRPM(0);
-                        outtake.resetKickerCycle();
-                        lastCycleCount = 0;
-                        ballCount = 0;
-                        spindexSlot = 0;
-                        ballLatched = false;
-                        follower.followPath(paths.runToSecondIntakePos);
-                        pathState = RUN_TO_SECOND;
-                    }
-                    break;
                 case RUN_TO_SECOND:
                     intake.intakeOn();
                     follower.followPath(paths.intakeSecond);
@@ -311,36 +305,12 @@ public class BlueShortPath extends OpMode {
                     pathState = BACK_TO_SHOOT_SECOND;
                     break;
                 case BACK_TO_SHOOT_SECOND:
+                    follower.holdPoint(new Pose(73.000, 76.000, Math.toRadians(142)));
                     outtake.resetKickerCycle();
                     lastCycleCount = 0;
                     pathState = SHOOT_SECOND;
                     break;
-                case SHOOT_SECOND:
-                    outtake.setRPM(SHOOT_RPM);
-                    targetAngle = outtakePos[spindexSlot];
-                    error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
-                    aligned = error <= Spindex.SpindexValues.tolorence;
                     
-                    if (aligned) {
-                        outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
-                    }
-                    
-                    if (currentCycles > lastCycleCount) {
-                        lastCycleCount = currentCycles;
-                        spindexSlot = (spindexSlot + 1) % 3;
-                    }
-                    
-                    if (outtake.getKickerCycleCount() >= 3) {
-                        outtake.setRPM(0);
-                        outtake.resetKickerCycle();
-                        lastCycleCount = 0;
-                        ballCount = 0;
-                        spindexSlot = 0;
-                        ballLatched = false;
-                        follower.followPath(paths.runToThirdIntakePos);
-                        pathState = RUN_TO_THIRD;
-                    }
-                    break;
                 case RUN_TO_THIRD:
                     intake.intakeOn();
                     follower.followPath(paths.intakeThird);
@@ -353,32 +323,12 @@ public class BlueShortPath extends OpMode {
                     pathState = BACK_TO_SHOOT_THIRD;
                     break;
                 case BACK_TO_SHOOT_THIRD:
+                    follower.holdPoint(new Pose(73.000, 76.000, Math.toRadians(142)));
                     outtake.resetKickerCycle();
                     lastCycleCount = 0;
                     pathState = SHOOT_THIRD;
                     break;
-                case SHOOT_THIRD:
-                    outtake.setRPM(SHOOT_RPM);
-                    targetAngle = outtakePos[spindexSlot];
-                    error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
-                    aligned = error <= Spindex.SpindexValues.tolorence;
                     
-                    if (aligned) {
-                        outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
-                    }
-                    
-                    if (currentCycles > lastCycleCount) {
-                        lastCycleCount = currentCycles;
-                        spindexSlot = (spindexSlot + 1) % 3;
-                    }
-                    
-                    if (outtake.getKickerCycleCount() >= 3) {
-                        outtake.setRPM(0);
-                        outtake.resetKickerCycle();
-                        follower.followPath(paths.leave);
-                        pathState = LEAVE;
-                    }
-                    break;
                 case LEAVE:
                     intake.intakeOff();
                     outtake.setRPM(0);
