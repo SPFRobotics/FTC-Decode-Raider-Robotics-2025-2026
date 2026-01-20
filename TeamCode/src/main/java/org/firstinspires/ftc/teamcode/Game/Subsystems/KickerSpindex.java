@@ -62,7 +62,7 @@ public class KickerSpindex {
         rightKicker.setPosition(0);
     }
 
-    public static int getState(){
+    public int getState(){
         return state;
     }
 }

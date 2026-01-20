@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -16,8 +17,10 @@ import org.firstinspires.ftc.teamcode.Resources.Unit;
 import org.firstinspires.ftc.teamcode.Testing.Test;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.Threshold;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.launchTime;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.maxPower;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.tolorence;
+import static java.lang.Thread.sleep;
 
 public class Spindex {
     //Servo encoder
@@ -32,9 +35,11 @@ public class Spindex {
     private double currentPos = 0;
     private double error = 0;
     private boolean outtakeMode = false;
-    private boolean autoLoadMode = true;
+    private boolean autoLoadMode = false;
+    private boolean autoLaunchMode = false;
     private boolean terminate = false;
     private boolean atTarget = false;
+    private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
     private boolean[] slotStatus = {false, false, false};
@@ -43,13 +48,13 @@ public class Spindex {
         public static double maxPower = 1;
         public static double Threshold = 150;
         public static double tolorence = 3;
-        public static double[] intakePos = {0, 120, 240};
-        public static double[] outtakePos = {180, 300, 60};
+        public static double[] intakePos = {2, 122, 242};
+        public static double[] outtakePos = {182, 302, 62};
 
         //Distance/Color sensor
         public static double ballDistanceThreshold = 3.3;
         public static double spindexPowerThreshold = 0.1;
-        public static double slotTimer = 500;
+        public static double launchTime = 650;
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
@@ -179,6 +184,23 @@ public class Spindex {
             }
         }
     }
+
+    boolean ballFound = false;
+    public void autoLaunch(KickerSpindex kicker){
+        if (isAutoLaunching() && !slotStatus[getIndex()]) {
+            if (!ballFound){
+                autoLaunchTimer.reset();
+                ballFound = true;
+            }
+            for (int i = 0; i < slotStatus.length; i++) {
+                if (slotStatus[i] && autoLaunchTimer.milliseconds() >= launchTime) {
+                    setIndex(i);
+                    ballFound = false;
+                    break;
+                }
+            }
+        }
+    }
     /****************************************************/
 
     public void setTargetStatus(boolean x){
@@ -191,6 +213,10 @@ public class Spindex {
 
     public void setAutoLoadMode(boolean x){
         autoLoadMode = x;
+    }
+
+    public void setAutoLaunchMode(boolean x){
+        autoLaunchMode = x;
     }
 
     public double getPos(){
@@ -235,6 +261,10 @@ public class Spindex {
 
     public boolean isAutoLoading(){
         return autoLoadMode;
+    }
+
+    public boolean isAutoLaunching(){
+        return autoLaunchMode;
     }
 
     public boolean atTarget(){

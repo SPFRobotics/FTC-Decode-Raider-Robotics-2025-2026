@@ -76,6 +76,7 @@ public class Test extends LinearOpMode {
 
     private Button square = new Button();
     private Button autoLoad = new Button();
+    private Button autoLaunch = new Button();
     private double setRPM = 0;
 
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
@@ -89,7 +90,7 @@ public class Test extends LinearOpMode {
     public Test() throws FileNotFoundException, UnsupportedEncodingException {
     }
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
@@ -126,6 +127,10 @@ public class Test extends LinearOpMode {
         // Initialize LED Lights
         leftLED = new LedLights("leftLED", hardwareMap);
         rightLED = new LedLights("rightLED", hardwareMap);
+
+        //Set auto load and launch to true as default
+        autoLoad.changeState(true);
+        autoLaunch.changeState(true);
 
         //Initialize Telemetry
         waitForStart();
@@ -173,25 +178,27 @@ public class Test extends LinearOpMode {
             }
 
             /**********Spindex mode toggle and position cycling***********/
-            if (!spindex.isAutoLoading()){
+            if (!spindex.isAutoLoading() && !spindex.isAutoLaunching()){
                 if (spindexRightBumper.press(gamepad1.right_bumper)) {
                     spindex.addIndex();
                 }
                 if (spindexLeftBumper.press(gamepad1.left_bumper)) {
                     spindex.subtractIndex();
                 }
-                spindex.setMode(spindexModeToggle.toggle(gamepad1.circle));
             }
+            spindex.setMode(spindexModeToggle.toggle(gamepad1.circle));
             /************************************************************/
 
             //Kicker and ball empty logic
             kicker.automate(gamepad1.crossWasPressed() && spindex.isOuttakeing());
-            if (gamepad1.aWasPressed()){
+            if (gamepad1.aWasPressed() && outtake.getPower() != 0){
                 spindex.clearBall(spindex.getIndex());
             }
 
-            spindex.setAutoLoadMode(autoLoad.toggle(gamepad1.rightStickButtonWasPressed()));
+            spindex.setAutoLaunchMode(autoLaunch.toggle(gamepad1.x) && spindex.isOuttakeing());
+            spindex.setAutoLoadMode(autoLoad.toggle(gamepad1.options) && !spindex.isOuttakeing());
             spindex.autoLoad(colorSensor);
+            spindex.autoLaunch(kicker);
 
             /*if (spindex.getMode()){
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
@@ -238,6 +245,7 @@ public class Test extends LinearOpMode {
             //telemetry.addData("Hue", colorSensor.getHSVArray()[0] + " " + colorSensor.getHSVArray()[1] + " " + colorSensor.getHSVArray()[2]);
             telemetry.addData("Spindex Index", spindex.getIndex());
             telemetry.addData("Automated Loading", spindex.isAutoLoading());
+            telemetry.addData("Autmated Launch", spindex.isAutoLaunching());
             telemetry.addData("Distance", colorSensor.getDistance());
             telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
             telemetry.addLine("==========================================");
