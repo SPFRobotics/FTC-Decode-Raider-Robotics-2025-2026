@@ -140,9 +140,9 @@ public class Spindex {
     }
     /*########################################*/
 
-    public boolean[] getSlotStatus{
+    //public boolean[] getSlotStatus{
 
-    }
+    //}
 
     public void setMode(boolean outtake){
         outtakeMode = outtake;

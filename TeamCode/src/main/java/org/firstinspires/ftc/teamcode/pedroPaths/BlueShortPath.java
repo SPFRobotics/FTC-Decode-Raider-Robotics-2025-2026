@@ -15,6 +15,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.intakePos;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.outtakePos;
@@ -24,22 +26,25 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 public class BlueShortPath extends OpMode {
 
     private static final int RUN_FROM_WALL = 0;
-    private static final int RUN_TO_FIRST = 1;
-    private static final int INTAKE_FIRST = 2;
-    private static final int BACK_TO_SHOOT_FIRST = 3;
-    private static final int RUN_TO_SECOND = 4;
-    private static final int INTAKE_SECOND = 5;
-    private static final int BACK_TO_SHOOT_SECOND = 6;
-    private static final int RUN_TO_THIRD = 7;
-    private static final int INTAKE_THIRD = 8;
-    private static final int BACK_TO_SHOOT_THIRD = 9;
-    private static final int LEAVE = 10;
-    private static final int DONE = 11;
-    private static final int SHOOT_FIRST = 12;
-    private static final int SHOOT_SECOND = 13;
-    private static final int SHOOT_THIRD = 14;
+    private static final int SHOOT_PRELOAD = 1;  // NEW: Shoot preloaded balls first
+    private static final int RUN_TO_FIRST = 2;
+    private static final int INTAKE_FIRST = 3;
+    private static final int BACK_TO_SHOOT_FIRST = 4;
+    private static final int SHOOT_FIRST = 5;
+    private static final int RUN_TO_SECOND = 6;
+    private static final int INTAKE_SECOND = 7;
+    private static final int BACK_TO_SHOOT_SECOND = 8;
+    private static final int SHOOT_SECOND = 9;
+    private static final int RUN_TO_THIRD = 10;
+    private static final int INTAKE_THIRD = 11;
+    private static final int BACK_TO_SHOOT_THIRD = 12;
+    private static final int SHOOT_THIRD = 13;
+    private static final int LEAVE = 14;
+    private static final int DONE = 15;
 
     private static final double SHOOT_RPM = 3200;
+    private static final double INTAKE_DISTANCE_CM = 5.7;
+    private static final double RELEASE_DISTANCE_CM = 7;
 
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
@@ -48,10 +53,12 @@ public class BlueShortPath extends OpMode {
     private Intake intake;
     private Outtake outtake;
     private Spindex spindex;
+    private KickerSpindex kicker;
     private int spindexSlot = 0;
     private ColorFinder colorSensor;
     private int ballCount = 0;
-    private static final double INTAKE_DISTANCE_CM = 3.0;
+    private boolean ballLatched = false;
+    private int lastCycleCount = 0;
 
     @Override
     public void init() {
@@ -60,12 +67,21 @@ public class BlueShortPath extends OpMode {
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
         spindex = new Spindex(hardwareMap);
+        kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFinder(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         // Start where the first generated path begins so the follower does not jump
         follower.setStartingPose(new Pose(34.3, 135.0, Math.toRadians(90)));
 
         paths = new Paths(follower); // Build paths
+
+        outtake.resetKickerCycle();
+        // Preloaded balls: start with 3 balls already in spindex
+        ballCount = 3;
+        spindexSlot = 0;
+        lastCycleCount = 0;
+        ballLatched = false;
+        spindex.setIndex(spindexSlot);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -83,6 +99,9 @@ public class BlueShortPath extends OpMode {
         panelsTelemetry.debug("X", follower.getPose().getX());
         panelsTelemetry.debug("Y", follower.getPose().getY());
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
+        panelsTelemetry.debug("BallCount", ballCount);
+        panelsTelemetry.debug("SpindexSlot", spindexSlot);
+        panelsTelemetry.debug("KickerCycles", outtake.getKickerCycleCount());
         panelsTelemetry.update(telemetry);
     }
 
@@ -195,16 +214,52 @@ public class BlueShortPath extends OpMode {
         // Simple sequential state machine: move to the next path once the current one finishes.
         if (pathState == DONE) {
             // First loop after init: kick off the run-from-wall path.
+            outtake.setRPM(SHOOT_RPM); // Start spinning up while driving
             follower.followPath(paths.runFromWall);
             return RUN_FROM_WALL;
         }
 
+        int currentCycles = outtake.getKickerCycleCount();
+
         if (!follower.isBusy()) {
             switch (pathState) {
                 case RUN_FROM_WALL:
-                    follower.followPath(paths.runToFirstIntakePos);
-                    pathState = RUN_TO_FIRST;
+                    // Arrived at shooting position - shoot preloaded balls
+                    outtake.resetKickerCycle();
+                    lastCycleCount = 0;
+                    spindexSlot = 0;
+                    pathState = SHOOT_PRELOAD;
                     break;
+
+                case SHOOT_PRELOAD:
+                    // Shoot the 3 preloaded balls
+                    outtake.setRPM(SHOOT_RPM);
+                    double targetAngle = outtakePos[spindexSlot];
+                    double error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
+                    boolean aligned = error <= Spindex.SpindexValues.tolorence;
+
+                    if (aligned) {
+                        outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
+                    }
+
+                    if (currentCycles > lastCycleCount) {
+                        lastCycleCount = currentCycles;
+                        spindexSlot = (spindexSlot + 1) % 3;
+                    }
+
+                    if (outtake.getKickerCycleCount() >= 3) {
+                        outtake.setRPM(0);
+                        kicker.down();
+                        outtake.resetKickerCycle();
+                        lastCycleCount = 0;
+                        ballCount = 0;
+                        spindexSlot = 0;
+                        ballLatched = false;
+                        follower.followPath(paths.runToFirstIntakePos);
+                        pathState = RUN_TO_FIRST;
+                    }
+                    break;
+
                 case RUN_TO_FIRST:
                     intake.intakeOn();
                     follower.followPath(paths.intakeFirst);
@@ -218,14 +273,32 @@ public class BlueShortPath extends OpMode {
                     break;
                 case BACK_TO_SHOOT_FIRST:
                     outtake.resetKickerCycle();
+                    lastCycleCount = 0;
                     pathState = SHOOT_FIRST;
                     break;
                 case SHOOT_FIRST:
                     outtake.setRPM(SHOOT_RPM);
-                    outtake.enableKickerCycle(true, SHOOT_RPM);
+                    targetAngle = outtakePos[spindexSlot];
+                    error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
+                    aligned = error <= Spindex.SpindexValues.tolorence;
+
+                    if (aligned) {
+                        outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
+                    }
+
+                    if (currentCycles > lastCycleCount) {
+                        lastCycleCount = currentCycles;
+                        spindexSlot = (spindexSlot + 1) % 3;
+                    }
+
                     if (outtake.getKickerCycleCount() >= 3) {
                         outtake.setRPM(0);
+                        kicker.down();
                         outtake.resetKickerCycle();
+                        lastCycleCount = 0;
+                        ballCount = 0;
+                        spindexSlot = 0;
+                        ballLatched = false;
                         follower.followPath(paths.runToSecondIntakePos);
                         pathState = RUN_TO_SECOND;
                     }
@@ -243,14 +316,32 @@ public class BlueShortPath extends OpMode {
                     break;
                 case BACK_TO_SHOOT_SECOND:
                     outtake.resetKickerCycle();
+                    lastCycleCount = 0;
                     pathState = SHOOT_SECOND;
                     break;
                 case SHOOT_SECOND:
                     outtake.setRPM(SHOOT_RPM);
-                    outtake.enableKickerCycle(true, SHOOT_RPM);
+                    targetAngle = outtakePos[spindexSlot];
+                    error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
+                    aligned = error <= Spindex.SpindexValues.tolorence;
+
+                    if (aligned) {
+                        outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
+                    }
+
+                    if (currentCycles > lastCycleCount) {
+                        lastCycleCount = currentCycles;
+                        spindexSlot = (spindexSlot + 1) % 3;
+                    }
+
                     if (outtake.getKickerCycleCount() >= 3) {
                         outtake.setRPM(0);
+                        kicker.down();
                         outtake.resetKickerCycle();
+                        lastCycleCount = 0;
+                        ballCount = 0;
+                        spindexSlot = 0;
+                        ballLatched = false;
                         follower.followPath(paths.runToThirdIntakePos);
                         pathState = RUN_TO_THIRD;
                     }
@@ -268,13 +359,27 @@ public class BlueShortPath extends OpMode {
                     break;
                 case BACK_TO_SHOOT_THIRD:
                     outtake.resetKickerCycle();
+                    lastCycleCount = 0;
                     pathState = SHOOT_THIRD;
                     break;
                 case SHOOT_THIRD:
                     outtake.setRPM(SHOOT_RPM);
-                    outtake.enableKickerCycle(true, SHOOT_RPM);
+                    targetAngle = outtakePos[spindexSlot];
+                    error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
+                    aligned = error <= Spindex.SpindexValues.tolorence;
+
+                    if (aligned) {
+                        outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
+                    }
+
+                    if (currentCycles > lastCycleCount) {
+                        lastCycleCount = currentCycles;
+                        spindexSlot = (spindexSlot + 1) % 3;
+                    }
+
                     if (outtake.getKickerCycleCount() >= 3) {
                         outtake.setRPM(0);
+                        kicker.down();
                         outtake.resetKickerCycle();
                         follower.followPath(paths.leave);
                         pathState = LEAVE;
@@ -301,15 +406,19 @@ public class BlueShortPath extends OpMode {
             case INTAKE_FIRST:
             case INTAKE_SECOND:
             case INTAKE_THIRD:
-                spindex.moveToPos(intakePos[spindexSlot], true);
+                spindex.setIndex(ballCount % 3);
+                spindex.moveToPos(intakePos[spindex.getIndex()], true);
                 break;
+            case RUN_FROM_WALL:  // Position for preload shooting while driving
+            case SHOOT_PRELOAD:
             case BACK_TO_SHOOT_FIRST:
             case SHOOT_FIRST:
             case BACK_TO_SHOOT_SECOND:
             case SHOOT_SECOND:
             case BACK_TO_SHOOT_THIRD:
             case SHOOT_THIRD:
-                spindex.moveToPos(outtakePos[spindexSlot], true);
+                spindex.setIndex(spindexSlot);
+                spindex.moveToPos(outtakePos[spindex.getIndex()], true);
                 break;
             default:
                 // Hold current slot/position; no move call needed.
@@ -317,16 +426,22 @@ public class BlueShortPath extends OpMode {
         }
     }
 
-    // Mimic test TeleOp behavior: when a ball is detected close and spindex is idle, advance slot.
+    // Match SpindexTestPath behavior: use ball latching for proper detection
     private void checkIntakeAndAdvanceSpindex() {
         if (spindex == null || colorSensor == null) return;
 
         boolean inIntakeState = pathState == INTAKE_FIRST || pathState == INTAKE_SECOND || pathState == INTAKE_THIRD;
         if (!inIntakeState) return;
 
-        if (colorSensor.getDistance() <= INTAKE_DISTANCE_CM && spindex.getPower() == 0 && ballCount < 3) {
-            spindexSlot = (spindexSlot + 1) % 3;
+        double distance = colorSensor.getDistance();
+
+        // Ball detection with latching (like SpindexTestPath)
+        if (distance <= INTAKE_DISTANCE_CM && !ballLatched && ballCount < 3 && spindex.getPower() == 0) {
+            ballLatched = true;
             ballCount++;
+            spindex.addIndex();
+        } else if (distance > RELEASE_DISTANCE_CM) {
+            ballLatched = false;
         }
     }
 }
