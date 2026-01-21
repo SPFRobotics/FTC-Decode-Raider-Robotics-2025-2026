@@ -30,7 +30,8 @@ public class Spindex {
 
     //Stores weather the class is using a motor or servo
     //Stores position and current index of spindex
-    private static int index = 0;
+    private
+    static int index = 0;
     private double threadLoopTime = 0;
     private double currentPos = 0;
     private double error = 0;
