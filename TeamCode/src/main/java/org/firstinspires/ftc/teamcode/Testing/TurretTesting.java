@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 
-@TeleOp
+@Disabled
 public class TurretTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Outtake outtake = new Outtake(hardwareMap);
