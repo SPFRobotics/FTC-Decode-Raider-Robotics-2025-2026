@@ -54,7 +54,7 @@ public class Spindex {
         //Distance/Color sensor
         public static double ballDistanceThreshold = 3.3;
         public static double spindexPowerThreshold = 0.1;
-        public static double launchTime = 650;
+        public static double launchTime = 900;
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
@@ -193,7 +193,7 @@ public class Spindex {
                 ballFound = true;
             }
             for (int i = 0; i < slotStatus.length; i++) {
-                if (slotStatus[i] && autoLaunchTimer.milliseconds() >= launchTime) {
+                if (slotStatus[i] && autoLaunchTimer.milliseconds() >= launchTime && getPower() == 0) {
                     setIndex(i);
                     ballFound = false;
                     break;

@@ -116,7 +116,7 @@ public class Test extends LinearOpMode {
 
         // Initialize subsystems
         Intake intake = new Intake(hardwareMap);
-        Outtake outtake = new Outtake(hardwareMap, false);
+        Outtake outtake = new Outtake(hardwareMap, true);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         ColorFetch colorSensor = new ColorFetch(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
@@ -130,7 +130,7 @@ public class Test extends LinearOpMode {
 
         //Set auto load and launch to true as default
         autoLoad.changeState(true);
-        autoLaunch.changeState(true);
+        //autoLaunch.changeState(true);
 
         //Initialize Telemetry
         waitForStart();
@@ -178,13 +178,11 @@ public class Test extends LinearOpMode {
             }
 
             /**********Spindex mode toggle and position cycling***********/
-            if (!spindex.isAutoLoading() && !spindex.isAutoLaunching()){
-                if (spindexRightBumper.press(gamepad1.right_bumper)) {
-                    spindex.addIndex();
-                }
-                if (spindexLeftBumper.press(gamepad1.left_bumper)) {
-                    spindex.subtractIndex();
-                }
+            if (spindexRightBumper.press(gamepad1.right_bumper)) {
+                spindex.addIndex();
+            }
+            if (spindexLeftBumper.press(gamepad1.left_bumper)) {
+                spindex.subtractIndex();
             }
             spindex.setMode(spindexModeToggle.toggle(gamepad1.circle));
             /************************************************************/
@@ -195,10 +193,10 @@ public class Test extends LinearOpMode {
                 spindex.clearBall(spindex.getIndex());
             }
 
-            spindex.setAutoLaunchMode(autoLaunch.toggle(gamepad1.x) && spindex.isOuttakeing());
+            //spindex.setAutoLaunchMode(autoLaunch.toggle(gamepad1.square) && spindex.isOuttakeing());
             spindex.setAutoLoadMode(autoLoad.toggle(gamepad1.options) && !spindex.isOuttakeing());
             spindex.autoLoad(colorSensor);
-            spindex.autoLaunch(kicker);
+            //spindex.autoLaunch(kicker);
 
             /*if (spindex.getMode()){
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
@@ -248,6 +246,7 @@ public class Test extends LinearOpMode {
             telemetry.addData("Autmated Launch", spindex.isAutoLaunching());
             telemetry.addData("Distance", colorSensor.getDistance());
             telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+            telemetry.addData("Outtaking?", spindex.isOuttakeing());
             telemetry.addLine("==========================================");
             telemetry.update();
         }
