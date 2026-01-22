@@ -101,7 +101,7 @@ public class TeleOpMainGrav extends LinearOpMode {
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Initialize subsystems
-        outtake = new Outtake(hardwareMap);
+        outtake = new Outtake(hardwareMap, false);
         kickerGrav = new KickerGrav(hardwareMap);
         Extension extension = new Extension(hardwareMap, "kickstand");
         leftLED = new LedLights("leftLED", hardwareMap);
