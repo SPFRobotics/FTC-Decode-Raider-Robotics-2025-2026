@@ -17,7 +17,7 @@ public class LedStrobe extends OpMode{
     double precision = 0.001;
 
     public void init(){
-        LedLights leds = new LedLights(hardwareMap, led);
+        //LedLights leds = new LedLights(hardwareMap, led);
         led = hardwareMap.get(Servo.class, "led");
     }
 
