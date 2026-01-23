@@ -12,7 +12,7 @@ public class LedStrobe extends OpMode{
     Servo led = null;
     double color = 0.279;
     ElapsedTime timer = new ElapsedTime();
-    //One cycle occurs when the LED returns to 0.279
+    //One cycle occurs when the LED returns to 0.279. Unit is in seconds.
     double ledCycle = 10;
     double precision = 0.001;
 
