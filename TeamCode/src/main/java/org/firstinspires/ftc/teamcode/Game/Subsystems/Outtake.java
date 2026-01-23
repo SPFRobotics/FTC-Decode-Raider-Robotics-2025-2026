@@ -74,7 +74,6 @@ public class Outtake {
             kickerGrav = null;
         } else {
             kickerGrav = new KickerGrav(hardwareMap);
-            kickerSpindex = new KickerSpindex(hardwareMap);
         }
     }
 
