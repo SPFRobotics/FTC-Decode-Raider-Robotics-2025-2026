@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Resources.LedLights;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
+import org.firstinspires.ftc.teamcode.Resources.LedLights;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -104,8 +106,14 @@ public class TeleOpMainGrav extends LinearOpMode {
         outtake = new Outtake(hardwareMap, false);
         kickerGrav = new KickerGrav(hardwareMap);
         Extension extension = new Extension(hardwareMap, "kickstand");
-        leftLED = new LedLights("leftLED", hardwareMap);
-        rightLED = new LedLights("rightLED", hardwareMap);
+        Servo leftLed = hardwareMap.get(Servo.class, "leftLed");
+        Servo rightLed = null;
+        try{
+            LedLights leds = new LedLights(hardwareMap, leftLed, rightLed);
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
         colorFinder = new ColorFinder(hardwareMap);
         
         //limelight = new Limelight(hardwareMap, telemetry);
@@ -249,7 +257,7 @@ public class TeleOpMainGrav extends LinearOpMode {
             
             outtake.setRPM(setRPM);
 
-            if (colorFinder != null) {
+            /*if (colorFinder != null) {
                 if (colorFinder.isGreen() && ledClock.milliseconds() >= 500) {
                     leftLED.setGreen();
                     rightLED.setGreen();
@@ -266,7 +274,7 @@ public class TeleOpMainGrav extends LinearOpMode {
                 if (ledClock.milliseconds() >= 500 && !colorFound) {
                     ledClock.reset();
                 }
-            }
+            }*/
 
             //Kickstand
             if (toggleExtension.toggle(gamepad1.left_bumper && gamepad1.right_bumper)){
