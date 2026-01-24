@@ -108,12 +108,6 @@ public class TeleOpMainGrav extends LinearOpMode {
         Extension extension = new Extension(hardwareMap, "kickstand");
         Servo leftLed = hardwareMap.get(Servo.class, "leftLed");
         Servo rightLed = null;
-        try{
-            LedLights leds = new LedLights(hardwareMap, leftLed, rightLed);
-        }
-        catch (Exception e){
-            throw new RuntimeException(e);
-        }
         colorFinder = new ColorFinder(hardwareMap);
         
         //limelight = new Limelight(hardwareMap, telemetry);
