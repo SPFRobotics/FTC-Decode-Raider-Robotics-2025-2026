@@ -49,7 +49,7 @@ public class Constants {
             .leftEncoder_HardwareMapName("backLeftDrive")
             .rightEncoder_HardwareMapName("backRightDrive")
             .strafeEncoder_HardwareMapName("frontRightDrive")
-            .leftEncoderDirection(Encoder.FORWARD)
+            .leftEncoderDirection(Encoder.REVERSE)
             .rightEncoderDirection(Encoder.FORWARD)
             .strafeEncoderDirection(Encoder.REVERSE);
             //.IMU_HardwareMapName("imu")

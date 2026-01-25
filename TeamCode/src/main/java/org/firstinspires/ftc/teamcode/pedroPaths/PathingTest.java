@@ -18,13 +18,13 @@ public class PathingTest extends OpMode {
     private int pathState;
 
     private final Pose STARTPOSE = new Pose(0, 0, Math.toRadians(90));
-    private final Pose TURN = new Pose(0, 12);
+    private final Pose TURN = new Pose(0, 12, Math.toRadians(90));
 
     private Path turning;
 
     public void buildPaths(){
         turning = new Path(new BezierLine(STARTPOSE, TURN));
-        turning.setLinearHeadingInterpolation(STARTPOSE.getHeading(), TURN.getHeading());
+        turning.setConstantHeadingInterpolation(STARTPOSE.getHeading());
     }
 
     public void init(){

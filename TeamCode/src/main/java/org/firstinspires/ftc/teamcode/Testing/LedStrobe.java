@@ -3,9 +3,8 @@ package org.firstinspires.ftc.teamcode.Testing;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Resources.LedLights;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.LedLights;
 
 @TeleOp(name="SLOTHING IT")
 public class LedStrobe extends OpMode{

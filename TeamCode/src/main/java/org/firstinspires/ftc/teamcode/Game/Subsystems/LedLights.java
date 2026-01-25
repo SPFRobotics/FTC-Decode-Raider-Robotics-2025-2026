@@ -1,13 +1,7 @@
-package org.firstinspires.ftc.teamcode.Resources;
+package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
-import static java.lang.System.exit;
-import static java.lang.System.in;
-
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import java.util.ArrayList;
 
 //ROYGBIV!!!
 public class LedLights {

@@ -47,6 +47,10 @@ public class TeleOpMain extends LinearOpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         // Always ensure motors are in manual control mode for normal driving
         // This ensures they respond to direct power commands
@@ -71,7 +75,7 @@ public class TeleOpMain extends LinearOpMode {
         waitForStart();
         telemetry.setMsTransmissionInterval(16);
         if (opModeIsActive()){
-            updateSpindex.start();
+            //updateSpindex.start();
         }
 
         ElapsedTime loopTime = new ElapsedTime();
@@ -87,7 +91,7 @@ public class TeleOpMain extends LinearOpMode {
                 speedFactor = 1;
             }
 
-            double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
+            /*double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
             double x = gamepad1.left_stick_x * speedFactor;
             double rx = gamepad1.right_stick_x * speedFactor;
 
@@ -95,7 +99,40 @@ public class TeleOpMain extends LinearOpMode {
             backLeftDrive.setPower(y - x + rx);
             frontRightDrive.setPower(y - x - rx);
             backRightDrive.setPower(y + x - rx);
-            backRightDrive.setPower(y + x - rx);
+            */
+
+            if (gamepad1.dpad_up){
+                frontLeftDrive.setPower(0.2);
+                backLeftDrive.setPower(0.2);
+                frontRightDrive.setPower(0.2);
+                backRightDrive.setPower(0.2);
+            }
+            else if (gamepad1.dpad_down){
+                frontLeftDrive.setPower(-0.2);
+                backLeftDrive.setPower(-0.2);
+                frontRightDrive.setPower(-0.2);
+                backRightDrive.setPower(-0.2);
+            }
+            else if(gamepad1.dpad_left){
+                frontLeftDrive.setPower(-0.2);
+                frontRightDrive.setPower(0.2);
+                backLeftDrive.setPower(0.2);
+                backRightDrive.setPower(-0.2);
+            }
+            else if(gamepad1.dpad_right){
+                frontLeftDrive.setPower(0.2);
+                frontRightDrive.setPower(-0.2);
+                backLeftDrive.setPower(-0.2);
+                backRightDrive.setPower(0.2);
+            }
+            else {
+                frontLeftDrive.setPower(0);
+                frontRightDrive.setPower(0);
+                backLeftDrive.setPower(0);
+                backRightDrive.setPower(0);
+            }
+
+
             /**********************************************************************************************/
 
             /*****************************Intake System************************************/
@@ -175,6 +212,9 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Outtaking?", spindex.isOuttakeing());
             telemetry.addLine("------------------------------------------");
             telemetry.addData("Distance", colorSensor.getDistance());
+            telemetry.addData("Right Pod", backRightDrive.getCurrentPosition());
+            telemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
+            telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
             telemetry.addLine("==========================================");
             telemetry.update();
         }
