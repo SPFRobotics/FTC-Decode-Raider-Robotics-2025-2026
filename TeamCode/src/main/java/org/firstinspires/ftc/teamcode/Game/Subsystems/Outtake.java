@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -60,6 +61,7 @@ public class Outtake {
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
+        outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         kickerGrav = new KickerGrav(hardwareMap);
         kickerSpindex = new KickerSpindex(hardwareMap);
         //limelight = new Limelight(hardwareMap);
@@ -68,6 +70,7 @@ public class Outtake {
     // Constructor for spindex-only (no KickerGrav servo needed)
     public Outtake(HardwareMap hardwareMap, boolean useSpindexOnly) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
+        outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
         if (useSpindexOnly) {
             kickerSpindex = new KickerSpindex(hardwareMap);
