@@ -34,10 +34,7 @@ public class ZuckingIt extends LinearOpMode {
         waitForStart();
         //send move command
         while (opModeIsActive() && chassis.motorsAreBusy()){
-           if (!chassis.moveWLoop(1, "backward", 48)){
-               chassis.powerZero();
-               break;
-           }
+
         }
     }
 }
