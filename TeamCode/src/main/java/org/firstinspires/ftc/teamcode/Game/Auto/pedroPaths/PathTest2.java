@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;

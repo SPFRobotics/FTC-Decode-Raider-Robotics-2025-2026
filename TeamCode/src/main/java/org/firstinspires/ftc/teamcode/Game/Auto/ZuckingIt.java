@@ -32,16 +32,12 @@ public class ZuckingIt extends LinearOpMode {
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         chassis.initializeMovement();
         waitForStart();
-        if (opModeIsActive()){
-            outtake.setRPM(Outtake.OuttakeConfig.closeRPM);
-            chassis.move(1, "backward", 48);
-            spindex.setMode(true);
-            while (opModeIsActive()){
-                if (spindex.getPower() == 0){
-
-                }
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
-            }
+        //send move command
+        while (opModeIsActive() && chassis.motorsAreBusy()){
+           if (!chassis.moveWLoop(1, "backward", 48)){
+               chassis.powerZero();
+               break;
+           }
         }
     }
 }

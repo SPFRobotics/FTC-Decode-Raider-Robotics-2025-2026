@@ -193,64 +193,55 @@ public class MecanumChassis {
     }
 
     public boolean moveWLoop(double movePower, @NonNull String moveDirection, double moveDistance){
-        stop_and_reset_encoders_all(); //Sets encoder count to 0
-        run_using_encoders_all();
-        if (moveDirection.equals("forward")) {
-            //Tell each wheel to move a certain amount
-            backLeft.setTargetPosition((int) inch_convert(moveDistance)); //Converts the
-            backRight.setTargetPosition((int) inch_convert(moveDistance));
-            frontLeft.setTargetPosition((int) inch_convert(moveDistance));
-            frontRight.setTargetPosition((int) inch_convert(moveDistance));
-
-            run_to_position_all();
-            backLeft.setPower(movePower);
-            backRight.setPower(movePower);
-            frontLeft.setPower(movePower);
-            frontRight.setPower(movePower);
-        } else if (moveDirection.equals("backward")) {
-            backLeft.setTargetPosition((int) inch_convert(-moveDistance));
-            backRight.setTargetPosition((int) inch_convert(-moveDistance));
-            frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
-            frontRight.setTargetPosition((int) inch_convert(-moveDistance));
-            run_to_position_all();
-            backLeft.setPower(-movePower);
-            backRight.setPower(-movePower);
-            frontLeft.setPower(-movePower);
-            frontRight.setPower(-movePower);
-        } else if (moveDirection.equals("right")) {
-            backLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            backRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            frontLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            frontRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            run_to_position_all();
-            backLeft.setPower(-movePower);
-            backRight.setPower(movePower);
-            frontLeft.setPower(movePower);
-            frontRight.setPower(-movePower);
-        } else if (moveDirection.equals("left")) {
-            backLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            backRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            frontLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            frontRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            run_to_position_all();
-            backLeft.setPower(movePower);
-            backRight.setPower(-movePower);
-            frontLeft.setPower(-movePower);
-            frontRight.setPower(movePower);
-        } else {
-            throw new RuntimeException("Move direction must be forward, backward, left, or right.");
+        if (!motorsAreBusy()) {
+            stop_and_reset_encoders_all(); //Sets encoder count to 0
+            run_using_encoders_all();
+            if (moveDirection.equals("forward")) {
+                //Tell each wheel to move a certain amount
+                backLeft.setTargetPosition((int) inch_convert(moveDistance)); //Converts the
+                backRight.setTargetPosition((int) inch_convert(moveDistance));
+                frontLeft.setTargetPosition((int) inch_convert(moveDistance));
+                frontRight.setTargetPosition((int) inch_convert(moveDistance));
+                run_to_position_all();
+                backLeft.setPower(movePower);
+                backRight.setPower(movePower);
+                frontLeft.setPower(movePower);
+                frontRight.setPower(movePower);
+            } else if (moveDirection.equals("backward")) {
+                backLeft.setTargetPosition((int) inch_convert(-moveDistance));
+                backRight.setTargetPosition((int) inch_convert(-moveDistance));
+                frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
+                frontRight.setTargetPosition((int) inch_convert(-moveDistance));
+                run_to_position_all();
+                backLeft.setPower(-movePower);
+                backRight.setPower(-movePower);
+                frontLeft.setPower(-movePower);
+                frontRight.setPower(-movePower);
+            } else if (moveDirection.equals("right")) {
+                backLeft.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+                backRight.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+                frontLeft.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+                frontRight.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+                run_to_position_all();
+                backLeft.setPower(-movePower);
+                backRight.setPower(movePower);
+                frontLeft.setPower(movePower);
+                frontRight.setPower(-movePower);
+            } else if (moveDirection.equals("left")) {
+                backLeft.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+                backRight.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+                frontLeft.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+                frontRight.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+                run_to_position_all();
+                backLeft.setPower(movePower);
+                backRight.setPower(-movePower);
+                frontLeft.setPower(-movePower);
+                frontRight.setPower(movePower);
+            } else {
+                throw new RuntimeException("Move direction must be forward, backward, left, or right.");
+            }
         }
-        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
-
-        }
-        powerZero();
-        opmode.sleep(500);
-        // Restore motors to manual control mode after encoder movement
-        // This is critical for TeleOp to work properly after using this method
-        run_without_encoders_all();
-        opmode.telemetry.addData("test", "done!");
-        opmode.telemetry.update();
-        return false;
+        return motorsAreBusy();
     }
 
     public void moveWithCorrections(double movePower, @NonNull String moveDirection, double moveDistance, double angle) {

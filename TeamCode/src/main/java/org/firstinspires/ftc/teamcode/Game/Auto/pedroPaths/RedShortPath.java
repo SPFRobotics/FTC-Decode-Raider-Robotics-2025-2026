@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
