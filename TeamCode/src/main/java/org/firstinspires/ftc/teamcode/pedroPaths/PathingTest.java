@@ -7,7 +7,9 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Game.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name="Pathing Test")
@@ -17,8 +19,8 @@ public class PathingTest extends OpMode {
 
     private int pathState;
 
-    private final Pose STARTPOSE = new Pose(0, 0, Math.toRadians(90));
-    private final Pose TURN = new Pose(0, 12, Math.toRadians(90));
+    private final Pose STARTPOSE = new Pose(0, 12, Math.toRadians(90));
+    private final Pose TURN = new Pose(0, 0, Math.toRadians(90));
 
     private Path turning;
 

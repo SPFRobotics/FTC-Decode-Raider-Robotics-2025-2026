@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickstandServo;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.UpdateSpindex;
@@ -67,6 +68,7 @@ public class TeleOpMain extends LinearOpMode {
         Spindex spindex = new Spindex(hardwareMap);
         UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
+        LedLights leds = new LedLights(hardwareMap);
 
         //Set auto load and launch to true as default
         autoLoad.changeState(true);
@@ -75,12 +77,13 @@ public class TeleOpMain extends LinearOpMode {
         waitForStart();
         telemetry.setMsTransmissionInterval(16);
         if (opModeIsActive()){
-            //updateSpindex.start();
+            updateSpindex.start();
         }
 
         ElapsedTime loopTime = new ElapsedTime();
         while (opModeIsActive()) {
             loopTime.reset();
+            leds.cycleColors(10);
 
             /*************************************Drive Train Control**************************************/
             //Allows speed to be halved
@@ -91,7 +94,7 @@ public class TeleOpMain extends LinearOpMode {
                 speedFactor = 1;
             }
 
-            /*double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
+            double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
             double x = gamepad1.left_stick_x * speedFactor;
             double rx = gamepad1.right_stick_x * speedFactor;
 
@@ -99,40 +102,6 @@ public class TeleOpMain extends LinearOpMode {
             backLeftDrive.setPower(y - x + rx);
             frontRightDrive.setPower(y - x - rx);
             backRightDrive.setPower(y + x - rx);
-            */
-
-            if (gamepad1.dpad_up){
-                frontLeftDrive.setPower(0.2);
-                backLeftDrive.setPower(0.2);
-                frontRightDrive.setPower(0.2);
-                backRightDrive.setPower(0.2);
-            }
-            else if (gamepad1.dpad_down){
-                frontLeftDrive.setPower(-0.2);
-                backLeftDrive.setPower(-0.2);
-                frontRightDrive.setPower(-0.2);
-                backRightDrive.setPower(-0.2);
-            }
-            else if(gamepad1.dpad_left){
-                frontLeftDrive.setPower(-0.2);
-                frontRightDrive.setPower(0.2);
-                backLeftDrive.setPower(0.2);
-                backRightDrive.setPower(-0.2);
-            }
-            else if(gamepad1.dpad_right){
-                frontLeftDrive.setPower(0.2);
-                frontRightDrive.setPower(-0.2);
-                backLeftDrive.setPower(-0.2);
-                backRightDrive.setPower(0.2);
-            }
-            else {
-                frontLeftDrive.setPower(0);
-                frontRightDrive.setPower(0);
-                backLeftDrive.setPower(0);
-                backRightDrive.setPower(0);
-            }
-
-
             /**********************************************************************************************/
 
             /*****************************Intake System************************************/
@@ -162,8 +131,9 @@ public class TeleOpMain extends LinearOpMode {
             /************************************************************/
 
             /*********************Kicker and index emptying logic**********************/
-            kicker.automate(gamepad2.crossWasPressed() && spindex.isOuttakeing());
-            if (gamepad2.crossWasPressed() && outtake.getPower() != 0){
+            boolean crossWasPressed = gamepad2.crossWasPressed();
+            kicker.automate(crossWasPressed && spindex.isOuttakeing());
+            if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0){
                 spindex.clearBall(spindex.getIndex());
             }
             /**************************************************************************/

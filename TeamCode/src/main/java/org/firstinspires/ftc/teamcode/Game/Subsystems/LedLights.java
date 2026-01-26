@@ -1,14 +1,18 @@
 package org.firstinspires.ftc.teamcode.Game.Subsystems;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //ROYGBIV!!!
 public class LedLights {
-    Servo led = null;
     ElapsedTime colorTimer = new ElapsedTime();
     double currentColor = 0;
     double precision = 0.001;
+
+    Servo leftLed = null;
+    Servo rightLed = null;
+
 
     /*Constants*/
     public final double RED = 0.279;
@@ -21,10 +25,15 @@ public class LedLights {
     public final double INDIGO = 0.666;
     public final double VIOLET = 0.722;
 
+    private void setLeds(double pwm){
+        leftLed.setPosition(pwm);
+        rightLed.setPosition(pwm);
+    }
 
 //Constructor
-    public LedLights(Servo led) {
-        this.led = led;
+    public LedLights(HardwareMap hardwareMap) {
+        leftLed = hardwareMap.get(Servo.class, "leftLed");
+        rightLed = hardwareMap.get(Servo.class, "rightLed");
     }
 
     //One interval is the amount of time in seconds it takes to get back to the value of
@@ -32,19 +41,36 @@ public class LedLights {
         if (colorTimer.seconds() >= interval/495.0/2){
             colorTimer.reset();
             currentColor += precision;
-            if (currentColor >= 0.722){
-                currentColor = 0.722;
+            if (currentColor >= VIOLET){
+                currentColor = VIOLET;
                 precision *= -1;
             }
-            else if (currentColor <= 0.279){
-                currentColor = 0.279;
+            else if (currentColor <= RED){
+                currentColor = RED;
                 precision *= -1;
             }
-            led.setPosition(currentColor);
+            setLeds(currentColor);
         }
     }
 
-    public void setColor(double pwd){
-        led.setPosition(pwd);
+    //A cycle is defined as returning to 0
+    public void blink(double pwm, double hz){
+        if (hz < 2.0){
+            throw new RuntimeException("LEDs may not blink faster than 2hz as advised by the game manual");
+        }
+
+        if (colorTimer.seconds() >= hz) {
+            currentColor = pwm;
+            colorTimer.reset();
+        }
+        else if (colorTimer.seconds() >= hz / 2.0) {
+            currentColor = 0;
+        }
+        setLeds(currentColor);
+    }
+
+
+    public void setColor(double pwm){
+        setLeds(pwm);
     }
 }

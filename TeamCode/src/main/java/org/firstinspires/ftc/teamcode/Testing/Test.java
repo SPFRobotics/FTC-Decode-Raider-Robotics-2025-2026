@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickstandServo;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.UpdateSpindex;
@@ -63,6 +64,7 @@ public class Test extends LinearOpMode {
         Spindex spindex = new Spindex(hardwareMap);
         UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
+        LedLights leds = new LedLights(hardwareMap);
 
         //Set auto load and launch to true as default
         autoLoad.changeState(true);
@@ -77,6 +79,7 @@ public class Test extends LinearOpMode {
         ElapsedTime loopTime = new ElapsedTime();
         while (opModeIsActive()) {
             loopTime.reset();
+            leds.cycleColors(10);
 
             /*************************************Drive Train Control**************************************/
             //Allows speed to be halved
@@ -109,6 +112,7 @@ public class Test extends LinearOpMode {
             else {
                 intake.setPower(0);
             }
+
             /******************************************************************************/
 
             /**********Spindex mode toggle and position cycling***********/
