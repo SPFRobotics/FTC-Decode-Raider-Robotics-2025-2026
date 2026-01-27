@@ -47,7 +47,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
 
         //Move back 48 inches
         intake.setPower(1);
-        chassis.moveWLoop(0.6, "backward", 30);
+        chassis.moveWLoop(1, "backward", 48);
 
         //Move spindex to outtake position
         while (opModeIsActive() && chassis.motorsAreBusy()){
@@ -73,7 +73,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     break;
                 case 1:
                     kicker.up();
-                    if (timer.seconds() >= 0.2) {
+                    if (timer.seconds() >= 0.5) {
                         cycles++;
                         step++;
                         timer.reset();
@@ -81,7 +81,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     break;
                 case 2:
                     kicker.down();
-                    if (timer.seconds() >= 0.2) {
+                    if (timer.seconds() >= 0.3) {
                         step++;
                         timer.reset();
                     }
@@ -106,15 +106,15 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                 break;
             }
         }
-
-        chassis.move(1, "left", 24);
+        chassis.rotate(45, 1);
+        chassis.move(0.1, "foward", 37);
 
         outtake.setRPM(0);
         intake.setPower(0);
         kicker.down();
         spindex.setPower(0);
-        while (opModeIsActive()){
+        /*while (opModeIsActive()){
             led.cycleColors(10);
-        }
+        }*/
     }
 }

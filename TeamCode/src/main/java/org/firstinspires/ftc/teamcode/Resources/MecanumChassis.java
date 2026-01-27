@@ -46,7 +46,7 @@ public class MecanumChassis {
     public MecanumChassis(LinearOpMode lom){
         opmode = lom;
     }
-    public double inch_convert(double inch) { return inch * (537.7 / (3.78 * Math.PI)); }
+    public double inch_convert(double inch) { return inch * (537.7 / (4.09449 * Math.PI)); }
     public double inToCm(int inches) { return inches * 2.54; }
     public double cm_convert(double cm) { return cm * (537.7 / (9.6012 * Math.PI)); }
     public void initializeMovement() {
@@ -112,7 +112,7 @@ public class MecanumChassis {
     }
 
     public boolean motorsAreBusy(){
-        if (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()){
+        if (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy()){
             return true;
         }
         return false;
