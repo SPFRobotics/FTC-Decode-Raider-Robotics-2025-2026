@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.Game.Auto;
+package org.firstinspires.ftc.teamcode.Game.Auto.GravFed;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;

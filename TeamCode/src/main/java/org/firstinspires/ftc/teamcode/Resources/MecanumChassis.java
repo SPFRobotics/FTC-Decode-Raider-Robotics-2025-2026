@@ -105,10 +105,6 @@ public class MecanumChassis {
     }
 
     public void powerZero() {
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setPower(0);
         backRight.setPower(0);
         frontLeft.setPower(0);
@@ -214,20 +210,20 @@ public class MecanumChassis {
             frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
             frontRight.setTargetPosition((int) inch_convert(-moveDistance));
             run_to_position_all();
-            backLeft.setPower(-movePower);
-            backRight.setPower(-movePower);
-            frontLeft.setPower(-movePower);
-            frontRight.setPower(-movePower);
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
         } else if (moveDirection.equals("right")) {
             backLeft.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
             backRight.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
             frontLeft.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
             frontRight.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
             run_to_position_all();
-            backLeft.setPower(-movePower);
+            backLeft.setPower(movePower);
             backRight.setPower(movePower);
             frontLeft.setPower(movePower);
-            frontRight.setPower(-movePower);
+            frontRight.setPower(movePower);
         } else if (moveDirection.equals("left")) {
             backLeft.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
             backRight.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
@@ -235,8 +231,8 @@ public class MecanumChassis {
             frontRight.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
             run_to_position_all();
             backLeft.setPower(movePower);
-            backRight.setPower(-movePower);
-            frontLeft.setPower(-movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
             frontRight.setPower(movePower);
         } else {
             throw new RuntimeException("Move direction must be forward, backward, left, or right.");

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
@@ -8,7 +9,8 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name = "Auto Far Blue Spindex (TIME) - Preload Only", group = "Autonomous")
+//@Autonomous(name = "Auto Far Blue Spindex (TIME) - Preload Only", group = "Autonomous")
+@Disabled
 public class AutoFarBlueThreeBallTime extends LinearOpMode {
 
     private static final double SHOOT_RPM = 3200;

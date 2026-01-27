@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Game.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
@@ -11,10 +10,9 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
-import org.firstinspires.ftc.teamcode.Resources.MecanumChassisMod;
 
-@Autonomous(name="Zucking It")
-public class ZuckingIt extends LinearOpMode {
+@Autonomous(name="Auto Short Red")
+public class AutoShortRedSpindex extends LinearOpMode {
     Spindex spindex = null;
     ElapsedTime timer = new ElapsedTime();
     public void moveSpindex(boolean outtaking){
@@ -39,6 +37,7 @@ public class ZuckingIt extends LinearOpMode {
         outtake.setRPM(Outtake.OuttakeConfig.closeRPM);
         int step = 0;
         int cycles = 0;
+        chassis.run_using_encoders_all();
 
         //Move back 48 inches
         intake.setPower(1);
@@ -55,39 +54,54 @@ public class ZuckingIt extends LinearOpMode {
             led.cycleColors(10);
             switch (step) {
                 case 0:
-                    kicker.up();
-                    if (timer.seconds() >= 1) {
+                    if (outtake.getRPM() >= Outtake.OuttakeConfig.closeRPM){
                         step++;
                         timer.reset();
                     }
                     break;
                 case 1:
-                    kicker.down();
-                    if (timer.seconds() >= 1) {
+                    kicker.up();
+                    if (timer.seconds() >= 0.2) {
+                        cycles++;
                         step++;
                         timer.reset();
                     }
                     break;
                 case 2:
+                    kicker.down();
+                    if (timer.seconds() >= 0.2) {
+                        step++;
+                        timer.reset();
+                    }
+                    break;
+                case 3:
+                    if (cycles == 3){
+                        step = 5;
+                    }
                     spindex.addIndex();
                     step++;
                     timer.reset();
                     break;
-                case 3:
-                    if (timer.seconds() >= 1){
-                        cycles++;
-                        if (cycles == 3){
-                            step++;
-                            requestOpModeStop();
-                        }
-                        else{
-                            step = 0;
-                            timer.reset();
-                        }
+                case 4:
+                    if (timer.seconds() >= 0.5){
+                        step = 0;
+                        timer.reset();
                     }
                     break;
             }
             moveSpindex(true);
+            if (cycles == 3){
+                break;
+            }
+        }
+        chassis.move(1, "right", 24);
+
+        outtake.setRPM(0);
+        intake.setPower(0);
+        spindex.setPower(0);
+        kicker.down();
+        while (opModeIsActive()){
+            led.cycleColors(10);
         }
     }
 }

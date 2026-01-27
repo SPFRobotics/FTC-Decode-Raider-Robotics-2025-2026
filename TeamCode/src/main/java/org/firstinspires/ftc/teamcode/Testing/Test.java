@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 
-@Disabled
+@TeleOp
 public class Test extends LinearOpMode {
     private Intake intake = null;
     private Outtake outtake = null;

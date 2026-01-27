@@ -212,6 +212,10 @@ public class Spindex {
         outtakeMode = outtake;
     }
 
+    public void setPower(int power){
+        spindexMotor.setPower(power);
+    }
+
     public void setAutoLoadMode(boolean x){
         autoLoadMode = x;
     }
