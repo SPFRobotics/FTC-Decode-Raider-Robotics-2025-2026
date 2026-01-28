@@ -47,7 +47,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
 
         //Move back 48 inches
         intake.setPower(1);
-        chassis.moveWLoop(1, "backward", 48);
+        chassis.moveWLoop(1, 'b', 48);
 
         //Move spindex to outtake position
         while (opModeIsActive() && chassis.motorsAreBusy()){
@@ -107,7 +107,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
             }
         }
         chassis.rotate(45, 1);
-        chassis.move(0.1, "foward", 37);
+        chassis.move(0.1, 'f', 37);
 
         outtake.setRPM(0);
         intake.setPower(0);
