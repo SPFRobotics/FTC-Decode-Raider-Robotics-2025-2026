@@ -13,30 +13,15 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Far Blue")
+@Autonomous(name="Auto Far Blue (ShortLogic)")
 public class AutoFarBlue extends LinearOpMode {
 
-    Spindex spindex = null;
+    Spindex spindex;
+    MecanumChassis chassis;
     ElapsedTime timer = new ElapsedTime();
-    MecanumChassis chassis = null;
-
-    private static final double INTAKE_RUN_SEC = 1.4;
-    private static final double SPINDEX_ADVANCE_EVERY_SEC = 0.45;
 
     private static final double DRIVE_PWR = 0.5;
-    private static final double INTAKE_PWR = 0.6;
-
-    public void moveSpindex(boolean outtaking) {
-        if (outtaking) {
-            spindex.moveToPos(
-                    Spindex.SpindexValues.outtakePos[spindex.getIndex()], true
-            );
-        } else {
-            spindex.moveToPos(
-                    Spindex.SpindexValues.intakePos[spindex.getIndex()], true
-            );
-        }
-    }
+    private static final double INTAKE_PWR = 0.55;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -49,43 +34,49 @@ public class AutoFarBlue extends LinearOpMode {
         LedLights led = new LedLights(hardwareMap);
 
         chassis.initializeMovement();
-        FtcDashboard dash = FtcDashboard.getInstance();
-        Telemetry telemetry = dash.getTelemetry();
+        Telemetry telemetry = FtcDashboard.getInstance().getTelemetry();
 
         waitForStart();
         if (!opModeIsActive()) return;
 
         outtake.setRPM(Outtake.OuttakeConfig.farRPM);
-
-        int step = 0;
-        int cycles = 0;
-
         chassis.run_using_encoders_all();
 
-        chassis.rotate(20, DRIVE_PWR);
+        int step = 0;
+        int shots = 0;
+        int intakeIndexes = 0;
 
         timer.reset();
+
         while (opModeIsActive()) {
+
             led.cycleColors(10);
 
             switch (step) {
-                case 0:
+
+                case 0: // rotate 20
+                    chassis.rotate(20, DRIVE_PWR);
+                    step++;
+                    timer.reset();
+                    break;
+
+                case 1: // wait for RPM
                     if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM) {
                         step++;
                         timer.reset();
                     }
                     break;
 
-                case 1:
+                case 2: // kicker up (shoot)
                     kicker.up();
                     if (timer.seconds() >= 0.5) {
-                        cycles++;
+                        shots++;
                         step++;
                         timer.reset();
                     }
                     break;
 
-                case 2:
+                case 3: // kicker down
                     kicker.down();
                     if (timer.seconds() >= 0.3) {
                         step++;
@@ -93,9 +84,9 @@ public class AutoFarBlue extends LinearOpMode {
                     }
                     break;
 
-                case 3:
-                    if (cycles == 3) {
-                        step = 5;
+                case 4: // index spindex
+                    if (shots == 3) {
+                        step = 6;
                         break;
                     }
                     spindex.addIndex();
@@ -103,67 +94,94 @@ public class AutoFarBlue extends LinearOpMode {
                     timer.reset();
                     break;
 
-                case 4:
+                case 5: // pause before next shot
                     if (timer.seconds() >= 0.5) {
-                        step = 0;
+                        step = 2;
                         timer.reset();
                     }
                     break;
+
+                case 6: // force kicker down
+                    kicker.down();
+                    if (timer.seconds() >= 0.35) {
+                        step++;
+                        timer.reset();
+                    }
+                    break;
+
+                case 7: // rotate back -20
+                    chassis.rotate(-20, DRIVE_PWR);
+                    step++;
+                    break;
+
+                case 8: // move forward 20
+                    chassis.moveWLoop(DRIVE_PWR, 'f', 20);
+                    step++;
+                    break;
+
+                case 9: // wait for move complete
+                    if (!chassis.motorsAreBusy()) {
+                        chassis.powerZero();
+                        step++;
+                    }
+                    break;
+
+                case 10: // rotate 90
+                    chassis.rotate(90, DRIVE_PWR);
+                    step++;
+                    break;
+
+                case 11: // start intake + slow creep
+                    intake.setPower(INTAKE_PWR);
+                    chassis.moveWLoop(0.25, 'f', 33);
+                    intakeIndexes = 0;
+                    timer.reset();
+                    step++;
+                    break;
+
+                case 12: // intake loop
+                    moveSpindex(false);
+
+                    if (timer.seconds() >= 0.45 * (intakeIndexes + 1)
+                            && intakeIndexes < 3) {
+                        spindex.addIndex();
+                        intakeIndexes++;
+                    }
+
+                    if (timer.seconds() >= 2.6) {
+                        chassis.powerZero();
+                        intake.setPower(0);
+                        step++;
+                    }
+                    break;
+
+                case 13: // end
+                    outtake.setRPM(0);
+                    kicker.down();
+                    spindex.setPower(0);
+                    break;
             }
 
-            moveSpindex(true);
+            moveSpindex(step < 7); // outtake mode only while shooting
 
-            if (cycles == 3) {
-                break;
-            }
-        }
-
-        timer.reset();
-        while (opModeIsActive() && timer.seconds() < 0.3) {
-            kicker.down();
-            led.cycleColors(10);
-        }
-
-        chassis.rotate(-20, DRIVE_PWR);
-
-        chassis.moveWLoop(DRIVE_PWR, 'f', 20);
-        while (opModeIsActive() && chassis.motorsAreBusy()) {
-            moveSpindex(false);
-            led.cycleColors(10);
-        }
-        chassis.powerZero();
-
-        chassis.rotate(90, DRIVE_PWR);
-
-        double INTAKE_DRIVE_PWR = 0.25;   // MUCH slower into balls
-        double INTAKE_TOTAL_TIME = 2.6;  // longer so intake actually works
-
-        intake.setPower(INTAKE_PWR);
-        chassis.moveWLoop(INTAKE_DRIVE_PWR, 'f', 33);
-
-        timer.reset();
-        int advances = 0;
-
-        while (opModeIsActive()) {
-            led.cycleColors(10);
-            moveSpindex(false);
-
-            double targetTime = SPINDEX_ADVANCE_EVERY_SEC * (advances + 1);
-            if (advances < 3 && timer.seconds() >= targetTime) {
-                spindex.addIndex();
-                advances++;
-            }
-
-            // let it keep driving UNTIL time is up
-            if (timer.seconds() >= INTAKE_TOTAL_TIME) {
-                break;
-            }
-
-            telemetry.addData("IntakeTime", timer.seconds());
-            telemetry.addData("Advances", advances);
+            telemetry.addData("Step", step);
+            telemetry.addData("Shots", shots);
+            telemetry.addData("IntakeIdx", intakeIndexes);
             telemetry.update();
-        }
 
-        chassis.powerZero();
+            if (step == 13) break;
+        }
+    }
+
+    private void moveSpindex(boolean outtaking) {
+        if (outtaking) {
+            spindex.moveToPos(
+                    Spindex.SpindexValues.outtakePos[spindex.getIndex()], true
+            );
+        } else {
+            spindex.moveToPos(
+                    Spindex.SpindexValues.intakePos[spindex.getIndex()], true
+            );
+        }
     }
 }
