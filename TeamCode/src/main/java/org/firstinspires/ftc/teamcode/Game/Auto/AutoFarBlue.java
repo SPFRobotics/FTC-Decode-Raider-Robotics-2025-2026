@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Far Blue (Time Based)")
+@Autonomous(name="Auto Far Blue")
 public class AutoFarBlue extends LinearOpMode {
 
     Spindex spindex = null;
@@ -22,6 +22,9 @@ public class AutoFarBlue extends LinearOpMode {
 
     private static final double INTAKE_RUN_SEC = 1.4;
     private static final double SPINDEX_ADVANCE_EVERY_SEC = 0.45;
+
+    private static final double DRIVE_PWR = 0.5;
+    private static final double INTAKE_PWR = 0.6;
 
     public void moveSpindex(boolean outtaking){
         if (outtaking) {
@@ -55,7 +58,7 @@ public class AutoFarBlue extends LinearOpMode {
 
         chassis.run_using_encoders_all();
 
-        chassis.rotate(20, .7);
+        chassis.rotate(20, DRIVE_PWR);
 
         timer.reset();
         while (opModeIsActive()) {
@@ -111,26 +114,28 @@ public class AutoFarBlue extends LinearOpMode {
             }
         }
 
-        chassis.rotate(-20, .8);
+        // FORCE kicker down after shooting so spindex can rotate freely
+        kicker.down();
 
-        chassis.moveWLoop(1, 'f', 20);
+        chassis.rotate(-20, DRIVE_PWR);
+
+        chassis.moveWLoop(DRIVE_PWR, 'f', 20);
         while (opModeIsActive() && chassis.motorsAreBusy()){
             moveSpindex(false);
             led.cycleColors(10);
         }
         chassis.powerZero();
-        kicker.down();
-        chassis.rotate(90, .5);
 
-        intake.setPower(1);
-        chassis.moveWLoop(.4, 'f', 33);
+        chassis.rotate(90, DRIVE_PWR);
+
+        intake.setPower(INTAKE_PWR);
+        chassis.moveWLoop(.3, 'f', 33);
 
         timer.reset();
         int advances = 0;
 
         while (opModeIsActive() && chassis.motorsAreBusy()) {
             led.cycleColors(10);
-
             moveSpindex(false);
 
             double targetTime = SPINDEX_ADVANCE_EVERY_SEC * (advances + 1);
