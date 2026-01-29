@@ -55,7 +55,7 @@ public class AutoFarBlue extends LinearOpMode {
 
         chassis.run_using_encoders_all();
 
-        chassis.rotate(20, 1);
+        chassis.rotate(20, .7);
 
         timer.reset();
         while (opModeIsActive()) {
@@ -111,7 +111,7 @@ public class AutoFarBlue extends LinearOpMode {
             }
         }
 
-        chassis.rotate(-20, 1);
+        chassis.rotate(-20, .8);
 
         chassis.moveWLoop(1, 'f', 20);
         while (opModeIsActive() && chassis.motorsAreBusy()){
@@ -119,11 +119,11 @@ public class AutoFarBlue extends LinearOpMode {
             led.cycleColors(10);
         }
         chassis.powerZero();
-
-        chassis.rotate(90, 1);
+        kicker.down();
+        chassis.rotate(90, .5);
 
         intake.setPower(1);
-        chassis.moveWLoop(1, 'f', 33);
+        chassis.moveWLoop(.4, 'f', 33);
 
         timer.reset();
         int advances = 0;
