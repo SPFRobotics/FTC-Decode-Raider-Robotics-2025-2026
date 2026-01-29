@@ -543,7 +543,7 @@ public class MecanumChassis {
         backRight.setPower(0);
         frontLeft.setPower(0);
         frontRight.setPower(0);
-        opmode.sleep(500);
+        //opmode.sleep(500);
     }
     public void wiggle(){
         move(1,"forward",3);

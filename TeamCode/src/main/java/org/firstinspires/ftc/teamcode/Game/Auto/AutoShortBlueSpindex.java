@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.LedLights;
@@ -35,7 +36,11 @@ public class AutoShortBlueSpindex extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         LedLights led = new LedLights(hardwareMap);
+        ColorFetch colorSensor = new ColorFetch(hardwareMap);
+
+
         chassis.initializeMovement();
+        spindex.setAutoLoadMode(true);
         FtcDashboard dash = FtcDashboard.getInstance();
         Telemetry telemetry = dash.getTelemetry();
         waitForStart();
@@ -43,27 +48,22 @@ public class AutoShortBlueSpindex extends LinearOpMode {
         outtake.setRPM(Outtake.OuttakeConfig.closeRPM);
         int step = 0;
         int cycles = 0;
+        int rows = 0;
         chassis.run_using_encoders_all();
 
         //Move back 48 inches
         intake.setPower(1);
-        chassis.moveWLoop(1, 'b', 48);
+        chassis.moveWLoop(0.8, 'b', 52);
+        spindex.setMode(true);
 
         //Move spindex to outtake position
         while (opModeIsActive() && chassis.motorsAreBusy()){
-            moveSpindex(true);
             led.cycleColors(10);
-
-            telemetry.addData("Back Left: ", chassis.backLeft.getCurrentPosition());
-            telemetry.addData("Back Right: ", chassis.backRight.getCurrentPosition());
-            telemetry.addData("Front Right:", chassis.frontRight.getCurrentPosition());
-            telemetry.addData("Front Left", chassis.frontLeft.getCurrentPosition());
-            telemetry.update();
+            moveSpindex(spindex.isOuttakeing());
         }
         chassis.powerZero();
         timer.reset();
         while (opModeIsActive()) {
-            led.cycleColors(10);
             switch (step) {
                 case 0:
                     if (outtake.getRPM() >= Outtake.OuttakeConfig.closeRPM){
@@ -73,10 +73,11 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     break;
                 case 1:
                     kicker.up();
-                    if (timer.seconds() >= 0.5) {
+                    if (timer.seconds() >= 0.3) {
                         cycles++;
                         step++;
                         timer.reset();
+                        spindex.clearBall(spindex.getIndex());
                     }
                     break;
                 case 2:
@@ -87,34 +88,63 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     }
                     break;
                 case 3:
+                    if (rows == 1 && cycles == 3){
+                        step = 11;
+                        break;
+                    }
                     if (cycles == 3){
                         step = 5;
+                        break;
                     }
                     spindex.addIndex();
                     step++;
                     timer.reset();
                     break;
                 case 4:
-                    if (timer.seconds() >= 0.5){
+                    if (timer.seconds() >= 1){
                         step = 0;
                         timer.reset();
                     }
                     break;
+                case 5:
+                    chassis.rotate(45, 0.8);
+                    step++;
+                    break;
+                case 6:
+                    chassis.moveWLoop(0.05, 'f', 34);
+                    spindex.setMode(false);
+                    step++;
+                    break;
+                case 7:
+                    telemetry.update();
+                    spindex.autoLoad(colorSensor);
+                    if (!chassis.motorsAreBusy()){
+                        chassis.powerZero();
+                        spindex.setMode(true);
+                        step++;
+                    }
+                    break;
+                case 8:
+                    chassis.moveWLoop(0.8, 'b', 34);
+                    step++;
+                    break;
+                case 9:
+                    if (!chassis.motorsAreBusy()){
+                        step++;
+                    }
+                    break;
+                case 10:
+                    chassis.rotate(-45, 0.8);
+                    step = 0;
+                    cycles = 0;
+                    rows++;
+                    break;
+                case 11:
+                    chassis.move(0.8, 'l', 12);
+                    requestOpModeStop();
             }
-            moveSpindex(true);
-            if (cycles == 3){
-                break;
-            }
-        }
-        chassis.rotate(45, 1);
-        chassis.move(0.1, 'f', 37);
-
-        outtake.setRPM(0);
-        intake.setPower(0);
-        kicker.down();
-        spindex.setPower(0);
-        /*while (opModeIsActive()){
+            moveSpindex(spindex.isOuttakeing());
             led.cycleColors(10);
-        }*/
+        }
     }
 }
