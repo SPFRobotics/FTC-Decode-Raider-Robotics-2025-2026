@@ -26,11 +26,15 @@ public class AutoFarBlue extends LinearOpMode {
     private static final double DRIVE_PWR = 0.5;
     private static final double INTAKE_PWR = 0.6;
 
-    public void moveSpindex(boolean outtaking){
+    public void moveSpindex(boolean outtaking) {
         if (outtaking) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
+            spindex.moveToPos(
+                    Spindex.SpindexValues.outtakePos[spindex.getIndex()], true
+            );
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
+            spindex.moveToPos(
+                    Spindex.SpindexValues.intakePos[spindex.getIndex()], true
+            );
         }
     }
 
@@ -66,7 +70,7 @@ public class AutoFarBlue extends LinearOpMode {
 
             switch (step) {
                 case 0:
-                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM){
+                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM) {
                         step++;
                         timer.reset();
                     }
@@ -90,7 +94,7 @@ public class AutoFarBlue extends LinearOpMode {
                     break;
 
                 case 3:
-                    if (cycles == 3){
+                    if (cycles == 3) {
                         step = 5;
                         break;
                     }
@@ -100,7 +104,7 @@ public class AutoFarBlue extends LinearOpMode {
                     break;
 
                 case 4:
-                    if (timer.seconds() >= 0.5){
+                    if (timer.seconds() >= 0.5) {
                         step = 0;
                         timer.reset();
                     }
@@ -109,18 +113,21 @@ public class AutoFarBlue extends LinearOpMode {
 
             moveSpindex(true);
 
-            if (cycles == 3){
+            if (cycles == 3) {
                 break;
             }
         }
 
-        // FORCE kicker down after shooting so spindex can rotate freely
-        kicker.down();
+        timer.reset();
+        while (opModeIsActive() && timer.seconds() < 0.3) {
+            kicker.down();
+            led.cycleColors(10);
+        }
 
         chassis.rotate(-20, DRIVE_PWR);
 
         chassis.moveWLoop(DRIVE_PWR, 'f', 20);
-        while (opModeIsActive() && chassis.motorsAreBusy()){
+        while (opModeIsActive() && chassis.motorsAreBusy()) {
             moveSpindex(false);
             led.cycleColors(10);
         }
@@ -128,13 +135,16 @@ public class AutoFarBlue extends LinearOpMode {
 
         chassis.rotate(90, DRIVE_PWR);
 
+        double INTAKE_DRIVE_PWR = 0.25;   // MUCH slower into balls
+        double INTAKE_TOTAL_TIME = 2.6;  // longer so intake actually works
+
         intake.setPower(INTAKE_PWR);
-        chassis.moveWLoop(.3, 'f', 33);
+        chassis.moveWLoop(INTAKE_DRIVE_PWR, 'f', 33);
 
         timer.reset();
         int advances = 0;
 
-        while (opModeIsActive() && chassis.motorsAreBusy()) {
+        while (opModeIsActive()) {
             led.cycleColors(10);
             moveSpindex(false);
 
@@ -144,8 +154,8 @@ public class AutoFarBlue extends LinearOpMode {
                 advances++;
             }
 
-            if (timer.seconds() >= INTAKE_RUN_SEC) {
-                chassis.powerZero();
+            // let it keep driving UNTIL time is up
+            if (timer.seconds() >= INTAKE_TOTAL_TIME) {
                 break;
             }
 
@@ -155,10 +165,5 @@ public class AutoFarBlue extends LinearOpMode {
         }
 
         chassis.powerZero();
-
-        outtake.setRPM(0);
-        intake.setPower(0);
-        kicker.down();
-        spindex.setPower(0);
     }
 }
