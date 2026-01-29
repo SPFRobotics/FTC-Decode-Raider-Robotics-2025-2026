@@ -20,12 +20,8 @@ public class AutoFarBlue extends LinearOpMode {
     ElapsedTime timer = new ElapsedTime();
     MecanumChassis chassis = null;
 
-    // ====== TUNE THIS ======
-    // How long you need driving + intaking to reliably grab 3 balls
-    private static final double INTAKE_RUN_SEC = 1.4;  // start ~1.2-1.8 and tune
-
-    // How often to advance spindex while intaking (time-based indexing)
-    private static final double SPINDEX_ADVANCE_EVERY_SEC = 0.45; // tune
+    private static final double INTAKE_RUN_SEC = 1.4;
+    private static final double SPINDEX_ADVANCE_EVERY_SEC = 0.45;
 
     public void moveSpindex(boolean outtaking){
         if (outtaking) {
@@ -59,14 +55,8 @@ public class AutoFarBlue extends LinearOpMode {
 
         chassis.run_using_encoders_all();
 
-        // =========================
-        // ROTATE 20
-        // =========================
         chassis.rotate(20, 1);
 
-        // =========================
-        // SHOOT 3 (your same time-based switch logic)
-        // =========================
         timer.reset();
         while (opModeIsActive()) {
             led.cycleColors(10);
@@ -121,14 +111,8 @@ public class AutoFarBlue extends LinearOpMode {
             }
         }
 
-        // =========================
-        // ROTATE -20
-        // =========================
         chassis.rotate(-20, 1);
 
-        // =========================
-        // MOVE 20 FORWARD (keep it simple)
-        // =========================
         chassis.moveWLoop(1, 'f', 20);
         while (opModeIsActive() && chassis.motorsAreBusy()){
             moveSpindex(false);
@@ -136,17 +120,9 @@ public class AutoFarBlue extends LinearOpMode {
         }
         chassis.powerZero();
 
-        // =========================
-        // ROTATE 90 LEFT (flip sign if needed)
-        // =========================
         chassis.rotate(90, 1);
 
-        // =========================
-        // MOVE 33 FORWARD + INTAKE (TIME-BASED STOP)
-        // Start the 33 inch command, but we stop early once time is up.
-        // =========================
         intake.setPower(1);
-
         chassis.moveWLoop(1, 'f', 33);
 
         timer.reset();
@@ -155,17 +131,14 @@ public class AutoFarBlue extends LinearOpMode {
         while (opModeIsActive() && chassis.motorsAreBusy()) {
             led.cycleColors(10);
 
-            // Keep spindex in intake position while intaking
             moveSpindex(false);
 
-            // Advance spindex on a cadence while collecting
             double targetTime = SPINDEX_ADVANCE_EVERY_SEC * (advances + 1);
             if (advances < 3 && timer.seconds() >= targetTime) {
                 spindex.addIndex();
                 advances++;
             }
 
-            // TIME-BASED STOP: assume we collected 3 by now
             if (timer.seconds() >= INTAKE_RUN_SEC) {
                 chassis.powerZero();
                 break;
@@ -178,9 +151,6 @@ public class AutoFarBlue extends LinearOpMode {
 
         chassis.powerZero();
 
-        // =========================
-        // STOP EVERYTHING
-        // =========================
         outtake.setRPM(0);
         intake.setPower(0);
         kicker.down();
