@@ -122,8 +122,8 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
                 case 9: // Start intake and move forward 37 inches
                     intake.setPower(1);
-                    chassis.move(0.8,"forward",8);
-                    chassis.moveWLoop(0.05, 'f', 37-8);
+                    chassis.move(0.8,"forward",10);
+                    chassis.moveWLoop(0.05, 'f', 37-10);
                     spindex.setMode(false);
                     step++;
                     break;
