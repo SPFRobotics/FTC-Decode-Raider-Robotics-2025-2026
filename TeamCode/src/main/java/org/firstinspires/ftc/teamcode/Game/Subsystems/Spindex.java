@@ -54,7 +54,7 @@ public class Spindex {
 
         //Distance/Color sensor
         //Old value is 3.3
-        public static double ballDistanceThreshold = 4;
+        public static double ballDistanceThreshold = 4.5;
         public static double spindexPowerThreshold = 0.1;
         public static double launchTime = 900;
     }
@@ -173,7 +173,7 @@ public class Spindex {
 
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
-        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && atTarget() && getPower() < SpindexValues.spindexPowerThreshold && ballDistance < SpindexValues.ballDistanceThreshold){
+        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
             addBall(getIndex());
         }
 
