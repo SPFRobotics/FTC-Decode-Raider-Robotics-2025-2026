@@ -208,16 +208,24 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                     }
                     break;
 
-                case 22:
+                case 22: // Drive forward 12 inches for leave points
+                    chassis.moveWLoop(0.8, 'f', 12);
+                    step++;
+                    break;
+                case 23: // Wait for move complete
+                    if (!chassis.motorsAreBusy()) {
+                        chassis.powerZero();
+                        step++;
+                    }
+                    break;
+                case 24: // End
                     outtake.setRPM(0);
                     intake.setPower(0);
-
                     requestOpModeStop();
                     break;
             }
             moveSpindex(spindex.isOuttakeing());
             led.cycleColors(10);
-            chassis.move(0.8, 'f', 5);
 
             telemetry.addData("Step", step);
             telemetry.addData("Cycles", cycles);
