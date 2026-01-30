@@ -58,7 +58,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetry.addData("Color Sensor Distance", colorSensor.getDistance());
-            telemetry.addData("list", spindex.getSlotStatus());
+            telemetry.addData("list", spindex.getSlotStatus()[0]+ " "+spindex.getSlotStatus()[1]+" "+ spindex.getSlotStatus()[2]);
             telemetry.update();
 
             switch (step) {
