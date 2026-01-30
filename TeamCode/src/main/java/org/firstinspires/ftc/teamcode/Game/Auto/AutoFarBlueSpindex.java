@@ -56,6 +56,9 @@ public class AutoFarBlueSpindex extends LinearOpMode {
         timer.reset();
 
         while (opModeIsActive()) {
+            telemetry.addData("Color Sensor Distance", colorSensor.getDistance());
+            telemetry.update();
+
             switch (step) {
                 case 0: // Wait for RPM
                     if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM) {
