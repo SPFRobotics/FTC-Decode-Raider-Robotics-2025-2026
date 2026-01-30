@@ -53,6 +53,7 @@ public class Spindex {
         public static double[] outtakePos = {182, 302, 62};
 
         //Distance/Color sensor
+        //Old value is 3.3
         public static double ballDistanceThreshold = 3.3;
         public static double spindexPowerThreshold = 0.1;
         public static double launchTime = 900;

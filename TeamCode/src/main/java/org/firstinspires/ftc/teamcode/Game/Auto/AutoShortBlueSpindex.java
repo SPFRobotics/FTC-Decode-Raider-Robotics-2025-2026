@@ -116,7 +116,6 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     step++;
                     break;
                 case 7:
-                    telemetry.update();
                     spindex.autoLoad(colorSensor);
                     if (!chassis.motorsAreBusy()){
                         chassis.powerZero();
