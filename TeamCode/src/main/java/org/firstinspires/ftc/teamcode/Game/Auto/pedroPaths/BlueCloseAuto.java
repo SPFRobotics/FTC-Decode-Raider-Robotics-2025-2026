@@ -33,8 +33,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
  */
 
 @Configurable
-@Autonomous
-
+//@Autonomous
+@Disabled
 public class BlueCloseAuto extends OpMode
 {
     // Declare OpMode members.

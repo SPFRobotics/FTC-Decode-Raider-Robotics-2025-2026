@@ -8,6 +8,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
@@ -20,7 +21,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.intakePos;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.outtakePos;
 
-@Autonomous(name = "Blue Short", group = "Autonomous")
+//@Autonomous(name = "Blue Short", group = "Autonomous")
+@Disabled
 @Configurable // Panels
 public class BlueShortPath extends OpMode {
 

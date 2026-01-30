@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -17,8 +18,8 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
 
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.intakePos;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.outtakePos;
-
-@Autonomous(name = "Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.", group = "Autonomous")
+@Disabled
+//@Autonomous(name = "Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.", group = "Autonomous")
 public class SpindexTestPath extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;

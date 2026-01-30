@@ -8,6 +8,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
@@ -17,7 +18,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues;
 
-@Autonomous(name = "Red Short", group = "Autonomous")
+//@Autonomous(name = "Red Short", group = "Autonomous")
+@Disabled
 @Configurable
 public class RedShortPath extends OpMode {
 

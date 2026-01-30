@@ -5,12 +5,15 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "TestPath", group = "Autonomous")
+//@Autonomous(name = "TestPath", group = "Autonomous")
+
+@Disabled
 public class TestPath extends OpMode {
 
     private static final double SHOOT_RPM = 3200;

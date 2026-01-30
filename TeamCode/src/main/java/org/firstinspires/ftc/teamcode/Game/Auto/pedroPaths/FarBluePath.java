@@ -8,6 +8,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -16,7 +17,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 
-@Autonomous(name = "Pedro Autonomous Far Blue", group = "Autonomous")
+//@Autonomous(name = "Pedro Autonomous Far Blue", group = "Autonomous")
+
+@Disabled
 @Configurable
 public class FarBluePath extends OpMode {
 
