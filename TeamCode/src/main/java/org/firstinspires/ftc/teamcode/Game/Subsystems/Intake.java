@@ -17,8 +17,11 @@ public class Intake {
     // Constructor - initializes the intake motor
     public Intake(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
-        //intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        //intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        /*
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+         */
     }
 
 
