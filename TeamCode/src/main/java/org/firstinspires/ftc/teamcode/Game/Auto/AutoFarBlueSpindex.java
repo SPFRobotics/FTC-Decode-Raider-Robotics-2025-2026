@@ -42,6 +42,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
         spindex.setAutoLoadMode(true);
         FtcDashboard dash = FtcDashboard.getInstance();
         Telemetry telemetry = dash.getTelemetry();
+
         waitForStart();
 
         outtake.setRPM(Outtake.OuttakeConfig.farRPM);
@@ -57,6 +58,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetry.addData("Color Sensor Distance", colorSensor.getDistance());
+            telemetry.addData("list", spindex.getSlotStatus());
             telemetry.update();
 
             switch (step) {
