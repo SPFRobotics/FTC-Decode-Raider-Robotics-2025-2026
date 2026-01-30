@@ -45,14 +45,15 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
         waitForStart();
 
-        outtake.setRPM(Outtake.OuttakeConfig.farRPM);
+        outtake.setRPM(Outtake.OuttakeConfig.farRPM-50);
+        intake.setPower(1);
         int step = 0;
         int cycles = 0;
         int rows = 0;
         chassis.run_using_encoders_all();
 
         // Initial rotate 20 degrees
-        chassis.rotate(20, 0.8);
+        chassis.rotate(20, 0.5);
         spindex.setMode(true);
         timer.reset();
 
@@ -63,7 +64,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
             switch (step) {
                 case 0: // Wait for RPM
-                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM) {
+                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM-50) {
                         step++;
                         timer.reset();
                     }
@@ -115,7 +116,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                     }
                     break;
                 case 8: // Rotate 90 degrees
-                    chassis.rotate(85, 0.8);
+                    chassis.rotate(90, 0.8);
                     step++;
                     break;
 
@@ -123,7 +124,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                 case 9: // Start intake and move forward 37 inches
                     intake.setPower(1);
                     chassis.move(0.8,"forward",12);
-                    chassis.moveWLoop(0.05, 'f', 37-12);
+                    chassis.moveWLoop(0.05, 'f', 34-12);
                     spindex.setMode(false);
                     step++;
                     break;
@@ -138,7 +139,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
 
                 case 11: // Drive back 37 inches
-                    chassis.moveWLoop(0.8, 'b', 37);
+                    chassis.moveWLoop(0.8, 'b', 30);
                     step++;
                     break;
                 case 12: // Wait for back move complete
@@ -148,7 +149,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                     }
                     break;
                 case 13: // Rotate back -90
-                    chassis.rotate(-85, 0.8);
+                    chassis.rotate(-90, 0.8);
                     step++;
                     break;
                 case 14: // Drive back 20 inches
@@ -162,7 +163,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                     }
                     break;
                 case 16: // Rotate 20 degrees for shooting
-                    chassis.rotate(20, 0.8);
+                    chassis.rotate(23, 0.8);
                     cycles = 0;
                     rows++;
                     step++;
@@ -171,7 +172,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
 
                 case 17: // Wait for RPM
-                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM) {
+                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM-50) {
                         step++;
                         timer.reset();
                     }

@@ -112,7 +112,7 @@ public class MecanumChassis {
     }
 
     public boolean motorsAreBusy(){
-        if (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy()){
+        if (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()){
             return true;
         }
         return false;

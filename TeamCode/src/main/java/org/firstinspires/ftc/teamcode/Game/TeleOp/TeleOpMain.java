@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -69,12 +70,16 @@ public class TeleOpMain extends LinearOpMode {
         UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
+        FtcDashboard dash = FtcDashboard.getInstance();
+        telemetry = dash.getTelemetry();
 
         //Set auto load and launch to true as default
         autoLoad.changeState(true);
-
-        //Initialize Telemetry
-        waitForStart();
+        while (opModeInInit()){
+            leds.cycleColors(10);
+            waitForStart();
+        }
+        leds.setColor(0);
         telemetry.setMsTransmissionInterval(16);
         if (opModeIsActive()){
             updateSpindex.start();
@@ -83,7 +88,6 @@ public class TeleOpMain extends LinearOpMode {
         ElapsedTime loopTime = new ElapsedTime();
         while (opModeIsActive()) {
             loopTime.reset();
-            leds.cycleColors(10);
 
             /*************************************Drive Train Control**************************************/
             //Allows speed to be halved
@@ -119,11 +123,15 @@ public class TeleOpMain extends LinearOpMode {
 
             /**********Spindex mode toggle and position cycling***********/
             if (spindexRightBumper.press(gamepad2.right_bumper)) {
-                autoLoad.changeState(false);
+                if (!spindex.isOuttakeing()){
+                    autoLoad.changeState(false);
+                }
                 spindex.addIndex();
             }
             if (spindexLeftBumper.press(gamepad2.left_bumper)) {
-                autoLoad.changeState(false);
+                if (!spindex.isOuttakeing()){
+                    autoLoad.changeState(false);
+                }
                 spindex.subtractIndex();
             }
             //Sets either intake or outtake mode
@@ -151,12 +159,15 @@ public class TeleOpMain extends LinearOpMode {
             //Controls gamepad rumble
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
+                leds.setColor(leds.GREEN);
             }
             else if (setRPM == farRPM & outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
+                leds.setColor(leds.GREEN);
             }
             else{
                 gamepad2.stopRumble();
+                leds.setColor(leds.RED);
             }
 
             // Outtake control - right trigger

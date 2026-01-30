@@ -71,6 +71,9 @@ public class LedLights {
 
 
     public void setColor(double pwm){
-        setLeds(pwm);
+        if (colorTimer.seconds() >= 2.0){
+            colorTimer.reset();
+            setLeds(pwm);
+        }
     }
 }

@@ -19,6 +19,7 @@ import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValu
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.Threshold;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.launchTime;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.maxPower;
+import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.spindexPowerThreshold;
 import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.tolorence;
 import static java.lang.Thread.sleep;
 
@@ -49,13 +50,13 @@ public class Spindex {
         public static double maxPower = 1;
         public static double Threshold = 150;
         public static double tolorence = 3;
-        public static double[] intakePos = {2, 122, 242};
-        public static double[] outtakePos = {182, 302, 62};
+        public static double[] intakePos = {3, 123, 243};
+        public static double[] outtakePos = {183, 303, 63};
 
         //Distance/Color sensor
         //Old value is 3.3
-        public static double ballDistanceThreshold = 3.3;
-        public static double spindexPowerThreshold = 0.1;
+        public static double ballDistanceThreshold = 3;
+        public static double spindexPowerThreshold = 0.15;
         public static double launchTime = 900;
     }
 
@@ -103,7 +104,7 @@ public class Spindex {
 
             double sign = Math.signum(error);
 
-            double tolorence = 5;
+            double tolorence = 3;
 
             double kp = maxPower/Threshold;
 
@@ -173,7 +174,7 @@ public class Spindex {
 
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
-        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
+        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < spindexPowerThreshold && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
             addBall(getIndex());
         }
 

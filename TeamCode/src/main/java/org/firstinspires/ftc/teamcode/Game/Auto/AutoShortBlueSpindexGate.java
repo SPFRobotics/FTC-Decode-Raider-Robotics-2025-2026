@@ -15,12 +15,11 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-//@Autonomous(name="Auto Short Blue 9")
+//@Autonomous(name="Auto Short Blue Gate")
 @Disabled
-public class AutoShortBlueSpindexNineBall extends LinearOpMode {
+public class AutoShortBlueSpindexGate extends LinearOpMode {
     Spindex spindex = null;
     ElapsedTime timer = new ElapsedTime();
-    ElapsedTime runTime = new ElapsedTime();
     MecanumChassis chassis = null;
     public void moveSpindex(boolean outtaking){
         if (outtaking) {
@@ -56,8 +55,7 @@ public class AutoShortBlueSpindexNineBall extends LinearOpMode {
 
         //Move back 48 inches
         intake.setPower(1);
-        //Original 52 inches
-        chassis.moveWLoop(0.8, 'b', 54);
+        chassis.moveWLoop(0.8, 'b', 52);
         spindex.setMode(true);
 
         //Move spindex to outtake position
@@ -77,7 +75,7 @@ public class AutoShortBlueSpindexNineBall extends LinearOpMode {
                     break;
                 case 1:
                     kicker.up();
-                    if (timer.seconds() >= 0.4) {
+                    if (timer.seconds() >= 0.3) {
                         cycles++;
                         step++;
                         timer.reset();
@@ -86,7 +84,7 @@ public class AutoShortBlueSpindexNineBall extends LinearOpMode {
                     break;
                 case 2:
                     kicker.down();
-                    if (timer.seconds() >= 0.8) {
+                    if (timer.seconds() >= 0.3) {
                         step++;
                         timer.reset();
                     }
@@ -94,10 +92,6 @@ public class AutoShortBlueSpindexNineBall extends LinearOpMode {
                 case 3:
                     if (rows == 1 && cycles == 3){
                         step = 13;
-                        break;
-                    }
-                     if (rows == 2 && cycles == 3){
-                        step = 19;
                         break;
                     }
                     if (cycles == 3){
@@ -109,28 +103,28 @@ public class AutoShortBlueSpindexNineBall extends LinearOpMode {
                     timer.reset();
                     break;
                 case 4:
-                    if (timer.seconds() >= 0.8){
+                    if (timer.seconds() >= 1){
                         step = 0;
                         timer.reset();
                     }
                     break;
                 case 5:
-                    outtake.setRPM(0);
+                    chassis.rotate(45, 0.8);
                     spindex.setMode(false);
-                    chassis.rotate(43, 0.8);
                     step++;
                     break;
                 case 6:
-                    chassis.moveWLoop(0.8, 'f', 16);
+                    chassis.moveWLoop(0.8, 'f', 17);
                     step++;
                     break;
                 case 7:
                     if (!chassis.motorsAreBusy()){
+                        chassis.powerZero();
                         step++;
                     }
                     break;
                 case 8:
-                    chassis.moveWLoop(0.05, 'f', 34-16);
+                    chassis.moveWLoop(0.3, 'f', 37-17);
                     step++;
                     break;
                 case 9:
@@ -142,8 +136,7 @@ public class AutoShortBlueSpindexNineBall extends LinearOpMode {
                     }
                     break;
                 case 10:
-                    chassis.moveWLoop(0.8, 'b', 34);
-                    outtake.setRPM(Outtake.OuttakeConfig.closeRPM);
+                    chassis.moveWLoop(0.8, 'b', 37);
                     step++;
                     break;
                 case 11:
@@ -152,51 +145,14 @@ public class AutoShortBlueSpindexNineBall extends LinearOpMode {
                     }
                     break;
                 case 12:
-                    if (rows == 2){
-                        step = 16;
-                        break;
-                    }
-                    chassis.rotate(-43, 0.8);
+                    chassis.rotate(-45, 0.8);
                     step = 0;
                     cycles = 0;
                     rows++;
                     break;
                 case 13:
-                    chassis.rotate(43, 0.8);
-                    rows++;
-                    cycles = 0;
-                    spindex.setMode(false);
-                    step++;
-                    break;
-                case 14:
-                    chassis.moveWLoop(0.8, 'l',  26);
-                    step++;
-                    break;
-                case 15:
-                    if (!chassis.motorsAreBusy()){
-                        step = 6;
-                    }
-                    break;
-                case 16:
-                    chassis.moveWLoop(0.8, 'r', 26);
-                    spindex.setMode(true);
-                    step++;
-                    break;
-                case 17:
-                    if (!chassis.motorsAreBusy()){
-                        step++;
-                    }
-                    break;
-                case 18:
-                        chassis.rotate(-43, 0.8);
-                        step = 0;
-                        break;
-                case 19:
                     chassis.move(0.8, 'l', 15);
-                    telemetry.addData("Run Time", runTime.seconds());
-                    telemetry.update();
                     requestOpModeStop();
-
             }
             moveSpindex(spindex.isOuttakeing());
             led.cycleColors(10);
