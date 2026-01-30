@@ -110,7 +110,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                     }
                     break;
                 case 8: // Rotate 90 degrees
-                    chassis.rotate(90, 0.8);
+                    chassis.rotate(85, 0.8);
                     step++;
                     break;
 
@@ -132,7 +132,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
 
                 case 11: // Drive back 37 inches
-                    chassis.moveWLoop(0.8, 'b', 37);
+                    chassis.moveWLoop(0.8, 'b', 35);
                     step++;
                     break;
                 case 12: // Wait for back move complete
@@ -142,7 +142,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                     }
                     break;
                 case 13: // Rotate back -90
-                    chassis.rotate(-90, 0.8);
+                    chassis.rotate(-85, 0.8);
                     step++;
                     break;
                 case 14: // Drive back 20 inches
