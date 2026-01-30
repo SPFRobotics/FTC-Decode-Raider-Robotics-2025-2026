@@ -100,7 +100,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                     step++;
                     break;
                 case 6: // Drive forward 20 inches
-                    chassis.moveWLoop(0.8, 'f', 20);
+                    chassis.moveWLoop(0.8, 'f', 34);
                     step++;
                     break;
                 case 7: // Wait for forward move complete
@@ -146,7 +146,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                     step++;
                     break;
                 case 14: // Drive back 20 inches
-                    chassis.moveWLoop(0.8, 'b', 20);
+                    chassis.moveWLoop(0.8, 'b', 34);
                     step++;
                     break;
                 case 15: // Wait for back move complete
