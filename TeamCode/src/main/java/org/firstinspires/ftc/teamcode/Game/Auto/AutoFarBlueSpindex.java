@@ -211,12 +211,13 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                 case 22:
                     outtake.setRPM(0);
                     intake.setPower(0);
-                    chassis.moveWLoop(0.8, 'f', 5);
+
                     requestOpModeStop();
                     break;
             }
             moveSpindex(spindex.isOuttakeing());
             led.cycleColors(10);
+            chassis.move(0.8, 'f', 5);
 
             telemetry.addData("Step", step);
             telemetry.addData("Cycles", cycles);
