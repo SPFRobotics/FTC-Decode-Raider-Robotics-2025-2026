@@ -14,7 +14,6 @@ public class KickstandServo {
         public static double power = 1;
         public static double up = 0;
         public static double down = 0;
-        public static double threshold = 3;
         public static boolean reverseDir = true;
     }
     /*########################################*/
@@ -22,8 +21,8 @@ public class KickstandServo {
     /*##############CLASS VARIABLES##############*/
     CRServo kickstand = null;
     AnalogInput kickstandPos = null;
-    double currentPos = 0;
-    double difference = 0;
+    double relPos = 0;
+    double prevPos = 0;
     /*###########################################*/
 
     public KickstandServo(HardwareMap hardwareMap){
@@ -33,8 +32,6 @@ public class KickstandServo {
         if (reverseDir){
             kickstand.setDirection(DcMotorSimple.Direction.REVERSE);
         }
-
-        currentPos = getPosition();
     }
 
     /*#####################Methods#####################*/
@@ -51,33 +48,17 @@ public class KickstandServo {
         return kickstandPos.getVoltage();
     }
 
-    public double getDifference(){
-        return difference;
+    public double updatePos(){
+         if ((int)getPosition() > (int)prevPos){
+             relPos++;
+         }
+         else if ((int)getPosition() < (int)prevPos){
+             relPos--;
+         }
+         prevPos = getPosition();
+         return relPos;
     }
 
-    //Up as in being in the "idle" position
-    public void up(){
-        currentPos = getPosition();
-        difference = Math.abs(up-currentPos);
 
-        if (difference > threshold){
-            setPower(power);
-        }
-        else{
-            setPower(0);
-        }
-    }
-
-    public void down(){
-        currentPos = getPosition();
-        difference = Math.abs(down-currentPos);
-
-        if (difference > threshold){
-            setPower(-power);
-        }
-        else{
-            setPower(0);
-        }
-    }
     /*#################################################*/
 }

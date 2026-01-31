@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 public class AutoShortBlueSpindex extends LinearOpMode {
     Spindex spindex = null;
     ElapsedTime timer = new ElapsedTime();
+    ElapsedTime runtime = new ElapsedTime();
     MecanumChassis chassis = null;
     public void moveSpindex(boolean outtaking){
         if (outtaking) {
@@ -44,6 +45,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
         FtcDashboard dash = FtcDashboard.getInstance();
         Telemetry telemetry = dash.getTelemetry();
         waitForStart();
+        runtime.reset();
 
         outtake.setRPM(Outtake.OuttakeConfig.closeRPM);
         int step = 0;
@@ -150,6 +152,9 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     break;
                 case 13:
                     chassis.move(0.8, 'l', 12);
+                    telemetry.addData("Runtime", runtime.seconds());
+                    telemetry.addData("Seconds Left", 30.0-runtime.seconds());
+                    telemetry.update();
                     requestOpModeStop();
             }
             moveSpindex(spindex.isOuttakeing());

@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
@@ -33,6 +35,7 @@ public class TeleOpMain extends LinearOpMode {
     private Button intakeButton = new Button();
     private Button autoLoad = new Button();
     private double setRPM = 0;
+    boolean displayDash = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -70,16 +73,17 @@ public class TeleOpMain extends LinearOpMode {
         UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
+
+        Telemetry driverHub = telemetry;
         FtcDashboard dash = FtcDashboard.getInstance();
-        telemetry = dash.getTelemetry();
 
         //Set auto load and launch to true as default
         autoLoad.changeState(true);
         while (opModeInInit()){
             leds.cycleColors(10);
-            waitForStart();
         }
-        leds.setColor(0);
+        waitForStart();
+        leds.setColor(leds.RED, false);
         telemetry.setMsTransmissionInterval(16);
         if (opModeIsActive()){
             updateSpindex.start();
@@ -182,25 +186,48 @@ public class TeleOpMain extends LinearOpMode {
             }
             outtake.setRPM(setRPM);
 
-            // Driver Hub
-            telemetry.addLine("==========================================");
-            telemetry.addData("Loop Time", loopTime.milliseconds());
-            telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
-            telemetry.addLine("------------------------------------------");
-            telemetry.addData("Spindex Index", spindex.getIndex());
-            telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
-            telemetry.addData("Color", colorSensor.getHue());
-            telemetry.addData("At Target?", spindex.atTarget());
-            telemetry.addData("Spindex Power", spindex.getPower());
-            telemetry.addData("Automated Loading", spindex.isAutoLoading());
-            telemetry.addData("Outtaking?", spindex.isOuttakeing());
-            telemetry.addLine("------------------------------------------");
-            telemetry.addData("Distance", colorSensor.getDistance());
-            telemetry.addData("Right Pod", backRightDrive.getCurrentPosition());
-            telemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
-            telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
-            telemetry.addLine("==========================================");
-            telemetry.update();
+            if (gamepad1.share){
+                kickstand.setPower(0.1);
+            }
+            else if (gamepad1.options){
+                kickstand.setPower(-0.1);
+            }
+            else{
+                kickstand.setPower(0);
+            }
+
+            if (displayDash){
+                telemetry = dash.getTelemetry();
+                displayDash = false;
+            }
+            else{
+                telemetry = driverHub;
+                displayDash = true;
+            }
+
+            for (int i = 0; i < 2; i++){
+                telemetry.addLine("==========================================");
+                telemetry.addData("Loop Time", loopTime.milliseconds());
+                telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
+                telemetry.addLine("------------------------------------------");
+                telemetry.addData("Spindex Index", spindex.getIndex());
+                telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+                telemetry.addData("Color", colorSensor.getHue());
+                telemetry.addData("At Target?", spindex.atTarget());
+                telemetry.addData("Spindex Power", spindex.getPower());
+                telemetry.addData("Automated Loading", spindex.isAutoLoading());
+                telemetry.addData("Outtaking?", spindex.isOuttakeing());
+                telemetry.addData("Kickstand Pos", kickstand.getPosition());
+                telemetry.addData("Kickstand Voltage", kickstand.getVoltage());
+                telemetry.addData("Rel Pos", kickstand.updatePos());
+                telemetry.addLine("------------------------------------------");
+                telemetry.addData("Distance", colorSensor.getDistance());
+                telemetry.addData("Right Pod", backRightDrive.getCurrentPosition());
+                telemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
+                telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
+                telemetry.addLine("==========================================");
+                telemetry.update();
+            }
         }
         //Tells spindex thread to end execution
         spindex.exitProgram();
