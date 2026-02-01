@@ -53,7 +53,7 @@ public class AutoRedFarSpindex extends LinearOpMode {
         chassis.run_using_encoders_all();
 
         // Initial rotate -20 degrees (flipped from blue)
-        chassis.rotate(-20, 0.5);
+        chassis.rotate(-20, 0.2);
         spindex.setMode(true);
         timer.reset();
 
@@ -107,6 +107,7 @@ public class AutoRedFarSpindex extends LinearOpMode {
                     break;
                 case 6: // Drive forward 20 inches
                     chassis.moveWLoop(0.8, 'f', 20);
+                    spindex.setMode(false);
                     step++;
                     break;
                 case 7: // Wait for forward move complete
@@ -125,7 +126,6 @@ public class AutoRedFarSpindex extends LinearOpMode {
                     intake.setPower(1);
                     chassis.move(0.8,"forward",12);
                     chassis.moveWLoop(0.05, 'f', 34-12);
-                    spindex.setMode(false);
                     step++;
                     break;
                 case 10: // Intake while moving (autoLoad)

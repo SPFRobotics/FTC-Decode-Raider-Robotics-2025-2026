@@ -186,7 +186,7 @@ public class TeleOpMain extends LinearOpMode {
             }
             outtake.setRPM(setRPM);
 
-            if (kickstandButton.toggle(gamepad2.share)){
+            if (kickstandButton.toggle(gamepad1.share)){
                 kickstand.updatePos(KickstandServo.KickstandServoConfig.up);
             }
             else{
@@ -194,7 +194,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             //Telemetry
-            for (int i = 0; i < 2; i++) {
+            /*for (int i = 0; i < 2; i++) {
                 if (displayDash) {
                     telemetry = dash.getTelemetry();
                     displayDash = false;
@@ -224,7 +224,7 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
                 telemetry.addLine("==========================================");
                 telemetry.update();
-            }
+            }*/
         }
         //Tells spindex thread to end execution
         spindex.exitProgram();
