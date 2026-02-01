@@ -114,7 +114,7 @@ public class AutoShortRedSpindex extends LinearOpMode {
                     step++;
                     break;
                 case 6:
-                    chassis.moveWLoop(0.8, 'f', 17);
+                    chassis.moveWLoop(0.8, 'f', 10);
                     step++;
                     break;
                 case 7:
@@ -124,7 +124,7 @@ public class AutoShortRedSpindex extends LinearOpMode {
                     }
                     break;
                 case 8:
-                    chassis.moveWLoop(0.08, 'f', 37-17);
+                    chassis.moveWLoop(0.08, 'f', 37-10);
                     step++;
                     break;
                 case 9:
@@ -151,10 +151,10 @@ public class AutoShortRedSpindex extends LinearOpMode {
                     rows++;
                     break;
                 case 13:
-                    chassis.move(0.8, 'r', 12);  // Flipped from blue ('l' -> 'r')
-                    telemetry.addData("Runtime", runtime.seconds());
-                    telemetry.addData("Seconds Left", 30.0-runtime.seconds());
-                    telemetry.update();
+                    chassis.move(0.8, 'r', 15);  // Flipped from blue ('l' -> 'r')
+                    step++;
+                    break;
+                case 14:
                     requestOpModeStop();
             }
             moveSpindex(spindex.isOuttakeing());

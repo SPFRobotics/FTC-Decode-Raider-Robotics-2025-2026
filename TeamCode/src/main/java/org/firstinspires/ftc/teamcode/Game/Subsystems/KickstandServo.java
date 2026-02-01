@@ -12,10 +12,10 @@ public class KickstandServo {
     @Config
     public static class KickstandServoConfig{
         public static double power = 1;
-        public static int up = 20;
+        public static int up = 350;
         public static int down = 0;
-        public static double threshold = 15;
-        public static double tolorance = 2;
+        public static double threshold = 62;
+        public static double tolorance = 5;
         public static boolean reverseDir = true;
     }
     /*########################################*/
@@ -66,15 +66,8 @@ public class KickstandServo {
     }
 
     public void updatePos(int target){
-         if ((int)(getPosition() - prevPos) >= 2){
-             relPos++;
-         }
-         else if ((int)(getPosition() - prevPos) <= -2){
-             relPos--;
-         }
-
-         int error = (int)target - (int)relPos;
-         int sign = (int)Math.signum(error);
+         double error = target - getPosition();
+         double sign = Math.signum(error);
          double kp = 1/threshold;
 
          if (Math.abs(error) > threshold){
@@ -86,9 +79,6 @@ public class KickstandServo {
          else {
              kickstand.setPower(0);
          }
-
-         prevPos = (int)getPosition();
-
     }
 
 
