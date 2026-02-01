@@ -12,9 +12,10 @@ public class KickstandServo {
     @Config
     public static class KickstandServoConfig{
         public static double power = 1;
-        public static double up = 0;
-        public static double down = 0;
-        public static double threshold = 3;
+        public static int up = 20;
+        public static int down = 0;
+        public static double threshold = 15;
+        public static double tolorance = 2;
         public static boolean reverseDir = true;
     }
     /*########################################*/
@@ -22,8 +23,8 @@ public class KickstandServo {
     /*##############CLASS VARIABLES##############*/
     CRServo kickstand = null;
     AnalogInput kickstandPos = null;
-    double currentPos = 0;
-    double difference = 0;
+    int relPos = 0;
+    int prevPos = 0;
     /*###########################################*/
 
     public KickstandServo(HardwareMap hardwareMap){
@@ -33,8 +34,6 @@ public class KickstandServo {
         if (reverseDir){
             kickstand.setDirection(DcMotorSimple.Direction.REVERSE);
         }
-
-        currentPos = getPosition();
     }
 
     /*#####################Methods#####################*/
@@ -51,33 +50,34 @@ public class KickstandServo {
         return kickstandPos.getVoltage();
     }
 
-    public double getDifference(){
-        return difference;
+    public int getRelPos(){
+        return (int)relPos;
     }
 
-    //Up as in being in the "idle" position
-    public void up(){
-        currentPos = getPosition();
-        difference = Math.abs(up-currentPos);
+    public void updatePos(int target){
+         if ((int)(getPosition() - prevPos) >= 2){
+             relPos++;
+         }
+         else if ((int)(getPosition() - prevPos) <= -2){
+             relPos--;
+         }
 
-        if (difference > threshold){
-            setPower(power);
-        }
-        else{
-            setPower(0);
-        }
-    }
+         int error = (int)target - (int)relPos;
+         int sign = (int)Math.signum(error);
+         double kp = 1/threshold;
 
-    public void down(){
-        currentPos = getPosition();
-        difference = Math.abs(down-currentPos);
+         if (Math.abs(error) > threshold){
+             kickstand.setPower(sign);
+         }
+         else if (Math.abs(error) > tolorance){
+             kickstand.setPower(error * kp);
+         }
+         else {
+             kickstand.setPower(0);
+         }
 
-        if (difference > threshold){
-            setPower(-power);
-        }
-        else{
-            setPower(0);
-        }
+         prevPos = (int)getPosition();
+
     }
     /*#################################################*/
 }

@@ -9,6 +9,7 @@ public class LedLights {
     ElapsedTime colorTimer = new ElapsedTime();
     double currentColor = 0;
     double precision = 0.001;
+    boolean disabled = false;
 
     Servo leftLed = null;
     Servo rightLed = null;
@@ -56,7 +57,7 @@ public class LedLights {
     //A cycle is defined as returning to 0
     public void blink(double pwm, double hz){
         if (hz < 2.0){
-            throw new RuntimeException("LEDs may not blink faster than 2hz as advised by the game manual");
+            throw new RuntimeException("LEDs may not flash at a rate smaller than 2hz as advised by the game manual");
         }
 
         if (colorTimer.seconds() >= hz) {
@@ -71,6 +72,31 @@ public class LedLights {
 
 
     public void setColor(double pwm){
-        setLeds(pwm);
+        if (colorTimer.seconds() >= 2.0){
+            colorTimer.reset();
+            setLeds(pwm);
+        }
+    }
+
+    public void setColor(double pwm, boolean wait){
+        if (colorTimer.seconds() >= 2.0 && wait){
+            colorTimer.reset();
+            setLeds(pwm);
+        }
+        else{
+            setLeds(pwm);
+        }
+    }
+
+    public void disableLeds(){
+        disabled = true;
+    }
+
+    public void enableLeds(){
+        disabled = false;
+    }
+
+    public boolean getLedsState(){
+        return disabled;
     }
 }

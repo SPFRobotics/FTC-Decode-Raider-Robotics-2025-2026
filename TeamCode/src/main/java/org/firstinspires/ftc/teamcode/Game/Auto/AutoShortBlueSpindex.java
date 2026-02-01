@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 public class AutoShortBlueSpindex extends LinearOpMode {
     Spindex spindex = null;
     ElapsedTime timer = new ElapsedTime();
+    ElapsedTime runtime = new ElapsedTime();
     MecanumChassis chassis = null;
     public void moveSpindex(boolean outtaking){
         if (outtaking) {
@@ -44,6 +45,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
         FtcDashboard dash = FtcDashboard.getInstance();
         Telemetry telemetry = dash.getTelemetry();
         waitForStart();
+        runtime.reset();
 
         outtake.setRPM(Outtake.OuttakeConfig.closeRPM);
         int step = 0;
@@ -53,7 +55,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
 
         //Move back 48 inches
         intake.setPower(1);
-        chassis.moveWLoop(0.8, 'b', 52);
+        chassis.moveWLoop(0.8, 'b', 48);
         spindex.setMode(true);
 
         //Move spindex to outtake position
@@ -108,6 +110,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     break;
                 case 5:
                     chassis.rotate(45, 0.8);
+                    spindex.setMode(false);
                     step++;
                     break;
                 case 6:
@@ -121,7 +124,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     }
                     break;
                 case 8:
-                    chassis.moveWLoop(0.3, 'f', 40-17);
+                    chassis.moveWLoop(0.08, 'f', 37-17);
                     step++;
                     break;
                 case 9:
@@ -133,7 +136,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     }
                     break;
                 case 10:
-                    chassis.moveWLoop(0.8, 'b', 34);
+                    chassis.moveWLoop(0.8, 'b', 35);
                     step++;
                     break;
                 case 11:
@@ -149,6 +152,9 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     break;
                 case 13:
                     chassis.move(0.8, 'l', 12);
+                    telemetry.addData("Runtime", runtime.seconds());
+                    telemetry.addData("Seconds Left", 30.0-runtime.seconds());
+                    telemetry.update();
                     requestOpModeStop();
             }
             moveSpindex(spindex.isOuttakeing());
