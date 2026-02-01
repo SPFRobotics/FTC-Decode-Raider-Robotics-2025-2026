@@ -84,7 +84,6 @@ public class TeleOpMain extends LinearOpMode {
         }
         waitForStart();
         leds.setColor(leds.RED, false);
-        telemetry.setMsTransmissionInterval(16);
         if (opModeIsActive()){
             updateSpindex.start();
         }
@@ -196,16 +195,22 @@ public class TeleOpMain extends LinearOpMode {
                 kickstand.setPower(0);
             }
 
-            if (displayDash){
-                telemetry = dash.getTelemetry();
-                displayDash = false;
-            }
-            else{
-                telemetry = driverHub;
-                displayDash = true;
+            kickstand.updatePos(KickstandServo.KickstandServoConfig.up);
+            if (kickstand.getRelPos() > KickstandServo.KickstandServoConfig.up){
+                requestOpModeStop();
             }
 
-            for (int i = 0; i < 2; i++){
+            //Telemetry
+            for (int i = 0; i < 2; i++) {
+                if (displayDash) {
+                    telemetry = dash.getTelemetry();
+                    displayDash = false;
+                } else {
+                    telemetry = driverHub;
+                    displayDash = true;
+                }
+                telemetry.setMsTransmissionInterval(16);
+
                 telemetry.addLine("==========================================");
                 telemetry.addData("Loop Time", loopTime.milliseconds());
                 telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
@@ -218,8 +223,8 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Automated Loading", spindex.isAutoLoading());
                 telemetry.addData("Outtaking?", spindex.isOuttakeing());
                 telemetry.addData("Kickstand Pos", kickstand.getPosition());
+                telemetry.addData("Kickstand Rel", kickstand.getRelPos());
                 telemetry.addData("Kickstand Voltage", kickstand.getVoltage());
-                telemetry.addData("Rel Pos", kickstand.updatePos());
                 telemetry.addLine("------------------------------------------");
                 telemetry.addData("Distance", colorSensor.getDistance());
                 telemetry.addData("Right Pod", backRightDrive.getCurrentPosition());

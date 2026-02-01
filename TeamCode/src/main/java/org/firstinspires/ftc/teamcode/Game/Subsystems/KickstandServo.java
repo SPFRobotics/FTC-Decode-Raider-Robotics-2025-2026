@@ -12,8 +12,10 @@ public class KickstandServo {
     @Config
     public static class KickstandServoConfig{
         public static double power = 1;
-        public static double up = 0;
-        public static double down = 0;
+        public static int up = 20;
+        public static int down = 0;
+        public static double threshold = 15;
+        public static double tolorance = 2;
         public static boolean reverseDir = true;
     }
     /*########################################*/
@@ -21,8 +23,8 @@ public class KickstandServo {
     /*##############CLASS VARIABLES##############*/
     CRServo kickstand = null;
     AnalogInput kickstandPos = null;
-    double relPos = 0;
-    double prevPos = 0;
+    int relPos = 0;
+    int prevPos = 0;
     /*###########################################*/
 
     public KickstandServo(HardwareMap hardwareMap){
@@ -48,17 +50,34 @@ public class KickstandServo {
         return kickstandPos.getVoltage();
     }
 
-    public double updatePos(){
-         if ((int)getPosition() > (int)prevPos){
-             relPos++;
-         }
-         else if ((int)getPosition() < (int)prevPos){
-             relPos--;
-         }
-         prevPos = getPosition();
-         return relPos;
+    public int getRelPos(){
+        return (int)relPos;
     }
 
+    public void updatePos(int target){
+         if ((int)(getPosition() - prevPos) >= 2){
+             relPos++;
+         }
+         else if ((int)(getPosition() - prevPos) <= -2){
+             relPos--;
+         }
 
+         int error = (int)target - (int)relPos;
+         int sign = (int)Math.signum(error);
+         double kp = 1/threshold;
+
+         if (Math.abs(error) > threshold){
+             kickstand.setPower(sign);
+         }
+         else if (Math.abs(error) > tolorance){
+             kickstand.setPower(error * kp);
+         }
+         else {
+             kickstand.setPower(0);
+         }
+
+         prevPos = (int)getPosition();
+
+    }
     /*#################################################*/
 }
