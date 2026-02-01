@@ -31,6 +31,7 @@ public class Turret {
 
         rotation = hardwareMap.get(CRServo.class, "turretServo");
         hood = hardwareMap.get(Servo.class,"hoodServo");
+        rotateEnconder = hardwareMap.get(AnalogInput.class, "turretEncoder");
         limelight = new Limelight(hardwareMap);
         outtake = new Outtake(hardwareMap);
         limelight.start();
@@ -53,9 +54,17 @@ public class Turret {
 
         // If we do not have a valid vision result, slowly scan to find the tag.
         if (result == null || !result.isValid()) {
-            rotation.setPower(searchP);
-            return;
+
+            if (getPos() < 180 && getPos() > 0) {
+                rotation.setPower(searchP);
+            }else {
+                rotation.setPower(-searchP);
+            }
+
         }
+
+
+
 
         // Only react when the correct alliance tag is in view.
         int seenTag = limelight.getShootingAprilTagId();
@@ -87,7 +96,9 @@ public class Turret {
 
     }
 
-
+    public double getPos(){
+        return (rotateEnconder.getVoltage()/3.3)*360.0;
+    }
     public void moveToPos(int target){
 
         double currentPos = (rotateEnconder.getVoltage())/3.3*360;
