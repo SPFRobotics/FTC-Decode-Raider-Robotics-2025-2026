@@ -195,8 +195,8 @@ public class TeleOpMain extends LinearOpMode {
                 kickstand.setPower(0);
             }
 
-            kickstand.updatePos(KickstandServo.KickstandServoConfig.up);
-            if (kickstand.getRelPos() > KickstandServo.KickstandServoConfig.up){
+            kickstand.updatePosFiltered(KickstandServo.KickstandServoConfig.up);
+            if (kickstand.getAccumulatedPosition() > KickstandServo.KickstandServoConfig.up){
                 requestOpModeStop();
             }
 
@@ -223,7 +223,7 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Automated Loading", spindex.isAutoLoading());
                 telemetry.addData("Outtaking?", spindex.isOuttakeing());
                 telemetry.addData("Kickstand Pos", kickstand.getPosition());
-                telemetry.addData("Kickstand Rel", kickstand.getRelPos());
+                telemetry.addData("Kickstand Accumulated", kickstand.getAccumulatedPosition());
                 telemetry.addData("Kickstand Voltage", kickstand.getVoltage());
                 telemetry.addLine("------------------------------------------");
                 telemetry.addData("Distance", colorSensor.getDistance());
