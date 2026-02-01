@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Auto;
+package org.firstinspires.ftc.teamcode.Game.Auto.Spindex;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Far Blue")
-public class AutoFarBlueSpindex extends LinearOpMode {
+@Autonomous(name="Auto Far Red")
+public class AutoRedFarSpindex extends LinearOpMode {
     Spindex spindex = null;
     ElapsedTime timer = new ElapsedTime();
     MecanumChassis chassis = null;
@@ -52,8 +52,8 @@ public class AutoFarBlueSpindex extends LinearOpMode {
         int rows = 0;
         chassis.run_using_encoders_all();
 
-        // Initial rotate 20 degrees
-        chassis.rotate(20, 0.5);
+        // Initial rotate -20 degrees (flipped from blue)
+        chassis.rotate(-20, 0.5);
         spindex.setMode(true);
         timer.reset();
 
@@ -101,8 +101,8 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                     }
                     break;
 
-                case 5: // Rotate back -20
-                    chassis.rotate(-20, 0.8);
+                case 5: // Rotate back +20 (flipped from blue)
+                    chassis.rotate(20, 0.8);
                     step++;
                     break;
                 case 6: // Drive forward 20 inches
@@ -115,8 +115,8 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                         step++;
                     }
                     break;
-                case 8: // Rotate 90 degrees
-                    chassis.rotate(90, 0.8);
+                case 8: // Rotate -90 degrees (flipped from blue)
+                    chassis.rotate(-90, 0.8);
                     step++;
                     break;
 
@@ -148,8 +148,8 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                         step++;
                     }
                     break;
-                case 13: // Rotate back -90
-                    chassis.rotate(-90, 0.8);
+                case 13: // Rotate back +90 (flipped from blue)
+                    chassis.rotate(90, 0.8);
                     step++;
                     break;
                 case 14: // Drive back 20 inches
@@ -162,8 +162,8 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                         step++;
                     }
                     break;
-                case 16: // Rotate 20 degrees for shooting
-                    chassis.rotate(23, 0.8);
+                case 16: // Rotate -23 degrees for shooting (flipped from blue)
+                    chassis.rotate(-23, 0.8);
                     cycles = 0;
                     rows++;
                     step++;
