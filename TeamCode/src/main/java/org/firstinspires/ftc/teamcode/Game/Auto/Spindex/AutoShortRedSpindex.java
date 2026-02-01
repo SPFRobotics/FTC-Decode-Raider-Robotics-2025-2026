@@ -91,7 +91,7 @@ public class AutoShortRedSpindex extends LinearOpMode {
                     break;
                 case 3:
                     if (rows == 1 && cycles == 3){
-                        step = 13;
+                        step = 14;
                         break;
                     }
                     if (cycles == 3){
@@ -145,16 +145,22 @@ public class AutoShortRedSpindex extends LinearOpMode {
                     }
                     break;
                 case 12:
-                    chassis.rotate(45, 0.8);  // Flipped from blue (-45 -> +45)
-                    step = 0;
-                    cycles = 0;
-                    rows++;
+                    chassis.rotate(45, 0.8);
+                    step++;
+                    timer.reset();
                     break;
                 case 13:
+                    if (timer.seconds() >= 1){
+                        step = 0;
+                        cycles = 0;
+                        rows++;
+                        break;
+                    }
+                case 14:
                     chassis.move(0.8, 'r', 15);  // Flipped from blue ('l' -> 'r')
                     step++;
                     break;
-                case 14:
+                case 15:
                     requestOpModeStop();
             }
             moveSpindex(spindex.isOuttakeing());
