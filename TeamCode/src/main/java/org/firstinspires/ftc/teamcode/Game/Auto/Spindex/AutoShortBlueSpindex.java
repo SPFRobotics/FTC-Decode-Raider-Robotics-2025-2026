@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game.Auto.Spindex;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -47,6 +48,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        intake.setPower(1);
         outtake.setRPM(Outtake.OuttakeConfig.closeRPM);
         int step = 0;
         int cycles = 0;
@@ -54,7 +56,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
         chassis.run_using_encoders_all();
 
         //Move back 48 inches
-        intake.setPower(1);
+        //intake.setPower(1);
         chassis.moveWLoop(0.8, 'b', 48);
         spindex.setMode(true);
 
@@ -75,7 +77,8 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     break;
                 case 1:
                     kicker.up();
-                    if (timer.seconds() >= 0.3) {
+                    if (timer.seconds() >= 0.3
+                    ) {
                         cycles++;
                         step++;
                         timer.reset();
@@ -114,7 +117,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     step++;
                     break;
                 case 6:
-                    chassis.moveWLoop(0.8, 'f', 17);
+                    chassis.moveWLoop(0.8, 'f', 10);
                     step++;
                     break;
                 case 7:
@@ -124,7 +127,7 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     }
                     break;
                 case 8:
-                    chassis.moveWLoop(0.08, 'f', 37-17);
+                    chassis.moveWLoop(0.08, 'f', 37-10);
                     step++;
                     break;
                 case 9:
@@ -151,10 +154,10 @@ public class AutoShortBlueSpindex extends LinearOpMode {
                     rows++;
                     break;
                 case 13:
-                    chassis.move(0.8, 'l', 12);
-                    telemetry.addData("Runtime", runtime.seconds());
-                    telemetry.addData("Seconds Left", 30.0-runtime.seconds());
-                    telemetry.update();
+                    chassis.move(0.8, 'l', 15);
+                    step++;
+                    break;
+                case 14:
                     requestOpModeStop();
             }
             moveSpindex(spindex.isOuttakeing());

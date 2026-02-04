@@ -31,6 +31,7 @@ public class TeleOpMain extends LinearOpMode {
     private Button spindexModeToggle = new Button();
     private Button spindexRightBumper = new Button();
     private Button spindexLeftBumper = new Button();
+    private Button kickstandButton = new Button();
 
     private Button intakeButton = new Button();
     private Button autoLoad = new Button();
@@ -185,23 +186,15 @@ public class TeleOpMain extends LinearOpMode {
             }
             outtake.setRPM(setRPM);
 
-            if (gamepad1.share){
-                kickstand.setPower(0.1);
-            }
-            else if (gamepad1.options){
-                kickstand.setPower(-0.1);
+            if (kickstandButton.toggle(gamepad1.share)){
+                kickstand.updatePos(KickstandServo.KickstandServoConfig.up);
             }
             else{
                 kickstand.setPower(0);
             }
 
-            kickstand.updatePosFiltered(KickstandServo.KickstandServoConfig.up);
-            if (kickstand.getAccumulatedPosition() > KickstandServo.KickstandServoConfig.up){
-                requestOpModeStop();
-            }
-
             //Telemetry
-            for (int i = 0; i < 2; i++) {
+            /*for (int i = 0; i < 2; i++) {
                 if (displayDash) {
                     telemetry = dash.getTelemetry();
                     displayDash = false;
@@ -223,7 +216,6 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Automated Loading", spindex.isAutoLoading());
                 telemetry.addData("Outtaking?", spindex.isOuttakeing());
                 telemetry.addData("Kickstand Pos", kickstand.getPosition());
-                telemetry.addData("Kickstand Accumulated", kickstand.getAccumulatedPosition());
                 telemetry.addData("Kickstand Voltage", kickstand.getVoltage());
                 telemetry.addLine("------------------------------------------");
                 telemetry.addData("Distance", colorSensor.getDistance());
@@ -232,7 +224,7 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
                 telemetry.addLine("==========================================");
                 telemetry.update();
-            }
+            }*/
         }
         //Tells spindex thread to end execution
         spindex.exitProgram();
