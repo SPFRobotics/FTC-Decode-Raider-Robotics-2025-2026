@@ -1,16 +1,13 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths.TestPaths;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.util.Timer;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Game.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 //@Autonomous(name="Pathing Test")

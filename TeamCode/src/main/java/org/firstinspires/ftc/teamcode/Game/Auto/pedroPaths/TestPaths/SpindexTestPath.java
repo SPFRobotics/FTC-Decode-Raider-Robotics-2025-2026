@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths.TestPaths;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
