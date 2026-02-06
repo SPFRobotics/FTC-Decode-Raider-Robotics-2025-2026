@@ -18,6 +18,8 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.ma
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.tolorence;
 import static java.lang.Thread.sleep;
 
+import android.sax.StartElementListener;
+
 public class Spindex {
     //Servo encoder
     private static AnalogInput spindexPos = null;
@@ -31,11 +33,13 @@ public class Spindex {
     private double threadLoopTime = 0;
     private double currentPos = 0;
     private double error = 0;
+    private double offset = 0;
     private boolean outtakeMode = false;
     private boolean autoLoadMode = false;
     private boolean autoLaunchMode = false;
     private boolean terminate = false;
     private boolean atTarget = false;
+    private int temp = 0;
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
@@ -58,19 +62,20 @@ public class Spindex {
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
     public Spindex(HardwareMap hardwareMap){
         spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
-        //spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
         index = 0;
+        offset = spindexPos.getVoltage()/3.3*360.0;
     }
 
 
     //Moves the servo or motor to the target position by finding the shortest path
     public void moveToPos(double target, boolean absEncoder) {
         if (!absEncoder){
-            currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/537.7*360);
+            currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/360.0*537.7);
 
             error = AngleUnit.normalizeDegrees(target - currentPos);
 
@@ -116,6 +121,10 @@ public class Spindex {
                 setTargetStatus(true);
             }
         }
+    }
+
+    public void initializeAbsPlusMotorEnc() {
+
     }
 
     //Overloaded
@@ -171,8 +180,14 @@ public class Spindex {
             }
         }
         else if (mode == 3){
-            double absEncoderPos =  spindexPos.getVoltage()*3.3/360.0;
-            currentPos = spindexMotor.getCurrentPosition() - absEncoderPos;
+            if (!spindexMotor.isBusy()){
+                spindexMotor.setTargetPosition((int)((target/360.0*537.7) + (offset/360*537.7)));
+                spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                spindexMotor.setPower(1);
+            }
+        }
+        else{
+            throw new RuntimeException("The number you have chosen is not an option!");
         }
     }
 
@@ -288,6 +303,10 @@ public class Spindex {
         return currentPos;
     }
 
+    public int getRelPos(){
+        return spindexMotor.getCurrentPosition();
+    }
+
     public void storeThreadLoopTime(double milliseconds){
         threadLoopTime = milliseconds;
     }
@@ -334,5 +353,9 @@ public class Spindex {
 
     public boolean atTarget(){
         return atTarget;
+    }
+
+    public int getTemp(){
+        return (int)((0/360.0*537.7) + offset);
     }
 }

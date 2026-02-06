@@ -14,10 +14,10 @@ public class UpdateSpindex extends Thread{
         while (!spindex.getProgramState()){
             loopTime.reset();
             if (spindex.isOuttakeing()){
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
+                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
             }
             else{
-                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
+                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
             }
             spindex.storeThreadLoopTime(loopTime.milliseconds());
         }

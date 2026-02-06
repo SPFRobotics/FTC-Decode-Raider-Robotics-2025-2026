@@ -1,4 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
+import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.closeRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -83,9 +86,9 @@ public class TeleOpMain extends LinearOpMode {
         }
         waitForStart();
         leds.setColor(leds.RED, false);
-        if (opModeIsActive()){
+        /*if (opModeIsActive()){
             updateSpindex.start();
-        }
+        }*/
 
         ElapsedTime loopTime = new ElapsedTime();
         while (opModeIsActive()) {
@@ -151,12 +154,12 @@ public class TeleOpMain extends LinearOpMode {
             spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.triangle) && !spindex.isOuttakeing());
             spindex.autoLoad(colorSensor);
 
-            /*if (spindex.getMode()){
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
+            if (spindex.isOuttakeing()){
+                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
             }
             else{
-                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
-            }*/
+                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
+            }
 
             //Controls gamepad rumble
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
@@ -192,7 +195,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             //Telemetry
-            /*for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 2; i++) {
                 if (displayDash) {
                     telemetry = dash.getTelemetry();
                     displayDash = false;
@@ -220,11 +223,13 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Right Pod", backRightDrive.getCurrentPosition());
                 telemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
                 telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
+                telemetry.addData("Spindex RelPos", spindex.getRelPos());
+                telemetry.addData("Spindex Offset With Pos", spindex.getTemp());
                 telemetry.addLine("==========================================");
                 telemetry.update();
-            }*/
+            }
         }
         //Tells spindex thread to end execution
-        spindex.exitProgram();
+        //spindex.exitProgram();
     }
 }
