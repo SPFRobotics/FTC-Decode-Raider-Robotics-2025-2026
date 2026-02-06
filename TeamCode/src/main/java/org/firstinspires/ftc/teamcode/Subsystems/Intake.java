@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;

@@ -1,18 +1,13 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
-import static com.bylazar.panels.Panels.*;
-
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

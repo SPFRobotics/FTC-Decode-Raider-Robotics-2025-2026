@@ -1,19 +1,17 @@
 package org.firstinspires.ftc.teamcode.Testing;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFetch;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.KickstandServo;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.UpdateSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake.OuttakeConfig.*;
 
 @Disabled
 public class Test extends LinearOpMode {

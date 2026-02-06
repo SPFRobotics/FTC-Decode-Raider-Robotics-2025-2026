@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.Game.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.KickstandServo.KickstandServoConfig.*;
+import static org.firstinspires.ftc.teamcode.Subsystems.KickstandServo.KickstandServoConfig.*;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.CRServo;

@@ -8,15 +8,15 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
+import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.ColorFinder;
 
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.intakePos;
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.outtakePos;
+import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.intakePos;
+import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.outtakePos;
 @Disabled
 //@Autonomous(name = "Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.", group = "Autonomous")
 public class SpindexTestPath extends OpMode {
