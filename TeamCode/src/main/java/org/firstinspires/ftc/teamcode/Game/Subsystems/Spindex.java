@@ -54,7 +54,7 @@ public class Spindex {
 
         //Distance/Color sensor
         //Old value is 3.3
-        public static double ballDistanceThreshold = 4;
+        public static double ballDistanceThreshold = 3.3;
         public static double spindexPowerThreshold = 0.1;
         public static double launchTime = 900;
     }
@@ -119,6 +119,64 @@ public class Spindex {
                 spindexMotor.setPower(0);
                 setTargetStatus(true);
             }
+        }
+    }
+
+    //Overloaded
+    //1 = Motor Encoder
+    //2 = Abs Encoder
+    //3 = Abs Encoder + Motor Encoder
+    public void moveToPos(double target, int mode) {
+        if (mode == 1){
+            currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/537.7*360);
+
+            error = AngleUnit.normalizeDegrees(target - currentPos);
+
+            double sign = Math.signum(error);
+
+            double kp = maxPower/Threshold;
+
+            if(Math.abs(error) > Threshold){
+                spindexMotor.setPower(maxPower * sign);
+                setTargetStatus(false);
+            }
+            else if (Math.abs(error) > tolorence) {
+                spindexMotor.setPower(error * kp);
+                setTargetStatus(false);
+
+            }
+            else {
+                spindexMotor.setPower(0);
+                setTargetStatus(true);
+            }
+        }
+        else if (mode == 2){
+            currentPos = spindexPos.getVoltage()/3.3*360.0;
+
+            error = AngleUnit.normalizeDegrees(target - currentPos);
+
+            double sign = Math.signum(error);
+
+            double tolorence = 5;
+
+            double kp = maxPower/Threshold;
+
+            if (Math.abs(error) > Threshold){
+                spindexMotor.setPower(maxPower * sign);
+                setTargetStatus(false);
+            }
+            else if (Math.abs(error) > tolorence) {
+                spindexMotor.setPower(error * kp);
+                setTargetStatus(false);
+            }
+            else {
+                spindexMotor.setPower(0);
+                setTargetStatus(true);
+            }
+        }
+        else if (mode == 3){
+            double absEncoderPos =  spindexPos.getVoltage()*3.3/360.0;
+            currentPos = spindexMotor.getCurrentPosition() - absEncoderPos;
         }
     }
 
