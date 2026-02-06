@@ -14,39 +14,35 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Far Blue ")
+@Autonomous(name="Auto Blue F Spin")
 public class AutoFarBlueSpindex extends LinearOpMode {
 
-    Spindex spindex = null;
+    Spindex spindex;
+    MecanumChassis chassis;
     ElapsedTime timer = new ElapsedTime();
-    ElapsedTime spindexSettle = new ElapsedTime();
-    MecanumChassis chassis = null;
 
-    private void moveSpindex(boolean outtaking) {
-        if (outtaking) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
-        } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
-        }
-    }
-
-    private void spindexUpdateSafe() {
-        if (!chassis.motorsAreBusy()) {
-            moveSpindex(spindex.isOuttakeing());
-        } else {
+    private void updateSpindex() {
+        if (spindex.isOuttakeing() && chassis.motorsAreBusy()) {
             spindex.setPower(0);
+        } else {
+            if (spindex.isOuttakeing()) {
+                spindex.moveToPos(
+                        Spindex.SpindexValues.outtakePos[spindex.getIndex()], true
+                );
+            } else {
+                spindex.moveToPos(
+                        Spindex.SpindexValues.intakePos[spindex.getIndex()], true
+                );
+            }
         }
-    }
-
-    private boolean spindexReadyForShot() {
-        moveSpindex(spindex.isOuttakeing());
-        return spindex.atTarget();
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         chassis = new MecanumChassis(this);
         spindex = new Spindex(hardwareMap);
+
         Outtake outtake = new Outtake(hardwareMap, true);
         Intake intake = new Intake(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
@@ -54,6 +50,8 @@ public class AutoFarBlueSpindex extends LinearOpMode {
         ColorFetch colorSensor = new ColorFetch(hardwareMap);
 
         chassis.initializeMovement();
+        chassis.run_using_encoders_all();
+
         spindex.setAutoLoadMode(true);
 
         FtcDashboard dash = FtcDashboard.getInstance();
@@ -68,36 +66,27 @@ public class AutoFarBlueSpindex extends LinearOpMode {
         int cycles = 0;
         int rows = 0;
 
-        chassis.run_using_encoders_all();
-
         chassis.rotate(20, 0.2);
         spindex.setMode(true);
-        spindexSettle.reset();
+        timer.reset();
 
         while (opModeIsActive()) {
 
-            telemetry.addData("Color Sensor Distance", colorSensor.getDistance());
-            telemetry.addData("list", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
-            telemetry.addData("Step", step);
-            telemetry.addData("Cycles", cycles);
-            telemetry.addData("Rows", rows);
-            telemetry.addData("SpindexErr", spindex.getError());
-            telemetry.addData("SpindexPwr", spindex.getPower());
-            telemetry.addData("AtTarget", spindex.atTarget());
-            telemetry.update();
-
+            updateSpindex();
             led.cycleColors(10);
 
-            if (spindexSettle.seconds() < 0.35) {
-                moveSpindex(spindex.isOuttakeing());
-            } else {
-                spindexUpdateSafe();
-            }
+            telemetry.addData("Step", step);
+            telemetry.addData("Index", spindex.getIndex());
+            telemetry.addData("OuttakeMode", spindex.isOuttakeing());
+            telemetry.addData("AtTarget", spindex.atTarget());
+            telemetry.addData("AbsDeg", spindex.getPos());
+            telemetry.update();
 
             switch (step) {
 
                 case 0:
-                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM - 50 && spindexReadyForShot()) {
+                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM - 50
+                            && spindex.atTarget()) {
                         step++;
                         timer.reset();
                     }
@@ -105,9 +94,9 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
                 case 1:
                     kicker.up();
-                    if (timer.seconds() >= 0.30) {
-                        cycles++;
+                    if (timer.seconds() >= 0.3) {
                         spindex.clearBall(spindex.getIndex());
+                        cycles++;
                         step++;
                         timer.reset();
                     }
@@ -115,31 +104,29 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
                 case 2:
                     kicker.down();
-                    if (timer.seconds() >= 0.30) {
+                    if (timer.seconds() >= 0.3) {
                         step++;
                         timer.reset();
                     }
                     break;
 
                 case 3:
-                    if (cycles >= 3) {
+                    if (cycles == 3) {
                         step = 5;
                         break;
                     }
                     spindex.addIndex();
-                    spindexSettle.reset();
                     step = 0;
                     break;
 
                 case 5:
                     chassis.rotate(-20, 0.8);
+                    spindex.setMode(false);
                     step++;
                     break;
 
                 case 6:
                     chassis.moveWLoop(0.8, 'f', 20);
-                    spindex.setMode(false);
-                    spindexSettle.reset();
                     step++;
                     break;
 
@@ -158,7 +145,7 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                 case 9:
                     intake.setPower(1);
                     chassis.move(0.8, "forward", 12);
-                    chassis.moveWLoop(0.05, 'f', 34 - 12);
+                    chassis.moveWLoop(0.05, 'f', 22);
                     step++;
                     break;
 
@@ -167,7 +154,6 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                     if (!chassis.motorsAreBusy()) {
                         chassis.powerZero();
                         spindex.setMode(true);
-                        spindexSettle.reset();
                         step++;
                     }
                     break;
@@ -197,21 +183,21 @@ public class AutoFarBlueSpindex extends LinearOpMode {
                 case 15:
                     if (!chassis.motorsAreBusy()) {
                         chassis.powerZero();
+                        cycles = 0;
+                        rows++;
                         step++;
                     }
                     break;
 
                 case 16:
                     chassis.rotate(23, 0.8);
-                    cycles = 0;
-                    rows++;
-                    spindexSettle.reset();
-                    step++;
                     timer.reset();
+                    step++;
                     break;
 
                 case 17:
-                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM - 50 && spindexReadyForShot()) {
+                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM - 50
+                            && spindex.atTarget()) {
                         step++;
                         timer.reset();
                     }
@@ -219,9 +205,9 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
                 case 18:
                     kicker.up();
-                    if (timer.seconds() >= 0.30) {
-                        cycles++;
+                    if (timer.seconds() >= 0.3) {
                         spindex.clearBall(spindex.getIndex());
+                        cycles++;
                         step++;
                         timer.reset();
                     }
@@ -229,19 +215,18 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
                 case 19:
                     kicker.down();
-                    if (timer.seconds() >= 0.30) {
+                    if (timer.seconds() >= 0.3) {
                         step++;
                         timer.reset();
                     }
                     break;
 
                 case 20:
-                    if (cycles >= 3) {
+                    if (cycles == 3) {
                         step = 22;
                         break;
                     }
                     spindex.addIndex();
-                    spindexSettle.reset();
                     step = 17;
                     break;
 
