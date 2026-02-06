@@ -86,9 +86,9 @@ public class TeleOpMain extends LinearOpMode {
         }
         waitForStart();
         leds.setColor(leds.RED, false);
-        /*if (opModeIsActive()){
+        if (opModeIsActive()){
             updateSpindex.start();
-        }*/
+        }
 
         ElapsedTime loopTime = new ElapsedTime();
         while (opModeIsActive()) {
@@ -154,12 +154,12 @@ public class TeleOpMain extends LinearOpMode {
             spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.triangle) && !spindex.isOuttakeing());
             spindex.autoLoad(colorSensor);
 
-            if (spindex.isOuttakeing()){
+            /*if (spindex.isOuttakeing()){
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
             }
             else{
                 spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
-            }
+            }*/
 
             //Controls gamepad rumble
             if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
@@ -230,6 +230,6 @@ public class TeleOpMain extends LinearOpMode {
             }
         }
         //Tells spindex thread to end execution
-        //spindex.exitProgram();
+        spindex.exitProgram();
     }
 }
