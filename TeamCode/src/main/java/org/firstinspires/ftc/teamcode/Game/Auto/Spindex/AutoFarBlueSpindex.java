@@ -14,18 +14,33 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
-@Autonomous(name="Auto Far Blue")
+@Autonomous(name="Auto Far Blue ")
 public class AutoFarBlueSpindex extends LinearOpMode {
+
     Spindex spindex = null;
     ElapsedTime timer = new ElapsedTime();
+    ElapsedTime spindexSettle = new ElapsedTime();
     MecanumChassis chassis = null;
 
-    public void moveSpindex(boolean outtaking) {
+    private void moveSpindex(boolean outtaking) {
         if (outtaking) {
             spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
         } else {
             spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
         }
+    }
+
+    private void spindexUpdateSafe() {
+        if (!chassis.motorsAreBusy()) {
+            moveSpindex(spindex.isOuttakeing());
+        } else {
+            spindex.setPower(0);
+        }
+    }
+
+    private boolean spindexReadyForShot() {
+        moveSpindex(spindex.isOuttakeing());
+        return spindex.atTarget();
     }
 
     @Override
@@ -40,198 +55,214 @@ public class AutoFarBlueSpindex extends LinearOpMode {
 
         chassis.initializeMovement();
         spindex.setAutoLoadMode(true);
+
         FtcDashboard dash = FtcDashboard.getInstance();
         Telemetry telemetry = dash.getTelemetry();
 
         waitForStart();
 
-        outtake.setRPM(Outtake.OuttakeConfig.farRPM-50);
+        outtake.setRPM(Outtake.OuttakeConfig.farRPM - 50);
         intake.setPower(1);
+
         int step = 0;
         int cycles = 0;
         int rows = 0;
+
         chassis.run_using_encoders_all();
 
-        // Initial rotate 20 degrees
         chassis.rotate(20, 0.2);
         spindex.setMode(true);
-        timer.reset();
+        spindexSettle.reset();
 
         while (opModeIsActive()) {
+
             telemetry.addData("Color Sensor Distance", colorSensor.getDistance());
-            telemetry.addData("list", spindex.getSlotStatus()[0]+ " "+spindex.getSlotStatus()[1]+" "+ spindex.getSlotStatus()[2]);
+            telemetry.addData("list", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+            telemetry.addData("Step", step);
+            telemetry.addData("Cycles", cycles);
+            telemetry.addData("Rows", rows);
+            telemetry.addData("SpindexErr", spindex.getError());
+            telemetry.addData("SpindexPwr", spindex.getPower());
+            telemetry.addData("AtTarget", spindex.atTarget());
             telemetry.update();
 
+            led.cycleColors(10);
+
+            if (spindexSettle.seconds() < 0.35) {
+                moveSpindex(spindex.isOuttakeing());
+            } else {
+                spindexUpdateSafe();
+            }
+
             switch (step) {
-                case 0: // Wait for RPM
-                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM-50) {
+
+                case 0:
+                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM - 50 && spindexReadyForShot()) {
                         step++;
                         timer.reset();
                     }
                     break;
-                case 1: // Kicker up (shoot)
+
+                case 1:
                     kicker.up();
-                    if (timer.seconds() >= 0.3) {
+                    if (timer.seconds() >= 0.30) {
                         cycles++;
-                        step++;
-                        timer.reset();
                         spindex.clearBall(spindex.getIndex());
-                    }
-                    break;
-                case 2: // Kicker down
-                    kicker.down();
-                    if (timer.seconds() >= 0.3) {
                         step++;
                         timer.reset();
                     }
                     break;
-                case 3: // Check if done shooting first 3
-                    if (cycles == 3) {
-                        step = 5; // Move to intake sequence
+
+                case 2:
+                    kicker.down();
+                    if (timer.seconds() >= 0.30) {
+                        step++;
+                        timer.reset();
+                    }
+                    break;
+
+                case 3:
+                    if (cycles >= 3) {
+                        step = 5;
                         break;
                     }
                     spindex.addIndex();
-                    step++;
-                    timer.reset();
-                    break;
-                case 4: // Wait before next shot
-                    if (timer.seconds() >= 1) {
-                        step = 0;
-                        timer.reset();
-                    }
+                    spindexSettle.reset();
+                    step = 0;
                     break;
 
-                case 5: // Rotate back -20
+                case 5:
                     chassis.rotate(-20, 0.8);
                     step++;
                     break;
-                case 6: // Drive forward 20 inches
+
+                case 6:
                     chassis.moveWLoop(0.8, 'f', 20);
                     spindex.setMode(false);
+                    spindexSettle.reset();
                     step++;
                     break;
-                case 7: // Wait for forward move complete
+
+                case 7:
                     if (!chassis.motorsAreBusy()) {
                         chassis.powerZero();
                         step++;
                     }
                     break;
-                case 8: // Rotate 90 degrees
+
+                case 8:
                     chassis.rotate(90, 0.8);
                     step++;
                     break;
 
-
-                case 9: // Start intake and move forward 37 inches
+                case 9:
                     intake.setPower(1);
-                    chassis.move(0.8,"forward",12);
-                    chassis.moveWLoop(0.05, 'f', 34-12);
+                    chassis.move(0.8, "forward", 12);
+                    chassis.moveWLoop(0.05, 'f', 34 - 12);
                     step++;
                     break;
-                case 10: // Intake while moving (autoLoad)
+
+                case 10:
                     spindex.autoLoad(colorSensor);
                     if (!chassis.motorsAreBusy()) {
                         chassis.powerZero();
                         spindex.setMode(true);
+                        spindexSettle.reset();
                         step++;
                     }
                     break;
 
-
-                case 11: // Drive back 37 inches
+                case 11:
                     chassis.moveWLoop(0.8, 'b', 30);
                     step++;
                     break;
-                case 12: // Wait for back move complete
+
+                case 12:
                     if (!chassis.motorsAreBusy()) {
                         chassis.powerZero();
                         step++;
                     }
                     break;
-                case 13: // Rotate back -90
+
+                case 13:
                     chassis.rotate(-90, 0.8);
                     step++;
                     break;
-                case 14: // Drive back 20 inches
+
+                case 14:
                     chassis.moveWLoop(0.8, 'b', 20);
                     step++;
                     break;
-                case 15: // Wait for back move complete
+
+                case 15:
                     if (!chassis.motorsAreBusy()) {
                         chassis.powerZero();
                         step++;
                     }
                     break;
-                case 16: // Rotate 20 degrees for shooting
+
+                case 16:
                     chassis.rotate(23, 0.8);
                     cycles = 0;
                     rows++;
+                    spindexSettle.reset();
                     step++;
                     timer.reset();
                     break;
 
+                case 17:
+                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM - 50 && spindexReadyForShot()) {
+                        step++;
+                        timer.reset();
+                    }
+                    break;
 
-                case 17: // Wait for RPM
-                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM-50) {
-                        step++;
-                        timer.reset();
-                    }
-                    break;
-                case 18: // Kicker up (shoot)
+                case 18:
                     kicker.up();
-                    if (timer.seconds() >= 0.3) {
+                    if (timer.seconds() >= 0.30) {
                         cycles++;
-                        step++;
-                        timer.reset();
                         spindex.clearBall(spindex.getIndex());
-                    }
-                    break;
-                case 19: // Kicker down
-                    kicker.down();
-                    if (timer.seconds() >= 0.3) {
                         step++;
                         timer.reset();
                     }
                     break;
-                case 20: // Check if done shooting second 3
-                    if (cycles == 3) {
-                        step = 22; // Done
+
+                case 19:
+                    kicker.down();
+                    if (timer.seconds() >= 0.30) {
+                        step++;
+                        timer.reset();
+                    }
+                    break;
+
+                case 20:
+                    if (cycles >= 3) {
+                        step = 22;
                         break;
                     }
                     spindex.addIndex();
-                    step++;
-                    timer.reset();
-                    break;
-                case 21: // Wait before next shot
-                    if (timer.seconds() >= 1) {
-                        step = 17;
-                        timer.reset();
-                    }
+                    spindexSettle.reset();
+                    step = 17;
                     break;
 
-                case 22: // Drive forward 12 inches for leave points
+                case 22:
                     chassis.moveWLoop(0.8, 'f', 12);
                     step++;
                     break;
-                case 23: // Wait for move complete
+
+                case 23:
                     if (!chassis.motorsAreBusy()) {
                         chassis.powerZero();
                         step++;
                     }
                     break;
-                case 24: // End
+
+                case 24:
                     outtake.setRPM(0);
                     intake.setPower(0);
                     requestOpModeStop();
                     break;
             }
-            moveSpindex(spindex.isOuttakeing());
-            led.cycleColors(10);
-
-            telemetry.addData("Step", step);
-            telemetry.addData("Cycles", cycles);
-            telemetry.addData("Rows", rows);
-            telemetry.update();
         }
     }
 }
