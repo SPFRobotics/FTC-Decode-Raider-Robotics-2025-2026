@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.Game.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.KickerSpindex.KickerConfig.*;
+import static org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex.KickerConfig.*;
 
 
 public class KickerSpindex {

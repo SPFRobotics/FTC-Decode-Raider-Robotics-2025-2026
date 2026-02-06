@@ -1,25 +1,21 @@
-package org.firstinspires.ftc.teamcode.Game.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.Resources.Unit;
 //import org.firstinspires.ftc.teamcode.Testing.Test;
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues;
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.Threshold;
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.launchTime;
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.maxPower;
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex.SpindexValues.tolorence;
+import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.Threshold;
+import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.launchTime;
+import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.maxPower;
+import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.tolorence;
 import static java.lang.Thread.sleep;
 
 public class Spindex {

@@ -1,19 +1,17 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths.TestPaths;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-//@Autonomous(name = "TestPath", group = "Autonomous")
+@Autonomous(name = "TestPath", group = "Autonomous")
 
-@Disabled
 public class TestPath extends OpMode {
 
     private static final double SHOOT_RPM = 3200;
@@ -28,7 +26,7 @@ public class TestPath extends OpMode {
 
     @Override
     public void init() {
-        outtake = new Outtake(hardwareMap);
+        outtake = new Outtake(hardwareMap, true);
         follower = Constants.createFollower(hardwareMap);
 
         // Start at origin for this simple test
@@ -59,18 +57,12 @@ public class TestPath extends OpMode {
         if (!follower.isBusy()) {
             switch (state) {
                 case RUN_PATH:
-                    outtake.resetKickerCycle();
                     outtake.setRPM(SHOOT_RPM);
                     state = SHOOT;
                     break;
                 case SHOOT:
-                    outtake.enableKickerCycle(true, SHOOT_RPM);
-                    if (outtake.getKickerCycleCount() >= 3) {
-                        outtake.setRPM(0);
-                        outtake.resetKickerCycle();
-                        requestOpModeStop();
-                        state = DONE;
-                    }
+
+
                     break;
                 default:
                     break;

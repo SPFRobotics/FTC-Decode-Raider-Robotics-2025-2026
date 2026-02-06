@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.Game.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import static org.firstinspires.ftc.teamcode.Game.Subsystems.KickerGrav.KickerConfig.*;
+import static org.firstinspires.ftc.teamcode.Subsystems.KickerGrav.KickerConfig.*;
 
 
 public final class KickerGrav {
