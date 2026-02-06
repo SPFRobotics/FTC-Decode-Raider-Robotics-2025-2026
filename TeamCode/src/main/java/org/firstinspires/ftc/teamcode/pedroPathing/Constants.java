@@ -19,11 +19,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-        .mass(11.39)
-            .forwardZeroPowerAcceleration(-25.290104309295202)
-            .lateralZeroPowerAcceleration(-47.20751581701416)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.05,0,0.022,0.0257))
-            .headingPIDFCoefficients(new PIDFCoefficients(0.4,0,0.001,0.043));
+        .mass(11.39);
+            //.forwardZeroPowerAcceleration(-25.290104309295202)
+            //.lateralZeroPowerAcceleration(-47.20751581701416)
+            //.translationalPIDFCoefficients(new PIDFCoefficients(0.05,0,0.022,0.0257))
+           //.headingPIDFCoefficients(new PIDFCoefficients(0.4,0,0.001,0.043));
 
 
 
@@ -37,18 +37,22 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(49.74989534858262)
-            .yVelocity(45.51668057321178);
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
+            //.xVelocity(49.74989534858262)
+            //.yVelocity(45.51668057321178);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(-5)
-            .strafePodX(-7.75)
+            .forwardPodY(1.875)
+            .strafePodX(-7.375)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
+
+
+
+            ;
     public static PathConstraints pathConstraints = new PathConstraints(
             0.99,
             100,
