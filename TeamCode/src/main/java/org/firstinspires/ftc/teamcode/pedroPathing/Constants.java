@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
@@ -19,13 +20,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-        .mass(11.39);
-            //.forwardZeroPowerAcceleration(-25.290104309295202)
-            //.lateralZeroPowerAcceleration(-47.20751581701416)
-            //.translationalPIDFCoefficients(new PIDFCoefficients(0.05,0,0.022,0.0257))
-           //.headingPIDFCoefficients(new PIDFCoefficients(0.4,0,0.001,0.043));
+        .mass(11.39)
+            .forwardZeroPowerAcceleration(-32.59434448240915)
+            .lateralZeroPowerAcceleration(-63.30691040197187)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.25,0,0.015,0.027))
+           .headingPIDFCoefficients(new PIDFCoefficients(3,0,0.125,0.023))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.3, 0,0.005,0.6,0.025))
+            .centripetalScaling(0.005)
 
+            ;
 
+;
 
 
     public static MecanumConstants driveConstants = new MecanumConstants()
@@ -37,9 +42,9 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
-            //.xVelocity(49.74989534858262)
-            //.yVelocity(45.51668057321178);
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .xVelocity(53.46518016424706)
+            .yVelocity(42.45819620447835);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(1.875)

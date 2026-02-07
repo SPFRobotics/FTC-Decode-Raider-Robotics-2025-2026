@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 public class BlueShortPath extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
-    private static final double INTAKE_SPEED = 0.3;
+    private static final double INTAKE_SPEED = 0.17;
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
