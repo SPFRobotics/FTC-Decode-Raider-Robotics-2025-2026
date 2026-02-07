@@ -6,6 +6,8 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -24,7 +26,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 public class BlueShortPath extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
-    private static final double INTAKE_SPEED = 0.3;
+    private static final double INTAKE_SPEED = 0.25;
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -36,6 +38,7 @@ public class BlueShortPath extends OpMode {
     private Intake intake;
     private KickerSpindex kicker;
     private ColorFetch colorSensor;
+    private LedLights leds = null;
 
     private int shotsFired = 0;
     private int ballsLoaded = 0;
@@ -55,6 +58,7 @@ public class BlueShortPath extends OpMode {
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);
+        leds = new LedLights(hardwareMap);
 
         spindex.setAutoLoadMode(true);
         outtake.setRPM(SHOOT_RPM);
@@ -75,15 +79,21 @@ public class BlueShortPath extends OpMode {
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
         follower.followPath(paths.shootBallOne, true);
-        //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
-        //updateSpindex.start();
+        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        updateSpindex.start();
+    }
+
+    public void stop(){
+        spindex.exitProgram();
     }
 
     @Override
     public void loop() {
         follower.update();
+        leds.cycleColors(10);
         autonomousPathUpdate();
-        updateSpindexPosition();
+        //updateSpindexPosition();
+
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -422,7 +432,6 @@ public class BlueShortPath extends OpMode {
                 outtake.setRPM(0);
                 intake.setPower(0);
                 kicker.down();
-                //spindex.exitProgram();
                 requestOpModeStop();
                 break;
 

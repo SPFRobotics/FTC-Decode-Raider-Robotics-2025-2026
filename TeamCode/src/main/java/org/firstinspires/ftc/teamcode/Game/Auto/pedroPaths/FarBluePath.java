@@ -6,6 +6,8 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -24,7 +26,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 public class FarBluePath extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.farRPM;
-    private static final double INTAKE_SPEED = 0.3;
+    private static final double INTAKE_SPEED = 0.25;
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -36,6 +38,7 @@ public class FarBluePath extends OpMode {
     private Intake intake;
     private KickerSpindex kicker;
     private ColorFetch colorSensor;
+    private LedLights leds = null;
 
     private int shotsFired = 0;
     private int ballsLoaded = 0;
@@ -55,11 +58,15 @@ public class FarBluePath extends OpMode {
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);
+        leds = new LedLights(hardwareMap);
 
         spindex.setAutoLoadMode(true);
         outtake.setRPM(SHOOT_RPM);
         outtake.resetKickerCycle();
         kicker.down();
+
+        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        updateSpindex.start();
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -77,11 +84,16 @@ public class FarBluePath extends OpMode {
         follower.followPath(paths.shootBallOne, true);
     }
 
+    public void stop(){
+        spindex.exitProgram();
+    }
+
     @Override
     public void loop() {
+        leds.cycleColors(10);
         follower.update();
         autonomousPathUpdate();
-        updateSpindexPosition();
+        //updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -212,7 +224,7 @@ public class FarBluePath extends OpMode {
                             new BezierLine(
                                     new Pose(44.000, 36.000),
 
-                                    new Pose(18.841, 35.598)
+                                    new Pose(9.000, 36.000)
                             )
                     ).setTangentHeadingInterpolation()
 
@@ -220,7 +232,7 @@ public class FarBluePath extends OpMode {
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(18.841, 35.598),
+                                    new Pose(9.000, 36.000),
                                     new Pose(33.000, 36.000),
                                     new Pose(32.000, 12.000),
                                     new Pose(56.000, 12.000)
@@ -245,7 +257,7 @@ public class FarBluePath extends OpMode {
                                     new Pose(44.000, 62.000),
                                     new Pose(32.000, 62.000),
                                     new Pose(33.000, 58.000),
-                                    new Pose(18.841, 59.808)
+                                    new Pose(4.000, 58.000)
                             )
                     ).setTangentHeadingInterpolation()
 
@@ -253,7 +265,7 @@ public class FarBluePath extends OpMode {
 
             shootRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(18.841, 59.808),
+                                    new Pose(9.000, 58.000),
                                     new Pose(48.000, 58.000),
                                     new Pose(55.799, 47.397),
                                     new Pose(56.000, 12.000)
@@ -303,7 +315,6 @@ public class FarBluePath extends OpMode {
                     .build();
         }
     }
-
 
 
 
