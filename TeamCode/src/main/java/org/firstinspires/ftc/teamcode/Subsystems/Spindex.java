@@ -88,9 +88,13 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                spindexMotor.setPower(error * kp);
+                // Use proportional power but ensure minimum threshold to overcome friction
+                double power = error * kp;
+                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
+                    power = SpindexValues.spindexPowerThreshold * sign;
+                }
+                spindexMotor.setPower(power);
                 setTargetStatus(false);
-
             }
             else {
                 spindexMotor.setPower(0);
@@ -104,8 +108,6 @@ public class Spindex {
 
             double sign = Math.signum(error);
 
-            double tolorence = 5;
-
             double kp = maxPower/Threshold;
 
             if (Math.abs(error) > Threshold){
@@ -113,7 +115,12 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                spindexMotor.setPower(error * kp);
+                // Use proportional power but ensure minimum threshold to overcome friction
+                double power = error * kp;
+                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
+                    power = SpindexValues.spindexPowerThreshold * sign;
+                }
+                spindexMotor.setPower(power);
                 setTargetStatus(false);
             }
             else {
@@ -146,9 +153,13 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                spindexMotor.setPower(error * kp);
+                // Use proportional power but ensure minimum threshold to overcome friction
+                double power = error * kp;
+                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
+                    power = SpindexValues.spindexPowerThreshold * sign;
+                }
+                spindexMotor.setPower(power);
                 setTargetStatus(false);
-
             }
             else {
                 spindexMotor.setPower(0);
@@ -162,8 +173,6 @@ public class Spindex {
 
             double sign = Math.signum(error);
 
-            double tolorence = 5;
-
             double kp = maxPower/Threshold;
 
             if (Math.abs(error) > Threshold){
@@ -171,7 +180,12 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                spindexMotor.setPower(error * kp);
+                // Use proportional power but ensure minimum threshold to overcome friction
+                double power = error * kp;
+                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
+                    power = SpindexValues.spindexPowerThreshold * sign;
+                }
+                spindexMotor.setPower(power);
                 setTargetStatus(false);
             }
             else {
