@@ -38,8 +38,6 @@ public class Spindex {
     private boolean autoLoadMode = false;
     private boolean autoLaunchMode = false;
     private boolean terminate = false;
-    private boolean atTarget = false;
-    private int temp = 0;
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
@@ -55,15 +53,14 @@ public class Spindex {
         //Distance/Color sensor
         //Old value is 3.3
         public static double ballDistanceThreshold = 3.3;
-        public static double spindexPowerThreshold = 0.1;
         public static double launchTime = 900;
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
     public Spindex(HardwareMap hardwareMap){
         spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
-        spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
@@ -85,20 +82,13 @@ public class Spindex {
 
             if(Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                // Use proportional power but ensure minimum threshold to overcome friction
-                double power = error * kp;
-                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
-                    power = SpindexValues.spindexPowerThreshold * sign;
-                }
-                spindexMotor.setPower(power);
-                setTargetStatus(false);
+                spindexMotor.setPower(error * kp);
+
             }
             else {
                 spindexMotor.setPower(0);
-                setTargetStatus(true);
             }
         }
         else{
@@ -108,30 +98,20 @@ public class Spindex {
 
             double sign = Math.signum(error);
 
+            double tolorence = 5;
+
             double kp = maxPower/Threshold;
 
             if (Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                // Use proportional power but ensure minimum threshold to overcome friction
-                double power = error * kp;
-                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
-                    power = SpindexValues.spindexPowerThreshold * sign;
-                }
-                spindexMotor.setPower(power);
-                setTargetStatus(false);
+                spindexMotor.setPower(error * kp);
             }
             else {
                 spindexMotor.setPower(0);
-                setTargetStatus(true);
             }
         }
-    }
-
-    public void initializeAbsPlusMotorEnc() {
-
     }
 
     //Overloaded
@@ -150,20 +130,13 @@ public class Spindex {
 
             if(Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                // Use proportional power but ensure minimum threshold to overcome friction
-                double power = error * kp;
-                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
-                    power = SpindexValues.spindexPowerThreshold * sign;
-                }
-                spindexMotor.setPower(power);
-                setTargetStatus(false);
+                spindexMotor.setPower(error * kp);
+
             }
             else {
                 spindexMotor.setPower(0);
-                setTargetStatus(true);
             }
         }
         else if (mode == 2){
@@ -177,20 +150,12 @@ public class Spindex {
 
             if (Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                // Use proportional power but ensure minimum threshold to overcome friction
-                double power = error * kp;
-                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
-                    power = SpindexValues.spindexPowerThreshold * sign;
-                }
-                spindexMotor.setPower(power);
-                setTargetStatus(false);
+                spindexMotor.setPower(error * kp);
             }
             else {
                 spindexMotor.setPower(0);
-                setTargetStatus(true);
             }
         }
         else if (mode == 3){
@@ -254,14 +219,9 @@ public class Spindex {
         return slotStatus;
     }
 
-    public boolean checkIntakePos(){
-        double difference = SpindexValues.intakePos[getIndex()] - getPos();
-        return difference <= 8 && !isOuttakeing();
-    }
-
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
-        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold){
+        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && atTarget() && ballDistance < SpindexValues.ballDistanceThreshold){
             addBall(getIndex());
         }
 
@@ -292,10 +252,6 @@ public class Spindex {
         }
     }
     /****************************************************/
-
-    public void setTargetStatus(boolean x){
-        atTarget = x;
-    }
 
     public void setMode(boolean outtake){
         outtakeMode = outtake;
@@ -366,10 +322,6 @@ public class Spindex {
     }
 
     public boolean atTarget(){
-        return atTarget;
-    }
-
-    public int getTemp(){
-        return (int)((0/360.0*537.7) + offset);
+        return error <= Spindex.SpindexValues.tolorence;
     }
 }
