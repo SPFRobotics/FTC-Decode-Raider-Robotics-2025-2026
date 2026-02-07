@@ -38,8 +38,6 @@ public class Spindex {
     private boolean autoLoadMode = false;
     private boolean autoLaunchMode = false;
     private boolean terminate = false;
-    private boolean atTarget = false;
-    private int temp = 0;
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
@@ -55,7 +53,6 @@ public class Spindex {
         //Distance/Color sensor
         //Old value is 3.3
         public static double ballDistanceThreshold = 3.3;
-        public static double spindexPowerThreshold = 0.1;
         public static double launchTime = 900;
     }
 
@@ -85,16 +82,13 @@ public class Spindex {
 
             if(Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
                 spindexMotor.setPower(error * kp);
-                setTargetStatus(false);
 
             }
             else {
                 spindexMotor.setPower(0);
-                setTargetStatus(true);
             }
         }
         else{
@@ -110,21 +104,14 @@ public class Spindex {
 
             if (Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
                 spindexMotor.setPower(error * kp);
-                setTargetStatus(false);
             }
             else {
                 spindexMotor.setPower(0);
-                setTargetStatus(true);
             }
         }
-    }
-
-    public void initializeAbsPlusMotorEnc() {
-
     }
 
     //Overloaded
@@ -143,16 +130,13 @@ public class Spindex {
 
             if(Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
                 spindexMotor.setPower(error * kp);
-                setTargetStatus(false);
 
             }
             else {
                 spindexMotor.setPower(0);
-                setTargetStatus(true);
             }
         }
         else if (mode == 2){
@@ -235,14 +219,9 @@ public class Spindex {
         return slotStatus;
     }
 
-    public boolean checkIntakePos(){
-        double difference = SpindexValues.intakePos[getIndex()] - getPos();
-        return difference <= 8 && !isOuttakeing();
-    }
-
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
-        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold){
+        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && atTarget() && ballDistance < SpindexValues.ballDistanceThreshold){
             addBall(getIndex());
         }
 
@@ -273,10 +252,6 @@ public class Spindex {
         }
     }
     /****************************************************/
-
-    public void setTargetStatus(boolean x){
-        atTarget = x;
-    }
 
     public void setMode(boolean outtake){
         outtakeMode = outtake;
@@ -348,9 +323,5 @@ public class Spindex {
 
     public boolean atTarget(){
         return error <= Spindex.SpindexValues.tolorence;
-    }
-
-    public int getTemp(){
-        return (int)((0/360.0*537.7) + offset);
     }
 }
