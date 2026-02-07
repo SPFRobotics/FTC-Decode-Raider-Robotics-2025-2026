@@ -61,12 +61,8 @@ public class FarBluePath extends OpMode {
         leds = new LedLights(hardwareMap);
 
         spindex.setAutoLoadMode(true);
-        outtake.setRPM(SHOOT_RPM);
         outtake.resetKickerCycle();
         kicker.down();
-
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
-        updateSpindex.start();
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -82,6 +78,8 @@ public class FarBluePath extends OpMode {
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
         follower.followPath(paths.shootBallOne, true);
+        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        updateSpindex.start();
     }
 
     public void stop(){

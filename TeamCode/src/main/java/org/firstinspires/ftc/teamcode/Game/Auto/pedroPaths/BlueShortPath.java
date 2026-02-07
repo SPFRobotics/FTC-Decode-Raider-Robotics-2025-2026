@@ -61,7 +61,6 @@ public class BlueShortPath extends OpMode {
         leds = new LedLights(hardwareMap);
 
         spindex.setAutoLoadMode(true);
-        outtake.setRPM(SHOOT_RPM);
         outtake.resetKickerCycle();
         kicker.down();
 
@@ -77,6 +76,7 @@ public class BlueShortPath extends OpMode {
         lastKickerCycles = 0;
 
         intake.setPower(1);
+        outtake.setRPM(SHOOT_RPM);
         outtake.setRPM(SHOOT_RPM);
         follower.followPath(paths.shootBallOne, true);
         UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
