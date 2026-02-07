@@ -77,15 +77,15 @@ public class BlueShortPath extends OpMode {
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
         follower.followPath(paths.shootBallOne, true);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
-        updateSpindex.start();
+        //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        //updateSpindex.start();
     }
 
     @Override
     public void loop() {
         follower.update();
         autonomousPathUpdate();
-        //updateSpindexPosition();
+        updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -94,6 +94,7 @@ public class BlueShortPath extends OpMode {
         panelsTelemetry.debug("Y", follower.getPose().getY());
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
         panelsTelemetry.debug("RPM", outtake.getRPM());
+        panelsTelemetry.debug("Is Busy", follower.isBusy());
         panelsTelemetry.update(telemetry);
     }
 
@@ -107,13 +108,9 @@ public class BlueShortPath extends OpMode {
 
     private boolean shootBalls() {
         spindex.setMode(true);
-        double targetAngle = Spindex.SpindexValues.outtakePos[spindex.getIndex()];
-        double error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
-        boolean aligned = error <= Spindex.SpindexValues.tolorence;
-
         // If waiting for spindex to align after advancing
         if (waitingForSpindexAlign) {
-            if (aligned) {
+            if (spindex.atTarget()) {
                 // Spindex reached new position, reset timer and resume shooting
                 outtake.resetKickerCycle();
                 lastKickerCycles = 0;
@@ -123,7 +120,7 @@ public class BlueShortPath extends OpMode {
         }
 
         // Only run kicker cycle when aligned
-        if (aligned) {
+        if (spindex.atTarget()) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 
@@ -413,7 +410,7 @@ public class BlueShortPath extends OpMode {
                 outtake.setRPM(0);
                 intake.setPower(0);
                 kicker.down();
-                spindex.exitProgram();
+                //spindex.exitProgram();
                 requestOpModeStop();
                 break;
 

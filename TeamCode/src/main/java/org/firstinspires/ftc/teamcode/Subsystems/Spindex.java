@@ -62,8 +62,8 @@ public class Spindex {
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
     public Spindex(HardwareMap hardwareMap){
         spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
-        spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
@@ -162,21 +162,16 @@ public class Spindex {
 
             double sign = Math.signum(error);
 
-            double tolorence = 5;
-
             double kp = maxPower/Threshold;
 
             if (Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
                 spindexMotor.setPower(error * kp);
-                setTargetStatus(false);
             }
             else {
                 spindexMotor.setPower(0);
-                setTargetStatus(true);
             }
         }
         else if (mode == 3){
@@ -352,7 +347,7 @@ public class Spindex {
     }
 
     public boolean atTarget(){
-        return atTarget;
+        return error <= Spindex.SpindexValues.tolorence;
     }
 
     public int getTemp(){
