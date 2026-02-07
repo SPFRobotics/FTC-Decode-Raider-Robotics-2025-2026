@@ -6,7 +6,6 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
-import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -14,7 +13,6 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
@@ -25,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 @Configurable
 public class FarBluePath extends OpMode {
 
-    private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
+    private static final double SHOOT_RPM = Outtake.OuttakeConfig.farRPM;
     private static final double INTAKE_SPEED = 0.3;
 
     private TelemetryManager panelsTelemetry;
@@ -77,15 +75,13 @@ public class FarBluePath extends OpMode {
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
         follower.followPath(paths.shootBallOne, true);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
-        updateSpindex.start();
     }
 
     @Override
     public void loop() {
         follower.update();
         autonomousPathUpdate();
-        //updateSpindexPosition();
+        updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -107,13 +103,9 @@ public class FarBluePath extends OpMode {
 
     private boolean shootBalls() {
         spindex.setMode(true);
-        double targetAngle = Spindex.SpindexValues.outtakePos[spindex.getIndex()];
-        double error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
-        boolean aligned = error <= Spindex.SpindexValues.tolorence;
-
         // If waiting for spindex to align after advancing
         if (waitingForSpindexAlign) {
-            if (aligned) {
+            if (spindex.atTarget()) {
                 // Spindex reached new position, reset timer and resume shooting
                 outtake.resetKickerCycle();
                 lastKickerCycles = 0;
@@ -123,7 +115,7 @@ public class FarBluePath extends OpMode {
         }
 
         // Only run kicker cycle when aligned
-        if (aligned) {
+        if (spindex.atTarget()) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 
