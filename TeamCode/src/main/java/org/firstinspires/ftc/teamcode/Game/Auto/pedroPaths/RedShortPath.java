@@ -49,7 +49,7 @@ public class RedShortPath extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(39.000, 134.442, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(105.000, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
 
         spindex = new Spindex(hardwareMap);
