@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
+
+import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -75,13 +77,15 @@ public class BlueShortPath extends OpMode {
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
         follower.followPath(paths.shootBallOne, true);
+        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        updateSpindex.start();
     }
 
     @Override
     public void loop() {
         follower.update();
         autonomousPathUpdate();
-        updateSpindexPosition();
+        //updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -103,7 +107,6 @@ public class BlueShortPath extends OpMode {
 
     private boolean shootBalls() {
         spindex.setMode(true);
-
         double targetAngle = Spindex.SpindexValues.outtakePos[spindex.getIndex()];
         double error = Math.abs(AngleUnit.normalizeDegrees(targetAngle - spindex.getPos()));
         boolean aligned = error <= Spindex.SpindexValues.tolorence;
@@ -410,6 +413,7 @@ public class BlueShortPath extends OpMode {
                 outtake.setRPM(0);
                 intake.setPower(0);
                 kicker.down();
+                spindex.exitProgram();
                 requestOpModeStop();
                 break;
 
