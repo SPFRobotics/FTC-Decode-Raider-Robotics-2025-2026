@@ -79,6 +79,9 @@ public class BlueShortPath extends OpMode {
         shotsFired = 0;
         ballsLoaded = 0;
         lastKickerCycles = 0;
+        spindex.addBall(0);
+        spindex.addBall(1);
+        spindex.addBall(2);
 
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
