@@ -44,17 +44,19 @@ public class Spindex {
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
     private boolean[] slotStatus = {false, false, false};
+    private boolean ballLatched = false;
     @Config
     public static class SpindexValues{
         public static double maxPower = 1;
         public static double Threshold = 150;
-        public static double tolorence = 5;
+        public static double tolorence = 10;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
 
         //Distance/Color sensor
         //Old value is 3.3
-        public static double ballDistanceThreshold = 4.5;
+        public static double ballDistanceThreshold = 3.3;
+        public static double ballReleaseThreshold = 4.0;
         public static double spindexPowerThreshold = 0.1;
         public static double launchTime = 900;
     }
@@ -163,6 +165,7 @@ public class Spindex {
 
     public void clearBall(int index){
         slotStatus[index] = false;
+        ballLatched = false;
     }
 
     public boolean[] getSlotStatus(){
@@ -171,8 +174,16 @@ public class Spindex {
 
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
-        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
+
+        // Latch releases only when sensor reads far enough (ball has cleared)
+        if (ballDistance > SpindexValues.ballReleaseThreshold) {
+            ballLatched = false;
+        }
+
+        // Detect a new ball only when unlocked, spindex is settled, and sensor reads close
+        if (!ballLatched && !getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
             addBall(getIndex());
+            ballLatched = true;
         }
 
         if (isAutoLoading() && slotStatus[getIndex()]) {
@@ -272,6 +283,6 @@ public class Spindex {
     }
 
     public boolean atTarget(){
-        return error <= tolorence;
+        return Math.abs(error) <= tolorence;
     }
 }
