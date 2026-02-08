@@ -122,7 +122,7 @@ public class BlueShortPath extends OpMode {
         spindex.setMode(true);
         // If waiting for spindex to align after advancing
         if (waitingForSpindexAlign) {
-            if (spindex.atTarget()) {
+            if (spindex.atTarget(8)) {
                 // Spindex reached new position, reset timer and resume shooting
                 outtake.resetKickerCycle();
                 lastKickerCycles = 0;
@@ -132,7 +132,7 @@ public class BlueShortPath extends OpMode {
         }
 
         // Only run kicker cycle when aligned
-        if (spindex.atTarget()) {
+        if (spindex.atTarget(8)) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 
@@ -298,7 +298,7 @@ public class BlueShortPath extends OpMode {
 
             case 1: // Shoot 3 preloaded balls
                 if (shootBalls()) {
-                    prepareForIntake();
+
                     follower.followPath(paths.RunToRowOne, true);
                     pathState = 2;
                 }
@@ -306,6 +306,7 @@ public class BlueShortPath extends OpMode {
 
             case 2: // Run to row 1 intake position
                 if (!follower.isBusy()) {
+                    prepareForIntake();
                     follower.followPath(paths.intakeRowOne, INTAKE_SPEED, true);
                     pathState = 3;
                 }
@@ -333,7 +334,7 @@ public class BlueShortPath extends OpMode {
                 }
                 // Only shoot once path completes and robot is in position
                 if (!follower.isBusy() && shootBalls()) {
-                    prepareForIntake();
+
                     shootingPrepared = false;
                     follower.followPath(paths.RuntoRowTwo, true);
                     pathState = 5;
@@ -342,6 +343,7 @@ public class BlueShortPath extends OpMode {
 
             case 5: // Run to row 2 intake position
                 if (!follower.isBusy()) {
+                    prepareForIntake();
                     follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
                     pathState = 6;
                 }
