@@ -53,7 +53,7 @@ public class RedShortPath extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(105.000, 134.442, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(111, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
 
         spindex = new Spindex(hardwareMap);
@@ -202,7 +202,7 @@ public class RedShortPath extends OpMode {
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(105.000, 134.442),
+                                    new Pose(111, 134.442),
                                     new Pose(103.942, 101.070),
                                     new Pose(86.326, 86.442)
                             )
@@ -277,7 +277,7 @@ public class RedShortPath extends OpMode {
                             new BezierCurve(
                                     new Pose(86.521, 86.374),
                                     new Pose(96.065, 73.409),
-                                    new Pose(127.791, 69.100)
+                                    new Pose(122.791, 69.100)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(0))
 

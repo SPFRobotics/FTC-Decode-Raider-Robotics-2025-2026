@@ -55,7 +55,7 @@ public class BlueShortPath extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(39.000, 134.442, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
 
         spindex = new Spindex(hardwareMap);
@@ -206,7 +206,7 @@ public class BlueShortPath extends OpMode {
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(39.000, 134.442),
+                                    new Pose(33.000, 134.442),
                                     new Pose(40.058, 101.070),
                                     new Pose(57.674, 86.442)
                             )
@@ -281,7 +281,7 @@ public class BlueShortPath extends OpMode {
                             new BezierCurve(
                                     new Pose(57.488, 85.953),
                                     new Pose(47.935, 73.409),
-                                    new Pose(23.639, 70.104)
+                                    new Pose(29.639, 70.104)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 

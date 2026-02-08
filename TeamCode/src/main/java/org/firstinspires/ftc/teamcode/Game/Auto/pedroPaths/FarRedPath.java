@@ -310,7 +310,7 @@ public class FarRedPath extends OpMode {
                             new BezierCurve(
                                     new Pose(87.766, 8.904),
                                     new Pose(63.469, 65.805),
-                                    new Pose(121.941, 69.259)
+                                    new Pose(113.941, 69.259)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(69), Math.toRadians(0))
 
