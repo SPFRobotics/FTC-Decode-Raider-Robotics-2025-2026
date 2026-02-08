@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths.TestPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.TestPaths;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;

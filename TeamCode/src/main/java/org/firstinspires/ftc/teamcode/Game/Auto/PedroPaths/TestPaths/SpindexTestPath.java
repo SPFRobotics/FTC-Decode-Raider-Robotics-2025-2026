@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths.TestPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.TestPaths;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;

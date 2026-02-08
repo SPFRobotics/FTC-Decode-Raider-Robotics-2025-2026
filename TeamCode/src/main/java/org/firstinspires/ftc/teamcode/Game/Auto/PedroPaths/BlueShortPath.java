@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -22,9 +22,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
-@Autonomous(name = "Red Short", group = "Autonomous")
+@Autonomous(name = "Blue Short", group = "Autonomous")
 @Configurable
-public class RedShortPath extends OpMode {
+public class BlueShortPath extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final double INTAKE_SPEED = 0.25;
@@ -48,12 +48,14 @@ public class RedShortPath extends OpMode {
     private boolean shootingPrepared = false;
     private boolean flywheelStarted = false;
 
+    private ElapsedTime override = new ElapsedTime();
+
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(111, 134.442, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
 
         spindex = new Spindex(hardwareMap);
@@ -96,6 +98,7 @@ public class RedShortPath extends OpMode {
         follower.update();
         leds.cycleColors(10);
         autonomousPathUpdate();
+        //updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -126,6 +129,7 @@ public class RedShortPath extends OpMode {
                 outtake.resetKickerCycle();
                 lastKickerCycles = 0;
                 waitingForSpindexAlign = false;
+                //override.reset();
             }
             return false;
         }
@@ -202,88 +206,89 @@ public class RedShortPath extends OpMode {
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(111, 134.442),
-                                    new Pose(103.942, 101.070),
-                                    new Pose(86.326, 86.442)
+                                    new Pose(33.000, 134.442),
+                                    new Pose(40.058, 101.070),
+                                    new Pose(57.674, 86.442)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(45))
+                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
 
                     .build();
 
             RunToRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(86.326, 86.442),
-                                    new Pose(83.787, 67.691),
-                                    new Pose(102.483, 83.829)
+                                    new Pose(57.674, 86.442),
+                                    new Pose(60.213, 67.691),
+                                    new Pose(43.525, 84.432)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(0))
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
 
             intakeRowOne = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(102.483, 83.829),
+                                    new Pose(43.525, 84.432),
 
-                                    new Pose(126.000, 84.000)
+                                    new Pose(16.594, 84.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(126.000, 84.000),
-                                    new Pose(97.196, 84.684),
-                                    new Pose(96.343, 83.154),
-                                    new Pose(86.512, 86.140)
+                                    new Pose(16.594, 84.000),
+                                    new Pose(46.804, 84.684),
+                                    new Pose(47.657, 83.154),
+                                    new Pose(57.488, 86.140)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(45))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
 
                     .build();
 
             RuntoRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(86.512, 86.140),
-                                    new Pose(81.205, 81.070),
-                                    new Pose(80.018, 84.913),
-                                    new Pose(102.654, 61.488)
+                                    new Pose(57.488, 86.140),
+                                    new Pose(69.623, 79.062),
+                                    new Pose(60.568, 53.784),
+                                    new Pose(44.961, 59.881)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(-5))
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
 
             intakeRowTwo = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(102.654, 61.488),
+                                    new Pose(44.961, 59.881),
 
-                                    new Pose(128.000, 58.000)
+                                    new Pose(11.983, 58.803)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-5), Math.toRadians(-5))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
             shootRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(128.000, 58.000),
-                                    new Pose(120.006, 58.006),
-                                    new Pose(91.905, 64.834),
-                                    new Pose(86.512, 85.953)
+                                    new Pose(11.983, 58.803),
+                                    new Pose(23.994, 58.006),
+                                    new Pose(52.095, 64.834),
+                                    new Pose(57.488, 85.953)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-5), Math.toRadians(45))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
 
                     .build();
 
             LeavePoints = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(86.521, 86.374),
-                                    new Pose(96.065, 73.409),
-                                    new Pose(122.791, 69.100)
+                                    new Pose(57.488, 85.953),
+                                    new Pose(47.935, 73.409),
+                                    new Pose(29.639, 70.104)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(0))
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
         }
     }
+
 
 
     public void autonomousPathUpdate() {
@@ -292,6 +297,7 @@ public class RedShortPath extends OpMode {
                 if (!follower.isBusy()) {
                     prepareForShooting();
                     pathState = 1;
+                    //override.reset();
                 }
                 break;
 
@@ -329,9 +335,11 @@ public class RedShortPath extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
+                    //override.reset();
                 }
                 // Only shoot once path completes and robot is in position
                 if (!follower.isBusy() && shootBalls()) {
+
                     shootingPrepared = false;
                     follower.followPath(paths.RuntoRowTwo, true);
                     pathState = 5;
@@ -365,6 +373,7 @@ public class RedShortPath extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
+                    //override.reset();
                 }
                 if (!follower.isBusy() && shootBalls()) {
                     shootingPrepared = false;
