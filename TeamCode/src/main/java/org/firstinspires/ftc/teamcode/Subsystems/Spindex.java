@@ -40,17 +40,16 @@ public class Spindex {
     private boolean autoLaunchMode = false;
     private boolean terminate = false;
     private boolean atTarget = false;
+    private boolean ballLatched = false;
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
     private boolean[] slotStatus = {false, false, false};
-    private boolean ballLatched = false;
     @Config
     public static class SpindexValues{
         public static double maxPower = 1;
-        public static double minPower = 0.07;
         public static double Threshold = 150;
-        public static double tolorence = 5;
+        public static double tolorence = 8;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
 
@@ -90,11 +89,7 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                double power = error * kp;
-                if (Math.abs(power) < SpindexValues.minPower) {
-                    power = SpindexValues.minPower * sign;
-                }
-                spindexMotor.setPower(power);
+                spindexMotor.setPower(error * kp);
                 setTargetStatus(false);
 
             }
@@ -117,11 +112,7 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                double power = error * kp;
-                if (Math.abs(power) < SpindexValues.minPower) {
-                    power = SpindexValues.minPower * sign;
-                }
-                spindexMotor.setPower(power);
+                spindexMotor.setPower(error * kp);
                 setTargetStatus(false);
             }
             else {
@@ -174,7 +165,6 @@ public class Spindex {
 
     public void clearBall(int index){
         slotStatus[index] = false;
-        ballLatched = false;
     }
 
     public boolean[] getSlotStatus(){
@@ -184,12 +174,12 @@ public class Spindex {
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
 
-        // Latch releases only when sensor reads far enough (ball has cleared)
+        // Release the latch only once the sensor reads clear (no wall, no ball)
         if (ballDistance > SpindexValues.ballReleaseThreshold) {
             ballLatched = false;
         }
 
-        // Detect a new ball only when unlocked, spindex is settled, and sensor reads close
+        // Detect a ball only when unlatched, spindex is settled, and sensor reads close
         if (!ballLatched && !getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
             addBall(getIndex());
             ballLatched = true;
@@ -292,10 +282,6 @@ public class Spindex {
     }
 
     public boolean atTarget(){
-        return Math.abs(error) <= tolorence;
-    }
-
-    public boolean atTarget(int tolorence){
         return Math.abs(error) <= tolorence;
     }
 }

@@ -159,7 +159,7 @@ public class Outtake {
                 interval.reset(); // Timer starts when kick actually begins
             }
             // Phase 2: After a full 200ms of kick travel, bring it back down
-            else if (launched && time >= .3){
+            else if (launched && time >= .4){
                 kickerSpindex.down();
                 kickerCycleCount++;
                 launched = false;
