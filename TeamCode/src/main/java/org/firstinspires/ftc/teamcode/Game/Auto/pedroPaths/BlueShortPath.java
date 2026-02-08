@@ -124,12 +124,12 @@ public class BlueShortPath extends OpMode {
         spindex.setMode(true);
         // If waiting for spindex to align after advancing
         if (waitingForSpindexAlign) {
-            if (spindex.atTarget() || override.seconds() >= 1.0) {
+            if (spindex.atTarget()) {
                 // Spindex reached new position, reset timer and resume shooting
                 outtake.resetKickerCycle();
                 lastKickerCycles = 0;
                 waitingForSpindexAlign = false;
-                override.reset();
+                //override.reset();
             }
             return false;
         }
@@ -297,7 +297,7 @@ public class BlueShortPath extends OpMode {
                 if (!follower.isBusy()) {
                     prepareForShooting();
                     pathState = 1;
-                    override.reset();
+                    //override.reset();
                 }
                 break;
 
@@ -335,7 +335,7 @@ public class BlueShortPath extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
-                    override.reset();
+                    //override.reset();
                 }
                 // Only shoot once path completes and robot is in position
                 if (!follower.isBusy() && shootBalls()) {
@@ -373,7 +373,7 @@ public class BlueShortPath extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
-                    override.reset();
+                    //override.reset();
                 }
                 if (!follower.isBusy() && shootBalls()) {
                     shootingPrepared = false;
