@@ -90,11 +90,7 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                double power = error * kp;
-                if (Math.abs(power) < minPower) {
-                    power = minPower * sign;
-                }
-                spindexMotor.setPower(power);
+                spindexMotor.setPower(error * kp);
                 setTargetStatus(false);
 
             }
@@ -117,11 +113,7 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                double power = error * kp;
-                if (Math.abs(power) < minPower) {
-                    power = minPower * sign;
-                }
-                spindexMotor.setPower(power);
+                spindexMotor.setPower(error * kp);
                 setTargetStatus(false);
             }
             else {
