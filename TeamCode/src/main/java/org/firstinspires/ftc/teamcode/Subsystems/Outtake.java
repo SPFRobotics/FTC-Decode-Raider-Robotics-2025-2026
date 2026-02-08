@@ -172,6 +172,10 @@ public class Outtake {
         }
     }
 
+    public boolean isKickerLaunched(){
+        return launched;
+    }
+
     public int getKickerCycleCount(){
         return kickerCycleCount;
     }

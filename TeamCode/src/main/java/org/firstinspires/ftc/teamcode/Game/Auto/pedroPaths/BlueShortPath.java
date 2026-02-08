@@ -134,8 +134,8 @@ public class BlueShortPath extends OpMode {
             return false;
         }
 
-        // Only run kicker cycle when aligned
-        if (spindex.atTarget()) {
+        // Only start a new kick when aligned, but always let an active kick finish
+        if (spindex.atTarget() || outtake.isKickerLaunched()) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 
