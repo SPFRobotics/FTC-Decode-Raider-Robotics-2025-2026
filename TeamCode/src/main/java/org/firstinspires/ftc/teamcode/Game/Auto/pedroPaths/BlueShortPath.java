@@ -79,9 +79,6 @@ public class BlueShortPath extends OpMode {
         shotsFired = 0;
         ballsLoaded = 0;
         lastKickerCycles = 0;
-        spindex.addBall(0);
-        spindex.addBall(1);
-        spindex.addBall(2);
 
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
@@ -134,21 +131,6 @@ public class BlueShortPath extends OpMode {
                 waitingForSpindexAlign = false;
                 //override.reset();
             }
-            return false;
-        }
-
-        // Skip empty slots — never kick into a slot with no ball
-        if (spindex.atTarget() && !spindex.getSlotStatus()[spindex.getIndex()]) {
-            shotsFired++;
-            if (shotsFired >= 3) {
-                shotsFired = 0;
-                outtake.resetKickerCycle();
-                lastKickerCycles = 0;
-                waitingForSpindexAlign = false;
-                return true;
-            }
-            spindex.addIndex();
-            waitingForSpindexAlign = true;
             return false;
         }
 
