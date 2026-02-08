@@ -152,8 +152,8 @@ public class Outtake {
     public void enableSpindexKickerCycle(boolean x, double RPM){
         double time = interval.seconds();
         if (x){
-            // Phase 1: Wait for flywheel RPM, then kick up and start the timer
-            if (!launched && getRPM() >= RPM - 500){
+            // Phase 1: Settle briefly after previous kick, then kick up when RPM is ready
+            if (!launched && time >= 0.15 && getRPM() >= RPM - 500){
                 kickerSpindex.up();
                 launched = true;
                 interval.reset(); // Timer starts when kick actually begins
