@@ -249,7 +249,7 @@ public class BlueShortPath extends OpMode {
                                     new Pose(60.568, 53.784),
                                     new Pose(44.961, 59.881)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(185))
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
 
@@ -259,7 +259,7 @@ public class BlueShortPath extends OpMode {
 
                                     new Pose(11.983, 58.803)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(185), Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
@@ -270,7 +270,7 @@ public class BlueShortPath extends OpMode {
                                     new Pose(52.095, 64.834),
                                     new Pose(57.488, 85.953)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
 
                     .build();
 
@@ -285,6 +285,7 @@ public class BlueShortPath extends OpMode {
                     .build();
         }
     }
+
 
 
     public void autonomousPathUpdate() {
