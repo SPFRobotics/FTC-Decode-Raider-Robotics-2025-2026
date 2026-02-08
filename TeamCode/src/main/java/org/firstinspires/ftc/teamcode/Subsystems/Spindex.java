@@ -3,22 +3,24 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.Resources.Unit;
 //import org.firstinspires.ftc.teamcode.Testing.Test;
+import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.Threshold;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.launchTime;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.maxPower;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.tolorence;
 import static java.lang.Thread.sleep;
-
-import android.sax.StartElementListener;
 
 public class Spindex {
     //Servo encoder
@@ -33,13 +35,11 @@ public class Spindex {
     private double threadLoopTime = 0;
     private double currentPos = 0;
     private double error = 0;
-    private double offset = 0;
     private boolean outtakeMode = false;
     private boolean autoLoadMode = false;
     private boolean autoLaunchMode = false;
     private boolean terminate = false;
     private boolean atTarget = false;
-    private int temp = 0;
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
@@ -48,98 +48,32 @@ public class Spindex {
     public static class SpindexValues{
         public static double maxPower = 1;
         public static double Threshold = 150;
-        public static double tolorence = 5;  // Increased from 3 for more reliable settling
+        public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
 
         //Distance/Color sensor
         //Old value is 3.3
-        public static double ballDistanceThreshold = 3.3;
-        public static double spindexPowerThreshold = 0.15;  // Increased from 0.1 to overcome friction
+        public static double ballDistanceThreshold = 4.5;
+        public static double spindexPowerThreshold = 0.1;
         public static double launchTime = 900;
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
     public Spindex(HardwareMap hardwareMap){
         spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
-        spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
         index = 0;
-        offset = spindexPos.getVoltage()/3.3*360.0;
     }
 
 
     //Moves the servo or motor to the target position by finding the shortest path
     public void moveToPos(double target, boolean absEncoder) {
         if (!absEncoder){
-            currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/360.0*537.7);
-
-            error = AngleUnit.normalizeDegrees(target - currentPos);
-
-            double sign = Math.signum(error);
-
-            double kp = maxPower/Threshold;
-
-            if(Math.abs(error) > Threshold){
-                spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
-            }
-            else if (Math.abs(error) > tolorence) {
-                // Use proportional power but ensure minimum threshold to overcome friction
-                double power = error * kp;
-                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
-                    power = SpindexValues.spindexPowerThreshold * sign;
-                }
-                spindexMotor.setPower(power);
-                setTargetStatus(false);
-            }
-            else {
-                spindexMotor.setPower(0);
-                setTargetStatus(true);
-            }
-        }
-        else{
-            currentPos = spindexPos.getVoltage()/3.3*360.0;
-
-            error = AngleUnit.normalizeDegrees(target - currentPos);
-
-            double sign = Math.signum(error);
-
-            double kp = maxPower/Threshold;
-
-            if (Math.abs(error) > Threshold){
-                spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
-            }
-            else if (Math.abs(error) > tolorence) {
-                // Use proportional power but ensure minimum threshold to overcome friction
-                double power = error * kp;
-                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
-                    power = SpindexValues.spindexPowerThreshold * sign;
-                }
-                spindexMotor.setPower(power);
-                setTargetStatus(false);
-            }
-            else {
-                spindexMotor.setPower(0);
-                setTargetStatus(true);
-            }
-        }
-    }
-
-    public void initializeAbsPlusMotorEnc() {
-
-    }
-
-    //Overloaded
-    //1 = Motor Encoder
-    //2 = Abs Encoder
-    //3 = Abs Encoder + Motor Encoder
-    public void moveToPos(double target, int mode) {
-        if (mode == 1){
             currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/537.7*360);
 
             error = AngleUnit.normalizeDegrees(target - currentPos);
@@ -153,20 +87,16 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                // Use proportional power but ensure minimum threshold to overcome friction
-                double power = error * kp;
-                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
-                    power = SpindexValues.spindexPowerThreshold * sign;
-                }
-                spindexMotor.setPower(power);
+                spindexMotor.setPower(error * kp);
                 setTargetStatus(false);
+
             }
             else {
                 spindexMotor.setPower(0);
                 setTargetStatus(true);
             }
         }
-        else if (mode == 2){
+        else{
             currentPos = spindexPos.getVoltage()/3.3*360.0;
 
             error = AngleUnit.normalizeDegrees(target - currentPos);
@@ -180,28 +110,13 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                // Use proportional power but ensure minimum threshold to overcome friction
-                double power = error * kp;
-                if (Math.abs(power) < SpindexValues.spindexPowerThreshold) {
-                    power = SpindexValues.spindexPowerThreshold * sign;
-                }
-                spindexMotor.setPower(power);
+                spindexMotor.setPower(error * kp);
                 setTargetStatus(false);
             }
             else {
                 spindexMotor.setPower(0);
                 setTargetStatus(true);
             }
-        }
-        else if (mode == 3){
-            if (!spindexMotor.isBusy()){
-                spindexMotor.setTargetPosition((int)((target/360.0*537.7) + (offset/360*537.7)));
-                spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                spindexMotor.setPower(1);
-            }
-        }
-        else{
-            throw new RuntimeException("The number you have chosen is not an option!");
         }
     }
 
@@ -254,14 +169,9 @@ public class Spindex {
         return slotStatus;
     }
 
-    public boolean checkIntakePos(){
-        double difference = SpindexValues.intakePos[getIndex()] - getPos();
-        return difference <= 8 && !isOuttakeing();
-    }
-
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
-        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold){
+        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
             addBall(getIndex());
         }
 
@@ -317,10 +227,6 @@ public class Spindex {
         return currentPos;
     }
 
-    public int getRelPos(){
-        return spindexMotor.getCurrentPosition();
-    }
-
     public void storeThreadLoopTime(double milliseconds){
         threadLoopTime = milliseconds;
     }
@@ -366,10 +272,6 @@ public class Spindex {
     }
 
     public boolean atTarget(){
-        return atTarget;
-    }
-
-    public int getTemp(){
-        return (int)((0/360.0*537.7) + offset);
+        return error <= tolorence;
     }
 }

@@ -14,6 +14,7 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -44,6 +45,8 @@ public class BlueShortPath extends OpMode {
     private int ballsLoaded = 0;
     private int lastKickerCycles = 0;
     private boolean waitingForSpindexAlign = false;
+    private boolean shootingPrepared = false;
+    private boolean flywheelStarted = false;
 
     @Override
     public void init() {
@@ -77,7 +80,7 @@ public class BlueShortPath extends OpMode {
 
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
-        outtake.setRPM(SHOOT_RPM);
+        spindex.setMode(true);  // Pre-position spindex for shooting during travel
         follower.followPath(paths.shootBallOne, true);
         UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         updateSpindex.start();
@@ -89,11 +92,11 @@ public class BlueShortPath extends OpMode {
 
     @Override
     public void loop() {
+        ElapsedTime time = new ElapsedTime();
         follower.update();
         leds.cycleColors(10);
         autonomousPathUpdate();
         //updateSpindexPosition();
-
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -103,6 +106,7 @@ public class BlueShortPath extends OpMode {
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
         panelsTelemetry.debug("RPM", outtake.getRPM());
         panelsTelemetry.debug("Is Busy", follower.isBusy());
+        panelsTelemetry.debug("Loop Time", time.milliseconds());
         panelsTelemetry.update(telemetry);
     }
 
@@ -194,9 +198,6 @@ public class BlueShortPath extends OpMode {
         public PathChain RuntoRowTwo;
         public PathChain intakeRowTwo;
         public PathChain shootRowTwo;
-        public PathChain RuntwoRowThree;
-        public PathChain IntakeRowThree;
-        public PathChain backToShooting;
         public PathChain LeavePoints;
 
         public Paths(Follower follower) {
@@ -214,7 +215,7 @@ public class BlueShortPath extends OpMode {
                             new BezierCurve(
                                     new Pose(57.674, 86.442),
                                     new Pose(60.213, 67.691),
-                                    new Pose(41.517, 83.829)
+                                    new Pose(43.123, 83.829)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
@@ -222,9 +223,9 @@ public class BlueShortPath extends OpMode {
 
             intakeRowOne = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(41.517, 83.829),
+                                    new Pose(43.123, 83.829),
 
-                                    new Pose(18.000, 84.000)
+                                    new Pose(16.594, 84.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -232,7 +233,7 @@ public class BlueShortPath extends OpMode {
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(18.000, 84.000),
+                                    new Pose(16.594, 84.000),
                                     new Pose(46.804, 84.684),
                                     new Pose(47.657, 83.154),
                                     new Pose(57.488, 86.140)
@@ -244,9 +245,9 @@ public class BlueShortPath extends OpMode {
             RuntoRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(57.488, 86.140),
-                                    new Pose(62.795, 81.070),
-                                    new Pose(63.982, 84.913),
-                                    new Pose(41.346, 61.488)
+                                    new Pose(69.623, 79.062),
+                                    new Pose(57.957, 61.817),
+                                    new Pose(43.154, 60.082)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(185))
 
@@ -254,9 +255,9 @@ public class BlueShortPath extends OpMode {
 
             intakeRowTwo = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(41.346, 61.488),
+                                    new Pose(43.154, 60.082),
 
-                                    new Pose(16.000, 58.000)
+                                    new Pose(11.983, 58.803)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(185), Math.toRadians(185))
 
@@ -264,7 +265,7 @@ public class BlueShortPath extends OpMode {
 
             shootRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(16.000, 58.000),
+                                    new Pose(11.983, 58.803),
                                     new Pose(23.994, 58.006),
                                     new Pose(52.095, 64.834),
                                     new Pose(57.488, 85.953)
@@ -273,41 +274,11 @@ public class BlueShortPath extends OpMode {
 
                     .build();
 
-            RuntwoRowThree = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(57.488, 85.953),
-                                    new Pose(23.520, 50.885),
-                                    new Pose(41.142, 35.613)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-
-                    .build();
-
-            IntakeRowThree = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(41.142, 35.613),
-
-                                    new Pose(11.445, 34.825)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
-                    .build();
-
-            backToShooting = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(11.445, 34.825),
-                                    new Pose(43.263, 52.457),
-                                    new Pose(57.479, 86.374)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
-
-                    .build();
-
             LeavePoints = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(57.479, 86.374),
+                                    new Pose(57.488, 85.953),
                                     new Pose(47.935, 73.409),
-                                    new Pose(16.209, 69.100)
+                                    new Pose(23.639, 70.104)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
@@ -318,7 +289,7 @@ public class BlueShortPath extends OpMode {
 
     public void autonomousPathUpdate() {
         switch (pathState) {
-            case 0: // Move to first shoot position
+            case 0: // Move to first shoot position (flywheel already spinning from start())
                 if (!follower.isBusy()) {
                     prepareForShooting();
                     pathState = 1;
@@ -340,95 +311,76 @@ public class BlueShortPath extends OpMode {
                 }
                 break;
 
-            case 3: // Intake row 1 (slow)
+            case 3: // Intake row 1 (slow) - pre-spin flywheel during intake
                 runIntake();
+                if (!flywheelStarted) {
+                    outtake.setRPM(SHOOT_RPM);
+                    flywheelStarted = true;
+                }
                 if (!follower.isBusy()) {
-                    prepareForShooting();
+                    spindex.setMode(true);
+                    spindex.setIndex(0);
+                    flywheelStarted = false;
                     follower.followPath(paths.shootRowOne, true);
                     pathState = 4;
                 }
                 break;
 
-            case 4: // Move to shoot position
-                if (!follower.isBusy()) {
+            case 4: // Move to shoot position + shoot row 1 balls
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                }
+                // Only shoot once path completes and robot is in position
+                if (!follower.isBusy() && shootBalls()) {
+                    prepareForIntake();
+                    shootingPrepared = false;
+                    follower.followPath(paths.RuntoRowTwo, true);
                     pathState = 5;
                 }
                 break;
 
-            case 5: // Shoot row 1 balls
-                if (shootBalls()) {
-                    prepareForIntake();
-                    follower.followPath(paths.RuntoRowTwo, true);
+            case 5: // Run to row 2 intake position
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
                     pathState = 6;
                 }
                 break;
 
-            case 6: // Run to row 2 intake position
+            case 6: // Intake row 2 (slow) - pre-spin flywheel during intake
+                runIntake();
+                if (!flywheelStarted) {
+                    outtake.setRPM(SHOOT_RPM);
+                    flywheelStarted = true;
+                }
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
+                    spindex.setMode(true);
+                    spindex.setIndex(0);
+                    flywheelStarted = false;
+                    follower.followPath(paths.shootRowTwo, true);
                     pathState = 7;
                 }
                 break;
 
-            case 7: // Intake row 2 (slow)
-                runIntake();
-                if (!follower.isBusy()) {
+            case 7: // Move to shoot position + shoot row 2 balls
+                if (!shootingPrepared) {
                     prepareForShooting();
-                    follower.followPath(paths.shootRowTwo, true);
+                    shootingPrepared = true;
+                }
+                if (!follower.isBusy() && shootBalls()) {
+                    shootingPrepared = false;
+                    follower.followPath(paths.LeavePoints, true);
                     pathState = 8;
                 }
                 break;
 
-            case 8: // Move to shoot position
+            case 8: // Leave for points
                 if (!follower.isBusy()) {
                     pathState = 9;
                 }
                 break;
 
-            case 9: // Shoot row 2 balls
-                if (shootBalls()) {
-                    prepareForIntake();
-                    follower.followPath(paths.RuntwoRowThree, true);
-                    pathState = 10;
-                }
-                break;
-
-            case 10: // Run to row 3 intake position
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.IntakeRowThree, INTAKE_SPEED, true);
-                    pathState = 11;
-                }
-                break;
-
-            case 11: // Intake row 3 (slow)
-                runIntake();
-                if (!follower.isBusy()) {
-                    prepareForShooting();
-                    follower.followPath(paths.backToShooting, true);
-                    pathState = 12;
-                }
-                break;
-
-            case 12: // Move to final shoot position
-                if (!follower.isBusy()) {
-                    pathState = 13;
-                }
-                break;
-
-            case 13: // Shoot final 3 balls
-                if (shootBalls()) {
-                    follower.followPath(paths.LeavePoints, true);
-                    pathState = 14;
-                }
-                break;
-
-            case 14: // Leave for points
-                if (!follower.isBusy()) {
-                    pathState = 15;
-                }
-                break;
-
-            case 15: // Done
+            case 9: // Done
                 outtake.setRPM(0);
                 intake.setPower(0);
                 kicker.down();

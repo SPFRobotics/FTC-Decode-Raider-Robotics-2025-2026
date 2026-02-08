@@ -223,7 +223,7 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Right Pod", backRightDrive.getCurrentPosition());
                 telemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
                 telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
-                telemetry.addData("Spindex RelPos", spindex.getRelPos());
+                //telemetry.addData("Spindex RelPos", spindex.getRelPos());
                 telemetry.addLine("==========================================");
                 telemetry.update();
             }
