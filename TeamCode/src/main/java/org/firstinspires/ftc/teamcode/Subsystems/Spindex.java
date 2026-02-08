@@ -48,7 +48,6 @@ public class Spindex {
     @Config
     public static class SpindexValues{
         public static double maxPower = 1;
-        public static double minPower = 0.07;
         public static double Threshold = 150;
         public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};

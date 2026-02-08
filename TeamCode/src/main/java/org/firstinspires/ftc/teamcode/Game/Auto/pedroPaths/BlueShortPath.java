@@ -134,8 +134,23 @@ public class BlueShortPath extends OpMode {
             return false;
         }
 
-        // Only start a new kick when aligned, but always let an active kick finish
-        if (spindex.atTarget() || outtake.isKickerLaunched()) {
+        // Skip empty slots — never kick into a slot with no ball
+        if (spindex.atTarget() && !spindex.getSlotStatus()[spindex.getIndex()]) {
+            shotsFired++;
+            if (shotsFired >= 3) {
+                shotsFired = 0;
+                outtake.resetKickerCycle();
+                lastKickerCycles = 0;
+                waitingForSpindexAlign = false;
+                return true;
+            }
+            spindex.addIndex();
+            waitingForSpindexAlign = true;
+            return false;
+        }
+
+        // Only run kicker cycle when aligned
+        if (spindex.atTarget()) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 
