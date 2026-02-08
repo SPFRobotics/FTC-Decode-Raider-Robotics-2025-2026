@@ -6,12 +6,15 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -24,7 +27,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 public class FarRedPath extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.farRPM;
-    private static final double INTAKE_SPEED = 0.3;
+    private static final double INTAKE_SPEED = 0.25;
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -36,11 +39,14 @@ public class FarRedPath extends OpMode {
     private Intake intake;
     private KickerSpindex kicker;
     private ColorFetch colorSensor;
+    private LedLights leds = null;
 
     private int shotsFired = 0;
     private int ballsLoaded = 0;
     private int lastKickerCycles = 0;
     private boolean waitingForSpindexAlign = false;
+    private boolean shootingPrepared = false;
+    private boolean flywheelStarted = false;
 
     @Override
     public void init() {
@@ -55,9 +61,9 @@ public class FarRedPath extends OpMode {
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);
+        leds = new LedLights(hardwareMap);
 
         spindex.setAutoLoadMode(true);
-        outtake.setRPM(SHOOT_RPM);
         outtake.resetKickerCycle();
         kicker.down();
 
@@ -74,14 +80,22 @@ public class FarRedPath extends OpMode {
 
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
+        spindex.setMode(true);  // Pre-position spindex for shooting during travel
         follower.followPath(paths.shootBallOne, true);
+        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        updateSpindex.start();
+    }
+
+    public void stop(){
+        spindex.exitProgram();
     }
 
     @Override
     public void loop() {
+        ElapsedTime time = new ElapsedTime();
         follower.update();
+        leds.cycleColors(10);
         autonomousPathUpdate();
-        updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -90,6 +104,8 @@ public class FarRedPath extends OpMode {
         panelsTelemetry.debug("Y", follower.getPose().getY());
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
         panelsTelemetry.debug("RPM", outtake.getRPM());
+        panelsTelemetry.debug("Is Busy", follower.isBusy());
+        panelsTelemetry.debug("Loop Time", time.milliseconds());
         panelsTelemetry.update(telemetry);
     }
 
@@ -305,7 +321,7 @@ public class FarRedPath extends OpMode {
 
     public void autonomousPathUpdate() {
         switch (pathState) {
-            case 0: // Move to first shoot position
+            case 0: // Move to first shoot position (flywheel already spinning from start())
                 if (!follower.isBusy()) {
                     prepareForShooting();
                     pathState = 1;
@@ -314,7 +330,6 @@ public class FarRedPath extends OpMode {
 
             case 1: // Shoot 3 preloaded balls
                 if (shootBalls()) {
-                    prepareForIntake();
                     follower.followPath(paths.RunToRowOne, true);
                     pathState = 2;
                 }
@@ -322,104 +337,119 @@ public class FarRedPath extends OpMode {
 
             case 2: // Run to row 1 intake position
                 if (!follower.isBusy()) {
+                    prepareForIntake();
                     follower.followPath(paths.intakeRowOne, INTAKE_SPEED, true);
                     pathState = 3;
                 }
                 break;
 
-            case 3: // Intake row 1 (slow)
+            case 3: // Intake row 1 (slow) - pre-spin flywheel during intake
                 runIntake();
+                if (!flywheelStarted) {
+                    outtake.setRPM(SHOOT_RPM);
+                    flywheelStarted = true;
+                }
                 if (!follower.isBusy()) {
-                    prepareForShooting();
+                    spindex.setMode(true);
+                    spindex.setIndex(0);
+                    flywheelStarted = false;
                     follower.followPath(paths.shootRowOne, true);
                     pathState = 4;
                 }
                 break;
 
-            case 4: // Move to shoot position
-                if (!follower.isBusy()) {
+            case 4: // Move to shoot position + shoot row 1 balls
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                }
+                if (!follower.isBusy() && shootBalls()) {
+                    shootingPrepared = false;
+                    follower.followPath(paths.RuntoRowTwo, true);
                     pathState = 5;
                 }
                 break;
 
-            case 5: // Shoot row 1 balls
-                if (shootBalls()) {
+            case 5: // Run to row 2 intake position
+                if (!follower.isBusy()) {
                     prepareForIntake();
-                    follower.followPath(paths.RuntoRowTwo, true);
+                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
                     pathState = 6;
                 }
                 break;
 
-            case 6: // Run to row 2 intake position
+            case 6: // Intake row 2 (slow) - pre-spin flywheel during intake
+                runIntake();
+                if (!flywheelStarted) {
+                    outtake.setRPM(SHOOT_RPM);
+                    flywheelStarted = true;
+                }
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
+                    spindex.setMode(true);
+                    spindex.setIndex(0);
+                    flywheelStarted = false;
+                    follower.followPath(paths.shootRowTwo, true);
                     pathState = 7;
                 }
                 break;
 
-            case 7: // Intake row 2 (slow)
-                runIntake();
-                if (!follower.isBusy()) {
+            case 7: // Move to shoot position + shoot row 2 balls
+                if (!shootingPrepared) {
                     prepareForShooting();
-                    follower.followPath(paths.shootRowTwo, true);
+                    shootingPrepared = true;
+                }
+                if (!follower.isBusy() && shootBalls()) {
+                    shootingPrepared = false;
+                    follower.followPath(paths.RuntwoRowThree, true);
                     pathState = 8;
                 }
                 break;
 
-            case 8: // Move to shoot position
+            case 8: // Run to row 3 intake position
                 if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.IntakeRowThree, INTAKE_SPEED, true);
                     pathState = 9;
                 }
                 break;
 
-            case 9: // Shoot row 2 balls
-                if (shootBalls()) {
-                    prepareForIntake();
-                    follower.followPath(paths.RuntwoRowThree, true);
+            case 9: // Intake row 3 (slow) - pre-spin flywheel during intake
+                runIntake();
+                if (!flywheelStarted) {
+                    outtake.setRPM(SHOOT_RPM);
+                    flywheelStarted = true;
+                }
+                if (!follower.isBusy()) {
+                    spindex.setMode(true);
+                    spindex.setIndex(0);
+                    flywheelStarted = false;
+                    follower.followPath(paths.backToShooting, true);
                     pathState = 10;
                 }
                 break;
 
-            case 10: // Run to row 3 intake position
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.IntakeRowThree, INTAKE_SPEED, true);
+            case 10: // Move to shoot position + shoot row 3 balls
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                }
+                if (!follower.isBusy() && shootBalls()) {
+                    shootingPrepared = false;
+                    follower.followPath(paths.LeavePoints, true);
                     pathState = 11;
                 }
                 break;
 
-            case 11: // Intake row 3 (slow)
-                runIntake();
+            case 11: // Leave for points
                 if (!follower.isBusy()) {
-                    prepareForShooting();
-                    follower.followPath(paths.backToShooting, true);
                     pathState = 12;
                 }
                 break;
 
-            case 12: // Move to final shoot position
-                if (!follower.isBusy()) {
-                    pathState = 13;
-                }
-                break;
-
-            case 13: // Shoot final 3 balls
-                if (shootBalls()) {
-                    follower.followPath(paths.LeavePoints, true);
-                    pathState = 14;
-                }
-                break;
-
-            case 14: // Leave for points
-                if (!follower.isBusy()) {
-                    pathState = 15;
-                }
-                break;
-
-            case 15: // Done
+            case 12: // Done
                 outtake.setRPM(0);
                 intake.setPower(0);
                 kicker.down();
-                spindex.exitProgram();
                 requestOpModeStop();
                 break;
 
