@@ -48,6 +48,8 @@ public class BlueShortPath extends OpMode {
     private boolean shootingPrepared = false;
     private boolean flywheelStarted = false;
 
+    private ElapsedTime override = new ElapsedTime();
+
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -122,17 +124,18 @@ public class BlueShortPath extends OpMode {
         spindex.setMode(true);
         // If waiting for spindex to align after advancing
         if (waitingForSpindexAlign) {
-            if (spindex.atTarget(8)) {
+            if (spindex.atTarget() || override.seconds() >= 1.0) {
                 // Spindex reached new position, reset timer and resume shooting
                 outtake.resetKickerCycle();
                 lastKickerCycles = 0;
                 waitingForSpindexAlign = false;
+                override.reset();
             }
             return false;
         }
 
         // Only run kicker cycle when aligned
-        if (spindex.atTarget(8)) {
+        if (spindex.atTarget()) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 
@@ -294,12 +297,12 @@ public class BlueShortPath extends OpMode {
                 if (!follower.isBusy()) {
                     prepareForShooting();
                     pathState = 1;
+                    override.reset();
                 }
                 break;
 
             case 1: // Shoot 3 preloaded balls
                 if (shootBalls()) {
-
                     follower.followPath(paths.RunToRowOne, true);
                     pathState = 2;
                 }
@@ -332,6 +335,7 @@ public class BlueShortPath extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
+                    override.reset();
                 }
                 // Only shoot once path completes and robot is in position
                 if (!follower.isBusy() && shootBalls()) {
@@ -369,6 +373,7 @@ public class BlueShortPath extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
+                    override.reset();
                 }
                 if (!follower.isBusy() && shootBalls()) {
                     shootingPrepared = false;
