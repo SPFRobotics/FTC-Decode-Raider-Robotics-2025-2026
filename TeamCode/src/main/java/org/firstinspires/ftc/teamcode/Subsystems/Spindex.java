@@ -41,6 +41,7 @@ public class Spindex {
     private boolean terminate = false;
     private boolean atTarget = false;
     private boolean ballLatched = false;
+    private double encoderOffset = 0;
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
@@ -127,6 +128,28 @@ public class Spindex {
                 setTargetStatus(true);
             }
         }
+    }
+
+ //calculates offset between absolute and relative encoder
+    public void calibrateOffset() {
+        double absolutePosDeg = spindexPos.getVoltage() / 3.3 * 360.0;
+        double relativePosDeg = (double) spindexMotor.getCurrentPosition() / 537.7 * 360.0;
+        encoderOffset = absolutePosDeg - AngleUnit.normalizeDegrees(relativePosDeg);
+    }
+// Relative encoder pos movement using built-in PIDF
+    public void moveToPosRelative(double target) {
+        currentPos = AngleUnit.normalizeDegrees((double) spindexMotor.getCurrentPosition() / 537.7 * 360.0 + encoderOffset);
+
+        error = AngleUnit.normalizeDegrees(target - currentPos);
+
+        int currentTicks = spindexMotor.getCurrentPosition();
+        int targetTicks = currentTicks + (int) (error / 360.0 * 537.7);
+
+        spindexMotor.setTargetPosition(targetTicks);
+        spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        spindexMotor.setPower(maxPower);
+
+        setTargetStatus(!spindexMotor.isBusy());
     }
 
     public void addIndex(){
