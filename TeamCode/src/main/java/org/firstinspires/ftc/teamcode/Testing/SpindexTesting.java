@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -21,7 +21,7 @@ public class SpindexTesting extends LinearOpMode {
 
         telemetry.setMsTransmissionInterval(1);
 
-        int[] positions = {0, 120, 240};
+        final int[] positions = {0, 120, 240};
         int index = 0;
 
         waitForStart();
@@ -34,8 +34,7 @@ public class SpindexTesting extends LinearOpMode {
             spindex.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             spindex.setPower(1);
             if (gamepad1.aWasPressed()){
-                index++;
-                index %= 3;
+                index = (index+1)%3;
             }
 
             //Telemetry
