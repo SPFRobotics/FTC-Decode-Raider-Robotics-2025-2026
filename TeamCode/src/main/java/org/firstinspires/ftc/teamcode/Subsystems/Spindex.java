@@ -117,10 +117,7 @@ public class Spindex {
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-
-                spindexMotor.setPower(Math.max(power, 0.07));
-
-
+                spindexMotor.setPower(power);
                 setTargetStatus(false);
             }
             else {

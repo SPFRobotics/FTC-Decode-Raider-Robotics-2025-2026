@@ -17,10 +17,11 @@ public class Intake {
     private int encoderCount = 0;
 
     private ElapsedTime clock = new ElapsedTime();
+    private ElapsedTime jamTimer = new ElapsedTime();
     // Constructor - initializes the intake motor
     public Intake(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "IntakeMotor");
-
+        intakeMotor.setCurrentAlert(7.0,  CurrentUnit.AMPS);
         /*
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -40,10 +41,27 @@ public class Intake {
         return intakeMotor.getCurrent(CurrentUnit.AMPS);
     }
 
+    public void intakeOn(){
+        intakeMotor.setPower(1);
 
-    public void intakeOn(){intakeMotor.setPower(1);}
+    }
 
-    public void intakeOff(){intakeMotor.setPower(0);}
+    public void intakeOn(boolean jamDetection){
+        if (intakeMotor.isOverCurrent() && jamDetection){
+            jamTimer.reset();
+        }
+
+        if (jamTimer.seconds() > 1.0){
+            intakeMotor.setPower(1);
+        }
+        else{
+            intakeMotor.setPower(-1);
+        }
+    }
+
+    public void intakeOff(){
+        intakeMotor.setPower(0);
+    }
 
 
     public double getRPM(double encoderRes){

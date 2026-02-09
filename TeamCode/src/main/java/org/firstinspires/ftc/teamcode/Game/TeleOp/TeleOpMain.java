@@ -37,8 +37,9 @@ public class TeleOpMain extends LinearOpMode {
     private Button intakeButton = new Button();
     private Button autoLoad = new Button();
     private double setRPM = 0;
-    private double highestAmps = 0;
     boolean displayDash = false;
+    private boolean intakeReverse = false;
+    ElapsedTime intakeReverseTimer = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -94,7 +95,7 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive()) {
             loopTime.reset();
 
-            //leds.cycleColors(10);
+            leds.cycleColors(10);
             /*************************************Drive Train Control**************************************/
             //Allows speed to be halved
             if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
@@ -117,21 +118,14 @@ public class TeleOpMain extends LinearOpMode {
             /*****************************Intake System************************************/
             boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper);
             if (intakeActive && !gamepad1.left_bumper) {
-                intake.setPower(1);
+                intake.intakeOn(true);
             }
             else if (gamepad1.left_bumper) {
                 intake.setPower(-1);
             }
             else {
                 intake.setPower(0);
-            }
 
-            double currentIntakeAmps = intake.getAmps();
-            if (currentIntakeAmps >= 5.0){
-                leds.setColor(leds.RED, false);
-            }
-            else {
-                leds.setColor(leds.GREEN, false);
             }
             /******************************************************************************/
 
