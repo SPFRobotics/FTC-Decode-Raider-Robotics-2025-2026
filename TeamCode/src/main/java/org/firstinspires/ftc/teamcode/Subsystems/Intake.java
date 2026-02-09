@@ -2,21 +2,24 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 public class Intake {
 
-    public DcMotor intakeMotor = null;
+    public DcMotorEx intakeMotor = null;
     private boolean isActive = false;
     private int encoderCount = 0;
 
     private ElapsedTime clock = new ElapsedTime();
     // Constructor - initializes the intake motor
     public Intake(HardwareMap hardwareMap) {
-        intakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "IntakeMotor");
 
         /*
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -31,6 +34,10 @@ public class Intake {
 
     public double getPower(){
         return intakeMotor.getPower();
+    }
+
+    public double getAmps(){
+        return intakeMotor.getCurrent(CurrentUnit.AMPS);
     }
 
 

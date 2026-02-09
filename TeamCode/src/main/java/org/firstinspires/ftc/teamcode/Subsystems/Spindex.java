@@ -48,8 +48,8 @@ public class Spindex {
     @Config
     public static class SpindexValues{
         public static double maxPower = 1;
-        public static double Threshold = 150;
-        public static double tolorence = 8;
+        public static double Threshold = 100;
+        public static double tolorence = 3;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
 
@@ -103,16 +103,23 @@ public class Spindex {
 
             error = AngleUnit.normalizeDegrees(target - currentPos);
 
+
+
             double sign = Math.signum(error);
 
             double kp = maxPower/Threshold;
+
+            double power = error * kp;
 
             if (Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                spindexMotor.setPower(error * kp);
+
+                spindexMotor.setPower(Math.max(power, 0.07));
+
+
                 setTargetStatus(false);
             }
             else {

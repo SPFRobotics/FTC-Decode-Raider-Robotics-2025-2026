@@ -37,6 +37,7 @@ public class TeleOpMain extends LinearOpMode {
     private Button intakeButton = new Button();
     private Button autoLoad = new Button();
     private double setRPM = 0;
+    private double highestAmps = 0;
     boolean displayDash = false;
 
     @Override
@@ -93,7 +94,7 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive()) {
             loopTime.reset();
 
-            leds.cycleColors(10);
+            //leds.cycleColors(10);
             /*************************************Drive Train Control**************************************/
             //Allows speed to be halved
             if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
@@ -123,6 +124,14 @@ public class TeleOpMain extends LinearOpMode {
             }
             else {
                 intake.setPower(0);
+            }
+
+            double currentIntakeAmps = intake.getAmps();
+            if (currentIntakeAmps >= 5.0){
+                leds.setColor(leds.RED, false);
+            }
+            else {
+                leds.setColor(leds.GREEN, false);
             }
             /******************************************************************************/
 
@@ -203,6 +212,8 @@ public class TeleOpMain extends LinearOpMode {
                     telemetry = driverHub;
                     displayDash = true;
                 }
+
+                /*
                 telemetry.setMsTransmissionInterval(16);
 
                 telemetry.addLine("==========================================");
@@ -223,9 +234,9 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Right Pod", backRightDrive.getCurrentPosition());
                 telemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
                 telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
-                //telemetry.addData("Spindex RelPos", spindex.getRelPos());
                 telemetry.addLine("==========================================");
                 telemetry.update();
+                 */
             }
         }
         //Tells spindex thread to end execution
