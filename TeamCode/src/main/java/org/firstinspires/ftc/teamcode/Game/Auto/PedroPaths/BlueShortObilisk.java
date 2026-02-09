@@ -200,6 +200,7 @@ public class BlueShortObilisk extends OpMode {
     }
 
 
+
     public static class Paths {
         public PathChain ReadObilisk;
         public PathChain shootBallOne;
@@ -235,7 +236,7 @@ public class BlueShortObilisk extends OpMode {
             RunToRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(57.674, 86.442),
-                                    new Pose(64.687, 65.185),
+                                    new Pose(51.231, 89.286),
                                     new Pose(43.525, 84.432)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
@@ -256,7 +257,7 @@ public class BlueShortObilisk extends OpMode {
                             new BezierCurve(
                                     new Pose(16.594, 84.000),
                                     new Pose(46.804, 84.684),
-                                    new Pose(50.268, 74.719),
+                                    new Pose(53.281, 81.949),
                                     new Pose(57.488, 86.140)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
@@ -287,7 +288,7 @@ public class BlueShortObilisk extends OpMode {
                             new BezierCurve(
                                     new Pose(17.607, 59.406),
                                     new Pose(23.994, 58.006),
-                                    new Pose(52.095, 64.834),
+                                    new Pose(48.078, 64.834),
                                     new Pose(57.488, 85.953)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
@@ -297,7 +298,7 @@ public class BlueShortObilisk extends OpMode {
             LeavePoints = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(57.488, 85.953),
-                                    new Pose(52.756, 75.819),
+                                    new Pose(49.743, 76.020),
                                     new Pose(39.706, 71.911)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
@@ -305,7 +306,6 @@ public class BlueShortObilisk extends OpMode {
                     .build();
         }
     }
-
 
 
     public void autonomousPathUpdate() {
