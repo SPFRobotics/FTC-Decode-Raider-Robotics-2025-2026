@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
 import static org.firstinspires.ftc.teamcode.Testing.SpindexTuning.SpindexTuningConfig.kD;
-import static org.firstinspires.ftc.teamcode.Testing.SpindexTuning.SpindexTuningConfig.kF;
 import static org.firstinspires.ftc.teamcode.Testing.SpindexTuning.SpindexTuningConfig.kI;
 import static org.firstinspires.ftc.teamcode.Testing.SpindexTuning.SpindexTuningConfig.kP;
 import static org.firstinspires.ftc.teamcode.Testing.SpindexTuning.SpindexTuningConfig.maxPower;
@@ -14,10 +13,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 
-@TeleOp(name = "Spindex PIDF Tuning", group = "Testing")
+@TeleOp(name = "Spindex PID Tuning", group = "Testing")
 public class SpindexTuning extends OpMode {
 
 
@@ -26,9 +25,7 @@ public class SpindexTuning extends OpMode {
         public static double kP = 10.0;
         public static double kI = 0.0;
         public static double kD = 0.0;
-        public static double kF = 0.0;
         public static double maxPower = 0.5;
-
     }
 
 
@@ -49,15 +46,15 @@ public class SpindexTuning extends OpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.setMsTransmissionInterval(20);
 
-
         telemetry.update();
     }
 
     @Override
     public void loop() {
-        spindexMotor.setPIDFCoefficients(
+        // RUN_TO_POSITION only supports PID (no F term) on the REV Hub
+        spindexMotor.setPIDCoefficients(
                 DcMotor.RunMode.RUN_TO_POSITION,
-                new PIDFCoefficients(kP, kI, kD, kF)
+                new PIDCoefficients(kP, kI, kD)
         );
 
         spindexMotor.setTargetPosition(0);
@@ -67,7 +64,7 @@ public class SpindexTuning extends OpMode {
         int error = -currentPos; // target (0) minus current
         double currentDeg = (currentPos / TICKS_PER_REV) * 360.0;
         double motorPower = spindexMotor.getPower();
-        PIDFCoefficients activePIDF = spindexMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+        PIDCoefficients activePID = spindexMotor.getPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
 
         telemetry.addData("Position (ticks)", currentPos);
         telemetry.addData("Position (deg)", "%.1f", currentDeg);
@@ -75,8 +72,8 @@ public class SpindexTuning extends OpMode {
         telemetry.addData("Motor Power", "%.3f", motorPower);
         telemetry.addData("At Home?", !spindexMotor.isBusy());
         telemetry.addLine();
-        telemetry.addData("PIDF", "P=%.2f  I=%.4f  D=%.4f  F=%.4f",
-                activePIDF.p, activePIDF.i, activePIDF.d, activePIDF.f);
+        telemetry.addData("PID", "P=%.2f  I=%.4f  D=%.4f",
+                activePID.p, activePID.i, activePID.d);
         telemetry.addData("Max Power", maxPower);
         telemetry.update();
     }
