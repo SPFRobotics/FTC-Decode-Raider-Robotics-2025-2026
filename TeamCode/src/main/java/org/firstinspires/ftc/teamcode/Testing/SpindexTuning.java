@@ -22,10 +22,10 @@ public class SpindexTuning extends OpMode {
 
     @Config
     public static class SpindexTuningConfig {
-        public static double kP = 10.0;
-        public static double kI = 0.0;
+        public static double kP = 20;
+        public static double kI = 0.04;
         public static double kD = 0.0;
-        public static double maxPower = 0.5;
+        public static double maxPower = 1;
     }
 
 
