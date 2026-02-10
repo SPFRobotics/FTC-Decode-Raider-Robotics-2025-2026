@@ -31,6 +31,7 @@ public class SpindexTuning extends OpMode {
 
     private DcMotorEx spindexMotor;
     private static final double TICKS_PER_REV = 537.7;
+    private int targetPosition = 0;
 
     @Override
     public void init() {
@@ -57,11 +58,17 @@ public class SpindexTuning extends OpMode {
                 new PIDCoefficients(kP, kI, kD)
         );
 
-        spindexMotor.setTargetPosition(0);
+        if (gamepad1.right_bumper) {
+            targetPosition = 500;
+        } else if (gamepad1.left_bumper) {
+            targetPosition = 0;
+        }
+
+        spindexMotor.setTargetPosition(targetPosition);
         spindexMotor.setPower(maxPower);
 
         int currentPos = spindexMotor.getCurrentPosition();
-        int error = -currentPos; // target (0) minus current
+        int error = targetPosition - currentPos;
         double currentDeg = (currentPos / TICKS_PER_REV) * 360.0;
         double motorPower = spindexMotor.getPower();
         PIDCoefficients activePID = spindexMotor.getPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
@@ -70,7 +77,8 @@ public class SpindexTuning extends OpMode {
         telemetry.addData("Position (deg)", "%.1f", currentDeg);
         telemetry.addData("Error (ticks)", error);
         telemetry.addData("Motor Power", "%.3f", motorPower);
-        telemetry.addData("At Home?", !spindexMotor.isBusy());
+        telemetry.addData("Target (ticks)", targetPosition);
+        telemetry.addData("At Target?", !spindexMotor.isBusy());
         telemetry.addLine();
         telemetry.addData("PID", "P=%.2f  I=%.4f  D=%.4f",
                 activePID.p, activePID.i, activePID.d);
