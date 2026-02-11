@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -19,6 +20,7 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.Threshold;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.launchTime;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.maxPower;
+import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.pid;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.tolorence;
 import static java.lang.Thread.sleep;
 
@@ -49,13 +51,16 @@ public class Spindex {
     public static class SpindexValues{
         public static double maxPower = 1;
         public static double Threshold = 63.75;
+
+        //For abs and rel
+        public static double[] pid = {10, 10, 0.02};
         public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
 
         //Distance/Color sensor
         //Old value is 3.3
-        public static double ballDistanceThreshold = 3.3;
+        public static double ballDistanceThreshold = 3;
         public static double ballReleaseThreshold = 4.0;
         public static double spindexPowerThreshold = 0.1;
         public static double launchTime = 900;
@@ -183,7 +188,7 @@ public class Spindex {
 
             spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError));
             spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindexMotor.setVelocityPIDFCoefficients(10, 10, 0.02, 0);
+            spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients(pid[0], pid[1], pid[2]));
             spindexMotor.setPower(1);
 
         }
@@ -193,13 +198,11 @@ public class Spindex {
     }
 
     public void addIndex(){
-        index++;
-        index = Math.floorMod(index, 3);
+        index = Math.floorMod(index+1, 3);
     }
 
     public void subtractIndex(){
-        index--;
-        index = Math.floorMod(index, 3);
+        index = Math.floorMod(index-1, 3);
     }
 
     public void setIndex(int i){
