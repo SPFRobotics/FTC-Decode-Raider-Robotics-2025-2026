@@ -30,11 +30,11 @@ public class Spindex {
 
     //Stores weather the class is using a motor or servo
     //Stores position and current index of spindex
-    private
-    static int index = 0;
+    private static int index = 0;
     private double threadLoopTime = 0;
     private double currentPos = 0;
     private double error = 0;
+    private double offset = 0;
     private boolean outtakeMode = false;
     private boolean autoLoadMode = false;
     private boolean autoLaunchMode = false;
@@ -69,6 +69,7 @@ public class Spindex {
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
+        offset = spindexPos.getVoltage()/3.3*360;
         index = 0;
     }
 
@@ -119,6 +120,75 @@ public class Spindex {
                 spindexMotor.setPower(0);
                 setTargetStatus(true);
             }
+        }
+    }
+
+    //Overloaded method that contains three options in order to maintain compatibility with older programs while adding support for using the abs and relative encoders together.
+    /*
+    Modes:
+    1 - Spindex uses the built in motor encoder and is controlled with setPower() and the custom made P controller
+    2 - Spindex uses the absolute encoder with setPower() and the custom made P controller
+    3 - Spindex uses the absolute encoder with the built in motor encoder. This uses the built in PID controller FTC provides within their SDK to control the motor.
+    */
+    public void moveToPos(double target, int mode) {
+        if (mode == 1){
+            currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/537.7*360);
+
+            error = AngleUnit.normalizeDegrees(target - currentPos);
+
+            double sign = Math.signum(error);
+
+            double kp = maxPower/Threshold;
+
+            if(Math.abs(error) > Threshold){
+                spindexMotor.setPower(maxPower * sign);
+                setTargetStatus(false);
+            }
+            else if (Math.abs(error) > tolorence) {
+                spindexMotor.setPower(error * kp);
+                setTargetStatus(false);
+
+            }
+            else {
+                spindexMotor.setPower(0);
+                setTargetStatus(true);
+            }
+        }
+        else if (mode == 2){
+            currentPos = spindexPos.getVoltage()/3.3*360.0;
+
+            error = AngleUnit.normalizeDegrees(target - currentPos);
+
+            double sign = Math.signum(error);
+
+            double kp = maxPower/(Threshold);
+
+            if (Math.abs(error) > Threshold){
+                spindexMotor.setPower(maxPower * sign);
+                setTargetStatus(false);
+            }
+            else if (Math.abs(error) > tolorence) {
+                spindexMotor.setPower(error * kp);
+                setTargetStatus(false);
+            }
+            else {
+                spindexMotor.setPower(0);
+                setTargetStatus(true);
+            }
+        }
+        else if (mode == 3){
+            double relPos = Math.floorMod((int)(((spindexMotor.getCurrentPosition()/537.7*360)+offset)), 360);
+            double error = AngleUnit.normalizeDegrees(target - relPos);
+            double ticksError = error/537.7*360;
+
+            spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError));
+            spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            spindexMotor.setVelocityPIDFCoefficients(10, 10, 0.02, 0);
+            spindexMotor.setPower(1);
+
+        }
+        else{
+            throw new RuntimeException("The mode of Spindex operation is not an option!");
         }
     }
 
