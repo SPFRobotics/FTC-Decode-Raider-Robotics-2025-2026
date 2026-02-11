@@ -43,7 +43,7 @@ public class SpindexTesting extends LinearOpMode {
 
             spindex.setTargetPosition((int)(spindex.getCurrentPosition()+ticksError));
             spindex.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindex.setVelocityPIDFCoefficients(8, 0.325, 0, 0);
+            spindex.setVelocityPIDFCoefficients(10, 10, 0.02, 0);
             spindex.setPower(1);
 
             if (gamepad1.aWasPressed()){

@@ -48,6 +48,9 @@ public class BlueShortPath extends OpMode {
     private boolean shootingPrepared = false;
     private boolean flywheelStarted = false;
 
+    //In order for feature that will unjam to ball to work correctly, it must be run in a loop. This variable is only used to enable and disable the intake and nothing more.
+    private boolean intakeEnabled = false;
+
     private ElapsedTime override = new ElapsedTime();
 
     @Override
@@ -80,7 +83,7 @@ public class BlueShortPath extends OpMode {
         ballsLoaded = 0;
         lastKickerCycles = 0;
 
-        intake.intakeOn();
+        intakeEnabled = true;
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
         follower.followPath(paths.shootBallOne, true);
@@ -95,6 +98,12 @@ public class BlueShortPath extends OpMode {
     @Override
     public void loop() {
         ElapsedTime time = new ElapsedTime();
+        if (intakeEnabled) {
+            intake.intakeOn(true);
+        }
+        else {
+            intake.intakeOff();
+        }
         follower.update();
         leds.cycleColors(10);
         autonomousPathUpdate();
@@ -391,14 +400,14 @@ public class BlueShortPath extends OpMode {
 
             case 9: // Done
                 outtake.setRPM(0);
-                intake.setPower(0);
+                intakeEnabled = false;
                 kicker.down();
                 requestOpModeStop();
                 break;
 
             default:
                 outtake.setRPM(0);
-                intake.setPower(0);
+                intakeEnabled = false;
                 break;
         }
     }
