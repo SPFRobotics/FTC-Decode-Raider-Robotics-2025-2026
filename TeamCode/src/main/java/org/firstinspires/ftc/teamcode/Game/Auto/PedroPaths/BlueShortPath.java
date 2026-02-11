@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -80,16 +80,16 @@ public class BlueShortPath extends OpMode {
         ballsLoaded = 0;
         lastKickerCycles = 0;
 
-        intake.setPower(1);
+        intake.intakeOn();
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
         follower.followPath(paths.shootBallOne, true);
-        //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
-        //updateSpindex.start();
+        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        updateSpindex.start();
     }
 
     public void stop(){
-        //spindex.exitProgram();
+        spindex.exitProgram();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class BlueShortPath extends OpMode {
         follower.update();
         leds.cycleColors(10);
         autonomousPathUpdate();
-        updateSpindexPosition();
+        //updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -109,6 +109,7 @@ public class BlueShortPath extends OpMode {
         panelsTelemetry.debug("RPM", outtake.getRPM());
         panelsTelemetry.debug("Is Busy", follower.isBusy());
         panelsTelemetry.debug("Loop Time", time.milliseconds());
+        panelsTelemetry.debug("Error", spindex.getError());
         panelsTelemetry.update(telemetry);
     }
 

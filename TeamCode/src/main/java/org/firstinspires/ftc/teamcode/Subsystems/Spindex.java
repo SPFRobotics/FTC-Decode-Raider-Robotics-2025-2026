@@ -40,17 +40,16 @@ public class Spindex {
     private boolean autoLaunchMode = false;
     private boolean terminate = false;
     private boolean atTarget = false;
-    private boolean ballLatched = false;
-    private double encoderOffset = 0;
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
     private boolean[] slotStatus = {false, false, false};
+    private boolean ballLatched = false;
     @Config
     public static class SpindexValues{
         public static double maxPower = 1;
-        public static double Threshold = 100;
-        public static double tolorence = 3;
+        public static double Threshold = 63.75;
+        public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
 
@@ -104,20 +103,16 @@ public class Spindex {
 
             error = AngleUnit.normalizeDegrees(target - currentPos);
 
-
-
             double sign = Math.signum(error);
 
-            double kp = maxPower/Threshold;
-
-            double power = error * kp;
+            double kp = maxPower/(Threshold);
 
             if (Math.abs(error) > Threshold){
                 spindexMotor.setPower(maxPower * sign);
                 setTargetStatus(false);
             }
             else if (Math.abs(error) > tolorence) {
-                spindexMotor.setPower(power);
+                spindexMotor.setPower(error * kp);
                 setTargetStatus(false);
             }
             else {
@@ -125,28 +120,6 @@ public class Spindex {
                 setTargetStatus(true);
             }
         }
-    }
-
- //calculates offset between absolute and relative encoder
-    public void calibrateOffset() {
-        double absolutePosDeg = spindexPos.getVoltage() / 3.3 * 360.0;
-        double relativePosDeg = (double) spindexMotor.getCurrentPosition() / 537.7 * 360.0;
-        encoderOffset = absolutePosDeg - AngleUnit.normalizeDegrees(relativePosDeg);
-    }
-// Relative encoder pos movement using built-in PIDF
-    public void moveToPosRelative(double target) {
-        currentPos = AngleUnit.normalizeDegrees((double) spindexMotor.getCurrentPosition() / 537.7 * 360.0 + encoderOffset);
-
-        error = AngleUnit.normalizeDegrees(target - currentPos);
-
-        int currentTicks = spindexMotor.getCurrentPosition();
-        int targetTicks = currentTicks + (int) (error / 360.0 * 537.7);
-
-        spindexMotor.setTargetPosition(targetTicks);
-        spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        spindexMotor.setPower(maxPower);
-
-        setTargetStatus(!spindexMotor.isBusy());
     }
 
     public void addIndex(){
@@ -192,6 +165,7 @@ public class Spindex {
 
     public void clearBall(int index){
         slotStatus[index] = false;
+        ballLatched = false;
     }
 
     public boolean[] getSlotStatus(){
@@ -201,12 +175,12 @@ public class Spindex {
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
 
-        // Release the latch only once the sensor reads clear (no wall, no ball)
+        // Latch releases only when sensor reads far enough (ball has cleared)
         if (ballDistance > SpindexValues.ballReleaseThreshold) {
             ballLatched = false;
         }
 
-        // Detect a ball only when unlatched, spindex is settled, and sensor reads close
+        // Detect a new ball only when unlocked, spindex is settled, and sensor reads close
         if (!ballLatched && !getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
             addBall(getIndex());
             ballLatched = true;
@@ -309,6 +283,10 @@ public class Spindex {
     }
 
     public boolean atTarget(){
+        return Math.abs(error) <= tolorence;
+    }
+
+    public boolean atTarget(int tolorence){
         return Math.abs(error) <= tolorence;
     }
 }

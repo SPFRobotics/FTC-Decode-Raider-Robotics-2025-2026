@@ -66,7 +66,6 @@ public class Intake {
         intakeMotor.setPower(0);
     }
 
-
     public double getRPM(double encoderRes){
         int currentPos = intakeMotor.getCurrentPosition();
         int deltaTicks = currentPos - encoderCount;

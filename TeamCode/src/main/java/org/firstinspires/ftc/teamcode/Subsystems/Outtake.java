@@ -46,16 +46,12 @@ public class Outtake {
     private KickerCycleState kickerState = KickerCycleState.IDLE;
     private ElapsedTime kickerStateTimer = new ElapsedTime();
 
-
     //The "E"ncoder "R"esolution our current motor runs at.
     int motorER = 28;
 
     private ElapsedTime clock = new ElapsedTime();
     //Interval in seconds of outtake cycle
     private ElapsedTime interval = new ElapsedTime();
-
-    double time = interval.seconds();
-
     // Constructor - initializes the intake motor
 
 
@@ -154,6 +150,7 @@ public class Outtake {
 
 
     public void enableSpindexKickerCycle(boolean x, double RPM){
+        double time = interval.seconds();
         if (x){
             // Phase 1: Wait for flywheel RPM, then kick up and start the timer
             if (!launched && getRPM() >= RPM - 500){
@@ -162,7 +159,7 @@ public class Outtake {
                 interval.reset(); // Timer starts when kick actually begins
             }
             // Phase 2: After a full 200ms of kick travel, bring it back down
-            else if (launched && time >= .4){
+            else if (launched && time >= .3){
                 kickerSpindex.down();
                 kickerCycleCount++;
                 launched = false;
