@@ -203,6 +203,7 @@ public class BlueShortRampEmpty extends OpMode {
     }
 
 
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -248,8 +249,8 @@ public class BlueShortRampEmpty extends OpMode {
             ClearRamp = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(16.594, 84.000),
-                                    new Pose(29.775, 72.367),
-                                    new Pose(12.391, 70.074)
+                                    new Pose(25.666, 76.886),
+                                    new Pose(14.856, 75.210)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -257,7 +258,7 @@ public class BlueShortRampEmpty extends OpMode {
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(12.391, 70.074),
+                                    new Pose(14.856, 75.210),
                                     new Pose(50.268, 79.855),
                                     new Pose(57.488, 86.140)
                             )
@@ -308,6 +309,7 @@ public class BlueShortRampEmpty extends OpMode {
                     .build();
         }
     }
+
 
 
 
