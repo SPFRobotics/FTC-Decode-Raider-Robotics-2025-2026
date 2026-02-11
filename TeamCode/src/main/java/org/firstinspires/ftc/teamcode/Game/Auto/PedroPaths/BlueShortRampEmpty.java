@@ -52,6 +52,8 @@ public class BlueShortRampEmpty extends OpMode {
     private boolean intakeEnabled = false;
 
     private ElapsedTime override = new ElapsedTime();
+    private ElapsedTime clearRampTimer = new ElapsedTime();
+    private boolean clearRampWaiting = false;
 
     @Override
     public void init() {
@@ -355,10 +357,17 @@ public class BlueShortRampEmpty extends OpMode {
             case 4: // Clear ramp (empty ramp) - continue intaking
                 runIntake();
                 if (!follower.isBusy()) {
-                    spindex.setMode(true);
-                    spindex.setIndex(0);
-                    follower.followPath(paths.shootRowOne, true);
-                    pathState = 5;
+                    if (!clearRampWaiting) {
+                        clearRampTimer.reset();
+                        clearRampWaiting = true;
+                    }
+                    if (clearRampTimer.milliseconds() >= 500) {
+                        clearRampWaiting = false;
+                        spindex.setMode(true);
+                        spindex.setIndex(0);
+                        follower.followPath(paths.shootRowOne, true);
+                        pathState = 5;
+                    }
                 }
                 break;
 
