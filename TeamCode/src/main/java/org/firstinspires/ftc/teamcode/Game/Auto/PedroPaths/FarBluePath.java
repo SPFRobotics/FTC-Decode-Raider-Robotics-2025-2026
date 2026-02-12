@@ -211,9 +211,6 @@ public class FarBluePath extends OpMode {
         public PathChain RuntoRowTwo;
         public PathChain intakeRowTwo;
         public PathChain shootRowTwo;
-        public PathChain RuntwoRowThree;
-        public PathChain IntakeRowThree;
-        public PathChain backToShooting;
         public PathChain LeavePoints;
 
         public Paths(Follower follower) {
@@ -230,8 +227,8 @@ public class FarBluePath extends OpMode {
             RunToRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(56.000, 12.000),
-                                    new Pose(56.000, 36.000),
-                                    new Pose(56.000, 36.000),
+                                    new Pose(58.951, 36.590),
+                                    new Pose(44.984, 33.246),
                                     new Pose(44.000, 36.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(111), Math.toRadians(180))
@@ -251,8 +248,8 @@ public class FarBluePath extends OpMode {
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(18.841, 35.598),
-                                    new Pose(33.000, 36.000),
-                                    new Pose(32.000, 12.000),
+                                    new Pose(28.082, 23.803),
+                                    new Pose(34.361, 12.393),
                                     new Pose(56.000, 12.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(111))
@@ -262,9 +259,8 @@ public class FarBluePath extends OpMode {
             RuntoRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(56.000, 12.000),
-                                    new Pose(56.000, 62.000),
-                                    new Pose(56.000, 62.000),
-                                    new Pose(44.000, 62.000)
+                                    new Pose(55.213, 44.295),
+                                    new Pose(43.607, 58.852)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(111), Math.toRadians(180))
 
@@ -272,9 +268,8 @@ public class FarBluePath extends OpMode {
 
             intakeRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(44.000, 62.000),
-                                    new Pose(32.000, 62.000),
-                                    new Pose(33.000, 58.000),
+                                    new Pose(43.607, 58.852),
+                                    new Pose(33.787, 59.770),
                                     new Pose(18.841, 59.808)
                             )
                     ).setTangentHeadingInterpolation()
@@ -284,39 +279,9 @@ public class FarBluePath extends OpMode {
             shootRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(18.841, 59.808),
-                                    new Pose(48.000, 58.000),
-                                    new Pose(55.799, 47.397),
+                                    new Pose(37.967, 47.180),
+                                    new Pose(46.553, 25.561),
                                     new Pose(56.000, 12.000)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(111))
-
-                    .build();
-
-            RuntwoRowThree = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(56.000, 12.000),
-                                    new Pose(75.885, 44.023),
-                                    new Pose(39.100, 83.653)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(111), Math.toRadians(180))
-
-                    .build();
-
-            IntakeRowThree = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(39.100, 83.653),
-
-                                    new Pose(16.138, 83.598)
-                            )
-                    ).setTangentHeadingInterpolation()
-
-                    .build();
-
-            backToShooting = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(16.138, 83.598),
-                                    new Pose(75.768, 55.280),
-                                    new Pose(56.234, 8.904)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(111))
 
@@ -324,15 +289,16 @@ public class FarBluePath extends OpMode {
 
             LeavePoints = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(56.234, 8.904),
-                                    new Pose(80.531, 65.805),
-                                    new Pose(27.059, 69.259)
+                                    new Pose(56.000, 12.000),
+                                    new Pose(52.007, 62.068),
+                                    new Pose(22.059, 69.259)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(111), Math.toRadians(180))
 
                     .build();
         }
     }
+
 
 
 
