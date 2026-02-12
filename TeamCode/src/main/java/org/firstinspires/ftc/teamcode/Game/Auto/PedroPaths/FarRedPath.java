@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 @Configurable
 public class FarRedPath extends OpMode {
 
-    private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
+    private static final double SHOOT_RPM = Outtake.OuttakeConfig.farRPM;
     private static final double INTAKE_SPEED = 0.25;
 
     private TelemetryManager panelsTelemetry;
