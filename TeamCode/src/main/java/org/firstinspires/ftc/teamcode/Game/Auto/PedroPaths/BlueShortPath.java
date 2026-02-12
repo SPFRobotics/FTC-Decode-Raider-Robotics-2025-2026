@@ -205,6 +205,7 @@ public class BlueShortPath extends OpMode {
 
 
 
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -279,8 +280,8 @@ public class BlueShortPath extends OpMode {
             shootRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(11.983, 58.803),
-                                    new Pose(23.994, 58.006),
-                                    new Pose(46.193, 77.818),
+                                    new Pose(33.830, 57.809),
+                                    new Pose(54.455, 76.834),
                                     new Pose(50.406, 93.232)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
@@ -298,7 +299,6 @@ public class BlueShortPath extends OpMode {
                     .build();
         }
     }
-
 
 
 
