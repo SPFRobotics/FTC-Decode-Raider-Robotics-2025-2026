@@ -134,7 +134,7 @@ public class BlueShortPath extends OpMode {
         spindex.setMode(true);
         // If waiting for spindex to align after advancing
         if (waitingForSpindexAlign) {
-            if (spindex.atTarget()) {
+            if (!spindex.isBusy()) {
                 // Spindex reached new position, reset timer and resume shooting
                 outtake.resetKickerCycle();
                 lastKickerCycles = 0;
@@ -145,7 +145,7 @@ public class BlueShortPath extends OpMode {
         }
 
         // Only run kicker cycle when aligned
-        if (spindex.atTarget()) {
+        if (!spindex.isBusy()) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 
