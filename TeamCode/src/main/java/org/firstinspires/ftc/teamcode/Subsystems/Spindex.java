@@ -42,6 +42,7 @@ public class Spindex {
     private boolean autoLaunchMode = false;
     private boolean terminate = false;
     private boolean atTarget = false;
+    private boolean absAndRelInitialized = false;
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColorStatus = {'E', 'E', 'E'};
@@ -74,7 +75,6 @@ public class Spindex {
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
-        offset = (spindexPos.getVoltage()/3.3*360);
         index = 0;
     }
 
@@ -126,6 +126,11 @@ public class Spindex {
                 setTargetStatus(true);
             }
         }
+    }
+
+    public void initAbsAndRel(){
+        offset = (spindexPos.getVoltage()/3.3*360);
+        absAndRelInitialized = true;
     }
 
     //Overloaded method that contains three options in order to maintain compatibility with older programs while adding support for using the abs and relative encoders together.
@@ -182,6 +187,9 @@ public class Spindex {
             }
         }
         else if (mode == 3){
+            if (!absAndRelInitialized){
+                throw new RuntimeException("You are working with no offset, please initialize the offset with initAbsAndRel()!");
+            }
             double relPos = Math.floorMod((int)(((spindexMotor.getCurrentPosition()/537.7*360)+offset)), 360);
             double error = AngleUnit.normalizeDegrees(target - relPos);
             double ticksError = error/537.7*360;

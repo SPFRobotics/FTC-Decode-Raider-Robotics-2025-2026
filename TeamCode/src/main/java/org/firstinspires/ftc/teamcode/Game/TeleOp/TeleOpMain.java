@@ -87,6 +87,7 @@ public class TeleOpMain extends LinearOpMode {
             leds.cycleColors(10);
         }
         waitForStart();
+        spindex.initAbsAndRel();
         /*if (opModeIsActive()){
             updateSpindex.start();
         }*/
@@ -95,7 +96,6 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive()) {
             loopTime.reset();
 
-            leds.cycleColors(10);
             /*************************************Drive Train Control**************************************/
             //Allows speed to be halved
             if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
@@ -159,9 +159,11 @@ public class TeleOpMain extends LinearOpMode {
 
             if (spindex.isOuttakeing()){
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
+                leds.setColor(leds.GREEN);
             }
             else{
                 spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
+                leds.setColor(leds.BLUE);
             }
 
             //Controls gamepad rumble
@@ -207,7 +209,7 @@ public class TeleOpMain extends LinearOpMode {
                     displayDash = true;
                 }
 
-                /*
+
                 telemetry.setMsTransmissionInterval(16);
 
                 telemetry.addLine("==========================================");
@@ -229,8 +231,8 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
                 telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
                 telemetry.addLine("==========================================");
+                telemetry.addLine("Spindex Mode: " + (spindex.isOuttakeing() ? "Outtake" : "Intake"));
                 telemetry.update();
-                 */
             }
         }
         //Tells spindex thread to end execution

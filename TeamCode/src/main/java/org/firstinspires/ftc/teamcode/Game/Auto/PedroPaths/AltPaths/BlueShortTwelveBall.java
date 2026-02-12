@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.AltPaths;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
@@ -21,6 +22,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+
+import java.lang.annotation.ElementType;
 
 @Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
 @Configurable
@@ -51,6 +54,8 @@ public class BlueShortTwelveBall extends OpMode {
     //In order for feature that will unjam to ball to work correctly, it must be run in a loop. This variable is only used to enable and disable the intake and nothing more.
     private boolean intakeEnabled = false;
 
+    ElapsedTime timer = null;
+
     private ElapsedTime override = new ElapsedTime();
 
     @Override
@@ -72,12 +77,18 @@ public class BlueShortTwelveBall extends OpMode {
         outtake.resetKickerCycle();
         kicker.down();
 
+        FtcDashboard dash = FtcDashboard.getInstance();
+        telemetry = dash.getTelemetry();
+        telemetry.setMsTransmissionInterval(1);
+
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
     }
 
     @Override
     public void start() {
+        timer = new ElapsedTime();
+        spindex.initAbsAndRel();
         pathState = 0;
         shotsFired = 0;
         ballsLoaded = 0;
@@ -119,7 +130,10 @@ public class BlueShortTwelveBall extends OpMode {
         panelsTelemetry.debug("Is Busy", follower.isBusy());
         panelsTelemetry.debug("Loop Time", time.milliseconds());
         panelsTelemetry.debug("Error", spindex.getError());
-        panelsTelemetry.update(telemetry);
+        //panelsTelemetry.update(telemetry);
+
+        telemetry.addLine("Timer: " + timer.milliseconds());
+        telemetry.update();
     }
 
     private void updateSpindexPosition() {
