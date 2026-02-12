@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
-@Autonomous(name = "Blue Short", group = "Autonomous")
+@Autonomous(name = "Blue Far", group = "Autonomous")
 @Configurable
 public class FarBluePath extends OpMode {
 

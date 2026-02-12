@@ -254,7 +254,7 @@ public class Spindex {
         }
 
         // Detect a new ball only when unlocked, spindex is settled, and sensor reads close
-        if (!ballLatched && !getSlotStatus()[getIndex()] && !isOuttakeing() && getPower() < 0.2 && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
+        if (!ballLatched && !getSlotStatus()[getIndex()] && !isOuttakeing() && !isBusy() && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
             addBall(getIndex());
             ballLatched = true;
         }
