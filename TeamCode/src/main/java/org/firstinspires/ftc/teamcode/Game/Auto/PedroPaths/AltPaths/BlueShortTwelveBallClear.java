@@ -209,6 +209,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
 
 
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -255,10 +256,10 @@ public class BlueShortTwelveBallClear extends OpMode {
                     .build();
 
             ClearRamp = follower.pathBuilder().addPath(
-                            new BezierCurve(
+                            new BezierLine(
                                     new Pose(21.315, 83.803),
-                                    new Pose(23.293, 79.141),
-                                    new Pose(16.287, 72.775)
+
+                                    new Pose(15.414, 77.508)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
 
@@ -266,7 +267,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(16.287, 72.775),
+                                    new Pose(15.414, 77.508),
                                     new Pose(43.580, 78.653),
                                     new Pose(50.210, 94.008)
                             )
@@ -346,6 +347,7 @@ public class BlueShortTwelveBallClear extends OpMode {
                     .build();
         }
     }
+
 
 
 
