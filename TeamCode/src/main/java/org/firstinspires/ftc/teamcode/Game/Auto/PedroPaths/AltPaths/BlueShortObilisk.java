@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.AltPaths;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -7,7 +7,7 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -22,9 +22,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
-@Autonomous(name = "Blue Short (Ramp Empty)", group = "Autonomous")
+@Autonomous(name = "Blue Short OBL", group = "Autonomous")
 @Configurable
-public class BlueShortRampEmpty extends OpMode {
+public class BlueShortObilisk extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final double INTAKE_SPEED = 0.25;
@@ -40,6 +40,7 @@ public class BlueShortRampEmpty extends OpMode {
     private KickerSpindex kicker;
     private ColorFetch colorSensor;
     private LedLights leds = null;
+    private Limelight limelight;
 
     private int shotsFired = 0;
     private int ballsLoaded = 0;
@@ -48,12 +49,11 @@ public class BlueShortRampEmpty extends OpMode {
     private boolean shootingPrepared = false;
     private boolean flywheelStarted = false;
 
-    //In order for feature that will unjam to ball to work correctly, it must be run in a loop. This variable is only used to enable and disable the intake and nothing more.
-    private boolean intakeEnabled = false;
+    private int detectedMotifId = -1;
+    private static final double OBELISK_READ_TIMEOUT_MS = 2000;
+    private ElapsedTime obeliskReadTimer = new ElapsedTime();
 
     private ElapsedTime override = new ElapsedTime();
-    private ElapsedTime clearRampTimer = new ElapsedTime();
-    private boolean clearRampWaiting = false;
 
     @Override
     public void init() {
@@ -69,6 +69,7 @@ public class BlueShortRampEmpty extends OpMode {
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
+        limelight = new Limelight(hardwareMap);
 
         spindex.setAutoLoadMode(true);
         outtake.resetKickerCycle();
@@ -84,34 +85,28 @@ public class BlueShortRampEmpty extends OpMode {
         shotsFired = 0;
         ballsLoaded = 0;
         lastKickerCycles = 0;
+        detectedMotifId = -1;
 
-        intakeEnabled = true;
+        intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
-        follower.followPath(paths.shootBallOne, true);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
-        updateSpindex.start();
+        follower.followPath(paths.ReadObilisk, true);
     }
 
     public void stop(){
-        spindex.exitProgram();
+        //spindex.exitProgram();
     }
 
     @Override
     public void loop() {
         ElapsedTime time = new ElapsedTime();
-        if (intakeEnabled) {
-            intake.intakeOn(true);
-        }
-        else {
-            intake.intakeOff();
-        }
         follower.update();
         leds.cycleColors(10);
         autonomousPathUpdate();
-        //updateSpindexPosition();
+        updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
+        panelsTelemetry.debug("Detected Motif", detectedMotifId);
         panelsTelemetry.debug("Shots Fired", shotsFired);
         panelsTelemetry.debug("Balls Loaded", ballsLoaded);
         panelsTelemetry.debug("X", follower.getPose().getX());
@@ -120,7 +115,6 @@ public class BlueShortRampEmpty extends OpMode {
         panelsTelemetry.debug("RPM", outtake.getRPM());
         panelsTelemetry.debug("Is Busy", follower.isBusy());
         panelsTelemetry.debug("Loop Time", time.milliseconds());
-        panelsTelemetry.debug("Error", spindex.getError());
         panelsTelemetry.update(telemetry);
     }
 
@@ -207,10 +201,10 @@ public class BlueShortRampEmpty extends OpMode {
 
 
     public static class Paths {
+        public PathChain ReadObilisk;
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
         public PathChain intakeRowOne;
-        public PathChain ClearRamp;
         public PathChain shootRowOne;
         public PathChain RuntoRowTwo;
         public PathChain intakeRowTwo;
@@ -218,20 +212,30 @@ public class BlueShortRampEmpty extends OpMode {
         public PathChain LeavePoints;
 
         public Paths(Follower follower) {
+            ReadObilisk = follower.pathBuilder().addPath(
+                            new BezierCurve(
+                                    new Pose(33.176, 134.442),
+                                    new Pose(33.431, 115.932),
+                                    new Pose(58.644, 113.473)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(78))
+
+                    .build();
+
             shootBallOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(33.659, 134.031),
-                                    new Pose(42.405, 109.179),
-                                    new Pose(50.8, 91.577)
+                                    new Pose(58.644, 113.473),
+                                    new Pose(57.219, 102.810),
+                                    new Pose(57.674, 86.442)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(78), Math.toRadians(135))
 
                     .build();
 
             RunToRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(57.674, 86.442),
-                                    new Pose(47.477, 92.547),
+                                    new Pose(51.231, 89.286),
                                     new Pose(43.525, 84.432)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
@@ -248,23 +252,11 @@ public class BlueShortRampEmpty extends OpMode {
 
                     .build();
 
-            ClearRamp = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(16.594, 84.000),
-                                    new Pose(25.666, 76.886),
-                                    new Pose(14.856, 75.210)
-
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
-                    .build();
-
-
-
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(14.856, 75.210),
-                                    new Pose(50.268, 79.855),
+                                    new Pose(16.594, 84.000),
+                                    new Pose(46.804, 84.684),
+                                    new Pose(53.281, 81.949),
                                     new Pose(57.488, 86.140)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
@@ -272,11 +264,10 @@ public class BlueShortRampEmpty extends OpMode {
                     .build();
 
             RuntoRowTwo = follower.pathBuilder().addPath(
-                            new BezierCurve(
+                            new BezierLine(
                                     new Pose(57.488, 86.140),
-                                    new Pose(63.461, 79.883),
-                                    new Pose(53.994, 63.644),
-                                    new Pose(44.961, 59.881)
+
+                                    new Pose(43.154, 59.681)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
@@ -284,9 +275,9 @@ public class BlueShortRampEmpty extends OpMode {
 
             intakeRowTwo = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(44.961, 59.881),
+                                    new Pose(43.154, 59.681),
 
-                                    new Pose(11.983, 58.803)
+                                    new Pose(17.607, 59.406)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -294,9 +285,9 @@ public class BlueShortRampEmpty extends OpMode {
 
             shootRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(11.983, 58.803),
-                                    new Pose(24.405, 60.676),
-                                    new Pose(43.056, 73.256),
+                                    new Pose(17.607, 59.406),
+                                    new Pose(23.994, 58.006),
+                                    new Pose(48.078, 64.834),
                                     new Pose(57.488, 85.953)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
@@ -306,8 +297,8 @@ public class BlueShortRampEmpty extends OpMode {
             LeavePoints = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(57.488, 85.953),
-                                    new Pose(46.087, 74.436),
-                                    new Pose(23.639, 70.104)
+                                    new Pose(49.743, 76.020),
+                                    new Pose(39.706, 71.911)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
@@ -316,88 +307,89 @@ public class BlueShortRampEmpty extends OpMode {
     }
 
 
-
-
-
     public void autonomousPathUpdate() {
         switch (pathState) {
-            case 0: // Move to first shoot position (flywheel already spinning from start())
+            case 0: // Travel to obelisk reading position
                 if (!follower.isBusy()) {
-                    prepareForShooting();
+                    obeliskReadTimer.reset();
                     pathState = 1;
-                    //override.reset();
                 }
                 break;
 
-            case 1: // Shoot 3 preloaded balls
-                if (shootBalls()) {
-                    follower.followPath(paths.RunToRowOne, true);
+            case 1: // Read obelisk using Limelight
+                int motifId = limelight.getMotifId();
+                if (motifId != -1) {
+                    detectedMotifId = motifId;
+                    panelsTelemetry.debug( "Motif ID: " + detectedMotifId);
+                    follower.followPath(paths.shootBallOne, true);
+                    pathState = 2;
+                } else if (obeliskReadTimer.milliseconds() > OBELISK_READ_TIMEOUT_MS) {
+                    detectedMotifId = 22;
+                    panelsTelemetry.debug("no motif detected");
+                    follower.followPath(paths.shootBallOne, true);
                     pathState = 2;
                 }
                 break;
 
-            case 2: // Run to row 1 intake position
+            case 2: // Move to first shoot position (flywheel already spinning from start())
                 if (!follower.isBusy()) {
-                    prepareForIntake();
-                    follower.followPath(paths.intakeRowOne, INTAKE_SPEED, true);
+                    prepareForShooting();
                     pathState = 3;
                 }
                 break;
 
-            case 3: // Intake row 1 (slow) - pre-spin flywheel during intake
+            case 3: // Shoot 3 preloaded balls
+                if (shootBalls()) {
+                    follower.followPath(paths.RunToRowOne, true);
+                    pathState = 4;
+                }
+                break;
+
+            case 4: // Run to row 1 intake position
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.intakeRowOne, INTAKE_SPEED, true);
+                    pathState = 5;
+                }
+                break;
+
+            case 5: // Intake row 1 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
+                    spindex.setMode(true);
+                    spindex.setIndex(0);
                     flywheelStarted = false;
-                    follower.followPath(paths.ClearRamp, .5, true);
-                    pathState = 4;
-                }
-                break;
-
-            case 4: // Clear ramp (empty ramp) - continue intaking
-                runIntake();
-                if (!follower.isBusy()) {
-                    if (!clearRampWaiting) {
-                        clearRampTimer.reset();
-                        clearRampWaiting = true;
-                    }
-                    if (clearRampTimer.milliseconds() >= 500) {
-                        clearRampWaiting = false;
-                        spindex.setMode(true);
-                        spindex.setIndex(0);
-                        follower.followPath(paths.shootRowOne, true);
-                        pathState = 5;
-                    }
-                }
-                break;
-
-            case 5: // Move to shoot position + shoot row 1 balls
-                if (!shootingPrepared) {
-                    prepareForShooting();
-                    shootingPrepared = true;
-                    //override.reset();
-                }
-                // Only shoot once path completes and robot is in position
-                if (!follower.isBusy() && shootBalls()) {
-
-                    shootingPrepared = false;
-                    follower.followPath(paths.RuntoRowTwo, true);
+                    follower.followPath(paths.shootRowOne, true);
                     pathState = 6;
                 }
                 break;
 
-            case 6: // Run to row 2 intake position
-                if (!follower.isBusy()) {
-                    prepareForIntake();
-                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
+            case 6: // Move to shoot position + shoot row 1 balls
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                }
+                // Only shoot once path completes and robot is in position
+                if (!follower.isBusy() && shootBalls()) {
+                    shootingPrepared = false;
+                    follower.followPath(paths.RuntoRowTwo, true);
                     pathState = 7;
                 }
                 break;
 
-            case 7: // Intake row 2 (slow) - pre-spin flywheel during intake
+            case 7: // Run to row 2 intake position
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
+                    pathState = 8;
+                }
+                break;
+
+            case 8: // Intake row 2 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
@@ -408,39 +400,39 @@ public class BlueShortRampEmpty extends OpMode {
                     spindex.setIndex(0);
                     flywheelStarted = false;
                     follower.followPath(paths.shootRowTwo, true);
-                    pathState = 8;
-                }
-                break;
-
-            case 8: // Move to shoot position + shoot row 2 balls
-                if (!shootingPrepared) {
-                    prepareForShooting();
-                    shootingPrepared = true;
-                    //override.reset();
-                }
-                if (!follower.isBusy() && shootBalls()) {
-                    shootingPrepared = false;
-                    follower.followPath(paths.LeavePoints, true);
                     pathState = 9;
                 }
                 break;
 
-            case 9: // Leave for points
-                if (!follower.isBusy()) {
+            case 9: // Move to shoot position + shoot row 2 balls
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                }
+                if (!follower.isBusy() && shootBalls()) {
+                    shootingPrepared = false;
+                    follower.followPath(paths.LeavePoints, true);
                     pathState = 10;
                 }
                 break;
 
-            case 10: // Done
+            case 10: // Leave for points
+                if (!follower.isBusy()) {
+                    pathState = 11;
+                }
+                break;
+
+            case 11: // Done
                 outtake.setRPM(0);
-                intakeEnabled = false;
+                intake.setPower(0);
                 kicker.down();
+                limelight.stop();
                 requestOpModeStop();
                 break;
 
             default:
                 outtake.setRPM(0);
-                intakeEnabled = false;
+                intake.setPower(0);
                 break;
         }
     }

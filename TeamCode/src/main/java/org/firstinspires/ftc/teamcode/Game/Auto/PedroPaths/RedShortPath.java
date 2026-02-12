@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
-@Autonomous(name = "Red Short", group = "Autonomous")
+@Autonomous(name = "Blue Short", group = "Autonomous")
 @Configurable
 public class RedShortPath extends OpMode {
 
@@ -58,7 +58,7 @@ public class RedShortPath extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(111, 134.442, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
 
         spindex = new Spindex(hardwareMap);
@@ -87,12 +87,12 @@ public class RedShortPath extends OpMode {
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
         follower.followPath(paths.shootBallOne, true);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
-        updateSpindex.start();
+        //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        //updateSpindex.start();
     }
 
     public void stop(){
-        spindex.exitProgram();
+        //spindex.exitProgram();
     }
 
     @Override
@@ -107,7 +107,7 @@ public class RedShortPath extends OpMode {
         follower.update();
         leds.cycleColors(10);
         autonomousPathUpdate();
-        //updateSpindexPosition();
+        updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -124,9 +124,9 @@ public class RedShortPath extends OpMode {
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
         }
     }
 
@@ -203,6 +203,8 @@ public class RedShortPath extends OpMode {
     }
 
 
+
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -211,27 +213,24 @@ public class RedShortPath extends OpMode {
         public PathChain RuntoRowTwo;
         public PathChain intakeRowTwo;
         public PathChain shootRowTwo;
-        public PathChain RuntwoRowThree;
-        public PathChain IntakeRowThree;
-        public PathChain backToShooting;
         public PathChain LeavePoints;
 
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(111, 134.442),
-                                    new Pose(103.942, 101.070),
-                                    new Pose(86.326, 86.442)
+                                    new Pose(105.000, 134.442),
+                                    new Pose(99.905, 111.604),
+                                    new Pose(93.801, 93.721)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(45))
+                    ).setLinearHeadingInterpolation(Math.toRadians(102), Math.toRadians(45))
 
                     .build();
 
             RunToRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(86.326, 86.442),
-                                    new Pose(83.787, 67.691),
-                                    new Pose(102.483, 83.829)
+                                    new Pose(93.801, 93.721),
+                                    new Pose(92.640, 88.740),
+                                    new Pose(100.475, 84.432)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(0))
 
@@ -239,9 +238,9 @@ public class RedShortPath extends OpMode {
 
             intakeRowOne = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(102.483, 83.829),
+                                    new Pose(100.475, 84.432),
 
-                                    new Pose(126.000, 84.000)
+                                    new Pose(127.406, 84.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
@@ -249,9 +248,8 @@ public class RedShortPath extends OpMode {
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(126.000, 84.000),
-                                    new Pose(97.196, 84.684),
-                                    new Pose(96.343, 83.154),
+                                    new Pose(127.406, 84.000),
+                                    new Pose(99.240, 80.621),
                                     new Pose(86.512, 86.140)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(45))
@@ -261,60 +259,29 @@ public class RedShortPath extends OpMode {
             RuntoRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(86.512, 86.140),
-                                    new Pose(81.205, 81.070),
-                                    new Pose(80.018, 84.913),
-                                    new Pose(102.654, 61.488)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(-5))
-
-                    .build();
-
-            intakeRowTwo = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(102.654, 61.488),
-
-                                    new Pose(128.000, 58.000)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-5), Math.toRadians(-5))
-
-                    .build();
-
-            shootRowTwo = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(128.000, 58.000),
-                                    new Pose(120.006, 58.006),
-                                    new Pose(91.905, 64.834),
-                                    new Pose(86.512, 85.953)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-5), Math.toRadians(45))
-
-                    .build();
-
-            RuntwoRowThree = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(86.512, 85.953),
-                                    new Pose(120.480, 50.885),
-                                    new Pose(102.858, 35.613)
+                                    new Pose(83.039, 69.521),
+                                    new Pose(99.039, 59.881)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(0))
 
                     .build();
 
-            IntakeRowThree = follower.pathBuilder().addPath(
+            intakeRowTwo = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(102.858, 35.613),
+                                    new Pose(99.039, 59.881),
 
-                                    new Pose(132.555, 34.825)
+                                    new Pose(132.017, 58.803)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
                     .build();
 
-            backToShooting = follower.pathBuilder().addPath(
+            shootRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(132.555, 34.825),
-                                    new Pose(100.737, 52.457),
-                                    new Pose(86.521, 86.374)
+                                    new Pose(132.017, 58.803),
+                                    new Pose(120.006, 58.006),
+                                    new Pose(92.889, 75.064),
+                                    new Pose(86.512, 85.953)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(45))
 
@@ -322,15 +289,16 @@ public class RedShortPath extends OpMode {
 
             LeavePoints = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(86.521, 86.374),
+                                    new Pose(86.512, 85.953),
                                     new Pose(96.065, 73.409),
-                                    new Pose(122.791, 69.100)
+                                    new Pose(120.361, 70.104)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(0))
 
                     .build();
         }
     }
+
 
 
 

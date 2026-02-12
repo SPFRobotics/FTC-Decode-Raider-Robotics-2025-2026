@@ -22,11 +22,11 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
-@Autonomous(name = "Blue Far", group = "Autonomous")
+@Autonomous(name = "Blue Short", group = "Autonomous")
 @Configurable
 public class FarBluePath extends OpMode {
 
-    private static final double SHOOT_RPM = Outtake.OuttakeConfig.farRPM;
+    private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final double INTAKE_SPEED = 0.25;
 
     private TelemetryManager panelsTelemetry;
@@ -58,7 +58,7 @@ public class FarBluePath extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(56.000, 8.000, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
 
         spindex = new Spindex(hardwareMap);
@@ -87,12 +87,12 @@ public class FarBluePath extends OpMode {
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
         follower.followPath(paths.shootBallOne, true);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
-        updateSpindex.start();
+        //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        //updateSpindex.start();
     }
 
     public void stop(){
-        spindex.exitProgram();
+        //spindex.exitProgram();
     }
 
     @Override
@@ -107,7 +107,7 @@ public class FarBluePath extends OpMode {
         follower.update();
         leds.cycleColors(10);
         autonomousPathUpdate();
-        //updateSpindexPosition();
+        updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -124,9 +124,9 @@ public class FarBluePath extends OpMode {
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
         }
     }
 
@@ -203,6 +203,8 @@ public class FarBluePath extends OpMode {
     }
 
 
+
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -227,8 +229,7 @@ public class FarBluePath extends OpMode {
             RunToRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(56.000, 12.000),
-                                    new Pose(58.951, 36.590),
-                                    new Pose(44.984, 33.246),
+                                    new Pose(52.262, 29.902),
                                     new Pose(44.000, 36.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(111), Math.toRadians(180))
@@ -241,15 +242,14 @@ public class FarBluePath extends OpMode {
 
                                     new Pose(18.841, 35.598)
                             )
-                    ).setTangentHeadingInterpolation()
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(18.841, 35.598),
-                                    new Pose(28.082, 23.803),
-                                    new Pose(34.361, 12.393),
+                                    new Pose(42.689, 30.885),
                                     new Pose(56.000, 12.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(111))
@@ -267,20 +267,19 @@ public class FarBluePath extends OpMode {
                     .build();
 
             intakeRowTwo = follower.pathBuilder().addPath(
-                            new BezierCurve(
+                            new BezierLine(
                                     new Pose(43.607, 58.852),
-                                    new Pose(33.787, 59.770),
+
                                     new Pose(18.841, 59.808)
                             )
-                    ).setTangentHeadingInterpolation()
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
             shootRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(18.841, 59.808),
-                                    new Pose(37.967, 47.180),
-                                    new Pose(46.553, 25.561),
+                                    new Pose(45.570, 45.234),
                                     new Pose(56.000, 12.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(111))
@@ -290,15 +289,14 @@ public class FarBluePath extends OpMode {
             LeavePoints = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(56.000, 12.000),
-                                    new Pose(52.007, 62.068),
-                                    new Pose(22.059, 69.259)
+                                    new Pose(48.072, 58.133),
+                                    new Pose(28.354, 69.259)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(111), Math.toRadians(180))
 
                     .build();
         }
     }
-
 
 
 

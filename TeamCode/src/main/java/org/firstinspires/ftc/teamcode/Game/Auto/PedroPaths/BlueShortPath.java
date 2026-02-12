@@ -203,6 +203,7 @@ public class BlueShortPath extends OpMode {
     }
 
 
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -216,18 +217,18 @@ public class BlueShortPath extends OpMode {
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(33.000, 134.442),
-                                    new Pose(40.058, 101.070),
-                                    new Pose(57.674, 86.442)
+                                    new Pose(39.000, 134.442),
+                                    new Pose(44.095, 111.604),
+                                    new Pose(50.199, 93.721)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(78), Math.toRadians(135))
 
                     .build();
 
             RunToRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(57.674, 86.442),
-                                    new Pose(60.213, 67.691),
+                                    new Pose(50.199, 93.721),
+                                    new Pose(50.967, 90.511),
                                     new Pose(43.525, 84.432)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
@@ -247,8 +248,7 @@ public class BlueShortPath extends OpMode {
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(16.594, 84.000),
-                                    new Pose(46.804, 84.684),
-                                    new Pose(47.657, 83.154),
+                                    new Pose(44.760, 80.621),
                                     new Pose(57.488, 86.140)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
@@ -258,8 +258,7 @@ public class BlueShortPath extends OpMode {
             RuntoRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(57.488, 86.140),
-                                    new Pose(69.623, 79.062),
-                                    new Pose(60.568, 53.784),
+                                    new Pose(60.961, 69.521),
                                     new Pose(44.961, 59.881)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
@@ -280,7 +279,7 @@ public class BlueShortPath extends OpMode {
                             new BezierCurve(
                                     new Pose(11.983, 58.803),
                                     new Pose(23.994, 58.006),
-                                    new Pose(52.095, 64.834),
+                                    new Pose(51.111, 75.064),
                                     new Pose(57.488, 85.953)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
@@ -291,13 +290,14 @@ public class BlueShortPath extends OpMode {
                             new BezierCurve(
                                     new Pose(57.488, 85.953),
                                     new Pose(47.935, 73.409),
-                                    new Pose(29.639, 70.104)
+                                    new Pose(23.639, 70.104)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
         }
     }
+
 
 
 
