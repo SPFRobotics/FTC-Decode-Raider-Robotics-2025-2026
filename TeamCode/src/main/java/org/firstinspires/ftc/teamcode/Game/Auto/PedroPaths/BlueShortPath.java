@@ -289,8 +289,8 @@ public class BlueShortPath extends OpMode {
             LeavePoints = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(57.488, 85.953),
-                                    new Pose(47.935, 73.409),
-                                    new Pose(23.639, 70.104)
+                                    new Pose(52.067, 76.556),
+                                    new Pose(38.000, 70.694)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
