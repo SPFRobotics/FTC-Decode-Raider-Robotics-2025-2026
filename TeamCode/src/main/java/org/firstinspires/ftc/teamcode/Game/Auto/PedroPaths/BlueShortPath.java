@@ -204,6 +204,7 @@ public class BlueShortPath extends OpMode {
 
 
 
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -249,7 +250,7 @@ public class BlueShortPath extends OpMode {
                             new BezierCurve(
                                     new Pose(16.594, 84.000),
                                     new Pose(44.760, 80.621),
-                                    new Pose(57.488, 86.140)
+                                    new Pose(50.210, 94.008)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
 
@@ -257,8 +258,8 @@ public class BlueShortPath extends OpMode {
 
             RuntoRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(57.488, 86.140),
-                                    new Pose(60.961, 69.521),
+                                    new Pose(50.210, 94.008),
+                                    new Pose(52.896, 70.111),
                                     new Pose(44.961, 59.881)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
@@ -279,8 +280,8 @@ public class BlueShortPath extends OpMode {
                             new BezierCurve(
                                     new Pose(11.983, 58.803),
                                     new Pose(23.994, 58.006),
-                                    new Pose(51.111, 75.064),
-                                    new Pose(57.488, 85.953)
+                                    new Pose(46.193, 77.818),
+                                    new Pose(50.406, 93.232)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
 
@@ -288,15 +289,16 @@ public class BlueShortPath extends OpMode {
 
             LeavePoints = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(57.488, 85.953),
-                                    new Pose(52.067, 76.556),
-                                    new Pose(38.000, 70.694)
+                                    new Pose(50.406, 93.232),
+                                    new Pose(49.509, 81.671),
+                                    new Pose(37.017, 72.071)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
         }
     }
+
 
 
 
