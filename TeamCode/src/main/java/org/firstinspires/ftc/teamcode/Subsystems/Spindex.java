@@ -53,7 +53,7 @@ public class Spindex {
         public static double Threshold = 63.75;
 
         //For abs and rel
-        public static double[] pid = {10, 10, 0.02};
+        public static double[] pid = {55, 0, 15};
         public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
@@ -74,7 +74,7 @@ public class Spindex {
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
-        offset = spindexPos.getVoltage()/3.3*360;
+        offset = (spindexPos.getVoltage()/3.3*360);
         index = 0;
     }
 
@@ -188,7 +188,7 @@ public class Spindex {
 
             spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError));
             spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients(pid[0], pid[1], pid[2]));
+            spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
             spindexMotor.setPower(1);
 
         }
@@ -361,5 +361,9 @@ public class Spindex {
 
     public boolean atTarget(int tolorence){
         return Math.abs(error) <= tolorence;
+    }
+
+    public boolean isBusy(){
+        return spindexMotor.isBusy();
     }
 }
