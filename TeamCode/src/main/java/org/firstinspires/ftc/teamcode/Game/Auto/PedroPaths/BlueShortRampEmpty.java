@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.pedroPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -8,7 +8,7 @@ import com.bylazar.telemetry.PanelsTelemetry;
 
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -222,7 +222,7 @@ public class BlueShortRampEmpty extends OpMode {
                             new BezierCurve(
                                     new Pose(33.659, 134.031),
                                     new Pose(42.405, 109.179),
-                                    new Pose(57.674, 86.442)
+                                    new Pose(50.8, 91.577)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
 
@@ -253,10 +253,13 @@ public class BlueShortRampEmpty extends OpMode {
                                     new Pose(16.594, 84.000),
                                     new Pose(25.666, 76.886),
                                     new Pose(14.856, 75.210)
+
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
+
+
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
@@ -349,7 +352,7 @@ public class BlueShortRampEmpty extends OpMode {
                 }
                 if (!follower.isBusy()) {
                     flywheelStarted = false;
-                    follower.followPath(paths.ClearRamp, INTAKE_SPEED, true);
+                    follower.followPath(paths.ClearRamp, .5, true);
                     pathState = 4;
                 }
                 break;
