@@ -256,9 +256,10 @@ public class BlueShortTwelveBallClear extends OpMode {
                     .build();
 
             ClearRamp = follower.pathBuilder().addPath(
-                            new BezierLine(
+                            new BezierCurve(
                                     new Pose(21.315, 83.803),
-
+                                    new Pose(22.938, 80.656),
+                                    new Pose(23.627, 76.557),
                                     new Pose(15.414, 77.508)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
