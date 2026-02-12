@@ -207,6 +207,7 @@ public class BlueShortTwelveBall extends OpMode {
 
 
 
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -245,7 +246,7 @@ public class BlueShortTwelveBall extends OpMode {
                             new BezierLine(
                                     new Pose(43.525, 84.432),
 
-                                    new Pose(16.594, 84.000)
+                                    new Pose(21.315, 83.803)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -253,8 +254,8 @@ public class BlueShortTwelveBall extends OpMode {
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(16.594, 84.000),
-                                    new Pose(44.760, 80.621),
+                                    new Pose(21.315, 83.803),
+                                    new Pose(45.350, 85.342),
                                     new Pose(50.210, 94.008)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
@@ -296,7 +297,7 @@ public class BlueShortTwelveBall extends OpMode {
                             new BezierCurve(
                                     new Pose(50.406, 93.232),
                                     new Pose(51.738, 64.721),
-                                    new Pose(42.138, 35.438)
+                                    new Pose(45.875, 35.242)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
@@ -304,9 +305,9 @@ public class BlueShortTwelveBall extends OpMode {
 
             intakeRowThree = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(42.138, 35.438),
+                                    new Pose(45.875, 35.242),
 
-                                    new Pose(20.443, 35.475)
+                                    new Pose(21.230, 35.672)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -314,7 +315,7 @@ public class BlueShortTwelveBall extends OpMode {
 
             shootRowThree = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(20.443, 35.475),
+                                    new Pose(21.230, 35.672),
                                     new Pose(39.623, 61.934),
                                     new Pose(49.689, 93.541)
                             )
@@ -328,11 +329,12 @@ public class BlueShortTwelveBall extends OpMode {
                                     new Pose(51.869, 78.893),
                                     new Pose(43.721, 71.721)
                             )
-                    ).setTangentHeadingInterpolation()
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
         }
     }
+
 
 
 
