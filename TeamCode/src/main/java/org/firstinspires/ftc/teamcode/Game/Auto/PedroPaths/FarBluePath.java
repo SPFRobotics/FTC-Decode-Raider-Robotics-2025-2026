@@ -205,6 +205,7 @@ public class FarBluePath extends OpMode {
 
 
 
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -297,7 +298,6 @@ public class FarBluePath extends OpMode {
                     .build();
         }
     }
-
 
 
     public void autonomousPathUpdate() {
