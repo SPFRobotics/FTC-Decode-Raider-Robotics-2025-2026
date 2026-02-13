@@ -391,7 +391,7 @@ public class BlueShortTwelveBallClear extends OpMode {
                 }
                 if (!follower.isBusy()) {
                     flywheelStarted = false;
-                    follower.followPath(paths.ClearRamp, .5, true);
+                    follower.followPath(paths.ClearRamp, 1, true);
                     pathState = 4;
                 }
                 break;
