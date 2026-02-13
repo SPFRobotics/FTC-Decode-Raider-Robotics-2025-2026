@@ -232,6 +232,12 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
                 telemetry.addLine("==========================================");
                 telemetry.addLine("Spindex Mode: " + (spindex.isOuttakeing() ? "Outtake" : "Intake"));
+                telemetry.addLine("Offset: " + spindex.offset);
+                telemetry.addLine("Error: " + spindex.error);
+                telemetry.addLine("Ticks Error: " + spindex.ticksError);
+                telemetry.addLine("Rel Pos: " + spindex.relPos);
+                telemetry.addLine("Absolute Position: " + spindex.getPos());
+                telemetry.addLine("Spindex Voltage: " + spindex.getVoltage());
                 telemetry.update();
             }
         }

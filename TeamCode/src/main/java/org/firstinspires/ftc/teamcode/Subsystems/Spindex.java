@@ -35,8 +35,10 @@ public class Spindex {
     private static int index = 0;
     private double threadLoopTime = 0;
     private double currentPos = 0;
-    private double error = 0;
-    private double offset = 0;
+    public double error = 0;
+    public double offset = 0;
+    public double relPos = 0;
+    public double ticksError = 0;
     private boolean outtakeMode = false;
     private boolean autoLoadMode = false;
     private boolean autoLaunchMode = false;
@@ -105,7 +107,7 @@ public class Spindex {
             }
         }
         else{
-            currentPos = spindexPos.getVoltage()/3.3*360.0;
+            currentPos = spindexPos.getVoltage()/3.214*360.0;
 
             error = AngleUnit.normalizeDegrees(target - currentPos);
 
@@ -129,7 +131,7 @@ public class Spindex {
     }
 
     public void initAbsAndRel(){
-        offset = (spindexPos.getVoltage()/3.3*360);
+        offset = (spindexPos.getVoltage()/3.214*360);
         absAndRelInitialized = true;
     }
 
@@ -190,15 +192,14 @@ public class Spindex {
             if (!absAndRelInitialized){
                 throw new RuntimeException("You are working with no offset, please initialize the offset with initAbsAndRel()!");
             }
-            double relPos = Math.floorMod((int)(((spindexMotor.getCurrentPosition()/537.7*360)+offset)), 360);
-            double error = AngleUnit.normalizeDegrees(target - relPos);
-            double ticksError = error/537.7*360;
+            relPos = Math.floorMod((int)(((spindexMotor.getCurrentPosition()/537.7*360)+offset)), 360);
+            error = AngleUnit.normalizeDegrees(target - relPos);
+            ticksError = error*360/537.7;
 
-            spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError));
-            spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
-            spindexMotor.setPower(1);
-
+            //spindexMotor.setTargetPosition((int)(relPos+ticksError));
+            //spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
+            //spindexMotor.setPower(1);
         }
         else{
             throw new RuntimeException("The mode of Spindex operation is not an option!");
@@ -316,7 +317,7 @@ public class Spindex {
     }
 
     public double getPos(){
-        return currentPos;
+        return spindexPos.getVoltage()/3.214*360;
     }
 
     public void storeThreadLoopTime(double milliseconds){
