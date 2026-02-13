@@ -50,6 +50,7 @@ public class BlueShortTwelveBall extends OpMode {
     private boolean waitingForSpindexAlign = false;
     private boolean shootingPrepared = false;
     private boolean flywheelStarted = false;
+    private boolean pathCompleteWaitDone = false;
 
     //In order for feature that will unjam to ball to work correctly, it must be run in a loop. This variable is only used to enable and disable the intake and nothing more.
     private boolean intakeEnabled = false;
@@ -360,9 +361,14 @@ public class BlueShortTwelveBall extends OpMode {
         switch (pathState) {
             case 0: // Move to first shoot position (flywheel already spinning from start())
                 if (!follower.isBusy()) {
-                    prepareForShooting();
-                    pathState = 1;
-                    //override.reset();
+                    if (!pathCompleteWaitDone) {
+                        override.reset();
+                        pathCompleteWaitDone = true;
+                    } else if (override.milliseconds() >= 100) {
+                        prepareForShooting();
+                        pathCompleteWaitDone = false;
+                        pathState = 1;
+                    }
                 }
                 break;
 
@@ -400,14 +406,18 @@ public class BlueShortTwelveBall extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
-                    //override.reset();
                 }
-                // Only shoot once path completes and robot is in position
-                if (!follower.isBusy() && shootBalls()) {
-
-                    shootingPrepared = false;
-                    follower.followPath(paths.RuntoRowTwo, true);
-                    pathState = 5;
+                // Only shoot once path completes, robot is in position, and 100ms wait is done
+                if (!follower.isBusy()) {
+                    if (!pathCompleteWaitDone) {
+                        override.reset();
+                        pathCompleteWaitDone = true;
+                    } else if (override.milliseconds() >= 100 && shootBalls()) {
+                        shootingPrepared = false;
+                        pathCompleteWaitDone = false;
+                        follower.followPath(paths.RuntoRowTwo, true);
+                        pathState = 5;
+                    }
                 }
                 break;
 
@@ -438,12 +448,17 @@ public class BlueShortTwelveBall extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
-                    //override.reset();
                 }
-                if (!follower.isBusy() && shootBalls()) {
-                    shootingPrepared = false;
-                    follower.followPath(paths.RuntoRowThree, true);
-                    pathState = 8;
+                if (!follower.isBusy()) {
+                    if (!pathCompleteWaitDone) {
+                        override.reset();
+                        pathCompleteWaitDone = true;
+                    } else if (override.milliseconds() >= 100 && shootBalls()) {
+                        shootingPrepared = false;
+                        pathCompleteWaitDone = false;
+                        follower.followPath(paths.RuntoRowThree, true);
+                        pathState = 8;
+                    }
                 }
                 break;
 
@@ -474,12 +489,17 @@ public class BlueShortTwelveBall extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
-                    //override.reset();
                 }
-                if (!follower.isBusy() && shootBalls()) {
-                    shootingPrepared = false;
-                    follower.followPath(paths.Leave, true);
-                    pathState = 11;
+                if (!follower.isBusy()) {
+                    if (!pathCompleteWaitDone) {
+                        override.reset();
+                        pathCompleteWaitDone = true;
+                    } else if (override.milliseconds() >= 100 && shootBalls()) {
+                        shootingPrepared = false;
+                        pathCompleteWaitDone = false;
+                        follower.followPath(paths.Leave, true);
+                        pathState = 11;
+                    }
                 }
                 break;
 
