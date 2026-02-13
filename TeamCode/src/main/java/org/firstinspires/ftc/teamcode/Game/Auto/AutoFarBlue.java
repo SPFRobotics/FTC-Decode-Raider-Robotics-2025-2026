@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Game.TeleOp.Kicker;
+import org.firstinspires.ftc.teamcode.Game.TeleOp.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 
 @Autonomous(name="Auto Blue Long")
@@ -44,11 +44,11 @@ public class AutoFarBlue extends LinearOpMode {
             while (opModeIsActive()) {
                 outtake.enableKickerCycle(true, Outtake.OuttakeSpeed.farRPM);
                 if (outtake.getKickerCycleCount()==3 && robot.getWiggleCount() < 2){
-                    kicker.down(true);
+                    kicker.down();
                     robot.wiggle();
                 }
                 else if (robot.getWiggleCount() == 3){
-                    kicker.up(true);
+                    kicker.up();
                 }
                 if (outtake.getKickerCycleCount() == 4) {
                     break;
