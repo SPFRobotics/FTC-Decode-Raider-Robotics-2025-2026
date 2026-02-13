@@ -29,7 +29,7 @@ import java.lang.annotation.ElementType;
 @Configurable
 public class BlueShortTwelveBall extends OpMode {
 
-    private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
+    private static final double SHOOT_RPM = 2600;
     private static final double INTAKE_SPEED = 0.26;
 
     private TelemetryManager panelsTelemetry;
@@ -147,6 +147,7 @@ public class BlueShortTwelveBall extends OpMode {
 
     private boolean shootBalls() {
         spindex.setMode(true);
+
         // If waiting for spindex to align after advancing
         if (waitingForSpindexAlign) {
             if (!spindex.isBusy()) {
