@@ -46,7 +46,7 @@ public class MecanumChassis {
     public MecanumChassis(LinearOpMode lom){
         opmode = lom;
     }
-    public double inch_convert(double inch) { return inch * (537.7 / (3.78 * Math.PI)); }
+    public double inch_convert(double inch) { return inch * (537.7 / (4.09449 * Math.PI)); }
     public double inToCm(int inches) { return inches * 2.54; }
     public double cm_convert(double cm) { return cm * (537.7 / (9.6012 * Math.PI)); }
     public void initializeMovement() {
@@ -72,8 +72,8 @@ public class MecanumChassis {
 
         imu = opmode.hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
         imu.resetYaw();
@@ -109,6 +109,13 @@ public class MecanumChassis {
         backRight.setPower(0);
         frontLeft.setPower(0);
         frontRight.setPower(0);
+    }
+
+    public boolean motorsAreBusy(){
+        if (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()){
+            return true;
+        }
+        return false;
     }
     public boolean move(double movePower, @NonNull String moveDirection, double moveDistance){ // added support for moving lift and wheels at the same time.
         stop_and_reset_encoders_all(); //Sets encoder count to 0
@@ -158,9 +165,7 @@ public class MecanumChassis {
             frontLeft.setPower(-movePower);
             frontRight.setPower(movePower);
         } else {
-            opmode.telemetry.addData("Error", "move direction must be forward,backward,left, or right.");
-            opmode.telemetry.update();
-            opmode.terminateOpModeNow();
+           throw new RuntimeException("Move direction must be forward, backward, left, or right.");
         }
         while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
             /*odom.updateOdom();
@@ -183,6 +188,175 @@ public class MecanumChassis {
         opmode.telemetry.addData("test", "done!");
         opmode.telemetry.update();
         return false;
+    }
+
+    public void moveWLoop(double movePower, @NonNull String moveDirection, double moveDistance){
+        stop_and_reset_encoders_all(); //Sets encoder count to 0
+        run_using_encoders_all();
+        if (moveDirection.equals("forward")) {
+            //Tell each wheel to move a certain amount
+            backLeft.setTargetPosition((int) inch_convert(moveDistance)); //Converts the
+            backRight.setTargetPosition((int) inch_convert(moveDistance));
+            frontLeft.setTargetPosition((int) inch_convert(moveDistance));
+            frontRight.setTargetPosition((int) inch_convert(moveDistance));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else if (moveDirection.equals("backward")) {
+            backLeft.setTargetPosition((int) inch_convert(-moveDistance));
+            backRight.setTargetPosition((int) inch_convert(-moveDistance));
+            frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
+            frontRight.setTargetPosition((int) inch_convert(-moveDistance));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else if (moveDirection.equals("right")) {
+            backLeft.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            backRight.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            frontLeft.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            frontRight.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else if (moveDirection.equals("left")) {
+            backLeft.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            backRight.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            frontLeft.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            frontRight.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else {
+            throw new RuntimeException("Move direction must be forward, backward, left, or right.");
+        }
+    }
+
+    //Overloads the methods to accept a character instead of an entire String as a direction while maintaining compatibility with the previous programs
+    public boolean move(double movePower, @NonNull char moveDirection, double moveDistance){ // added support for moving lift and wheels at the same time.
+        stop_and_reset_encoders_all(); //Sets encoder count to 0
+        run_using_encoders_all();
+        if (moveDirection == 'F' || moveDirection == 'f') {
+            //Tell each wheel to move a certain amount
+            backLeft.setTargetPosition((int) inch_convert(moveDistance)); //Converts the
+            backRight.setTargetPosition((int) inch_convert(moveDistance));
+            frontLeft.setTargetPosition((int) inch_convert(moveDistance));
+            frontRight.setTargetPosition((int) inch_convert(moveDistance));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else if (moveDirection == 'B' || moveDirection == 'b') {
+            backLeft.setTargetPosition((int) inch_convert(-moveDistance));
+            backRight.setTargetPosition((int) inch_convert(-moveDistance));
+            frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
+            frontRight.setTargetPosition((int) inch_convert(-moveDistance));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else if (moveDirection == 'R' || moveDirection == 'r') {
+            backLeft.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            backRight.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            frontLeft.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            frontRight.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else if (moveDirection == 'L' || moveDirection == 'l') {
+            backLeft.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            backRight.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            frontLeft.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            frontRight.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else {
+            throw new RuntimeException("Move direction must be forward, backward, left, or right.");
+        }
+        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
+            /*odom.updateOdom();
+            opmode.telemetry.addData("X", odom.getX());
+            opmode.telemetry.addData("Y", odom.getY());
+            opmode.telemetry.addData("Heading", odom.getHeading());*/
+            opmode.telemetry.addData("test", "attempting to move...");
+            opmode.telemetry.addData("power back right", backRight.getPower());
+            opmode.telemetry.addData("power back left", backLeft.getPower());
+            opmode.telemetry.addData("power front right", frontRight.getPower());
+            opmode.telemetry.addData("power front left", frontLeft.getPower());
+
+            opmode.telemetry.update();
+        }
+        powerZero();
+        opmode.sleep(500);
+        // Restore motors to manual control mode after encoder movement
+        // This is critical for TeleOp to work properly after using this method
+        run_without_encoders_all();
+        opmode.telemetry.addData("test", "done!");
+        opmode.telemetry.update();
+        return false;
+    }
+
+    public void moveWLoop(double movePower, @NonNull char moveDirection, double moveDistance){
+        stop_and_reset_encoders_all(); //Sets encoder count to 0
+        run_using_encoders_all();
+        if (moveDirection == 'F' || moveDirection == 'f') {
+            //Tell each wheel to move a certain amount
+            backLeft.setTargetPosition((int) inch_convert(moveDistance)); //Converts the
+            backRight.setTargetPosition((int) inch_convert(moveDistance));
+            frontLeft.setTargetPosition((int) inch_convert(moveDistance));
+            frontRight.setTargetPosition((int) inch_convert(moveDistance));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else if (moveDirection == 'B' || moveDirection == 'b') {
+            backLeft.setTargetPosition((int) inch_convert(-moveDistance));
+            backRight.setTargetPosition((int) inch_convert(-moveDistance));
+            frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
+            frontRight.setTargetPosition((int) inch_convert(-moveDistance));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else if (moveDirection == 'R' || moveDirection == 'r') {
+            backLeft.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            backRight.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            frontLeft.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            frontRight.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else if (moveDirection == 'L' || moveDirection == 'l') {
+            backLeft.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            backRight.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            frontLeft.setTargetPosition((int) inch_convert(-moveDistance * strafeMult));
+            frontRight.setTargetPosition((int) inch_convert(moveDistance * strafeMult));
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+        } else {
+            throw new RuntimeException("Move direction must be forward, backward, left, or right.");
+        }
     }
 
     public void moveWithCorrections(double movePower, @NonNull String moveDirection, double moveDistance, double angle) {
@@ -369,7 +543,7 @@ public class MecanumChassis {
         backRight.setPower(0);
         frontLeft.setPower(0);
         frontRight.setPower(0);
-        opmode.sleep(500);
+        //opmode.sleep(500);
     }
     public void wiggle(){
         move(1,"forward",3);
