@@ -30,7 +30,7 @@ import java.lang.annotation.ElementType;
 public class BlueShortTwelveBall extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
-    private static final double INTAKE_SPEED = 0.25;
+    private static final double INTAKE_SPEED = 0.26;
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
