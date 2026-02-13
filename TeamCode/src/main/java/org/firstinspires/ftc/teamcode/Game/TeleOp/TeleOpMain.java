@@ -87,7 +87,6 @@ public class TeleOpMain extends LinearOpMode {
             leds.cycleColors(10);
         }
         waitForStart();
-        spindex.initAbsAndRel();
         /*if (opModeIsActive()){
             updateSpindex.start();
         }*/

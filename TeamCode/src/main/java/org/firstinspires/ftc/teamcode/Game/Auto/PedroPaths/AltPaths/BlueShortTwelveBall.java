@@ -88,7 +88,6 @@ public class BlueShortTwelveBall extends OpMode {
     @Override
     public void start() {
         timer = new ElapsedTime();
-        spindex.initAbsAndRel();
         pathState = 0;
         shotsFired = 0;
         ballsLoaded = 0;
