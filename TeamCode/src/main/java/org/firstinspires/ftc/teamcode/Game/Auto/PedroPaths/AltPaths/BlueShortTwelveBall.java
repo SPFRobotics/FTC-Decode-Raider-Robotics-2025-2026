@@ -222,6 +222,7 @@ public class BlueShortTwelveBall extends OpMode {
 
 
 
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -238,11 +239,11 @@ public class BlueShortTwelveBall extends OpMode {
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(39.000, 134.442),
+                                    new Pose(32.840, 134.827),
                                     new Pose(44.095, 111.604),
                                     new Pose(50.199, 93.721)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(78), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
 
                     .build();
 
@@ -269,7 +270,7 @@ public class BlueShortTwelveBall extends OpMode {
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(21.315, 83.803),
-                                    new Pose(45.350, 85.342),
+                                    new Pose(43.580, 78.653),
                                     new Pose(50.210, 94.008)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
@@ -316,9 +317,10 @@ public class BlueShortTwelveBall extends OpMode {
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
+
             intakeRowThree = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(45.875, 35.242),
+                                    new Pose(44.105, 38.389),
 
                                     new Pose(21.230, 35.672)
                             )
@@ -347,6 +349,7 @@ public class BlueShortTwelveBall extends OpMode {
                     .build();
         }
     }
+
 
 
 
