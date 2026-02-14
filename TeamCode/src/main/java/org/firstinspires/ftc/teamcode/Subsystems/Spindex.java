@@ -54,7 +54,7 @@ public class Spindex {
         public static double Threshold = 63.75;
 
         //For abs and rel
-        public static double[] pid = {55, 0, 15};
+        public static double[] pid = {20, 0, 10};
         public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
@@ -129,7 +129,8 @@ public class Spindex {
     }
 
     public void initAbsAndRel(){
-        offset = (spindexPos.getVoltage()/3.3*360);
+        spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        offset = AngleUnit.normalizeDegrees(spindexPos.getVoltage()/3.214*360);
         absAndRelInitialized = true;
     }
 
@@ -187,6 +188,14 @@ public class Spindex {
             }
         }
         else if (mode == 3){
+            target = AngleUnit.normalizeDegrees(target - offset);
+
+            spindexMotor.setTargetPosition((int)(target));
+            spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
+            spindexMotor.setPower(1);
+        }
+        else if (mode == 4){
             if (!absAndRelInitialized){
                 throw new RuntimeException("You are working with no offset, please initialize the offset with initAbsAndRel()!");
             }
@@ -198,7 +207,6 @@ public class Spindex {
             spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
             spindexMotor.setPower(1);
-
         }
         else{
             throw new RuntimeException("The mode of Spindex operation is not an option!");
