@@ -54,7 +54,7 @@ public class Spindex {
         public static double Threshold = 63.75;
 
         //For abs and rel
-        public static double[] pid = {20, 0, 10};
+        public static double[] pid = {45, 0, 10};
         public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
@@ -187,15 +187,15 @@ public class Spindex {
                 setTargetStatus(true);
             }
         }
-        else if (mode == 3){
+        else if (mode == 4){
             target = AngleUnit.normalizeDegrees(target - offset);
 
-            spindexMotor.setTargetPosition((int)(target));
+            spindexMotor.setTargetPosition((int)(target/537.7*360));
             spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
+            spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
             spindexMotor.setPower(1);
         }
-        else if (mode == 4){
+        else if (mode == 3){
             if (!absAndRelInitialized){
                 throw new RuntimeException("You are working with no offset, please initialize the offset with initAbsAndRel()!");
             }
