@@ -206,6 +206,7 @@ public class FarBluePath extends OpMode {
 
 
 
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -219,7 +220,7 @@ public class FarBluePath extends OpMode {
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(56.000, 8.000),
+                                    new Pose(57.733, 9.348),
 
                                     new Pose(56.000, 12.000)
                             )
@@ -241,7 +242,7 @@ public class FarBluePath extends OpMode {
                             new BezierLine(
                                     new Pose(44.000, 36.000),
 
-                                    new Pose(18.841, 35.598)
+                                    new Pose(9.600, 35.983)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -249,7 +250,7 @@ public class FarBluePath extends OpMode {
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(18.841, 35.598),
+                                    new Pose(9.600, 35.983),
                                     new Pose(42.689, 30.885),
                                     new Pose(56.000, 12.000)
                             )
@@ -271,7 +272,7 @@ public class FarBluePath extends OpMode {
                             new BezierLine(
                                     new Pose(43.607, 58.852),
 
-                                    new Pose(18.841, 59.808)
+                                    new Pose(8.830, 59.423)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -279,7 +280,7 @@ public class FarBluePath extends OpMode {
 
             shootRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(18.841, 59.808),
+                                    new Pose(8.830, 59.423),
                                     new Pose(45.570, 45.234),
                                     new Pose(56.000, 12.000)
                             )
@@ -298,6 +299,7 @@ public class FarBluePath extends OpMode {
                     .build();
         }
     }
+
 
 
     public void autonomousPathUpdate() {
