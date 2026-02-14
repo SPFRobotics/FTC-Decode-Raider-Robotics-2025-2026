@@ -208,6 +208,7 @@ public class FarBluePath extends OpMode {
 
 
 
+
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
@@ -233,7 +234,7 @@ public class FarBluePath extends OpMode {
                             new BezierCurve(
                                     new Pose(56.000, 12.000),
                                     new Pose(52.262, 29.902),
-                                    new Pose(44.000, 36.000)
+                                    new Pose(48.813, 36.385)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(111), Math.toRadians(180))
 
@@ -241,7 +242,7 @@ public class FarBluePath extends OpMode {
 
             intakeRowOne = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(44.000, 36.000),
+                                    new Pose(48.813, 36.385),
 
                                     new Pose(9.600, 35.983)
                             )
@@ -300,6 +301,7 @@ public class FarBluePath extends OpMode {
                     .build();
         }
     }
+
 
 
 
