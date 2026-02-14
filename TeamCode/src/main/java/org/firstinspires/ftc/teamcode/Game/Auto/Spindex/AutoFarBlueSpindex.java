@@ -1,0 +1,255 @@
+package org.firstinspires.ftc.teamcode.Game.Auto.Spindex;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
+
+@Disabled
+@Autonomous(name="Auto Blue F Spin")
+public class AutoFarBlueSpindex extends LinearOpMode {
+
+    Spindex spindex;
+    MecanumChassis chassis;
+    ElapsedTime timer = new ElapsedTime();
+
+    private void updateSpindex() {
+        if (spindex.isOuttakeing() && chassis.motorsAreBusy()) {
+            spindex.setPower(0);
+        } else {
+            if (spindex.isOuttakeing()) {
+                spindex.moveToPos(
+                        Spindex.SpindexValues.outtakePos[spindex.getIndex()], true
+                );
+            } else {
+                spindex.moveToPos(
+                        Spindex.SpindexValues.intakePos[spindex.getIndex()], true
+                );
+            }
+        }
+    }
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        chassis = new MecanumChassis(this);
+        spindex = new Spindex(hardwareMap);
+
+        Outtake outtake = new Outtake(hardwareMap, true);
+        Intake intake = new Intake(hardwareMap);
+        KickerSpindex kicker = new KickerSpindex(hardwareMap);
+        LedLights led = new LedLights(hardwareMap);
+        ColorFetch colorSensor = new ColorFetch(hardwareMap);
+
+        chassis.initializeMovement();
+        chassis.run_using_encoders_all();
+
+        spindex.setAutoLoadMode(true);
+
+        FtcDashboard dash = FtcDashboard.getInstance();
+        Telemetry telemetry = dash.getTelemetry();
+
+        waitForStart();
+
+        outtake.setRPM(Outtake.OuttakeConfig.farRPM - 50);
+        intake.setPower(1);
+
+        int step = 0;
+        int cycles = 0;
+        int rows = 0;
+
+        chassis.rotate(20, 0.2);
+        spindex.setMode(true);
+        timer.reset();
+
+        while (opModeIsActive()) {
+
+            updateSpindex();
+            led.cycleColors(10);
+
+            telemetry.addData("Step", step);
+            telemetry.addData("Index", spindex.getIndex());
+            telemetry.addData("OuttakeMode", spindex.isOuttakeing());
+            telemetry.addData("AtTarget", spindex.atTarget());
+            telemetry.addData("AbsDeg", spindex.getPos());
+            telemetry.update();
+
+            switch (step) {
+
+                case 0:
+                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM - 50
+                            && spindex.atTarget()) {
+                        step++;
+                        timer.reset();
+                    }
+                    break;
+
+                case 1:
+                    kicker.up();
+                    if (timer.seconds() >= 0.3) {
+                        spindex.clearBall(spindex.getIndex());
+                        cycles++;
+                        step++;
+                        timer.reset();
+                    }
+                    break;
+
+                case 2:
+                    kicker.down();
+                    if (timer.seconds() >= 0.3) {
+                        step++;
+                        timer.reset();
+                    }
+                    break;
+
+                case 3:
+                    if (cycles == 3) {
+                        step = 5;
+                        break;
+                    }
+                    spindex.addIndex();
+                    step = 0;
+                    break;
+
+                case 5:
+                    chassis.rotate(-20, 0.8);
+                    spindex.setMode(false);
+                    step++;
+                    break;
+
+                case 6:
+                    chassis.moveWLoop(0.8, 'f', 20);
+                    step++;
+                    break;
+
+                case 7:
+                    if (!chassis.motorsAreBusy()) {
+                        chassis.powerZero();
+                        step++;
+                    }
+                    break;
+
+                case 8:
+                    chassis.rotate(90, 0.8);
+                    step++;
+                    break;
+
+                case 9:
+                    intake.setPower(1);
+                    chassis.move(0.8, "forward", 12);
+                    chassis.moveWLoop(0.05, 'f', 22);
+                    step++;
+                    break;
+
+                case 10:
+                    spindex.autoLoad(colorSensor);
+                    if (!chassis.motorsAreBusy()) {
+                        chassis.powerZero();
+                        spindex.setMode(true);
+                        step++;
+                    }
+                    break;
+
+                case 11:
+                    chassis.moveWLoop(0.8, 'b', 30);
+                    step++;
+                    break;
+
+                case 12:
+                    if (!chassis.motorsAreBusy()) {
+                        chassis.powerZero();
+                        step++;
+                    }
+                    break;
+
+                case 13:
+                    chassis.rotate(-90, 0.8);
+                    step++;
+                    break;
+
+                case 14:
+                    chassis.moveWLoop(0.8, 'b', 20);
+                    step++;
+                    break;
+
+                case 15:
+                    if (!chassis.motorsAreBusy()) {
+                        chassis.powerZero();
+                        cycles = 0;
+                        rows++;
+                        step++;
+                    }
+                    break;
+
+                case 16:
+                    chassis.rotate(23, 0.8);
+                    timer.reset();
+                    step++;
+                    break;
+
+                case 17:
+                    if (outtake.getRPM() >= Outtake.OuttakeConfig.farRPM - 50
+                            && spindex.atTarget()) {
+                        step++;
+                        timer.reset();
+                    }
+                    break;
+
+                case 18:
+                    kicker.up();
+                    if (timer.seconds() >= 0.3) {
+                        spindex.clearBall(spindex.getIndex());
+                        cycles++;
+                        step++;
+                        timer.reset();
+                    }
+                    break;
+
+                case 19:
+                    kicker.down();
+                    if (timer.seconds() >= 0.3) {
+                        step++;
+                        timer.reset();
+                    }
+                    break;
+
+                case 20:
+                    if (cycles == 3) {
+                        step = 22;
+                        break;
+                    }
+                    spindex.addIndex();
+                    step = 17;
+                    break;
+
+                case 22:
+                    chassis.moveWLoop(0.8, 'f', 12);
+                    step++;
+                    break;
+
+                case 23:
+                    if (!chassis.motorsAreBusy()) {
+                        chassis.powerZero();
+                        step++;
+                    }
+                    break;
+
+                case 24:
+                    outtake.setRPM(0);
+                    intake.setPower(0);
+                    requestOpModeStop();
+                    break;
+            }
+        }
+    }
+}
