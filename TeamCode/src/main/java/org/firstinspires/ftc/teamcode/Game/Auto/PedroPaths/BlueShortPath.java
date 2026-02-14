@@ -86,8 +86,8 @@ public class BlueShortPath extends OpMode {
         intakeEnabled = true;
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
-        follower.followPath(paths.shootBallOne, true);
         spindex.initAbsAndRel();
+        follower.followPath(paths.shootBallOne, true);
         //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         //updateSpindex.start();
     }

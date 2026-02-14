@@ -90,6 +90,7 @@ public class BlueShortObilisk extends OpMode {
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
+        spindex.initAbsAndRel();
         follower.followPath(paths.ReadObilisk, true);
     }
 
@@ -120,9 +121,9 @@ public class BlueShortObilisk extends OpMode {
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
         }
     }
 
@@ -130,7 +131,7 @@ public class BlueShortObilisk extends OpMode {
         spindex.setMode(true);
         // If waiting for spindex to align after advancing
         if (waitingForSpindexAlign) {
-            if (spindex.atTarget()) {
+            if (!spindex.isBusy()) {
                 // Spindex reached new position, reset timer and resume shooting
                 outtake.resetKickerCycle();
                 lastKickerCycles = 0;
@@ -141,7 +142,7 @@ public class BlueShortObilisk extends OpMode {
         }
 
         // Only run kicker cycle when aligned
-        if (spindex.atTarget()) {
+        if (!spindex.isBusy()) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 

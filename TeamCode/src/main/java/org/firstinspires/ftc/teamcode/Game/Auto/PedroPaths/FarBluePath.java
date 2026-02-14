@@ -86,6 +86,7 @@ public class FarBluePath extends OpMode {
         intakeEnabled = true;
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
+        spindex.initAbsAndRel();
         follower.followPath(paths.shootBallOne, true);
         //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         //updateSpindex.start();
@@ -134,7 +135,7 @@ public class FarBluePath extends OpMode {
         spindex.setMode(true);
         // If waiting for spindex to align after advancing
         if (waitingForSpindexAlign) {
-            if (spindex.atTarget()) {
+            if (!spindex.isBusy()) {
                 // Spindex reached new position, reset timer and resume shooting
                 outtake.resetKickerCycle();
                 lastKickerCycles = 0;
@@ -145,7 +146,7 @@ public class FarBluePath extends OpMode {
         }
 
         // Only run kicker cycle when aligned
-        if (spindex.atTarget()) {
+        if (!spindex.isBusy()) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 

@@ -88,13 +88,14 @@ public class BlueShortRampEmpty extends OpMode {
         intakeEnabled = true;
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
+        spindex.initAbsAndRel();
         follower.followPath(paths.shootBallOne, true);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
-        updateSpindex.start();
+        //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        //updateSpindex.start();
     }
 
     public void stop(){
-        spindex.exitProgram();
+        //spindex.exitProgram();
     }
 
     @Override
@@ -109,7 +110,7 @@ public class BlueShortRampEmpty extends OpMode {
         follower.update();
         leds.cycleColors(10);
         autonomousPathUpdate();
-        //updateSpindexPosition();
+        updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
@@ -126,9 +127,9 @@ public class BlueShortRampEmpty extends OpMode {
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
         }
     }
 
@@ -136,7 +137,7 @@ public class BlueShortRampEmpty extends OpMode {
         spindex.setMode(true);
         // If waiting for spindex to align after advancing
         if (waitingForSpindexAlign) {
-            if (spindex.atTarget()) {
+            if (!spindex.isBusy()) {
                 // Spindex reached new position, reset timer and resume shooting
                 outtake.resetKickerCycle();
                 lastKickerCycles = 0;
@@ -147,7 +148,7 @@ public class BlueShortRampEmpty extends OpMode {
         }
 
         // Only run kicker cycle when aligned
-        if (spindex.atTarget()) {
+        if (!spindex.isBusy()) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 
