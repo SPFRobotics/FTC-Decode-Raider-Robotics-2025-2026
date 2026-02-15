@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp(name="SpindexRelEncoder")
+//@TeleOp(name="SpindexRelEncoder")
 public class SpindexRelEncoder extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

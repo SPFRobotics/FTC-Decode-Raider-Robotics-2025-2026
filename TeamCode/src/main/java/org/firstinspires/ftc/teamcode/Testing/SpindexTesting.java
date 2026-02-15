@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp
+//@TeleOp
 public class SpindexTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

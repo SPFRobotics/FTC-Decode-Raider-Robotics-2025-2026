@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
-@Autonomous(name = "Blue Short (Ramp Empty)", group = "Autonomous")
+//@Autonomous(name = "Blue Short (Ramp Empty)", group = "Autonomous")
 @Configurable
 public class BlueShortRampEmpty extends OpMode {
 

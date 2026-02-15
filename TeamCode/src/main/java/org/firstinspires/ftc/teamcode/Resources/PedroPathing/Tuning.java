@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+package org.firstinspires.ftc.teamcode.Resources.PedroPathing;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.changes;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.drawOnlyCurrent;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.draw;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.stopRobot;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.telemetryM;
+import static org.firstinspires.ftc.teamcode.Resources.PedroPathing.Tuning.changes;
+import static org.firstinspires.ftc.teamcode.Resources.PedroPathing.Tuning.drawOnlyCurrent;
+import static org.firstinspires.ftc.teamcode.Resources.PedroPathing.Tuning.draw;
+import static org.firstinspires.ftc.teamcode.Resources.PedroPathing.Tuning.follower;
+import static org.firstinspires.ftc.teamcode.Resources.PedroPathing.Tuning.stopRobot;
+import static org.firstinspires.ftc.teamcode.Resources.PedroPathing.Tuning.telemetryM;
 
 import com.bylazar.configurables.PanelsConfigurables;
 import com.bylazar.configurables.annotations.Configurable;
@@ -38,8 +38,8 @@ import java.util.List;
  * @version 1.0, 6/26/2025
  */
 @Configurable
-@TeleOp(name = "Tuning", group = "Pedro Pathing")
-
+//@TeleOp(name = "Tuning", group = "Pedro Pathing")
+@Disabled
 public class Tuning extends SelectableOpMode {
     public static Follower follower;
 
