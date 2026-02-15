@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 
-@TeleOp(name = "Spindex PID Tuning", group = "Testing")
+//@TeleOp(name = "Spindex PID Tuning", group = "Testing")
 public class SpindexTuning extends OpMode {
 
 

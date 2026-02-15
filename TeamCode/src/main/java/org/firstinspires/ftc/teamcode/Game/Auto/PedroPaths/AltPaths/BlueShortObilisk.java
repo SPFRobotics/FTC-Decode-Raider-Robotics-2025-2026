@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
-@Autonomous(name = "Blue Short OBL", group = "Autonomous")
+//@Autonomous(name = "Blue Short OBL", group = "Autonomous")
 @Configurable
 public class BlueShortObilisk extends OpMode {
 

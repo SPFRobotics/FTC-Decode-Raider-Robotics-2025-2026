@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 
 
-@TeleOp(name = "Field Centric TeleOp")
+//@TeleOp(name = "Field Centric TeleOp")
 public class FieldCentricDrive extends LinearOpMode {
     // Speed multiplier for motors
     private double speedFactor = 1;

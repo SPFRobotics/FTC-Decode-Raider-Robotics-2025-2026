@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 
 @Disabled
-@Autonomous(name = "TestPath", group = "Autonomous")
+//@Autonomous(name = "TestPath", group = "Autonomous")
 
 public class TestPath extends OpMode {
 

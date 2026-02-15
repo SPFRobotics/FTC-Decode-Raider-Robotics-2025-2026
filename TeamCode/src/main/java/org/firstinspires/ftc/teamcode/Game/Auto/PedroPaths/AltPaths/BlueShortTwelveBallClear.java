@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
-@Autonomous(name = "Blue Short 12 Ball Clear", group = "Autonomous")
+//@Autonomous(name = "Blue Short 12 Ball Clear", group = "Autonomous")
 @Configurable
 public class BlueShortTwelveBallClear extends OpMode {
 
