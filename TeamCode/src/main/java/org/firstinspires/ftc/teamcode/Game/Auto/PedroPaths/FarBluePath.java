@@ -47,6 +47,7 @@ public class FarBluePath extends OpMode {
     private boolean waitingForSpindexAlign = false;
     private boolean shootingPrepared = false;
     private boolean flywheelStarted = false;
+    private boolean shootDelayStarted = false;
 
     //In order for feature that will unjam to ball to work correctly, it must be run in a loop. This variable is only used to enable and disable the intake and nothing more.
     private boolean intakeEnabled = false;
@@ -145,8 +146,8 @@ public class FarBluePath extends OpMode {
             return false;
         }
 
-        // Only run kicker cycle when aligned
-        if (!spindex.isBusy()) {
+        // Only run kicker cycle when aligned and after shoot delay
+        if (!spindex.isBusy() && override.milliseconds() > 200) {
             outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
         }
 
@@ -200,6 +201,7 @@ public class FarBluePath extends OpMode {
         outtake.resetKickerCycle();
         lastKickerCycles = 0;
         waitingForSpindexAlign = false;
+        shootDelayStarted = false;
         outtake.setRPM(SHOOT_RPM);
     }
 
@@ -310,7 +312,7 @@ public class FarBluePath extends OpMode {
                 if (!follower.isBusy()) {
                     prepareForShooting();
                     pathState = 1;
-                    //override.reset();
+                    override.reset();
                 }
                 break;
 
@@ -339,7 +341,7 @@ public class FarBluePath extends OpMode {
                     spindex.setMode(true);
                     spindex.setIndex(0);
                     flywheelStarted = false;
-                    follower.followPath(paths.shootRowOne, true);
+                    follower.followPath(paths.shootRowOne,.9, true);
                     pathState = 4;
                 }
                 break;
@@ -348,14 +350,19 @@ public class FarBluePath extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
-                    //override.reset();
                 }
                 // Only shoot once path completes and robot is in position
-                if (!follower.isBusy() && shootBalls()) {
-
-                    shootingPrepared = false;
-                    follower.followPath(paths.RuntoRowTwo, true);
-                    pathState = 5;
+                if (!follower.isBusy()) {
+                    if (!shootDelayStarted) {
+                        override.reset();
+                        shootDelayStarted = true;
+                    }
+                    if (shootBalls()) {
+                        shootingPrepared = false;
+                        shootDelayStarted = false;
+                        follower.followPath(paths.RuntoRowTwo, true);
+                        pathState = 5;
+                    }
                 }
                 break;
 
@@ -377,7 +384,7 @@ public class FarBluePath extends OpMode {
                     spindex.setMode(true);
                     spindex.setIndex(0);
                     flywheelStarted = false;
-                    follower.followPath(paths.shootRowTwo, true);
+                    follower.followPath(paths.shootRowTwo, .8,true);
                     pathState = 7;
                 }
                 break;
@@ -386,12 +393,18 @@ public class FarBluePath extends OpMode {
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
-                    //override.reset();
                 }
-                if (!follower.isBusy() && shootBalls()) {
-                    shootingPrepared = false;
-                    follower.followPath(paths.LeavePoints, true);
-                    pathState = 8;
+                if (!follower.isBusy()) {
+                    if (!shootDelayStarted) {
+                        override.reset();
+                        shootDelayStarted = true;
+                    }
+                    if (shootBalls()) {
+                        shootingPrepared = false;
+                        shootDelayStarted = false;
+                        follower.followPath(paths.LeavePoints, true);
+                        pathState = 8;
+                    }
                 }
                 break;
 
