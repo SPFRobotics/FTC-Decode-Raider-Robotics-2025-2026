@@ -27,15 +27,14 @@ public class Turret {
     private static final double kP = maxPower / thresholdDeg; // proportional slope inside threshold
     private static final double searchP = 0.12;      // slow scan speed when tag not seen
 
-    public Turret(HardwareMap hardwareMap){
+    public Turret(HardwareMap hardwareMap,Outtake outtake, Limelight limelight){
 
         rotation = hardwareMap.get(CRServo.class, "turretServo");
         hood = hardwareMap.get(Servo.class,"hoodServo");
         rotateEnconder = hardwareMap.get(AnalogInput.class, "turretEncoder");
-        limelight = new Limelight(hardwareMap);
-        outtake = new Outtake(hardwareMap);
+        this.limelight = limelight;
         limelight.start();
-
+        this.outtake = outtake;
     }
 
 
