@@ -22,6 +22,10 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 @Autonomous(name = "Blue Short", group = "Autonomous")
 @Configurable
 public class BlueShortPath extends OpMode {
@@ -52,6 +56,13 @@ public class BlueShortPath extends OpMode {
     private boolean intakeEnabled = false;
 
     private ElapsedTime override = new ElapsedTime();
+    ElapsedTime runTime = null;
+
+    private PrintWriter pen = new PrintWriter("/sdcard/outtake.log", "UTF-8");
+
+    public BlueShortPath() throws FileNotFoundException, UnsupportedEncodingException {
+    }
+
 
     @Override
     public void init() {
@@ -90,14 +101,17 @@ public class BlueShortPath extends OpMode {
         follower.followPath(paths.shootBallOne, true);
         //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         //updateSpindex.start();
+        runTime = new ElapsedTime();
     }
 
     public void stop(){
+        pen.close();
         //spindex.exitProgram();
     }
 
     @Override
     public void loop() {
+        pen.write(runTime + ":" + outtake.getRPM() + ":" + kicker.getState());
         ElapsedTime time = new ElapsedTime();
         if (intakeEnabled) {
             intake.intakeOn(true);

@@ -199,11 +199,11 @@ public class Spindex {
             if (!absAndRelInitialized){
                 throw new RuntimeException("You are working with no offset, please initialize the offset with initAbsAndRel()!");
             }
-            double relPos = Math.floorMod((int)(((spindexMotor.getCurrentPosition()/537.7*360)+offset)), 360);
+            double relPos = Math.floorMod((int)(((spindexMotor.getCurrentPosition()/537.7*360)+offset+0.5)), 360);
             double error = AngleUnit.normalizeDegrees(target - relPos);
             double ticksError = error/537.7*360;
 
-            spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError));
+            spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError+0.5));
             spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
             spindexMotor.setPower(1);
