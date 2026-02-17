@@ -34,7 +34,7 @@ public class VERYheavilyInspiredSpindex {
     public enum Motif {
         GPP,
         PGP,
-        PPG
+        PPG,
     }
 
     // ========================================================================
