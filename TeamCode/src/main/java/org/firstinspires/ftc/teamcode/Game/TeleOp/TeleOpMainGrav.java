@@ -1,34 +1,35 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
 
+import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.closeRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.sortRPM;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.ColorFinder;
+import org.firstinspires.ftc.teamcode.Subsystems.Extension;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.KickerGrav;
+import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
+import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Resources.Button;
-import org.firstinspires.ftc.teamcode.Resources.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Resources.Scroll;
-import org.w3c.dom.Element;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-@TeleOp(name="Tele-Op Grav")
+@Disabled
 public class TeleOpMainGrav extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
@@ -40,7 +41,7 @@ public class TeleOpMainGrav extends LinearOpMode {
     private Intake intake = null;
     private ElapsedTime masterClock = new ElapsedTime();
     private Outtake outtake = null;
-    private Kicker kicker = null;
+    private KickerGrav kickerGrav = null;
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
     private double speedFactor =  1;
     private Limelight limelight = null;
@@ -78,7 +79,6 @@ public class TeleOpMainGrav extends LinearOpMode {
     private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
     private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
     private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
-
     public TeleOpMainGrav() throws FileNotFoundException, UnsupportedEncodingException {
     }
 
@@ -104,11 +104,11 @@ public class TeleOpMainGrav extends LinearOpMode {
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Initialize subsystems
-        outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap);
+        outtake = new Outtake(hardwareMap, false);
+        kickerGrav = new KickerGrav(hardwareMap);
         Extension extension = new Extension(hardwareMap, "kickstand");
-        leftLED = new LedLights("leftLED", hardwareMap);
-        rightLED = new LedLights("rightLED", hardwareMap);
+        Servo leftLed = hardwareMap.get(Servo.class, "leftLed");
+        Servo rightLed = null;
         colorFinder = new ColorFinder(hardwareMap);
         
         //limelight = new Limelight(hardwareMap, telemetry);
@@ -217,19 +217,19 @@ public class TeleOpMainGrav extends LinearOpMode {
             }*/
 
             if (a.press(gamepad2.a)){
-                kicker.down(true);
+                kickerGrav.down();
             }
             else if (triangle.press(gamepad2.y)){
-                kicker.up(true);
+                kickerGrav.up();
             }
 
-            if (setRPM == Outtake.OuttakeSpeed.closeRPM && outtake.getRPM() >= setRPM){
+            if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
             }
-            else if (setRPM == Outtake.OuttakeSpeed.farRPM && outtake.getRPM() >= setRPM){
+            else if (setRPM == farRPM && outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
             }
-            else if (setRPM == Outtake.OuttakeSpeed.sortRPM && outtake.getRPM() >= setRPM){
+            else if (setRPM == sortRPM && outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
             }
             else{
@@ -238,13 +238,13 @@ public class TeleOpMainGrav extends LinearOpMode {
 
             // Outtake control - right trigger
             if (outtakeFar.press(gamepad2.dpad_up)) {
-                setRPM = Outtake.OuttakeSpeed.farRPM;
+                setRPM = farRPM;
             }
             if(outtakeClose.press(gamepad2.dpad_down)){
-                setRPM = Outtake.OuttakeSpeed.closeRPM;
+                setRPM = closeRPM;
             }
             if (outtakeSort.press(gamepad2.share)){
-                setRPM = Outtake.OuttakeSpeed.sortRPM;
+                setRPM = sortRPM;
             }
             if (gamepad2.ps) {
                 setRPM = 0;
@@ -252,7 +252,7 @@ public class TeleOpMainGrav extends LinearOpMode {
             
             outtake.setRPM(setRPM);
 
-            if (colorFinder != null) {
+            /*if (colorFinder != null) {
                 if (colorFinder.isGreen() && ledClock.milliseconds() >= 500) {
                     leftLED.setGreen();
                     rightLED.setGreen();
@@ -269,7 +269,7 @@ public class TeleOpMainGrav extends LinearOpMode {
                 if (ledClock.milliseconds() >= 500 && !colorFound) {
                     ledClock.reset();
                 }
-            }
+            }*/
 
             //Kickstand
             if (toggleExtension.toggle(gamepad1.left_bumper && gamepad1.right_bumper)){

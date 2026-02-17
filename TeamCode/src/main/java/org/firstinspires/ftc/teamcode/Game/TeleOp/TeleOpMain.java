@@ -1,103 +1,52 @@
 package org.firstinspires.ftc.teamcode.Game.TeleOp;
+import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.closeRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.ColorFinder;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Extension;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Kicker;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Game.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
-import org.firstinspires.ftc.teamcode.Resources.LedLights;
-import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
-import org.firstinspires.ftc.teamcode.Resources.Scroll;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-
-//@TeleOp(name="Tele-Op Main")
-@Disabled
+@TeleOp(name="Tele-Op Main")
 public class TeleOpMain extends LinearOpMode {
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeftDrive = null;
-    private DcMotor backLeftDrive = null;
-    private DcMotor frontRightDrive = null;
-    private DcMotor backRightDrive = null;
-
     private Intake intake = null;
-    private ElapsedTime masterClock = new ElapsedTime();
-    private ElapsedTime ledClock = new ElapsedTime();
     private Outtake outtake = null;
-    private Kicker kicker = null;
+    private KickerSpindex kicker = null;
+
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
     private double speedFactor =  1;
-    private boolean colorFound = false;
-    private Limelight limelight = null;
-    private IMU imu = null;
-    private MecanumChassis chassis = null;
-    private ColorFinder colorFinder = null;
-    //private Extension extension = null;
-    private Spindex spindex = null;
-    private boolean spindexOuttakeMode = false;
 
     //Buttons
-    private Button outtakeFar = new Button();
-    private Button outtakeClose = new Button();
-    private Button triangle = new Button();
-    private Button a = new Button();
-    private Button centeringButton = new Button();
-
     private Button spindexModeToggle = new Button();
     private Button spindexRightBumper = new Button();
     private Button spindexLeftBumper = new Button();
-    //private Button kickstandToggle = new Button();
-    private Servo ledRight = null;
-    private Servo ledLeft = null;
-    private LedLights leftLED = null;
-    private LedLights rightLED = null;
+    private Button kickstandButton = new Button();
 
-    private Button square = new Button();
-    //telemetry
-    FtcDashboard dashboard = FtcDashboard.getInstance();
-    Telemetry dashboardTelemetry = dashboard.getTelemetry();;
-
-
+    private Button intakeButton = new Button();
+    private Button autoLoad = new Button();
     private double setRPM = 0;
-    private com.qualcomm.robotcore.hardware.ColorSensor colorSensor = null;
-    private PrintWriter pen = new PrintWriter("/sdcard/outtake.txt", "UTF-8");
-    private Scroll bigThree = new Scroll("THE BIG 3 - Manav Shah - Ryan Zuck - Om Ram - Bassicly ryan is our dad, hes the founder, im the first born, om is second born. Om is like disregarded sometimes but its ok cuz hes a lovley boy and we all love om ramanathan");
-    private Scroll daddyRyan = new Scroll("Ryan is our father. He will forever maintain us, sustain us, and push us forward towards victory. Ryan will save us. Ryan is Jewses.");
-
-    public TeleOpMain() throws FileNotFoundException, UnsupportedEncodingException {
-    }
+    private boolean intakeReverse = false;
+    ElapsedTime intakeReverseTimer = new ElapsedTime();
 
     @Override
-    public void runOpMode() {
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
-        ledLeft = hardwareMap.get(Servo.class, "leftLED");
-        ledRight = hardwareMap.get(Servo.class, "rightLED");
-        imu = hardwareMap.get(IMU.class, "imu");
-
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        imu.initialize(parameters);
+    public void runOpMode() throws InterruptedException {
+        DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
+        DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
+        DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
+        DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -107,54 +56,45 @@ public class TeleOpMain extends LinearOpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        // Always ensure motors are in manual control mode for normal driving
+        // This ensures they respond to direct power commands
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         // Initialize subsystems
-        intake = new Intake(hardwareMap);
-        outtake = new Outtake(hardwareMap);
-        kicker = new Kicker(hardwareMap);
-        colorFinder = new ColorFinder(hardwareMap);
-        //extension = new Extension(hardwareMap);
-        spindex = new Spindex(hardwareMap);
+        Intake intake = new Intake(hardwareMap);
+        Outtake outtake = new Outtake(hardwareMap, true);
+        KickerSpindex kicker = new KickerSpindex(hardwareMap);
+        ColorFetch colorSensor = new ColorFetch(hardwareMap);
+        Spindex spindex = new Spindex(hardwareMap);
+        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        KickstandServo kickstand = new KickstandServo(hardwareMap);
+        LedLights leds = new LedLights(hardwareMap);
 
-        //extension = new Extension(hardwareMap);
-        //limelight = new Limelight(hardwareMap, telemetry);
-        
-        // Initialize LED Lights
-        leftLED = new LedLights("leftLED", hardwareMap);
-        rightLED = new LedLights("rightLED", hardwareMap);
-        
-        // Initialize MecanumChassis for encoder-based centering
-        chassis = new MecanumChassis(this);
-
-        //Initialize Telemetry
-
-        telemetry.setMsTransmissionInterval(16);
-        dashboardTelemetry.setMsTransmissionInterval(16);
+        //Set autoload and launch to true as default
+        autoLoad.changeState(true);
+        while (opModeInInit()){
+            leds.cycleColors(10);
+        }
         waitForStart();
-        kicker.down(false);
+        spindex.initAbsAndRel();
+        /*if (opModeIsActive()){
+            updateSpindex.start();
+        }*/
 
-        // Initialize chassis movement after waitForStart
-        // Note: This will reset encoders and initialize IMU
-        // The IMU orientation in MecanumChassis may differ from Limelight's orientation
-        // If there are issues, you may need to align the IMU orientations
-        chassis.initializeMovement();
-        
-        // Ensure motors are in manual control mode for TeleOp driving
-        // This allows direct power control without encoder interference
-        chassis.restoreManualControl();
-
-        // Start limelight after waitForStart
-        //limelight.start();
-        //ledLeft.setPosition(0.5);
-        //ledRight.setPosition(0.5);
-        ElapsedTime timer = new ElapsedTime();
+        ElapsedTime loopTime = new ElapsedTime();
         while (opModeIsActive()) {
-            // Always ensure motors are in manual control mode for normal driving
-            // This ensures they respond to direct power commands
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            
+            loopTime.reset();
+
+            /*************************************Drive Train Control**************************************/
+            //Allows speed to be halved
             if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
                 speedFactor = 0.5;
             }
@@ -162,214 +102,126 @@ public class TeleOpMain extends LinearOpMode {
                 speedFactor = 1;
             }
 
-            //Simple toggle for the kickstand using gamepad1 left trigger
-            //boolean kickstandRaised = kickstandToggle.toggle(gamepad1.left_trigger > 0.5);
-            //Extension.kickStandUp(kickstandRaised);
-
-            boolean xButtonPressed = centeringButton.press(gamepad1.cross);
-            //Field Oriented Drive
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-            //x = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-            //y = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-            double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
-            double x = gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
+            double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
+            double x = gamepad1.left_stick_x * speedFactor;
+            double rx = gamepad1.right_stick_x * speedFactor;
 
             frontLeftDrive.setPower(y + x + rx);
             backLeftDrive.setPower(y - x + rx);
-            frontRightDrive.setPower(y + x - rx);
-            backRightDrive.setPower(y - x - rx);
+            frontRightDrive.setPower(y - x - rx);
+            backRightDrive.setPower(y + x - rx);
+            /**********************************************************************************************/
 
-            //ouble denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-
-
-
-
-            //Automate the kicker
-            /*outtake.automate(a.toggle(gamepad2.a));
-            if (a.getState() && rumbled == false){
-                rumbled = true;
-                gamepad2.rumbleBlips(1);
+            /*****************************Intake System************************************/
+            boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper);
+            if (intakeActive && !gamepad1.left_bumper) {
+                intake.intakeOn(true);
             }
-            else if (!a.getState() && rumbled == true){
-                rumbled = false;
-                gamepad2.rumbleBlips(2);
-            }*/
-            /* Extension trigger mapping is currently unused; leave stubbed for future reference.
-            while(gamepad1.left_trigger>0.1 && gamepad2.left_trigger>0.1){
-                Extension.setPower(1);
-            }
-            while(gamepad1.right_trigger>0.1 && gamepad2.right_trigger>0.1){
-                Extension.setPower(-1);
-            }
-            */
-
-            // Intake toggle on Square button
-            boolean intakeActive = square.toggle(gamepad2.square);
-            if (intakeActive) {
-                if (gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0){
-                    intake.setPower(-1);
-                }
-                else {
-                    intake.setPower(1);
-                }
+            else if (gamepad1.left_bumper) {
+                intake.setPower(-1);
             }
             else {
                 intake.setPower(0);
-            }
 
-            // Spindex mode toggle and position cycling
+            }
+            /******************************************************************************/
+
+            /**********Spindex mode toggle and position cycling***********/
             if (spindexRightBumper.press(gamepad2.right_bumper)) {
+                if (!spindex.isOuttakeing()){
+                    autoLoad.changeState(false);
+                }
                 spindex.addIndex();
             }
             if (spindexLeftBumper.press(gamepad2.left_bumper)) {
+                if (!spindex.isOuttakeing()){
+                    autoLoad.changeState(false);
+                }
                 spindex.subtractIndex();
             }
-            spindexOuttakeMode = spindexModeToggle.toggle(gamepad2.circle);
-            spindex.lockPos(spindexOuttakeMode);
+            //Sets either intake or outtake mode
+            spindex.setMode(spindexModeToggle.toggle(gamepad2.circle));
+            /************************************************************/
 
-            if (a.press(gamepad2.a)){
-                kicker.down(false);
+            /*********************Kicker and index emptying logic**********************/
+            boolean crossWasPressed = gamepad2.crossWasPressed();
+            kicker.automate(crossWasPressed && spindex.isOuttakeing());
+            if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0){
+                spindex.clearBall(spindex.getIndex());
             }
-            else if (triangle.press(gamepad2.y)){
-                kicker.up(false);
+            /**************************************************************************/
+
+            spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.triangle) && !spindex.isOuttakeing());
+            spindex.autoLoad(colorSensor);
+
+            if (spindex.isOuttakeing()){
+                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
+                leds.setColor(leds.GREEN);
+            }
+            else{
+                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
+                leds.setColor(leds.BLUE);
             }
 
-            if (setRPM == Outtake.OuttakeSpeed.closeRPM && outtake.getRPM() >= setRPM){
+            //Controls gamepad rumble
+            if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
+                //leds.setColor(leds.GREEN);
             }
-            else if (setRPM == Outtake.OuttakeSpeed.farRPM & outtake.getRPM() >= setRPM){
+            else if (setRPM == farRPM & outtake.getRPM() >= setRPM){
                 gamepad2.rumble(100);
+                //leds.setColor(leds.GREEN);
             }
             else{
                 gamepad2.stopRumble();
+                //leds.setColor(leds.RED);
             }
 
             // Outtake control - right trigger
-            if (outtakeFar.press(gamepad2.dpad_up)) {
-                setRPM = Outtake.OuttakeSpeed.farRPM;
+            if (gamepad2.dpad_up) {
+                setRPM = farRPM;
             }
-            if(outtakeClose.press(gamepad2.dpad_down)){
-                setRPM = Outtake.OuttakeSpeed.closeRPM;
+            else if(gamepad2.dpad_down){
+                setRPM = closeRPM;
             }
-            if (gamepad2.ps) {
+            else if (gamepad2.touchpad) {
                 setRPM = 0;
             }
-            
             outtake.setRPM(setRPM);
 
-            // Color detection and LED control
-            if (colorFinder != null) {
-                if (colorFinder.isGreen() && ledClock.milliseconds() >= 500) {
-                    leftLED.setGreen();
-                    rightLED.setGreen();
-                    colorFound = true;
-                } else if (colorFinder.isPurple() && ledClock.milliseconds() >= 500) {
-                    leftLED.setViolet();
-                    rightLED.setViolet();
-                    colorFound = true;
-                }
-                else{
-                    leftLED.turnOFF();
-                    rightLED.turnOFF();
-                    colorFound = false;
-                }
-                if (ledClock.milliseconds() >= 500 && !colorFound){
-                    ledClock.reset();
-                }
+            if (kickstandButton.toggle(gamepad1.share)){
+                kickstand.updatePos(KickstandServo.KickstandServoConfig.up);
+            }
+            else{
+                kickstand.setPower(0);
             }
 
-
-
-/*
-            // Driver Hub
-            telemetry.addLine("==========================================");
-            telemetry.addLine(bigThree.foward());
-            telemetry.addLine("==========================================");
-            telemetry.addLine("=== DRIVE & INTAKE ===");
-            telemetry.addData("Intake Active", intake);
-            telemetry.addData("Outtake Active", outtake.isActive());
-            if (a.getState() == true){
-                telemetry.addLine("Kicker Active");
-            }
-            //telemetry.addData("Kickstand Up", Extension.isKickstandUp());
-            telemetry.addData("Runtime", runtime.toString());
-            //telemetry.addLine("Intake RPM: " + Double.toString(intake.getRPM(28)));
-            telemetry.addData("Outtake RPM: ", outtake.getRPM());
-            telemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
-            telemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
-            telemetry.addData("Rumbling:", gamepad2.isRumbling());
-            telemetry.addLine("=== AUTO-CENTERING ===");
-            telemetry.addLine("=== SPINDEX ===");
-            telemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
-            telemetry.addData("Current Position", Spindex.getPos());
-            telemetry.addData("Index", spindex.getIndex());
-
-
-
-            if (colorFinder != null) {
-                String detectedColor = "NONE";
-                if (colorFinder.isPurple()) {
-                    detectedColor = "PURPLE";
-                } else if (colorFinder.isGreen()) {
-                    detectedColor = "GREEN";
-                }
-                telemetry.addData("Color Sensor", detectedColor);
-            }
-
+            //Telemetry
+            telemetry.setMsTransmissionInterval(16);
 
             telemetry.addLine("==========================================");
-            telemetry.addLine(daddyRyan.foward());
+            telemetry.addData("Loop Time", loopTime.milliseconds());
+            telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
+            telemetry.addLine("------------------------------------------");
+            telemetry.addData("Spindex Index", spindex.getIndex());
+            telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+            telemetry.addData("Color", colorSensor.getHue());
+            telemetry.addData("At Target?", spindex.atTarget());
+            telemetry.addData("Spindex Power", spindex.getPower());
+            telemetry.addData("Automated Loading", spindex.isAutoLoading());
+            telemetry.addData("Outtaking?", spindex.isOuttakeing());
+            telemetry.addData("Kickstand Pos", kickstand.getPosition());
+            telemetry.addData("Kickstand Voltage", kickstand.getVoltage());
+            telemetry.addLine("------------------------------------------");
+            telemetry.addData("Distance", colorSensor.getDistance());
+            telemetry.addData("Right Pod", backRightDrive.getCurrentPosition());
+            telemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
+            telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
             telemetry.addLine("==========================================");
-
-            dashboardTelemetry.addLine("==========================================");
-            dashboardTelemetry.addLine(bigThree.foward());
-            dashboardTelemetry.addLine("==========================================");
-            dashboardTelemetry.addLine("=== DRIVE & INTAKE ===");
-            dashboardTelemetry.addData("Intake Active", intake);
-            dashboardTelemetry.addData("Outtake Active", outtake.isActive());
-            if (a.getState() == true){
-                dashboardTelemetry.addLine("Kicker Active");
-            }
-            dashboardTelemetry.addData("Runtime", runtime.toString());
-            dashboardTelemetry.addData("Outtake RPM: ", outtake.getRPM());
-            dashboardTelemetry.addData("PIDF", outtake.outtakeMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
-            dashboardTelemetry.addLine(Double.toString(outtake.getCurrentCycleTime()));
-            dashboardTelemetry.addData("Rumbling:", gamepad2.isRumbling());
-            dashboardTelemetry.addLine("=== AUTO-CENTERING ===");
-            dashboardTelemetry.addLine("=== SPINDEX ===");
-            dashboardTelemetry.addData("Mode", spindexOuttakeMode ? "OUTTAKE" : "INTAKE");
-            dashboardTelemetry.addData("Current Position", Spindex.getPos());
-            dashboardTelemetry.addData("Index", spindex.getIndex());
-
-
-
-            if (colorFinder != null) {
-                String detectedColor = "NONE";
-                if (colorFinder.isPurple()) {
-                    detectedColor = "PURPLE";
-                } else if (colorFinder.isGreen()) {
-                    detectedColor = "GREEN";
-                }
-                dashboardTelemetry.addData("Color Sensor", detectedColor);
-            }
-
-            dashboardTelemetry.addLine("==========================================");
-            dashboardTelemetry.addLine(daddyRyan.foward());
-            dashboardTelemetry.addLine("==========================================");
-            dashboardTelemetry.update();
-
-            pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + "\n");
+            telemetry.addLine("Spindex Mode: " + (spindex.isOuttakeing() ? "Outtake" : "Intake"));
+            telemetry.update();
         }
-
-             */
-        pen.close();
-
-        telemetry.addData("Loop Time", timer.milliseconds());
-        timer.reset();
-        dashboardTelemetry.update();
-        telemetry.update();
+        //Tells spindex thread to end execution
+        //spindex.exitProgram();
     }
-}
 }
