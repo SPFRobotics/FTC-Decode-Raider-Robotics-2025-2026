@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-//@TeleOp
+@TeleOp
 public class SpindexTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -41,10 +41,10 @@ public class SpindexTesting extends LinearOpMode {
             double error = AngleUnit.normalizeDegrees(target - relPos);
             double ticksError = error/537.7*360;
 
-            spindex.setTargetPosition((int)(spindex.getCurrentPosition()+ticksError));
-            spindex.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindex.setVelocityPIDFCoefficients(10, 10, 0.02, 0);
-            spindex.setPower(1);
+            //spindex.setTargetPosition((int)(spindex.getCurrentPosition()+ticksError));
+            //spindex.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //spindex.setVelocityPIDFCoefficients(10, 10, 0.02, 0);
+            //spindex.setPower(1);
 
             if (gamepad1.aWasPressed()){
                 index = (index+1)%3;

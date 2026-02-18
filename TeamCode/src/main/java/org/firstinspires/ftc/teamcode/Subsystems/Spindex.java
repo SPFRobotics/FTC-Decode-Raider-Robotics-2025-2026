@@ -27,7 +27,7 @@ import static java.lang.Thread.sleep;
 public class Spindex {
     //Servo encoder
     private static AnalogInput spindexPos = null;
-    private DcMotorEx spindexMotor = null;
+    public DcMotorEx spindexMotor = null;
     private ColorFetch colorSensor = null;
 
     //Stores weather the class is using a motor or servo
@@ -37,6 +37,7 @@ public class Spindex {
     private double currentPos = 0;
     private double error = 0;
     private double offset = 0;
+    private final double MAXVOLTAGE = 3.216;
     private boolean outtakeMode = false;
     private boolean autoLoadMode = false;
     private boolean autoLaunchMode = false;
@@ -54,7 +55,7 @@ public class Spindex {
         public static double Threshold = 63.75;
 
         //For abs and rel
-        public static double[] pid = {45, 0, 10};
+        public static double[] pid = {25, 0.05, 0.5};
         public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
@@ -70,12 +71,12 @@ public class Spindex {
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
     public Spindex(HardwareMap hardwareMap){
         spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
-        //spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //spindexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
         index = 0;
+        spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        offset = AngleUnit.normalizeDegrees(spindexPos.getVoltage()/MAXVOLTAGE*360.0);
     }
 
 
@@ -105,7 +106,7 @@ public class Spindex {
             }
         }
         else{
-            currentPos = spindexPos.getVoltage()/3.3*360.0;
+            currentPos = spindexPos.getVoltage()/MAXVOLTAGE*360.0;
 
             error = AngleUnit.normalizeDegrees(target - currentPos);
 
@@ -129,17 +130,14 @@ public class Spindex {
     }
 
     public void initAbsAndRel(){
-        spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        offset = AngleUnit.normalizeDegrees(spindexPos.getVoltage()/3.214*360);
-        absAndRelInitialized = true;
     }
 
     //Overloaded method that contains three options in order to maintain compatibility with older programs while adding support for using the abs and relative encoders together.
     /*
     Modes:
-    1 - Spindex uses the built in motor encoder and is controlled with setPower() and the custom made P controller
+    1 - Spindex uses the built-in motor encoder and is controlled with setPower() and the custom made P controller
     2 - Spindex uses the absolute encoder with setPower() and the custom made P controller
-    3 - Spindex uses the absolute encoder with the built in motor encoder. This uses the built in PID controller FTC provides within their SDK to control the motor.
+    3 - Spindex uses the absolute encoder with the built-in motor encoder. This uses the built-in PID controller FTC provides within their SDK to control the motor.
     */
     public void moveToPos(double target, int mode) {
         if (mode == 1){
@@ -166,7 +164,7 @@ public class Spindex {
             }
         }
         else if (mode == 2){
-            currentPos = spindexPos.getVoltage()/3.3*360.0;
+            currentPos = spindexPos.getVoltage()/MAXVOLTAGE*360.0;
 
             error = AngleUnit.normalizeDegrees(target - currentPos);
 
@@ -187,23 +185,21 @@ public class Spindex {
                 setTargetStatus(true);
             }
         }
-        else if (mode == 4){
-            target = AngleUnit.normalizeDegrees(target - offset);
-
-            spindexMotor.setTargetPosition((int)(target/537.7*360));
-            spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
-            spindexMotor.setPower(1);
-        }
         else if (mode == 3){
-            if (!absAndRelInitialized){
-                throw new RuntimeException("You are working with no offset, please initialize the offset with initAbsAndRel()!");
-            }
             double relPos = Math.floorMod((int)(((spindexMotor.getCurrentPosition()/537.7*360)+offset+0.5)), 360);
             double error = AngleUnit.normalizeDegrees(target - relPos);
             double ticksError = error/537.7*360;
 
             spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError+0.5));
+            spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
+            spindexMotor.setPower(1);
+        }
+        else if (mode == 4){
+            double currentPos = getNormEnc(spindexMotor.getCurrentPosition()+(offset/360.0*537.7));
+            double error = getNormEnc(target/360.0*537.7 - currentPos);
+
+            spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+error+0.5));
             spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
             spindexMotor.setPower(1);
@@ -324,7 +320,15 @@ public class Spindex {
     }
 
     public double getPos(){
-        return currentPos;
+        return getVoltage()/MAXVOLTAGE*360.0;
+    }
+
+    public double getEncPos(){
+        return AngleUnit.normalizeDegrees((spindexMotor.getCurrentPosition()/537.7*360.0)+offset);
+    }
+
+    public double getNormEnc(double encCounts){
+        return (encCounts + (537.7/2)) % 537.7 - (537.7/2);
     }
 
     public void storeThreadLoopTime(double milliseconds){
