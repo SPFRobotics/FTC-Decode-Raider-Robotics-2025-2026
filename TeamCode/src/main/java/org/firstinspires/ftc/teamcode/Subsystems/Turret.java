@@ -44,7 +44,7 @@ public class Turret {
 
             double turretDeg = fieldAngleDeg - robotHeading;
 
-            return turretDeg;
+            return wrapDeg360(turretDeg);
         }
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
@@ -64,6 +64,13 @@ public class Turret {
         turret.setPower(TurretConfig.turretPower);
 
 
+    }
+
+
+    private static double wrapDeg360(double deg) {
+        deg = deg % 360.0;
+        if (deg < 0) deg += 360.0;
+        return deg;
     }
 
     public boolean isTurretAtTarget() {
