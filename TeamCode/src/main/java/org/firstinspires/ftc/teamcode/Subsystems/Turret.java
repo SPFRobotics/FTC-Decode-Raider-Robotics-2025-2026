@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotHeading;
+import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotX;
+import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotY;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -48,6 +52,18 @@ public class Turret {
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
+    }
+
+
+    public void aimAtGoalManual(double manualGoal){
+
+        double targetDeg = manualGoal;
+        int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
+
+        turret.setTargetPosition(targetTicks);
+        turret.setPower(TurretConfig.turretPower);
+
+
     }
 
     public boolean isTurretAtTarget() {
