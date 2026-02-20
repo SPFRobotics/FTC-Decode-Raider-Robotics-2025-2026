@@ -40,6 +40,7 @@ public class PedroTeleOP extends LinearOpMode {
     private Button spindexRightBumper = new Button();
     private Button spindexLeftBumper = new Button();
     private Button kickstandButton = new Button();
+    private Button fieldholdButton = new Button();
 
     private Button intakeButton = new Button();
     private Button autoLoad = new Button();
@@ -76,6 +77,9 @@ public class PedroTeleOP extends LinearOpMode {
         }
         waitForStart();
 
+        Pose currentPose = follower.getPose();
+
+
         follower.startTeleopDrive();
 
         ElapsedTime loopTime = new ElapsedTime();
@@ -96,10 +100,18 @@ public class PedroTeleOP extends LinearOpMode {
 
             follower.setTeleOpDrive(
                     -gamepad1.left_stick_y * speedFactor,
-                    -gamepad1.left_stick_x * speedFactor,
-                    -gamepad1.right_stick_x * speedFactor,
+                    gamepad1.left_stick_x * speedFactor,
+                    gamepad1.right_stick_x * speedFactor,
                     fieldCentric
             );
+
+            boolean fieldHold = fieldholdButton.toggle(gamepad2.left_stick_button);
+
+            if (fieldHold){
+                follower.holdPoint(currentPose);
+            }
+
+
             /**********************************************************************************************/
 
             /*****************************Intake System************************************/
@@ -187,13 +199,14 @@ public class PedroTeleOP extends LinearOpMode {
             }
 
             /*************************************Turret Auto-Aim**************************************/
-            Pose currentPose = follower.getPose();
             turret.aimAtGoal(
                     currentPose.getX(),
                     currentPose.getY(),
                     Math.toDegrees(currentPose.getHeading())
             );
             /*****************************************************************************************/
+
+
 
             //Telemetry
 
