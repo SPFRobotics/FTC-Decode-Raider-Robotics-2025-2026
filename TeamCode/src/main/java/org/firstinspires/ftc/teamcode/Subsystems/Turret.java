@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.rob
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Turret {
@@ -33,6 +34,7 @@ public class Turret {
 
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turret.setDirection(DcMotor.Direction.REVERSE);
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setGoalCords(goalCords);
@@ -76,6 +78,21 @@ public class Turret {
     public boolean isTurretAtTarget() {
         return !turret.isBusy();
     }
+
+    public int getCurrentPosition() {
+        return turret.getCurrentPosition();
+    }
+
+    public int getTargetPosition() {
+        return turret.getTargetPosition();
+    }
+
+    public double getTargetDeg(double robotX, double robotY, double robotHeading) {
+        return turretDegToShoot(robotX, robotY, robotHeading);
+    }
+
+    public double getGoalX() { return goalX; }
+    public double getGoalY() { return goalY; }
 
     //@param goalCords True for blue, false for red
     private void setGoalCords(boolean goalCords){
