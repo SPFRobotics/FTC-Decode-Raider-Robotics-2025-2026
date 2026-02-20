@@ -26,7 +26,10 @@ public class Turret {
     public Turret(HardwareMap hardwareMap, boolean goalCords){
         this.turret = hardwareMap.get(DcMotor.class, "turretMotor");
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setGoalCords(goalCords);
     }
@@ -44,7 +47,6 @@ public class Turret {
         int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
 
         turret.setTargetPosition(targetTicks);
-        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         turret.setPower(TurretConfig.turretPower);
     }
 
