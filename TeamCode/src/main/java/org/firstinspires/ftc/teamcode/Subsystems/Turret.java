@@ -1,147 +1,69 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Turret {
 
-    public CRServo rotation = null;
+    double goalY;
+    double goalX;
+    DcMotor turret;
+    @Config
+    public static class TurretConfig{
 
-    public Outtake outtake = null;
+        static double RedGoalX = 132;
+        static double RedGoalY = 136;
+        static double BlueGoalX = 12;
+        static double BlueGoalY = 136;
 
-    public Servo hood = null;
+        public static double ticks = 537.7;
+        public static double gearRatio = 4.5;
+        public static double turretPower = 1;
+    }
+    //@param goalCords True for blue, false for red
 
-
-    public AnalogInput rotateEnconder = null;
-    private Limelight limelight = null;
-
-    // Piecewise P-control
-    private static final double thresholdDeg = 30.0; // full power when outside this error
-    private static final double toleranceDeg = 1.0;  // stop when inside this error
-    private static final double maxPower = 0.5;      // cap CRServo power
-    private static final double kP = maxPower / thresholdDeg; // proportional slope inside threshold
-    private static final double searchP = 0.12;      // slow scan speed when tag not seen
-
-    public Turret(HardwareMap hardwareMap,Outtake outtake, Limelight limelight){
-
-        rotation = hardwareMap.get(CRServo.class, "turretServo");
-        hood = hardwareMap.get(Servo.class,"hoodServo");
-        rotateEnconder = hardwareMap.get(AnalogInput.class, "turretEncoder");
-        this.limelight = limelight;
-        limelight.start();
-        this.outtake = outtake;
+    public Turret(HardwareMap hardwareMap, boolean goalCords){
+        this.turret = hardwareMap.get(DcMotor.class, "turretMotor");
+        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setGoalCords(goalCords);
     }
 
+        private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
 
-    public void realign(boolean team){
+            double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
 
-        // team == true  -> Red alliance goal (tag 24)
-        // team == false -> Blue alliance goal (tag 20)
-        final int targetTagId;
-        if (team) {
-            targetTagId = 24;
-        } else {
-            targetTagId = 20;
+            double turretDeg = fieldAngleDeg - robotHeading;
+
+            return turretDeg;
         }
+    public void aimAtGoal(double robotX, double robotY, double robotHeading) {
+        double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
+        int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
 
-        LLResult result = limelight.getLatestResult();
-
-        // If we do not have a valid vision result, slowly scan to find the tag.
-        if (result == null || !result.isValid()) {
-
-            if (getPos() < 180 && getPos() > 0) {
-                rotation.setPower(searchP);
-            }else {
-                rotation.setPower(-searchP);
-            }
-
-        }
-
-
-
-
-        // Only react when the correct alliance tag is in view.
-        int seenTag = limelight.getShootingAprilTagId();
-        if (seenTag != targetTagId) {
-            rotation.setPower(searchP);
-            return;
-        }
-
-        // tx is horizontal offset in degrees: positive = target to the right, negative = left.
-        double error = result.getTx();
-        double sign = Math.signum(error);
-
-        // Full power outside the threshold.
-        if (Math.abs(error) > thresholdDeg) {
-            rotation.setPower(maxPower * sign);
-            return;
-        }
-
-        // Scaled power inside threshold but outside tolerance.
-        if (Math.abs(error) > toleranceDeg) {
-            rotation.setPower(error * kP);
-            return;
-        }
-
-        // Stop when inside tolerance.
-        rotation.setPower(0);
-
-
-
+        turret.setTargetPosition(targetTicks);
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turret.setPower(TurretConfig.turretPower);
     }
 
-    public double getPos(){
-        return (rotateEnconder.getVoltage()/3.3)*360.0;
+    public boolean isTurretAtTarget() {
+        return !turret.isBusy();
     }
-    public void moveToPos(int target){
 
-        double currentPos = (rotateEnconder.getVoltage())/3.3*360;
+    //@param goalCords True for blue, false for red
+    private void setGoalCords(boolean goalCords){
 
-        double error = AngleUnit.normalizeDegrees(target - currentPos);
+        if(goalCords){
+            goalX = TurretConfig.BlueGoalX;
+            goalY = TurretConfig.BlueGoalY;
 
-        double sign = Math.signum(error);
-
-        double Threshold = 30;
-
-        double maxPower = 0.1;
-
-        double tolorence = 5;
-
-        double kp = maxPower/Threshold;
-
-        if(Math.abs(error) > Threshold){
-
-            rotation.setPower(maxPower * sign);
-
-        } else if (Math.abs(error) > tolorence) {
-
-            rotation.setPower(error * kp);
-
-        }else {
-            rotation.setPower(0);
+        }else{
+            goalX = TurretConfig.RedGoalX;
+            goalY = TurretConfig.RedGoalY;
         }
 
+        }
 
     }
-
-
-
-    public void autoHoodPos(){
-
-        double distance = limelight.getDistanceFromTag();
-        double RPM = outtake.getRPM();
-
-
-
-    }
-
-    public void setHoodPos(double x){hood.setPosition(x);}
-
-
-
-}
