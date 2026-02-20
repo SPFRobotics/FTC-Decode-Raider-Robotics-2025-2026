@@ -98,7 +98,7 @@ public class PedroTeleOP extends LinearOpMode {
                     -gamepad1.left_stick_y * speedFactor,
                     -gamepad1.left_stick_x * speedFactor,
                     -gamepad1.right_stick_x * speedFactor,
-                    !fieldCentric
+                    fieldCentric
             );
             /**********************************************************************************************/
 
