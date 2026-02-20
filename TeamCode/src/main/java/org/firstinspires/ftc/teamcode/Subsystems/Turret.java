@@ -32,6 +32,8 @@ public class Turret {
         this.turret = hardwareMap.get(DcMotor.class, "turretMotor");
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+
+
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         turret.setDirection(DcMotor.Direction.REVERSE);
