@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
@@ -41,8 +42,12 @@ public class TeleOpMain extends LinearOpMode {
     private Button intakeButton = new Button();
     private Button autoLoad = new Button();
     private double setRPM = 0;
-    private boolean intakeReverse = false;
     ElapsedTime intakeReverseTimer = new ElapsedTime();
+    FtcDashboard dash = FtcDashboard.getInstance();
+    Telemetry dashBoardTele = dash.getTelemetry();
+    MultipleTelemetry multiTelemetry = new MultipleTelemetry();
+
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -89,12 +94,14 @@ public class TeleOpMain extends LinearOpMode {
             leds.cycleColors(10);
         }
         waitForStart();
-        spindex.initAbsAndRel();
         /*if (opModeIsActive()){
             updateSpindex.start();
         }*/
 
         ElapsedTime loopTime = new ElapsedTime();
+        multiTelemetry.addTelemetry(telemetry);
+        multiTelemetry.addTelemetry(dashBoardTele);
+        multiTelemetry.setMsTransmissionInterval(16);
         while (opModeIsActive()) {
             loopTime.reset();
 
@@ -160,12 +167,12 @@ public class TeleOpMain extends LinearOpMode {
             spindex.autoLoad(colorSensor);
 
             if (spindex.isOuttakeing()){
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
-                leds.setColor(leds.GREEN);
+                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
+                leds.setColor(leds.GREEN, false);
             }
             else{
-                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
-                leds.setColor(leds.BLUE);
+                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
+                leds.setColor(leds.BLUE, false);
             }
 
             //Controls gamepad rumble
@@ -202,29 +209,31 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             //Telemetry
-            telemetry.setMsTransmissionInterval(16);
 
-            telemetry.addLine("==========================================");
-            telemetry.addData("Loop Time", loopTime.milliseconds());
-            telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
-            telemetry.addLine("------------------------------------------");
-            telemetry.addData("Spindex Index", spindex.getIndex());
-            telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
-            telemetry.addData("Color", colorSensor.getHue());
-            telemetry.addData("At Target?", spindex.atTarget());
-            telemetry.addData("Spindex Power", spindex.getPower());
-            telemetry.addData("Automated Loading", spindex.isAutoLoading());
-            telemetry.addData("Outtaking?", spindex.isOuttakeing());
-            telemetry.addData("Kickstand Pos", kickstand.getPosition());
-            telemetry.addData("Kickstand Voltage", kickstand.getVoltage());
-            telemetry.addLine("------------------------------------------");
-            telemetry.addData("Distance", colorSensor.getDistance());
-            telemetry.addData("Right Pod", backRightDrive.getCurrentPosition());
-            telemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
-            telemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
-            telemetry.addLine("==========================================");
-            telemetry.addLine("Spindex Mode: " + (spindex.isOuttakeing() ? "Outtake" : "Intake"));
-            telemetry.update();
+            multiTelemetry.addLine("==========================================");
+            multiTelemetry.addData("Loop Time", loopTime.milliseconds());
+            multiTelemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
+            multiTelemetry.addLine("------------------------------------------");
+            multiTelemetry.addData("Spindex Index", spindex.getIndex());
+            multiTelemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+            multiTelemetry.addData("Color", colorSensor.getHue());
+            multiTelemetry.addData("At Target?", spindex.atTarget());
+            multiTelemetry.addData("Spindex Power", spindex.getPower());
+            multiTelemetry.addData("Automated Loading", spindex.isAutoLoading());
+            multiTelemetry.addData("Outtaking?", spindex.isOuttakeing());
+            multiTelemetry.addData("Kickstand Pos", kickstand.getPosition());
+            multiTelemetry.addData("Kickstand Voltage", kickstand.getVoltage());
+            multiTelemetry.addLine("------------------------------------------");
+            multiTelemetry.addData("Distance", colorSensor.getDistance());
+            multiTelemetry.addData("Right Pod", backRightDrive.getCurrentPosition());
+            multiTelemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
+            multiTelemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
+            multiTelemetry.addLine("==========================================");
+            multiTelemetry.addLine("Spindex Mode: " + (spindex.isOuttakeing() ? "Outtake" : "Intake"));
+            multiTelemetry.addLine("Spindex Voltage: " + spindex.getVoltage());
+            multiTelemetry.addLine("Spindex Angular Pos: " + AngleUnit.normalizeDegrees(spindex.getPos()));
+            multiTelemetry.addLine("Spindex Angular Pos Rel: " + spindex.getEncPos());
+            multiTelemetry.update();
         }
         //Tells spindex thread to end execution
         //spindex.exitProgram();

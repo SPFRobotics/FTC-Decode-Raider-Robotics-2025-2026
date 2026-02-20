@@ -67,7 +67,7 @@ public class Test extends LinearOpMode {
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
 
-        //Set auto load and launch to true as default
+        //Set autoload and launch to true as default
         autoLoad.changeState(true);
 
         //Initialize Telemetry
