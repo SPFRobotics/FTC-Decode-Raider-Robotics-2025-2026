@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.Testing;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
-
 @TeleOp (name="Turret Test")
 public class TurretTest extends OpMode {
     Turret turret = null;
@@ -23,19 +20,15 @@ public class TurretTest extends OpMode {
         public static double manualGoal = 35;
 
     }
-
-
     public void init(){
         turret = new Turret(hardwareMap, TurretTester.goal);
 
 
 
     }
-
     public void loop(){
         if(!TurretTester.manual) {
             turret.aimAtGoal(TurretTester.robotX, TurretTester.robotY, TurretTester.robotHeading);
-
             double targetDeg = turret.getTargetDeg(TurretTester.robotX, TurretTester.robotY, TurretTester.robotHeading);
             telemetry.addData("Mode", "Auto-Aim");
             telemetry.addLine("--- Inputs ---");
@@ -50,12 +43,10 @@ public class TurretTest extends OpMode {
         }
         else{
             turret.aimAtGoalManual(TurretTester.manualGoal);
-
             telemetry.addData("Mode", "Manual");
             telemetry.addLine("--- Turret ---");
             telemetry.addData("Manual Goal (deg)", TurretTester.manualGoal);
         }
-
         telemetry.addData("Target Ticks", turret.getTargetPosition());
         telemetry.addData("Current Ticks", turret.getCurrentPosition());
         telemetry.addData("Error (ticks)", turret.getTargetPosition() - turret.getCurrentPosition());

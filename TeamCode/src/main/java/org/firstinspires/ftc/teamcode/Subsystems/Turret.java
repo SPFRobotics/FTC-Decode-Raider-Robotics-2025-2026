@@ -24,7 +24,7 @@ public class Turret {
 
         public static double ticks = 537.7;
         public static double gearRatio = 4.5;
-        public static double turretPower = 0.1;
+        public static double turretPower = 1;
     }
     //@param goalCords True for blue, false for red
 
@@ -36,7 +36,7 @@ public class Turret {
 
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turret.setDirection(DcMotor.Direction.REVERSE);
+        turret.setDirection(DcMotor.Direction.FORWARD);
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setGoalCords(goalCords);
