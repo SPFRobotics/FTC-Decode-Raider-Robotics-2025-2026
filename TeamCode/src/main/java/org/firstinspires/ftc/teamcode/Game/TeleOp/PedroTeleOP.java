@@ -4,10 +4,10 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.fa
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -22,22 +22,25 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 
-@TeleOp(name="Tele-Op Main")
-public class TeleOpMain extends LinearOpMode {
+@TeleOp(name="Tele-Op Pedro")
+public class PedroTeleOP extends LinearOpMode {
+    private Follower follower;
     private Intake intake = null;
     private Outtake outtake = null;
     private KickerSpindex kicker = null;
     private Turret turret = null;
 
-    //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
-    private double speedFactor =  1;
+    private double speedFactor = 1;
+    private boolean fieldCentric = true;
 
     //Buttons
     private Button spindexModeToggle = new Button();
     private Button spindexRightBumper = new Button();
     private Button spindexLeftBumper = new Button();
     private Button kickstandButton = new Button();
+    private Button fieldholdButton = new Button();
 
     private Button intakeButton = new Button();
     private Button autoLoad = new Button();
@@ -51,30 +54,9 @@ public class TeleOpMain extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
-        DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
-        DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
-        DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
-
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-
-        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        // Always ensure motors are in manual control mode for normal driving
-        // This ensures they respond to direct power commands
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose());
+        follower.update();
 
         // Initialize subsystems
         Intake intake = new Intake(hardwareMap);
@@ -94,9 +76,11 @@ public class TeleOpMain extends LinearOpMode {
             leds.cycleColors(10);
         }
         waitForStart();
-        /*if (opModeIsActive()){
-            updateSpindex.start();
-        }*/
+
+        Pose currentPose = follower.getPose();
+
+
+        follower.startTeleopDrive();
 
         ElapsedTime loopTime = new ElapsedTime();
         multiTelemetry.addTelemetry(telemetry);
@@ -104,9 +88,9 @@ public class TeleOpMain extends LinearOpMode {
         multiTelemetry.setMsTransmissionInterval(16);
         while (opModeIsActive()) {
             loopTime.reset();
+            follower.update();
 
             /*************************************Drive Train Control**************************************/
-            //Allows speed to be halved
             if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
                 speedFactor = 0.5;
             }
@@ -114,14 +98,20 @@ public class TeleOpMain extends LinearOpMode {
                 speedFactor = 1;
             }
 
-            double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
-            double x = gamepad1.left_stick_x * speedFactor;
-            double rx = gamepad1.right_stick_x * speedFactor;
+            follower.setTeleOpDrive(
+                    -gamepad1.left_stick_y * speedFactor,
+                    gamepad1.left_stick_x * speedFactor,
+                    gamepad1.right_stick_x * speedFactor,
+                    fieldCentric
+            );
 
-            frontLeftDrive.setPower(y + x + rx);
-            backLeftDrive.setPower(y - x + rx);
-            frontRightDrive.setPower(y - x - rx);
-            backRightDrive.setPower(y + x - rx);
+            boolean fieldHold = fieldholdButton.toggle(gamepad2.left_stick_button);
+
+            if (fieldHold){
+                follower.holdPoint(currentPose);
+            }
+
+
             /**********************************************************************************************/
 
             /*****************************Intake System************************************/
@@ -208,6 +198,16 @@ public class TeleOpMain extends LinearOpMode {
                 kickstand.setPower(0);
             }
 
+            /*************************************Turret Auto-Aim**************************************/
+            turret.aimAtGoal(
+                    currentPose.getX(),
+                    currentPose.getY(),
+                    Math.toDegrees(currentPose.getHeading())
+            );
+            /*****************************************************************************************/
+
+
+
             //Telemetry
 
             multiTelemetry.addLine("==========================================");
@@ -225,9 +225,10 @@ public class TeleOpMain extends LinearOpMode {
             multiTelemetry.addData("Kickstand Voltage", kickstand.getVoltage());
             multiTelemetry.addLine("------------------------------------------");
             multiTelemetry.addData("Distance", colorSensor.getDistance());
-            multiTelemetry.addData("Right Pod", backRightDrive.getCurrentPosition());
-            multiTelemetry.addData("Left Pod", backLeftDrive.getCurrentPosition());
-            multiTelemetry.addData("Strafe Pod", frontRightDrive.getCurrentPosition());
+            multiTelemetry.addData("Position", follower.getPose().toString());
+            multiTelemetry.addData("Heading (deg)", Math.toDegrees(follower.getPose().getHeading()));
+            multiTelemetry.addData("Field Centric", fieldCentric);
+            multiTelemetry.addData("Turret At Target", turret.isTurretAtTarget());
             multiTelemetry.addLine("==========================================");
             multiTelemetry.addLine("Spindex Mode: " + (spindex.isOuttakeing() ? "Outtake" : "Intake"));
             multiTelemetry.addLine("Spindex Voltage: " + spindex.getVoltage());
