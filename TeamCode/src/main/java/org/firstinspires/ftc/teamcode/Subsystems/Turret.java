@@ -36,7 +36,7 @@ public class Turret {
 
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turret.setDirection(DcMotor.Direction.FORWARD);
+        turret.setDirection(DcMotor.Direction.REVERSE);
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setGoalCords(goalCords);
@@ -64,7 +64,7 @@ public class Turret {
         double targetDeg = manualGoal;
         int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
 
-        turret.setTargetPosition(targetTicks);
+        turret.setTargetPosition(-targetTicks);
         turret.setPower(TurretConfig.turretPower);
 
 
