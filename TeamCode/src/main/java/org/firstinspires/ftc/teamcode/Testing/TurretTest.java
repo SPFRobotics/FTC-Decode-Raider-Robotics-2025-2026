@@ -12,15 +12,15 @@ public class TurretTest extends OpMode {
     @Config
     public static class TurretTester{
 
-        public static double robotX = 0;
-        public static double robotY = 0;
-        public static double robotHeading = 0;
+        public static double robotX = 72;
+        public static double robotY = 72;
+        public static double robotHeading = 90;
 
         public static boolean manual = false;
 
         public static boolean goal = true;
 
-        public static double manualGoal = 0;
+        public static double manualGoal = 35;
 
     }
 
@@ -34,7 +34,7 @@ public class TurretTest extends OpMode {
 
     public void loop(){
         if(!TurretTester.manual) {
-            turret.aimAtGoal(TurretTester.robotX, TurretTester.robotY, TurretTester.robotHeading);
+            //turret.aimAtGoal(TurretTester.robotX, TurretTester.robotY, TurretTester.robotHeading);
 
             double targetDeg = turret.getTargetDeg(TurretTester.robotX, TurretTester.robotY, TurretTester.robotHeading);
             telemetry.addData("Mode", "Auto-Aim");

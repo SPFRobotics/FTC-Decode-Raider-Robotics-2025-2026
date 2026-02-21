@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -62,6 +63,7 @@ public class Outtake {
         kickerGrav = new KickerGrav(hardwareMap);
         kickerSpindex = new KickerSpindex(hardwareMap);
         //limelight = new Limelight(hardwareMap);
+        outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     // Constructor for spindex-only (no KickerGrav servo needed)
@@ -75,6 +77,7 @@ public class Outtake {
         } else {
             kickerGrav = new KickerGrav(hardwareMap);
         }
+        outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     /*public void ColorSort(){

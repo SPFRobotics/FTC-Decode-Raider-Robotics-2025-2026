@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.HuskyLensController;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
@@ -22,6 +23,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
+
+import java.util.Arrays;
 
 @TeleOp(name="Tele-Op Main")
 public class TeleOpMain extends LinearOpMode {
@@ -85,6 +88,7 @@ public class TeleOpMain extends LinearOpMode {
         UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
+        //HuskyLensController huskyLens = new HuskyLensController(hardwareMap);
         turret = new Turret(hardwareMap, true);
 
 
@@ -189,7 +193,7 @@ public class TeleOpMain extends LinearOpMode {
                 //leds.setColor(leds.RED);
             }
 
-            // Outtake control - right trigger
+            // Outtake control
             if (gamepad2.dpad_up) {
                 setRPM = farRPM;
             }
@@ -200,6 +204,20 @@ public class TeleOpMain extends LinearOpMode {
                 setRPM = 0;
             }
             outtake.setRPM(setRPM);
+
+            //Turret
+            /*if (gamepad2.right_trigger > 0 && gamepad2.left_trigger == 0){
+                turret.setPower(gamepad2.right_trigger);
+            }
+            if (gamepad2.right_trigger == 0 && gamepad2.left_trigger > 0){
+                turret.setPower(-gamepad2.left_trigger);
+            }
+
+            if (gamepad2.right_trigger == 0 && gamepad2.left_trigger == 0){
+                turret.setPower(0);
+            }*/
+
+
 
             if (kickstandButton.toggle(gamepad1.share)){
                 kickstand.updatePos(KickstandServo.KickstandServoConfig.up);
@@ -233,6 +251,7 @@ public class TeleOpMain extends LinearOpMode {
             multiTelemetry.addLine("Spindex Voltage: " + spindex.getVoltage());
             multiTelemetry.addLine("Spindex Angular Pos: " + AngleUnit.normalizeDegrees(spindex.getPos()));
             multiTelemetry.addLine("Spindex Angular Pos Rel: " + spindex.getEncPos());
+            //multiTelemetry.addLine("Colors: " + Arrays.toString(huskyLens.getColors()));
             multiTelemetry.update();
         }
         //Tells spindex thread to end execution
