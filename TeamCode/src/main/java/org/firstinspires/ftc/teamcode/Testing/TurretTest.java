@@ -34,7 +34,7 @@ public class TurretTest extends OpMode {
 
     public void loop(){
         if(!TurretTester.manual) {
-            //turret.aimAtGoal(TurretTester.robotX, TurretTester.robotY, TurretTester.robotHeading);
+            turret.aimAtGoal(TurretTester.robotX, TurretTester.robotY, TurretTester.robotHeading);
 
             double targetDeg = turret.getTargetDeg(TurretTester.robotX, TurretTester.robotY, TurretTester.robotHeading);
             telemetry.addData("Mode", "Auto-Aim");
