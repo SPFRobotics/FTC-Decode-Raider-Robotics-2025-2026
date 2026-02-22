@@ -47,6 +47,10 @@ public class TurretTest extends OpMode {
             telemetry.addLine("--- Turret ---");
             telemetry.addData("Manual Goal (deg)", TurretTester.manualGoal);
         }
+        telemetry.addData("TurretConfig.ticks", Turret.TurretConfig.ticks);
+        telemetry.addData("TurretConfig.gearRatio", Turret.TurretConfig.gearRatio);
+        telemetry.addData("TurretConfig.turretPower", Turret.TurretConfig.turretPower);
+        telemetry.addLine("--- Motor ---");
         telemetry.addData("Target Ticks", turret.getTargetPosition());
         telemetry.addData("Current Ticks", turret.getCurrentPosition());
         telemetry.addData("Error (ticks)", turret.getTargetPosition() - turret.getCurrentPosition());

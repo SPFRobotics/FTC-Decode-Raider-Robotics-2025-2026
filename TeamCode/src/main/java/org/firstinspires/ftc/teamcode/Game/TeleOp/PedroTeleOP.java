@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -25,17 +25,21 @@ import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 
 @TeleOp(name="Tele-Op Pedro")
-public class PedroTeleOP extends LinearOpMode {
+public class PedroTeleOP extends OpMode {
     private Follower follower;
     private Intake intake = null;
     private Outtake outtake = null;
     private KickerSpindex kicker = null;
     private Turret turret = null;
+    private ColorFetch colorSensor = null;
+    private Spindex spindex = null;
+    private UpdateSpindex updateSpindex = null;
+    private KickstandServo kickstand = null;
+    private LedLights leds = null;
 
     private double speedFactor = 1;
     private boolean fieldCentric = true;
 
-    //Buttons
     private Button spindexModeToggle = new Button();
     private Button spindexRightBumper = new Button();
     private Button spindexLeftBumper = new Button();
@@ -50,193 +54,182 @@ public class PedroTeleOP extends LinearOpMode {
     Telemetry dashBoardTele = dash.getTelemetry();
     MultipleTelemetry multiTelemetry = new MultipleTelemetry();
 
-
+    private Pose currentPose;
+    private ElapsedTime loopTime;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void init() {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose());
         follower.update();
 
-        // Initialize subsystems
-        Intake intake = new Intake(hardwareMap);
-        Outtake outtake = new Outtake(hardwareMap, true);
-        KickerSpindex kicker = new KickerSpindex(hardwareMap);
-        ColorFetch colorSensor = new ColorFetch(hardwareMap);
-        Spindex spindex = new Spindex(hardwareMap);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
-        KickstandServo kickstand = new KickstandServo(hardwareMap);
-        LedLights leds = new LedLights(hardwareMap);
+        intake = new Intake(hardwareMap);
+        outtake = new Outtake(hardwareMap, true);
+        kicker = new KickerSpindex(hardwareMap);
+        colorSensor = new ColorFetch(hardwareMap);
+        spindex = new Spindex(hardwareMap);
+        updateSpindex = new UpdateSpindex(spindex);
+        kickstand = new KickstandServo(hardwareMap);
+        leds = new LedLights(hardwareMap);
         turret = new Turret(hardwareMap, true);
 
-
-        //Set autoload and launch to true as default
         autoLoad.changeState(true);
-        while (opModeInInit()){
-            leds.cycleColors(10);
-        }
-        waitForStart();
+    }
 
-        Pose currentPose = follower.getPose();
+    @Override
+    public void init_loop() {
+        leds.cycleColors(10);
+        follower.update();
+    }
 
-
+    @Override
+    public void start() {
+        currentPose = follower.getPose();
         follower.startTeleopDrive();
 
-        ElapsedTime loopTime = new ElapsedTime();
+        loopTime = new ElapsedTime();
         multiTelemetry.addTelemetry(telemetry);
         multiTelemetry.addTelemetry(dashBoardTele);
         multiTelemetry.setMsTransmissionInterval(16);
-        while (opModeIsActive()) {
-            loopTime.reset();
-            follower.update();
+    }
 
-            /*************************************Drive Train Control**************************************/
-            if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
-                speedFactor = 0.5;
-            }
-            else{
-                speedFactor = 1;
-            }
+    @Override
+    public void loop() {
+        loopTime.reset();
+        follower.update();
 
-            follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y * speedFactor,
-                    gamepad1.left_stick_x * speedFactor,
-                    gamepad1.right_stick_x * speedFactor,
-                    fieldCentric
-            );
-
-            boolean fieldHold = fieldholdButton.toggle(gamepad2.left_stick_button);
-
-            if (fieldHold){
-                follower.holdPoint(currentPose);
-            }
-
-
-            /**********************************************************************************************/
-
-            /*****************************Intake System************************************/
-            boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper);
-            if (intakeActive && !gamepad1.left_bumper) {
-                intake.intakeOn(true);
-            }
-            else if (gamepad1.left_bumper) {
-                intake.setPower(-1);
-            }
-            else {
-                intake.setPower(0);
-
-            }
-            /******************************************************************************/
-
-            /**********Spindex mode toggle and position cycling***********/
-            if (spindexRightBumper.press(gamepad2.right_bumper)) {
-                if (!spindex.isOuttakeing()){
-                    autoLoad.changeState(false);
-                }
-                spindex.addIndex();
-            }
-            if (spindexLeftBumper.press(gamepad2.left_bumper)) {
-                if (!spindex.isOuttakeing()){
-                    autoLoad.changeState(false);
-                }
-                spindex.subtractIndex();
-            }
-            //Sets either intake or outtake mode
-            spindex.setMode(spindexModeToggle.toggle(gamepad2.circle));
-            /************************************************************/
-
-            /*********************Kicker and index emptying logic**********************/
-            boolean crossWasPressed = gamepad2.crossWasPressed();
-            kicker.automate(crossWasPressed && spindex.isOuttakeing());
-            if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0){
-                spindex.clearBall(spindex.getIndex());
-            }
-            /**************************************************************************/
-
-            spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.triangle) && !spindex.isOuttakeing());
-            spindex.autoLoad(colorSensor);
-
-            if (spindex.isOuttakeing()){
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
-                leds.setColor(leds.GREEN, false);
-            }
-            else{
-                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
-                leds.setColor(leds.BLUE, false);
-            }
-
-            //Controls gamepad rumble
-            if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
-                gamepad2.rumble(100);
-                //leds.setColor(leds.GREEN);
-            }
-            else if (setRPM == farRPM & outtake.getRPM() >= setRPM){
-                gamepad2.rumble(100);
-                //leds.setColor(leds.GREEN);
-            }
-            else{
-                gamepad2.stopRumble();
-                //leds.setColor(leds.RED);
-            }
-
-            // Outtake control - right trigger
-            if (gamepad2.dpad_up) {
-                setRPM = farRPM;
-            }
-            else if(gamepad2.dpad_down){
-                setRPM = closeRPM;
-            }
-            else if (gamepad2.touchpad) {
-                setRPM = 0;
-            }
-            outtake.setRPM(setRPM);
-
-            if (kickstandButton.toggle(gamepad1.share)){
-                kickstand.updatePos(KickstandServo.KickstandServoConfig.up);
-            }
-            else{
-                kickstand.setPower(0);
-            }
-
-            /*************************************Turret Auto-Aim**************************************/
-            turret.aimAtGoal(
-                    currentPose.getX(),
-                    currentPose.getY(),
-                    Math.toDegrees(currentPose.getHeading())
-            );
-            /*****************************************************************************************/
-
-
-
-            //Telemetry
-
-            multiTelemetry.addLine("==========================================");
-            multiTelemetry.addData("Loop Time", loopTime.milliseconds());
-            multiTelemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
-            multiTelemetry.addLine("------------------------------------------");
-            multiTelemetry.addData("Spindex Index", spindex.getIndex());
-            multiTelemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
-            multiTelemetry.addData("Color", colorSensor.getHue());
-            multiTelemetry.addData("At Target?", spindex.atTarget());
-            multiTelemetry.addData("Spindex Power", spindex.getPower());
-            multiTelemetry.addData("Automated Loading", spindex.isAutoLoading());
-            multiTelemetry.addData("Outtaking?", spindex.isOuttakeing());
-            multiTelemetry.addData("Kickstand Pos", kickstand.getPosition());
-            multiTelemetry.addData("Kickstand Voltage", kickstand.getVoltage());
-            multiTelemetry.addLine("------------------------------------------");
-            multiTelemetry.addData("Distance", colorSensor.getDistance());
-            multiTelemetry.addData("Position", follower.getPose().toString());
-            multiTelemetry.addData("Heading (deg)", Math.toDegrees(follower.getPose().getHeading()));
-            multiTelemetry.addData("Field Centric", fieldCentric);
-            multiTelemetry.addData("Turret At Target", turret.isTurretAtTarget());
-            multiTelemetry.addLine("==========================================");
-            multiTelemetry.addLine("Spindex Mode: " + (spindex.isOuttakeing() ? "Outtake" : "Intake"));
-            multiTelemetry.addLine("Spindex Voltage: " + spindex.getVoltage());
-            multiTelemetry.addLine("Spindex Angular Pos: " + AngleUnit.normalizeDegrees(spindex.getPos()));
-            multiTelemetry.addLine("Spindex Angular Pos Rel: " + spindex.getEncPos());
-            multiTelemetry.update();
+        /*************************************Drive Train Control**************************************/
+        if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
+            speedFactor = 0.5;
         }
-        //Tells spindex thread to end execution
-        //spindex.exitProgram();
+        else{
+            speedFactor = 1;
+        }
+
+        follower.setTeleOpDrive(
+                -gamepad1.left_stick_y * speedFactor,
+                gamepad1.left_stick_x * speedFactor,
+                gamepad1.right_stick_x * speedFactor,
+                fieldCentric
+        );
+
+        boolean fieldHold = fieldholdButton.toggle(gamepad2.left_stick_button);
+
+        if (fieldHold){
+            follower.holdPoint(currentPose);
+        }
+
+        /**********************************************************************************************/
+
+        /*****************************Intake System************************************/
+        boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper);
+        if (intakeActive && !gamepad1.left_bumper) {
+            intake.intakeOn(true);
+        }
+        else if (gamepad1.left_bumper) {
+            intake.setPower(-1);
+        }
+        else {
+            intake.setPower(0);
+        }
+        /******************************************************************************/
+
+        /**********Spindex mode toggle and position cycling***********/
+        if (spindexRightBumper.press(gamepad2.right_bumper)) {
+            if (!spindex.isOuttakeing()){
+                autoLoad.changeState(false);
+            }
+            spindex.addIndex();
+        }
+        if (spindexLeftBumper.press(gamepad2.left_bumper)) {
+            if (!spindex.isOuttakeing()){
+                autoLoad.changeState(false);
+            }
+            spindex.subtractIndex();
+        }
+        spindex.setMode(spindexModeToggle.toggle(gamepad2.circle));
+        /************************************************************/
+
+        /*********************Kicker and index emptying logic**********************/
+        boolean crossWasPressed = gamepad2.crossWasPressed();
+        kicker.automate(crossWasPressed && spindex.isOuttakeing());
+        if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0){
+            spindex.clearBall(spindex.getIndex());
+        }
+        /**************************************************************************/
+
+        spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.triangle) && !spindex.isOuttakeing());
+        spindex.autoLoad(colorSensor);
+
+        if (spindex.isOuttakeing()){
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
+            leds.setColor(leds.GREEN, false);
+        }
+        else{
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
+            leds.setColor(leds.BLUE, false);
+        }
+
+        if (setRPM == closeRPM && outtake.getRPM() >= setRPM){
+            gamepad2.rumble(100);
+        }
+        else if (setRPM == farRPM & outtake.getRPM() >= setRPM){
+            gamepad2.rumble(100);
+        }
+        else{
+            gamepad2.stopRumble();
+        }
+
+        if (gamepad2.dpad_up) {
+            setRPM = farRPM;
+        }
+        else if(gamepad2.dpad_down){
+            setRPM = closeRPM;
+        }
+        else if (gamepad2.touchpad) {
+            setRPM = 0;
+        }
+        outtake.setRPM(setRPM);
+
+        if (kickstandButton.toggle(gamepad1.share)){
+            kickstand.updatePos(KickstandServo.KickstandServoConfig.up);
+        }
+        else{
+            kickstand.setPower(0);
+        }
+
+        /*************************************Turret Auto-Aim**************************************/
+        turret.aimAtGoal(
+                currentPose.getX(),
+                currentPose.getY(),
+                Math.toDegrees(currentPose.getHeading())
+        );
+        /*****************************************************************************************/
+
+        multiTelemetry.addLine("==========================================");
+        multiTelemetry.addData("Loop Time", loopTime.milliseconds());
+        multiTelemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
+        multiTelemetry.addLine("------------------------------------------");
+        multiTelemetry.addData("Spindex Index", spindex.getIndex());
+        multiTelemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+        multiTelemetry.addData("Color", colorSensor.getHue());
+        multiTelemetry.addData("At Target?", spindex.atTarget());
+        multiTelemetry.addData("Spindex Power", spindex.getPower());
+        multiTelemetry.addData("Automated Loading", spindex.isAutoLoading());
+        multiTelemetry.addData("Outtaking?", spindex.isOuttakeing());
+        multiTelemetry.addData("Kickstand Pos", kickstand.getPosition());
+        multiTelemetry.addData("Kickstand Voltage", kickstand.getVoltage());
+        multiTelemetry.addLine("------------------------------------------");
+        multiTelemetry.addData("Distance", colorSensor.getDistance());
+        multiTelemetry.addData("Position", follower.getPose().toString());
+        multiTelemetry.addData("Heading (deg)", Math.toDegrees(follower.getPose().getHeading()));
+        multiTelemetry.addData("Field Centric", fieldCentric);
+        multiTelemetry.addData("Turret At Target", turret.isTurretAtTarget());
+        multiTelemetry.addLine("==========================================");
+        multiTelemetry.addLine("Spindex Mode: " + (spindex.isOuttakeing() ? "Outtake" : "Intake"));
+        multiTelemetry.addLine("Spindex Voltage: " + spindex.getVoltage());
+        multiTelemetry.addLine("Spindex Angular Pos: " + AngleUnit.normalizeDegrees(spindex.getPos()));
+        multiTelemetry.addLine("Spindex Angular Pos Rel: " + spindex.getEncPos());
+        multiTelemetry.update();
     }
 }

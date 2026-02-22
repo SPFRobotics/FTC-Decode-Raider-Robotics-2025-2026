@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.intellij.lang.annotations.JdkConstants;
+
 public class Turret {
 
     double goalY;
@@ -26,7 +28,6 @@ public class Turret {
         public static double gearRatio = 4.5;
         public static double turretPower = 1;
     }
-    //@param goalCords True for blue, false for red
 
     public Turret(HardwareMap hardwareMap, boolean goalCords){
         this.turret = hardwareMap.get(DcMotor.class, "turretMotor");
