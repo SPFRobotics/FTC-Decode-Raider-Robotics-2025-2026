@@ -9,9 +9,9 @@ public class TurretTest extends OpMode {
     @Config
     public static class TurretTester{
 
-        public static double robotX = 72;
-        public static double robotY = 72;
-        public static double robotHeading = 90;
+        public static double robotX = 0;
+        public static double robotY = 0;
+        public static double robotHeading = 0;
 
         public static boolean manual = false;
 
