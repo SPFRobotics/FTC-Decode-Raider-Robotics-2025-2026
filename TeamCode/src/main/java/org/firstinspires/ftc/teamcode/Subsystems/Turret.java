@@ -54,7 +54,7 @@ public class Turret {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
         int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
 
-        turret.setTargetPosition(-targetTicks);
+        turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
     }
 
@@ -64,7 +64,7 @@ public class Turret {
         double targetDeg = manualGoal;
         int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
 
-        turret.setTargetPosition(-targetTicks);
+        turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
 
 
