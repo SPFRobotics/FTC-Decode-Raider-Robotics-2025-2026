@@ -61,14 +61,11 @@ public class Turret {
 
 
     public void aimAtGoalManual(double manualGoal){
-
         double targetDeg = manualGoal;
         int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
-
-
     }
 
 
