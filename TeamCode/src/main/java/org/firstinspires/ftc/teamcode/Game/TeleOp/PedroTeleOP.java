@@ -48,6 +48,7 @@ public class PedroTeleOP extends OpMode {
 
     private Button intakeButton = new Button();
     private Button autoLoad = new Button();
+
     private double setRPM = 0;
     ElapsedTime intakeReverseTimer = new ElapsedTime();
     FtcDashboard dash = FtcDashboard.getInstance();
@@ -60,8 +61,10 @@ public class PedroTeleOP extends OpMode {
     @Override
     public void init() {
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose());
+
         follower.update();
+
+        follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
 
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap, true);
