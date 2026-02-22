@@ -24,8 +24,8 @@ public class Turret {
         static double BlueGoalX = 12;
         static double BlueGoalY = 136;
 
-        public static double ticks = 537.7;
-        public static double gearRatio = 4.5;
+        public static double ticks = 145.1;
+        public static double gearRatio = 31.0/135;
         public static double turretPower = 1;
     }
 
