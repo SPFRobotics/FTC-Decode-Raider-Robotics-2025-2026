@@ -216,7 +216,7 @@ public class PedroTeleOP extends OpMode {
         multiTelemetry.addData("Spindex Index", spindex.getIndex());
         multiTelemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
         multiTelemetry.addData("Color", colorSensor.getHue());
-        multiTelemetry.addData("At Target?", spindex.atTarget());
+        multiTelemetry.addData("Spindex At Target?", spindex.atTarget());
         multiTelemetry.addData("Spindex Power", spindex.getPower());
         multiTelemetry.addData("Automated Loading", spindex.isAutoLoading());
         multiTelemetry.addData("Outtaking?", spindex.isOuttakeing());
