@@ -108,5 +108,7 @@ public class Turret {
 
     }
 
-
+    public void setPower(double power){
+        turret.setPower(power);
+    }
 }

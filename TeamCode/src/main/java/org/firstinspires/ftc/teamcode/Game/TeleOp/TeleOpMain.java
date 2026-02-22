@@ -206,7 +206,7 @@ public class TeleOpMain extends LinearOpMode {
             outtake.setRPM(setRPM);
 
             //Turret
-            /*if (gamepad2.right_trigger > 0 && gamepad2.left_trigger == 0){
+            if (gamepad2.right_trigger > 0 && gamepad2.left_trigger == 0){
                 turret.setPower(gamepad2.right_trigger);
             }
             if (gamepad2.right_trigger == 0 && gamepad2.left_trigger > 0){
@@ -215,7 +215,7 @@ public class TeleOpMain extends LinearOpMode {
 
             if (gamepad2.right_trigger == 0 && gamepad2.left_trigger == 0){
                 turret.setPower(0);
-            }*/
+            }
 
 
 
