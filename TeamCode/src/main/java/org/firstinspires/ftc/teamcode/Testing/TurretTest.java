@@ -22,13 +22,13 @@ public class TurretTest extends OpMode {
     }
     public void init(){
         turret = new Turret(hardwareMap, TurretTester.goal);
-        turret.turretThread.run();
+
 
 
     }
 
     public void stop(){
-        turret.turretThread.interrupt();
+
     }
 
     public void loop(){

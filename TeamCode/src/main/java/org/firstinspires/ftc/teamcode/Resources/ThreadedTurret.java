@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Resources;
 
 import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotHeading;
 import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotX;
@@ -11,11 +11,18 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.intellij.lang.annotations.JdkConstants;
 
-public class Turret {
+public class ThreadedTurret {
 
     double goalY;
     double goalX;
     DcMotor turret;
+    public TurretThread turretThread = null;
+
+    private volatile double latestRobotX;
+    private volatile double latestRobotY;
+    private volatile double latestRobotHeading;
+    private volatile double computedTargetDeg;
+    private volatile boolean inputsUpdated = false;
 
     @Config
     public static class TurretConfig{
@@ -30,14 +37,39 @@ public class Turret {
         public static double turretPower = 1;
     }
 
+    public class TurretThread extends Thread {
+        private volatile boolean running = true;
 
+        @Override
+        public void run() {
+            while (running) {
+                if (inputsUpdated) {
+                    double x = latestRobotX;
+                    double y = latestRobotY;
+                    double heading = latestRobotHeading;
+                    inputsUpdated = false;
 
+                    computedTargetDeg = turretDegToShoot(x, y, heading);
+                }
 
-    public Turret(HardwareMap hardwareMap, boolean goalCords){
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        }
+
+        public void stopThread() {
+            running = false;
+            this.interrupt();
+        }
+    }
+
+    public ThreadedTurret(HardwareMap hardwareMap, boolean goalCords){
         this.turret = hardwareMap.get(DcMotor.class, "turretMotor");
+        turretThread = new TurretThread();
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
 
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -45,18 +77,25 @@ public class Turret {
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setGoalCords(goalCords);
+
+        turretThread.start();
     }
 
-        private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
+    private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
+        double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
+        double turretDeg = fieldAngleDeg - robotHeading;
+        return wrapDeg360(turretDeg);
+    }
 
-            double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
+    public void updateRobotPose(double robotX, double robotY, double robotHeading) {
+        latestRobotX = robotX;
+        latestRobotY = robotY;
+        latestRobotHeading = robotHeading;
+        inputsUpdated = true;
+    }
 
-            double turretDeg = fieldAngleDeg - robotHeading;
-
-            return wrapDeg360(turretDeg);
-        }
-    public void aimAtGoal(double robotX, double robotY, double robotHeading) {
-        double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
+    public void aimAtGoal() {
+        double targetDeg = computedTargetDeg;
         int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
 
         turret.setTargetPosition(targetTicks);
@@ -91,8 +130,8 @@ public class Turret {
         return turret.getTargetPosition();
     }
 
-    public double getTargetDeg(double robotX, double robotY, double robotHeading) {
-        return turretDegToShoot(robotX, robotY, robotHeading);
+    public double getTargetDeg() {
+        return computedTargetDeg;
     }
 
     public double getGoalX() { return goalX; }
@@ -100,20 +139,23 @@ public class Turret {
 
     //@param goalCords True for blue, false for red
     private void setGoalCords(boolean goalCords){
-
         if(goalCords){
             goalX = TurretConfig.BlueGoalX;
             goalY = TurretConfig.BlueGoalY;
-
         }else{
             goalX = TurretConfig.RedGoalX;
             goalY = TurretConfig.RedGoalY;
         }
-
     }
 
     public void setPower(double power){
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         turret.setPower(power);
+    }
+
+    public void stopThread() {
+        if (turretThread != null) {
+            turretThread.stopThread();
+        }
     }
 }
