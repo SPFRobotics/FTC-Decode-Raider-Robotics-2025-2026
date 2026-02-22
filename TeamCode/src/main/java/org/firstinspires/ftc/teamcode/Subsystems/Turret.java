@@ -25,7 +25,7 @@ public class Turret {
         static double BlueGoalY = 136;
 
         public static double ticks = 145.1;
-        public static double gearRatio = 31.0/135;
+        public static double gearRatio = 135/31.0;
         public static double turretPower = 1;
     }
 
