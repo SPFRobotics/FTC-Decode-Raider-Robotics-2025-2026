@@ -16,6 +16,8 @@ public class Turret {
     double goalY;
     double goalX;
     DcMotor turret;
+    public TurretThread turretThread = null;
+
     @Config
     public static class TurretConfig{
 
@@ -29,8 +31,15 @@ public class Turret {
         public static double turretPower = 1;
     }
 
+    public class TurretThread extends Thread{
+        public void run(){
+            //code in here
+        }
+    }
+
     public Turret(HardwareMap hardwareMap, boolean goalCords){
         this.turret = hardwareMap.get(DcMotor.class, "turretMotor");
+        turretThread = new TurretThread();
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
