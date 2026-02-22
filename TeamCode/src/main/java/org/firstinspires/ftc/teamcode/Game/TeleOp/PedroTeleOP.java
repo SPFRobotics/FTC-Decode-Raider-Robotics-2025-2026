@@ -64,7 +64,7 @@ public class PedroTeleOP extends OpMode {
 
         follower.update();
 
-        //follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
 
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap, true);
