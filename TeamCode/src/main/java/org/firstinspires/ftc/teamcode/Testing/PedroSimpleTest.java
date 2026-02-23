@@ -5,6 +5,8 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 
@@ -15,11 +17,15 @@ public class PedroSimpleTest extends OpMode {
     private Turret turret;
     private Pose currentPose;
     private boolean fieldCentric = false;
+    ElapsedTime loopTime;
+
 
     @Override
     public void init() {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
+        loopTime = new ElapsedTime();
+
 
         turret = new Turret(hardwareMap, true);                                      
     }
@@ -32,6 +38,8 @@ public class PedroSimpleTest extends OpMode {
 
     @Override
     public void loop() {
+
+        loopTime.reset();
         follower.update();
         currentPose = follower.getPose();
 
@@ -51,6 +59,8 @@ public class PedroSimpleTest extends OpMode {
         telemetry.addData("Turret Pos", turret.getCurrentPosition());
         telemetry.addData("Turret Target", turret.getTargetPosition());
         telemetry.addData("Turret At Target", turret.isTurretAtTarget());
+        telemetry.addData("Loop Time", loopTime.milliseconds());
+
 
         telemetry.update();
     }
