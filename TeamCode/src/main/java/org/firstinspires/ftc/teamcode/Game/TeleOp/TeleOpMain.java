@@ -46,13 +46,10 @@ public class TeleOpMain extends LinearOpMode {
     private Button spindexModeToggle = new Button();
     private Button spindexRightBumper = new Button();
     private Button spindexLeftBumper = new Button();
-    private Button kickstandButton = new Button();
-
     private Button intakeButton = new Button();
     private Button autoLoad = new Button();
-    private Button fieldholdButton = new Button();
+    private Button autoAimTurretButton = new Button();
     private double setRPM = 0;
-    ElapsedTime intakeReverseTimer = new ElapsedTime();
 
     private Pose currentPose;
 
@@ -102,15 +99,15 @@ public class TeleOpMain extends LinearOpMode {
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
-        follower.update();
-        follower.startTeleopDrive();
 
 
         //Set autoload and launch to true as default
         autoLoad.changeState(true);
         while (opModeInInit()){
+            follower.update();
             leds.cycleColors(10);
         }
+        follower.startTeleopDrive();
         waitForStart();
 
         ElapsedTime loopTime = new ElapsedTime();
@@ -219,38 +216,10 @@ public class TeleOpMain extends LinearOpMode {
 
             //Turret
             /*************************************Turret Auto-Aim**************************************/
-            ElapsedTime turretClock = new ElapsedTime();
-            turret.aimAtGoal(
-                    currentPose.getX(),
-                    currentPose.getY(),
-                    Math.toDegrees(currentPose.getHeading())
-            );
-            double turretTime = turretClock.milliseconds();
+            turret.aimAtGoal(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
             /*****************************************************************************************/
 
-            /*if (gamepad2.right_trigger > 0 && gamepad2.left_trigger == 0){
-                turret.setPower(gamepad2.right_trigger);
-            }
-            if (gamepad2.right_trigger == 0 && gamepad2.left_trigger > 0){
-                turret.setPower(-gamepad2.left_trigger);
-            }
-
-            if (gamepad2.right_trigger == 0 && gamepad2.left_trigger == 0){
-                turret.setPower(0);
-            }*/
-
-
-
-            if (kickstandButton.toggle(gamepad1.share)){
-                kickstand.updatePos(KickstandServo.KickstandServoConfig.up);
-            }
-            else{
-                kickstand.setPower(0);
-            }
-
-
             //Telemetry
-
             multiTelemetry.addLine("==========================================");
             multiTelemetry.addData("Loop Time", loopTime.milliseconds());
             multiTelemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
@@ -274,7 +243,6 @@ public class TeleOpMain extends LinearOpMode {
             multiTelemetry.addLine("Spindex Voltage: " + spindex.getVoltage());
             multiTelemetry.addLine("Spindex Angular Pos: " + AngleUnit.normalizeDegrees(spindex.getPos()));
             multiTelemetry.addLine("Spindex Angular Pos Rel: " + spindex.getEncPos());
-            multiTelemetry.addLine("Turret Cycle Time: " + turretTime);
             //multiTelemetry.addLine("Colors: " + Arrays.toString(huskyLens.getColors()));
             multiTelemetry.update();
         }
