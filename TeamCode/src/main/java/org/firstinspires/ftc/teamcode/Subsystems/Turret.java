@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import static org.firstinspires.ftc.teamcode.Subsystems.Turret.TurretConfig.pidf;
 import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotHeading;
 import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotX;
 import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotY;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -15,7 +17,7 @@ public class Turret {
 
     double goalY;
     double goalX;
-    DcMotor turret;
+    DcMotorEx turret;
 
     @Config
     public static class TurretConfig{
@@ -26,15 +28,13 @@ public class Turret {
         static double BlueGoalY = 136;
 
         public static double ticks = 145.1;
-        public static double gearRatio = 135/31.0;
+        public static double gearRatio = 135/33.0;
         public static double turretPower = 1;
+        public static double[] pidf = {35, 0.01, 12, 0};
     }
 
-
-
-
     public Turret(HardwareMap hardwareMap, boolean goalCords){
-        this.turret = hardwareMap.get(DcMotor.class, "turretMotor");
+        this.turret = hardwareMap.get(DcMotorEx.class, "turretMotor");
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
@@ -56,6 +56,7 @@ public class Turret {
             return wrapDeg360(turretDeg);
         }
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
+        turret.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
         int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
 
