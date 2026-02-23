@@ -6,9 +6,12 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.util.List;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -36,6 +39,7 @@ public class PedroTeleOP extends OpMode {
     private UpdateSpindex updateSpindex = null;
     private KickstandServo kickstand = null;
     private LedLights leds = null;
+    private List<LynxModule> allHubs;
 
     private double speedFactor = 1;
     private boolean fieldCentric = true;
@@ -60,6 +64,11 @@ public class PedroTeleOP extends OpMode {
 
     @Override
     public void init() {
+        allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+
         follower = Constants.createFollower(hardwareMap);
 
         follower.update();
@@ -98,6 +107,10 @@ public class PedroTeleOP extends OpMode {
 
     @Override
     public void loop() {
+        for (LynxModule hub : allHubs) {
+            hub.clearBulkCache();
+        }
+
         loopTime.reset();
         follower.update();
         currentPose = follower.getPose();
