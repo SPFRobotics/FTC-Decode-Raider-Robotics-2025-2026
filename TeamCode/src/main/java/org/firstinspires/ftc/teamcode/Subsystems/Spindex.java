@@ -140,72 +140,76 @@ public class Spindex {
     3 - Spindex uses the absolute encoder with the built-in motor encoder. This uses the built-in PID controller FTC provides within their SDK to control the motor.
     */
     public void moveToPos(double target, int mode) {
-        if (mode == 1){
-            currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/537.7*360);
+        switch (mode) {
+            case 1: {
+                currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/537.7*360);
 
-            error = AngleUnit.normalizeDegrees(target - currentPos);
+                error = AngleUnit.normalizeDegrees(target - currentPos);
 
-            double sign = Math.signum(error);
+                double sign = Math.signum(error);
 
-            double kp = maxPower/Threshold;
+                double kp = maxPower/Threshold;
 
-            if(Math.abs(error) > Threshold){
-                spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
+                if(Math.abs(error) > Threshold){
+                    spindexMotor.setPower(maxPower * sign);
+                    setTargetStatus(false);
+                }
+                else if (Math.abs(error) > tolorence) {
+                    spindexMotor.setPower(error * kp);
+                    setTargetStatus(false);
+                }
+                else {
+                    spindexMotor.setPower(0);
+                    setTargetStatus(true);
+                }
+                break;
             }
-            else if (Math.abs(error) > tolorence) {
-                spindexMotor.setPower(error * kp);
-                setTargetStatus(false);
+            case 2: {
+                currentPos = spindexPos.getVoltage()/MAXVOLTAGE*360.0;
 
+                error = AngleUnit.normalizeDegrees(target - currentPos);
+
+                double sign = Math.signum(error);
+
+                double kp = maxPower/(Threshold);
+
+                if (Math.abs(error) > Threshold){
+                    spindexMotor.setPower(maxPower * sign);
+                    setTargetStatus(false);
+                }
+                else if (Math.abs(error) > tolorence) {
+                    spindexMotor.setPower(error * kp);
+                    setTargetStatus(false);
+                }
+                else {
+                    spindexMotor.setPower(0);
+                    setTargetStatus(true);
+                }
+                break;
             }
-            else {
-                spindexMotor.setPower(0);
-                setTargetStatus(true);
+            case 3: {
+                double relPos = Math.floorMod((int)(((spindexMotor.getCurrentPosition()/537.7*360)+offset+0.5)), 360);
+                double error = AngleUnit.normalizeDegrees(target - relPos);
+                double ticksError = error/537.7*360;
+
+                spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError+0.5));
+                spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
+                spindexMotor.setPower(1);
+                break;
             }
-        }
-        else if (mode == 2){
-            currentPos = spindexPos.getVoltage()/MAXVOLTAGE*360.0;
+            case 4: {
+                double currentPos = getNormEnc(spindexMotor.getCurrentPosition()+(offset/360.0*537.7));
+                double error = getNormEnc(target/360.0*537.7 - currentPos);
 
-            error = AngleUnit.normalizeDegrees(target - currentPos);
-
-            double sign = Math.signum(error);
-
-            double kp = maxPower/(Threshold);
-
-            if (Math.abs(error) > Threshold){
-                spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
+                spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+error+0.5));
+                spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
+                spindexMotor.setPower(1);
+                break;
             }
-            else if (Math.abs(error) > tolorence) {
-                spindexMotor.setPower(error * kp);
-                setTargetStatus(false);
-            }
-            else {
-                spindexMotor.setPower(0);
-                setTargetStatus(true);
-            }
-        }
-        else if (mode == 3){
-            double relPos = Math.floorMod((int)(((spindexMotor.getCurrentPosition()/537.7*360)+offset+0.5)), 360);
-            double error = AngleUnit.normalizeDegrees(target - relPos);
-            double ticksError = error/537.7*360;
-
-            spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError+0.5));
-            spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
-            spindexMotor.setPower(1);
-        }
-        else if (mode == 4){
-            double currentPos = getNormEnc(spindexMotor.getCurrentPosition()+(offset/360.0*537.7));
-            double error = getNormEnc(target/360.0*537.7 - currentPos);
-
-            spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+error+0.5));
-            spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
-            spindexMotor.setPower(1);
-        }
-        else{
-            throw new RuntimeException("The mode of Spindex operation is not an option!");
+            default:
+                throw new RuntimeException("The mode of Spindex operation is not an option! FROM 67 LORDS");
         }
     }
 
