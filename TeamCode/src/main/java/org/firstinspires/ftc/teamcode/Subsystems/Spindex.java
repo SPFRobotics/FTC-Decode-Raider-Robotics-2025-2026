@@ -20,7 +20,7 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.Threshold;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.launchTime;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.maxPower;
-import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.pid;
+import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.pidf;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.tolorence;
 import static java.lang.Thread.sleep;
 
@@ -55,7 +55,7 @@ public class Spindex {
         public static double Threshold = 63.75;
 
         //For abs and rel
-        public static double[] pid = {25, 0.05, 0.5};
+        public static double[] pidf = {40, 0.3, 12, 0};
         public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
@@ -192,7 +192,7 @@ public class Spindex {
 
             spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError+0.5));
             spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
+            spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
             spindexMotor.setPower(1);
         }
         else if (mode == 4){
@@ -201,7 +201,7 @@ public class Spindex {
 
             spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+error+0.5));
             spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindexMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(pid[0], pid[1], pid[2]));
+            spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
             spindexMotor.setPower(1);
         }
         else{

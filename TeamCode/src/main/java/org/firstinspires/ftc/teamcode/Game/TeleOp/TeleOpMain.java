@@ -4,14 +4,19 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.fa
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorGoBildaPinpoint;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.HuskyLensController;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -28,6 +33,7 @@ import java.util.Arrays;
 
 @TeleOp(name="Tele-Op Main")
 public class TeleOpMain extends LinearOpMode {
+    private Follower follower;
     private Intake intake = null;
     private Outtake outtake = null;
     private KickerSpindex kicker = null;
@@ -44,13 +50,15 @@ public class TeleOpMain extends LinearOpMode {
 
     private Button intakeButton = new Button();
     private Button autoLoad = new Button();
+    private Button fieldholdButton = new Button();
     private double setRPM = 0;
     ElapsedTime intakeReverseTimer = new ElapsedTime();
+
+    private Pose currentPose;
+
     FtcDashboard dash = FtcDashboard.getInstance();
     Telemetry dashBoardTele = dash.getTelemetry();
     MultipleTelemetry multiTelemetry = new MultipleTelemetry();
-
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -62,14 +70,14 @@ public class TeleOpMain extends LinearOpMode {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
 
+        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         // Always ensure motors are in manual control mode for normal driving
@@ -91,6 +99,12 @@ public class TeleOpMain extends LinearOpMode {
         //HuskyLensController huskyLens = new HuskyLensController(hardwareMap);
         turret = new Turret(hardwareMap, true);
 
+        //Pedro Pathing for turret
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
+        follower.update();
+        follower.startTeleopDrive();
+
 
         //Set autoload and launch to true as default
         autoLoad.changeState(true);
@@ -98,9 +112,6 @@ public class TeleOpMain extends LinearOpMode {
             leds.cycleColors(10);
         }
         waitForStart();
-        /*if (opModeIsActive()){
-            updateSpindex.start();
-        }*/
 
         ElapsedTime loopTime = new ElapsedTime();
         multiTelemetry.addTelemetry(telemetry);
@@ -108,6 +119,11 @@ public class TeleOpMain extends LinearOpMode {
         multiTelemetry.setMsTransmissionInterval(16);
         while (opModeIsActive()) {
             loopTime.reset();
+
+            //Update robot location (Pedro Pathing)
+            follower.update();
+            currentPose = follower.getPose();
+            //Holds robot position when enabled
 
             /*************************************Drive Train Control**************************************/
             //Allows speed to be halved
@@ -118,14 +134,10 @@ public class TeleOpMain extends LinearOpMode {
                 speedFactor = 1;
             }
 
-            double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
-            double x = gamepad1.left_stick_x * speedFactor;
-            double rx = gamepad1.right_stick_x * speedFactor;
+            //Using Pedro Pathing for Tele-Op drive
+            follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, gamepad1.left_stick_x * speedFactor, gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
 
-            frontLeftDrive.setPower(y + x + rx);
-            backLeftDrive.setPower(y - x + rx);
-            frontRightDrive.setPower(y - x - rx);
-            backRightDrive.setPower(y + x - rx);
+
             /**********************************************************************************************/
 
             /*****************************Intake System************************************/
@@ -206,7 +218,17 @@ public class TeleOpMain extends LinearOpMode {
             outtake.setRPM(setRPM);
 
             //Turret
-            if (gamepad2.right_trigger > 0 && gamepad2.left_trigger == 0){
+            /*************************************Turret Auto-Aim**************************************/
+            ElapsedTime turretClock = new ElapsedTime();
+            turret.aimAtGoal(
+                    currentPose.getX(),
+                    currentPose.getY(),
+                    Math.toDegrees(currentPose.getHeading())
+            );
+            double turretTime = turretClock.milliseconds();
+            /*****************************************************************************************/
+
+            /*if (gamepad2.right_trigger > 0 && gamepad2.left_trigger == 0){
                 turret.setPower(gamepad2.right_trigger);
             }
             if (gamepad2.right_trigger == 0 && gamepad2.left_trigger > 0){
@@ -215,7 +237,7 @@ public class TeleOpMain extends LinearOpMode {
 
             if (gamepad2.right_trigger == 0 && gamepad2.left_trigger == 0){
                 turret.setPower(0);
-            }
+            }*/
 
 
 
@@ -225,6 +247,7 @@ public class TeleOpMain extends LinearOpMode {
             else{
                 kickstand.setPower(0);
             }
+
 
             //Telemetry
 
@@ -251,10 +274,9 @@ public class TeleOpMain extends LinearOpMode {
             multiTelemetry.addLine("Spindex Voltage: " + spindex.getVoltage());
             multiTelemetry.addLine("Spindex Angular Pos: " + AngleUnit.normalizeDegrees(spindex.getPos()));
             multiTelemetry.addLine("Spindex Angular Pos Rel: " + spindex.getEncPos());
+            multiTelemetry.addLine("Turret Cycle Time: " + turretTime);
             //multiTelemetry.addLine("Colors: " + Arrays.toString(huskyLens.getColors()));
             multiTelemetry.update();
         }
-        //Tells spindex thread to end execution
-        //spindex.exitProgram();
     }
 }
