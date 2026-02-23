@@ -21,7 +21,7 @@ public class PedroSimpleTest extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
 
-        turret = new Turret(hardwareMap, true);
+        turret = new Turret(hardwareMap, true);                                      
     }
 
     @Override
