@@ -418,6 +418,7 @@ public class Spindex {
         return spindexMotor.isBusy();
     }
 
+    //Telemetry Blocks
     public void showTelemetry(Telemetry telemetry){
         telemetry.addLine("------------------------------------------------------------------------------------");
         telemetry.addLine("Spindex");

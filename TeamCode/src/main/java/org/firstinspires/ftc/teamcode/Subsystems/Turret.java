@@ -118,6 +118,7 @@ public class Turret {
         turret.setPower(power);
     }
 
+    //Telemetry Blocks
     public void showTelemetry(Telemetry telemetry, double robotX, double robotY, double robotHeading){
         telemetry.addLine("------------------------------------------");
         telemetry.addLine("Turret");
