@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Resources.Unit;
@@ -43,7 +45,6 @@ public class Spindex {
     private boolean autoLaunchMode = false;
     private boolean terminate = false;
     private boolean atTarget = false;
-    private boolean absAndRelInitialized = false;
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColors = {'E', 'E', 'E'};
@@ -64,7 +65,6 @@ public class Spindex {
         public static double maxPower = 1;
         public static double Threshold = 63.75;
 
-        //For abs and rel
         public static double[] pidf = {35, 0.3, 12, 0};
         public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};
@@ -104,69 +104,61 @@ public class Spindex {
     */
     public void moveToPos(double target, int mode) {
         double sign = 0;
-        int casee = mode;
         double kp = 0;
-        switch (casee){
+        mode = mode == 3 ? 4 : mode;
+        switch (mode) {
             case 1:
-                currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/537.7*360);
+                currentPos = AngleUnit.normalizeDegrees((double) spindexMotor.getCurrentPosition() / 537.7 * 360);
 
                 error = AngleUnit.normalizeDegrees(target - currentPos);
 
                 sign = Math.signum(error);
 
-                kp = maxPower/Threshold;
+                kp = maxPower / Threshold;
 
-                if(Math.abs(error) > Threshold){
+                if (Math.abs(error) > Threshold) {
                     spindexMotor.setPower(maxPower * sign);
                     setTargetStatus(false);
-                }
-                else if (Math.abs(error) > tolorence) {
+                } else if (Math.abs(error) > tolorence) {
                     spindexMotor.setPower(error * kp);
                     setTargetStatus(false);
 
-                }
-                else {
+                } else {
                     spindexMotor.setPower(0);
                     setTargetStatus(true);
                 }
                 break;
             case 2:
-                currentPos = spindexPos.getVoltage()/MAXVOLTAGE*360.0;
+                currentPos = spindexPos.getVoltage() / MAXVOLTAGE * 360.0;
 
                 error = AngleUnit.normalizeDegrees(target - currentPos);
 
                 sign = Math.signum(error);
 
-                kp = maxPower/(Threshold);
+                kp = maxPower / (Threshold);
 
-                if (Math.abs(error) > Threshold){
+                if (Math.abs(error) > Threshold) {
                     spindexMotor.setPower(maxPower * sign);
                     setTargetStatus(false);
-                }
-                else if (Math.abs(error) > tolorence) {
+                } else if (Math.abs(error) > tolorence) {
                     spindexMotor.setPower(error * kp);
                     setTargetStatus(false);
-                }
-                else {
+                } else {
                     spindexMotor.setPower(0);
                     setTargetStatus(true);
                 }
                 break;
-            case 3:
-                casee = 4;
-                break;
             case 4:
-                double currentPos = getNormEnc(spindexMotor.getCurrentPosition()+(offset/360.0*537.7));
-                double error = getNormEnc(target/360.0*537.7 - currentPos);
+                double currentPos = getNormEnc(spindexMotor.getCurrentPosition() + (offset / 360.0 * 537.7));
+                double error = getNormEnc(target / 360.0 * 537.7 - currentPos);
 
-                spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+error+0.5));
+                spindexMotor.setTargetPosition((int) (spindexMotor.getCurrentPosition() + error + 0.5));
                 spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
                 spindexMotor.setPower(1);
                 break;
             default:
                 throw new RuntimeException("The mode of Spindex operation is not an option!");
-
         }
     }
 
@@ -229,7 +221,6 @@ public class Spindex {
         // Detect a new ball only when unlocked, spindex is settled, and sensor reads close
         if (!getSlotStatus()[getIndex()] && !isOuttakeing() && !isBusy() && ballDistance < SpindexValues.ballDistanceThreshold){
             addBall(getIndex());
-            setSlotColor(colorSensor.getColor());
             ballLatched = true;
         }
 
@@ -376,24 +367,12 @@ public class Spindex {
         return getVoltage()/MAXVOLTAGE*360.0;
     }
 
-    public double getEncPos(){
+    public double getNormAngPos(){
         return AngleUnit.normalizeDegrees((spindexMotor.getCurrentPosition()/537.7*360.0)+offset);
     }
 
     public double getNormEnc(double encCounts){
         return (encCounts + (537.7/2)) % 537.7 - (537.7/2);
-    }
-
-    public void storeThreadLoopTime(double milliseconds){
-        threadLoopTime = milliseconds;
-    }
-
-    public double getThreadLoopTime(){
-        return threadLoopTime;
-    }
-
-    public void exitProgram(){
-        terminate = true;
     }
 
     public boolean getProgramState(){
@@ -440,7 +419,27 @@ public class Spindex {
         return spindexMotor.isBusy();
     }
 
-    public boolean isLatched(){
-        return ballLatched;
+    public void showTelemetry(Telemetry telemetry){
+        telemetry.addLine("------------------------------------------------------------------------------------");
+        telemetry.addLine("Spindex");
+        telemetry.addLine("Spindex Encoder Count: " + spindexMotor.getCurrentPosition());
+        telemetry.addLine("Spindex Wrapped Encoder Position: " + getNormEnc(spindexMotor.getCurrentPosition()));
+        telemetry.addLine("Spindex Angular Position: " + ((spindexMotor.getCurrentPosition()/537.7*360.0)+offset));
+        telemetry.addLine("Spindex Normalized Angular Position: " + getNormAngPos());
+        telemetry.addLine("Spindex Absolute Encoder Position: " + getPos());
+        telemetry.addLine("Spindex Absolute Encoder Voltage: " + getVoltage());
+        telemetry.addLine("------------------------------------------------------------------------------------");
+    }
+
+    public void showTelemetry(MultipleTelemetry telemetry){
+        telemetry.addLine("------------------------------------------------------------------------------------");
+        telemetry.addLine("Spindex");
+        telemetry.addLine("Spindex Encoder Count: " + spindexMotor.getCurrentPosition());
+        telemetry.addLine("Spindex Wrapped Encoder Position: " + getNormEnc(spindexMotor.getCurrentPosition()));
+        telemetry.addLine("Spindex Angular Position: " + (((spindexMotor.getCurrentPosition()/537.7*360.0)+offset)%360));
+        telemetry.addLine("Spindex Normalized Angular Position: " + getNormAngPos());
+        telemetry.addLine("Spindex Absolute Encoder Position: " + getPos());
+        telemetry.addLine("Spindex Absolute Encoder Voltage: " + getVoltage());
+        telemetry.addLine("------------------------------------------------------------------------------------");
     }
 }

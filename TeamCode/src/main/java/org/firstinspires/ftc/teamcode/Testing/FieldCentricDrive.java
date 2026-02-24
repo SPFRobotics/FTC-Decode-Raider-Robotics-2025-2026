@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Resources.UpdateSpindex;
 
 
 //@TeleOp(name = "Field Centric TeleOp")
@@ -83,7 +82,6 @@ public class FieldCentricDrive extends LinearOpMode {
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         ColorFetch colorSensor = new ColorFetch(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
 
@@ -101,10 +99,6 @@ public class FieldCentricDrive extends LinearOpMode {
         waitForStart();
 
         leds.setColor(leds.RED, false);
-
-        if (opModeIsActive()) {
-            updateSpindex.start();
-        }
 
         if (isStopRequested()) return;
 
@@ -224,7 +218,6 @@ public class FieldCentricDrive extends LinearOpMode {
             // Telemetry
             telemetry.addLine("==========================================");
             telemetry.addData("Loop Time", loopTime.milliseconds());
-            telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
             telemetry.addLine("------------------------------------------");
             telemetry.addData("Bot Heading (deg)", Math.toDegrees(botHeading));
             telemetry.addData("Speed Factor", speedFactor);
@@ -248,6 +241,5 @@ public class FieldCentricDrive extends LinearOpMode {
         }
 
         // Tell spindex thread to end execution
-        spindex.exitProgram();
     }
 }

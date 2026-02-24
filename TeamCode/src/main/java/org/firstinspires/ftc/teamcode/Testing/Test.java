@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Resources.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 
 @Disabled
@@ -63,7 +62,6 @@ public class Test extends LinearOpMode {
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         ColorFetch colorSensor = new ColorFetch(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
 
@@ -73,9 +71,6 @@ public class Test extends LinearOpMode {
         //Initialize Telemetry
         waitForStart();
         telemetry.setMsTransmissionInterval(16);
-        if (opModeIsActive()){
-            updateSpindex.start();
-        }
 
         ElapsedTime loopTime = new ElapsedTime();
         while (opModeIsActive()) {
@@ -171,7 +166,6 @@ public class Test extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.addData("Loop Time", loopTime.milliseconds());
             telemetry.addData("Kickstand Position", kickstand.getVoltage());
-            telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
             //telemetry.addData("Hue", colorSensor.getHSVArray()[0] + " " + colorSensor.getHSVArray()[1] + " " + colorSensor.getHSVArray()[2]);
             telemetry.addData("Spindex Index", spindex.getIndex());
             telemetry.addData("Automated Loading", spindex.isAutoLoading());
@@ -183,6 +177,5 @@ public class Test extends LinearOpMode {
             telemetry.update();
         }
         //Tells spindex thread to end execution
-        spindex.exitProgram();
     }
 }
