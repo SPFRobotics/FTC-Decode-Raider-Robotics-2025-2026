@@ -118,15 +118,25 @@ public class Turret {
         turret.setPower(power);
     }
 
-    public void showTelemetry(Telemetry telemetry){
-        telemetry.addLine("X: " + getGoalX());
-        telemetry.addLine("Y: " + getGoalY());
-        telemetry.addLine("");
+    public void showTelemetry(Telemetry telemetry, double robotX, double robotY, double robotHeading){
+        telemetry.addLine("------------------------------------------");
+        telemetry.addLine("Turret");
+        telemetry.addLine("Robot X: " + robotX);
+        telemetry.addLine("Robot Y: " + robotY);
+        telemetry.addLine("Robot Heading: " + robotHeading);
+        telemetry.addLine("Turret Target Degrees: " + getTargetDeg(robotX, robotY, robotHeading));
+        telemetry.addLine("Turret Power: " + turret.getPower());
+        telemetry.addLine("------------------------------------------");
     }
 
-    public void showTelemetry(MultipleTelemetry telemetry){
-        telemetry.addLine("X: " + getGoalX());
-        telemetry.addLine("Y: " + getGoalY());
-        telemetry.addLine("");
+    public void showTelemetry(MultipleTelemetry telemetry, double robotX, double robotY, double robotHeading){
+        telemetry.addLine("------------------------------------------------------------------------------------");
+        telemetry.addLine("Turret");
+        telemetry.addLine("Robot X: " + robotX);
+        telemetry.addLine("Robot Y: " + robotY);
+        telemetry.addLine("Robot Heading: " + robotHeading);
+        telemetry.addLine("Turret Target Degrees: " + getTargetDeg(robotX, robotY, robotHeading));
+        telemetry.addLine("Turret Power: " + turret.getPower());
+        telemetry.addLine("------------------------------------------------------------------------------------");
     }
 }

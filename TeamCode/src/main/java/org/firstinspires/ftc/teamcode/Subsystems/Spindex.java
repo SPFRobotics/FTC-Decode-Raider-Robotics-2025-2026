@@ -152,13 +152,8 @@ public class Spindex {
                 }
                 break;
             case 3:
-                double currentPos1 = getNormEnc(spindexMotor.getCurrentPosition()+(offset/360.0*537.7));
-                double error1 = getNormEnc(target/360.0*537.7 - currentPos1);
-
-                spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+error1+0.5));
-                spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
-                spindexMotor.setPower(1);
+                mode = 4;
+                break;
             case 4:
                 double currentPos = getNormEnc(spindexMotor.getCurrentPosition()+(offset/360.0*537.7));
                 double error = getNormEnc(target/360.0*537.7 - currentPos);
