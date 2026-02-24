@@ -105,8 +105,7 @@ public class Spindex {
     public void moveToPos(double target, int mode) {
         double sign = 0;
         double kp = 0;
-        mode = mode == 3 ? 4 : mode;
-        switch (mode) {
+        switch (mode == 3 ? 4 : mode) {
             case 1:
                 currentPos = AngleUnit.normalizeDegrees((double) spindexMotor.getCurrentPosition() / 537.7 * 360);
 
