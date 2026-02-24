@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 @Autonomous(name = "BS 12 Sorted", group = "Autonomous")
 @Configurable
@@ -42,6 +43,7 @@ public class Short12Sorted extends OpMode {
     private ColorFetch colorSensor;
     private LedLights leds = null;
     private Limelight limelight;
+    private Turret turret;
     private int detectedMotifId = -1;
 
     // Preloaded ball colors in slot order (0, 1, 2).
@@ -76,6 +78,7 @@ public class Short12Sorted extends OpMode {
         colorSensor = new ColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
+        turret = new Turret(hardwareMap, true);
 
         spindex.setAutoLoadMode(true);
         outtake.resetKickerCycle();
@@ -148,6 +151,11 @@ public class Short12Sorted extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
+        turret.aimAtGoal(
+                follower.getPose().getX(),
+                follower.getPose().getY(),
+                Math.toDegrees(follower.getPose().getHeading())
+        );
         autonomousPathUpdate();
         updateSpindexPosition();
 
@@ -165,6 +173,8 @@ public class Short12Sorted extends OpMode {
         panelsTelemetry.debug("Sort State", spindex.getAutoSortStateName());
         panelsTelemetry.debug("Pattern Pos", spindex.getSortPatternIndex());
         panelsTelemetry.debug("Slot Colors", "" + spindex.getSlotColors()[0] + spindex.getSlotColors()[1] + spindex.getSlotColors()[2]);
+        panelsTelemetry.debug("Turret Pos", turret.getCurrentPosition());
+        panelsTelemetry.debug("Turret Target", turret.getTargetPosition());
         //panelsTelemetry.update(telemetry);
 
         telemetry.addLine("Timer: " + timer.milliseconds());
@@ -534,6 +544,7 @@ public class Short12Sorted extends OpMode {
 
             case 12: // Done
                 outtake.setRPM(0);
+                turret.setPower(0);
                 intakeEnabled = false;
                 kicker.down();
                 requestOpModeStop();
@@ -541,6 +552,7 @@ public class Short12Sorted extends OpMode {
 
             default:
                 outtake.setRPM(0);
+                turret.setPower(0);
                 intakeEnabled = false;
                 break;
         }
