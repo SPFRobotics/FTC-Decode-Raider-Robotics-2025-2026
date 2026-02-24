@@ -19,8 +19,6 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 //@TeleOp(name = "Spindex PID Tuning", group = "Testing")
 public class SpindexTuning extends OpMode {
 
-
-    @Config
     public static class SpindexTuningConfig {
         public static double kP = 20;
         public static double kI = 0.04;

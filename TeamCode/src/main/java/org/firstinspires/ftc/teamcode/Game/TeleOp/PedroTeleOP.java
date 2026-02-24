@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
-import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
+import org.firstinspires.ftc.teamcode.Resources.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 
@@ -240,6 +240,9 @@ public class PedroTeleOP extends OpMode {
         multiTelemetry.addData("Distance", colorSensor.getDistance());
         multiTelemetry.addData("Position", follower.getPose().toString());
         multiTelemetry.addData("Heading (deg)", Math.toDegrees(follower.getPose().getHeading()));
+        multiTelemetry.addData("Target", turret.getTargetDeg(currentPose.getX(),
+                currentPose.getY(),
+                Math.toDegrees(currentPose.getHeading())));
         multiTelemetry.addData("Field Centric", fieldCentric);
         multiTelemetry.addData("Turret At Target", turret.isTurretAtTarget());
         multiTelemetry.addLine("==========================================");

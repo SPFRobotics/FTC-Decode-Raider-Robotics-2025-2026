@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import static org.firstinspires.ftc.teamcode.Subsystems.ColorFetch.ColorFetchConfig.loops;
+
 import android.graphics.Color;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,6 +15,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Resources.Unit;
 
 public class ColorFetch {
+    @Config
+    public static class ColorFetchConfig{
+        public static int loops = 5;
+    }
+
     /*****************Class varibles**********************/
     private NormalizedColorSensor colorSensor = null;
     private DistanceSensor distanceSensor = null;
@@ -41,6 +49,17 @@ public class ColorFetch {
 
     public float getSaturation(){
         return getHSVArray()[1];
+    }
+
+    double combined = 0;
+    public double getAverageHue(){
+        if (combined > 0){
+            combined = 0;
+        }
+        for (int i = 0; i < loops; i++){
+            combined += getHue();
+        }
+        return combined/loops;
     }
 
     /*Gets relevant colors. Returns P if purple G if green and E if empty*/

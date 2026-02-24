@@ -32,7 +32,7 @@ public class Spindex {
 
     //Stores weather the class is using a motor or servo
     //Stores position and current index of spindex
-    private static int index = 0;
+    private int index = 0;
     private double threadLoopTime = 0;
     private double currentPos = 0;
     private double error = 0;
@@ -46,7 +46,7 @@ public class Spindex {
     private boolean absAndRelInitialized = false;
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
-    private char[] slotColorStatus = {'E', 'E', 'E'};
+    private char[] slotColors = {'E', 'E', 'E'};
     private boolean[] slotStatus = {false, false, false};
     private boolean ballLatched = false;
     @Config
@@ -55,7 +55,7 @@ public class Spindex {
         public static double Threshold = 63.75;
 
         //For abs and rel
-        public static double[] pidf = {40, 0.3, 12, 0};
+        public static double[] pidf = {35, 0.3, 12, 0};
         public static double tolorence = 5;
         public static double[] intakePos = {2, 122, 242};
         public static double[] outtakePos = {182, 302, 62};
@@ -64,72 +64,20 @@ public class Spindex {
         //Old value is 3.3
         public static double ballDistanceThreshold = 3;
         public static double ballReleaseThreshold = 4.0;
-        public static double spindexPowerThreshold = 0.1;
         public static double launchTime = 900;
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
     public Spindex(HardwareMap hardwareMap){
         spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
+        spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
+
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
-        index = 0;
         spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         offset = AngleUnit.normalizeDegrees(spindexPos.getVoltage()/MAXVOLTAGE*360.0);
-    }
-
-
-    //Moves the servo or motor to the target position by finding the shortest path
-    public void moveToPos(double target, boolean absEncoder) {
-        if (!absEncoder){
-            currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/537.7*360);
-
-            error = AngleUnit.normalizeDegrees(target - currentPos);
-
-            double sign = Math.signum(error);
-
-            double kp = maxPower/Threshold;
-
-            if(Math.abs(error) > Threshold){
-                spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
-            }
-            else if (Math.abs(error) > tolorence) {
-                spindexMotor.setPower(error * kp);
-                setTargetStatus(false);
-
-            }
-            else {
-                spindexMotor.setPower(0);
-                setTargetStatus(true);
-            }
-        }
-        else{
-            currentPos = spindexPos.getVoltage()/MAXVOLTAGE*360.0;
-
-            error = AngleUnit.normalizeDegrees(target - currentPos);
-
-            double sign = Math.signum(error);
-
-            double kp = maxPower/(Threshold);
-
-            if (Math.abs(error) > Threshold){
-                spindexMotor.setPower(maxPower * sign);
-                setTargetStatus(false);
-            }
-            else if (Math.abs(error) > tolorence) {
-                spindexMotor.setPower(error * kp);
-                setTargetStatus(false);
-            }
-            else {
-                spindexMotor.setPower(0);
-                setTargetStatus(true);
-            }
-        }
-    }
-
-    public void initAbsAndRel(){
+        index = 0;
     }
 
     //Overloaded method that contains three options in order to maintain compatibility with older programs while adding support for using the abs and relative encoders together.
@@ -137,18 +85,21 @@ public class Spindex {
     Modes:
     1 - Spindex uses the built-in motor encoder and is controlled with setPower() and the custom made P controller
     2 - Spindex uses the absolute encoder with setPower() and the custom made P controller
-    3 - Spindex uses the absolute encoder with the built-in motor encoder. This uses the built-in PID controller FTC provides within their SDK to control the motor.
+    3 - Removed
+    4 - Spindex uses the absolute encoder with the built-in motor encoder. This uses the built-in PID controller FTC provides within their SDK to control the motor.
     */
     public void moveToPos(double target, int mode) {
-        switch (mode) {
-            case 1: {
+        double sign = 0;
+        double kp = 0;
+        switch (mode){
+            case 1:
                 currentPos = AngleUnit.normalizeDegrees((double)spindexMotor.getCurrentPosition()/537.7*360);
 
                 error = AngleUnit.normalizeDegrees(target - currentPos);
 
-                double sign = Math.signum(error);
+                sign = Math.signum(error);
 
-                double kp = maxPower/Threshold;
+                kp = maxPower/Threshold;
 
                 if(Math.abs(error) > Threshold){
                     spindexMotor.setPower(maxPower * sign);
@@ -157,21 +108,21 @@ public class Spindex {
                 else if (Math.abs(error) > tolorence) {
                     spindexMotor.setPower(error * kp);
                     setTargetStatus(false);
+
                 }
                 else {
                     spindexMotor.setPower(0);
                     setTargetStatus(true);
                 }
                 break;
-            }
-            case 2: {
+            case 2:
                 currentPos = spindexPos.getVoltage()/MAXVOLTAGE*360.0;
 
                 error = AngleUnit.normalizeDegrees(target - currentPos);
 
-                double sign = Math.signum(error);
+                sign = Math.signum(error);
 
-                double kp = maxPower/(Threshold);
+                kp = maxPower/(Threshold);
 
                 if (Math.abs(error) > Threshold){
                     spindexMotor.setPower(maxPower * sign);
@@ -186,19 +137,9 @@ public class Spindex {
                     setTargetStatus(true);
                 }
                 break;
-            }
-            case 3: {
-                double relPos = Math.floorMod((int)(((spindexMotor.getCurrentPosition()/537.7*360)+offset+0.5)), 360);
-                double error = AngleUnit.normalizeDegrees(target - relPos);
-                double ticksError = error/537.7*360;
-
-                spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+ticksError+0.5));
-                spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
-                spindexMotor.setPower(1);
-                break;
-            }
-            case 4: {
+            case 3:
+                throw new RuntimeException("Mode 3 was removed in favor of mode 4. Please use that instead!");
+            case 4:
                 double currentPos = getNormEnc(spindexMotor.getCurrentPosition()+(offset/360.0*537.7));
                 double error = getNormEnc(target/360.0*537.7 - currentPos);
 
@@ -207,9 +148,9 @@ public class Spindex {
                 spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
                 spindexMotor.setPower(1);
                 break;
-            }
             default:
-                throw new RuntimeException("The mode of Spindex operation is not an option! FROM 67 LORDS");
+                throw new RuntimeException("The mode of Spindex operation is not an option!");
+
         }
     }
 
@@ -229,21 +170,21 @@ public class Spindex {
     }
 
 
-    public char[] getSlotColorStatus (){
-        return slotColorStatus;
+    public char[] getSlotColors (){
+        return slotColors;
     }
 
     //Methods used to set the color of the balls at the current index, detection is handled in the "main" code
     /*########################################*/
-    public void setSlotColorStatus(char color){
+    public void setSlotColor(char color){
         int currentIndex = getIndex();
-        if (slotColorStatus[currentIndex] == 'E'){
-            slotColorStatus[currentIndex] = color;
+        if (slotColors[currentIndex] == 'E'){
+            slotColors[currentIndex] = color;
         }
     }
 
-    public void clearSlot(int index){
-        slotColorStatus[index] = 'E';
+    public void clearColor(int index){
+        slotColors[index] = 'E';
     }
     /*########################################*/
 
@@ -270,7 +211,7 @@ public class Spindex {
         }
 
         // Detect a new ball only when unlocked, spindex is settled, and sensor reads close
-        if (!ballLatched && !getSlotStatus()[getIndex()] && !isOuttakeing() && !isBusy() && ballDistance < SpindexValues.ballDistanceThreshold && colorSensor.getColor() != 0){
+        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && !isBusy() && ballDistance < SpindexValues.ballDistanceThreshold){
             addBall(getIndex());
             ballLatched = true;
         }
@@ -389,5 +330,9 @@ public class Spindex {
 
     public boolean isBusy(){
         return spindexMotor.isBusy();
+    }
+
+    public boolean isLatched(){
+        return ballLatched;
     }
 }

@@ -13,7 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
 public class AverageTest extends LinearOpMode {
-    @Config
     public static class DistanceSensorTestingConfig{
         public static int loops = 1;
     }

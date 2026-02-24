@@ -8,7 +8,6 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -22,8 +21,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
-
-import java.lang.annotation.ElementType;
 
 @Autonomous(name = "Red Short 12 Ball", group = "Autonomous")
 @Configurable
@@ -88,7 +85,6 @@ public class RedShortTwelveBall extends OpMode {
     @Override
     public void start() {
         timer = new ElapsedTime();
-        spindex.initAbsAndRel();
         pathState = 0;
         shotsFired = 0;
         ballsLoaded = 0;

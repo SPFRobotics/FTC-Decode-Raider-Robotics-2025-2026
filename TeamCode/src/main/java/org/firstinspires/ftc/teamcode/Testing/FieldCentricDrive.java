@@ -5,7 +5,6 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.fa
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -22,7 +21,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
+import org.firstinspires.ftc.teamcode.Resources.UpdateSpindex;
 
 
 //@TeleOp(name = "Field Centric TeleOp")

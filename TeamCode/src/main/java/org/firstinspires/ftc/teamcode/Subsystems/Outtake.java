@@ -26,7 +26,6 @@ public class Outtake {
         public static double kickerSettleTime = 0.2;
     }
 
-    private ColorFinder colorFinder = null;
     public ColorSensor hardwareColorSensor = null;
     public DcMotorEx outtakeMotor = null;
     private KickerGrav kickerGrav = null;

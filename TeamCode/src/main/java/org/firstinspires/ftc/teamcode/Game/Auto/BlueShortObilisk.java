@@ -90,7 +90,6 @@ public class BlueShortObilisk extends OpMode {
         intake.setPower(1);
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
-        spindex.initAbsAndRel();
         follower.followPath(paths.ReadObilisk, true);
     }
 

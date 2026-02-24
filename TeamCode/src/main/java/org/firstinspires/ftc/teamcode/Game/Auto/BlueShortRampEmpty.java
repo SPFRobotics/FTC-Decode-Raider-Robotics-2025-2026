@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.AltPaths;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -88,7 +86,6 @@ public class BlueShortRampEmpty extends OpMode {
         intakeEnabled = true;
         outtake.setRPM(SHOOT_RPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
-        spindex.initAbsAndRel();
         follower.followPath(paths.shootBallOne, true);
         //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         //updateSpindex.start();

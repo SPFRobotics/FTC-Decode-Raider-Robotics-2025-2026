@@ -11,7 +11,7 @@ public class SpindexStress extends LinearOpMode {
         Spindex spindex = new Spindex(hardwareMap);
         waitForStart();
         while (opModeIsActive()){
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], false);
+            //spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], false);
             spindex.addIndex();
         }
     }

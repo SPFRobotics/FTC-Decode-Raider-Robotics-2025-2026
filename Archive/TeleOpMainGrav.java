@@ -14,7 +14,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Subsystems.ColorFinder;
 import org.firstinspires.ftc.teamcode.Subsystems.Extension;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerGrav;
@@ -46,7 +45,6 @@ public class TeleOpMainGrav extends LinearOpMode {
     private double speedFactor =  1;
     private Limelight limelight = null;
     private MecanumChassis chassis = null;
-    private ColorFinder colorFinder = null;
 
     //Buttons
     private Button outtakeFar = new Button();

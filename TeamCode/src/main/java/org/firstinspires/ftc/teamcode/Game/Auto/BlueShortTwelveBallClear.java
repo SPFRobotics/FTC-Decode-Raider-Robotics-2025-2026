@@ -78,7 +78,6 @@ public class BlueShortTwelveBallClear extends OpMode {
 
     @Override
     public void start() {
-        spindex.initAbsAndRel();
         pathState = 0;
         shotsFired = 0;
         ballsLoaded = 0;

@@ -6,7 +6,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 @TeleOp (name="Turret Test")
 public class TurretTest extends OpMode {
     Turret turret = null;
-    @Config
     public static class TurretTester{
 
         public static double robotX = 0;
