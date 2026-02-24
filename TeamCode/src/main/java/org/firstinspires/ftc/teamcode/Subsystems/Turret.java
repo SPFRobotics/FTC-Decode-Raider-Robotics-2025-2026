@@ -19,18 +19,17 @@ public class Turret {
 
     double goalY;
     double goalX;
+    public final double RedGoalX = 132;
+    public final double RedGoalY = 136;
+    public final double BlueGoalX = 12;
+    public final double BlueGoalY = 136;
+    public final double ticks = 145.1;
+    public final double gearRatio = 135/32.0;
+
     DcMotorEx turret;
 
     @Config
     public static class TurretConfig{
-
-        static double RedGoalX = 132;
-        static double RedGoalY = 136;
-        static double BlueGoalX = 12;
-        static double BlueGoalY = 136;
-
-        public static double ticks = 145.1;
-        public static double gearRatio = 135/32.0;
         public static double turretPower = 1;
         public static double[] pidf = {35, 0.01, 12, 0};
     }
@@ -50,17 +49,18 @@ public class Turret {
         setGoalCords(goalCords);
     }
 
-        private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
+    private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
 
-            double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
+        double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
 
-            double turretDeg = fieldAngleDeg - robotHeading;
+        double turretDeg = fieldAngleDeg - robotHeading;
 
-            return wrapDeg360(turretDeg);
-        }
+        return wrapDeg360(turretDeg);
+    }
+
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
-        int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
+        int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
@@ -69,7 +69,7 @@ public class Turret {
 
     public void aimAtGoalManual(double manualGoal){
         double targetDeg = manualGoal;
-        int targetTicks = (int) ((targetDeg / 360.0) * TurretConfig.ticks * TurretConfig.gearRatio);
+        int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
@@ -103,16 +103,14 @@ public class Turret {
 
     //@param goalCords True for blue, false for red
     private void setGoalCords(boolean goalCords){
-
         if(goalCords){
-            goalX = TurretConfig.BlueGoalX;
-            goalY = TurretConfig.BlueGoalY;
+            goalX = BlueGoalX;
+            goalY = BlueGoalY;
 
         }else{
-            goalX = TurretConfig.RedGoalX;
-            goalY = TurretConfig.RedGoalY;
+            goalX = RedGoalX;
+            goalY = RedGoalY;
         }
-
     }
 
     public void setPower(double power){
@@ -121,10 +119,14 @@ public class Turret {
     }
 
     public void showTelemetry(Telemetry telemetry){
-
+        telemetry.addLine("X: " + getGoalX());
+        telemetry.addLine("Y: " + getGoalY());
+        telemetry.addLine("");
     }
 
     public void showTelemetry(MultipleTelemetry telemetry){
-
+        telemetry.addLine("X: " + getGoalX());
+        telemetry.addLine("Y: " + getGoalY());
+        telemetry.addLine("");
     }
 }

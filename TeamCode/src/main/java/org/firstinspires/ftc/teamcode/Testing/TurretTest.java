@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 @TeleOp (name="Turret Test")
 public class TurretTest extends OpMode {
     Turret turret = null;
+    @Config
     public static class TurretTester{
 
         public static double robotX = 0;
@@ -51,8 +52,8 @@ public class TurretTest extends OpMode {
             telemetry.addLine("--- Turret ---");
             telemetry.addData("Manual Goal (deg)", TurretTester.manualGoal);
         }
-        telemetry.addData("TurretConfig.ticks", Turret.TurretConfig.ticks);
-        telemetry.addData("TurretConfig.gearRatio", Turret.TurretConfig.gearRatio);
+        telemetry.addData("TurretConfig.ticks", turret.ticks);
+        telemetry.addData("TurretConfig.gearRatio", turret.gearRatio);
         telemetry.addData("TurretConfig.turretPower", Turret.TurretConfig.turretPower);
         telemetry.addLine("--- Motor ---");
         telemetry.addData("Target Ticks", turret.getTargetPosition());
