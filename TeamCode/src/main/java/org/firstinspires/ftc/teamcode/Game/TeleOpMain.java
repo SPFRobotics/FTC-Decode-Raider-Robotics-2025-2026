@@ -39,7 +39,7 @@ public class TeleOpMain extends OpMode {
 
     //Pedro Pathing
     Follower follower;
-    Pose currentPose = null;
+    Pose currentPose;
 
     //Buttons
     Button spindexModeToggle = new Button();
