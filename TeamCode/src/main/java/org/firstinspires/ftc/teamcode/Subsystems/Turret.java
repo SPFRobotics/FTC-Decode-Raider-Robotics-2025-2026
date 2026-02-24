@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Resources.Unit;
 import org.intellij.lang.annotations.JdkConstants;
 
 public class Turret {
@@ -31,12 +32,15 @@ public class Turret {
     @Config
     public static class TurretConfig{
         public static double turretPower = 1;
-        public static double[] pidf = {35, 0.01, 12, 0};
+
+        //1.12, .11, 0, 11.22
+        public static double[] pidf = {1.62, 0.16, 0, 16.22};
     }
 
     public Turret(HardwareMap hardwareMap, boolean goalCords){
         this.turret = hardwareMap.get(DcMotorEx.class, "turretMotor");
         turret.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
+        turret.setPositionPIDFCoefficients(25);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
@@ -90,6 +94,10 @@ public class Turret {
         return turret.getCurrentPosition();
     }
 
+    public double getCurrentAngularPosition(){
+        return turret.getCurrentPosition() / 360.0 * ticks * gearRatio;
+    }
+
     public int getTargetPosition() {
         return turret.getTargetPosition();
     }
@@ -116,6 +124,10 @@ public class Turret {
     public void setPower(double power){
         //turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setPower(power);
+    }
+
+    public double getVelocity(){
+        return turret.getVelocity();
     }
 
     //Telemetry Blocks
