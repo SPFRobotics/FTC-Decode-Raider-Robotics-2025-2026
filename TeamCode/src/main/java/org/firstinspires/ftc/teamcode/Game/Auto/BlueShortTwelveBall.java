@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.AltPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;

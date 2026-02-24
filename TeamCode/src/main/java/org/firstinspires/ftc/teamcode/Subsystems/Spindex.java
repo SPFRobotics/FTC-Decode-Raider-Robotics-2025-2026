@@ -49,6 +49,16 @@ public class Spindex {
     private char[] slotColors = {'E', 'E', 'E'};
     private boolean[] slotStatus = {false, false, false};
     private boolean ballLatched = false;
+
+    private enum AutoSortState { FIND_NEXT, ROTATING, LAUNCHING, COMPLETE }
+    private AutoSortState autoSortState = AutoSortState.FIND_NEXT;
+    private int sortPatternIndex = 0;
+    private boolean autoSortActive = false;
+
+    public  String motif21Pattern = "GPP";
+    public  String motif22Pattern = "PGP";
+    public  String motif23Pattern = "PPG";
+
     @Config
     public static class SpindexValues{
         public static double maxPower = 1;
@@ -65,6 +75,10 @@ public class Spindex {
         public static double ballDistanceThreshold = 3;
         public static double ballReleaseThreshold = 4.0;
         public static double launchTime = 900;
+
+        // Motif patterns: each string is the launch order of colors (P=purple, G=green)
+        // These build the pattern on the ramp from bottom to top
+
     }
 
     //Spindex constructor accepts a boolean. True makes the class use a motor while the input being false makes it use a servo instead
@@ -138,7 +152,13 @@ public class Spindex {
                 }
                 break;
             case 3:
-                throw new RuntimeException("Mode 3 was removed in favor of mode 4. Please use that instead!");
+                double currentPos1 = getNormEnc(spindexMotor.getCurrentPosition()+(offset/360.0*537.7));
+                double error1 = getNormEnc(target/360.0*537.7 - currentPos1);
+
+                spindexMotor.setTargetPosition((int)(spindexMotor.getCurrentPosition()+error1+0.5));
+                spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
+                spindexMotor.setPower(1);
             case 4:
                 double currentPos = getNormEnc(spindexMotor.getCurrentPosition()+(offset/360.0*537.7));
                 double error = getNormEnc(target/360.0*537.7 - currentPos);
@@ -242,7 +262,98 @@ public class Spindex {
             }
         }
     }
-    /****************************************************/
+
+    public void autoSort(Outtake outtake, int motifId) {
+        if (!autoSortActive || motifId < 21 || motifId > 23) return;
+
+        String patternStr;
+        switch (motifId) {
+            case 21: patternStr = motif21Pattern; break;
+            case 22: patternStr = motif22Pattern; break;
+            case 23: patternStr = motif23Pattern; break;
+            default: return;
+        }
+        char[] pattern = patternStr.toCharArray();
+
+        switch (autoSortState) {
+            case FIND_NEXT:
+                if (sortPatternIndex >= pattern.length) {
+                    autoSortState = AutoSortState.COMPLETE;
+                    return;
+                }
+                char needed = pattern[sortPatternIndex];
+                for (int i = 0; i < 3; i++) {
+                    if (slotStatus[i] && slotColors[i] == needed) {
+                        setIndex(i);
+                        setMode(true);
+                        autoSortState = AutoSortState.ROTATING;
+                        return;
+                    }
+                }
+                break;
+
+            case ROTATING:
+                double targetRPM = outtake.isFarLocation()
+                        ? Outtake.OuttakeConfig.farRPM
+                        : Outtake.OuttakeConfig.closeRPM;
+                outtake.setRPM(targetRPM);
+                moveToPos(SpindexValues.outtakePos[getIndex()], 4);
+                if (!isBusy()) {
+                    outtake.resetKickerCycle();
+                    autoSortState = AutoSortState.LAUNCHING;
+                }
+                break;
+
+            case LAUNCHING:
+                double rpm = outtake.isFarLocation()
+                        ? Outtake.OuttakeConfig.farRPM
+                        : Outtake.OuttakeConfig.closeRPM;
+                moveToPos(SpindexValues.outtakePos[getIndex()], 4);
+                outtake.enableSpindexKickerCycle(true, rpm);
+                if (outtake.getKickerCycleCount() >= 1) {
+                    clearBall(getIndex());
+                    clearColor(getIndex());
+                    sortPatternIndex++;
+                    outtake.resetKickerCycle();
+                    autoSortState = AutoSortState.FIND_NEXT;
+                }
+                break;
+
+            case COMPLETE:
+                autoSortActive = false;
+                break;
+        }
+    }
+
+    public void setAutoSortActive(boolean active) {
+        autoSortActive = active;
+        if (active) {
+            sortPatternIndex = 0;
+            autoSortState = AutoSortState.FIND_NEXT;
+        }
+    }
+
+    public void resetAutoSort() {
+        autoSortActive = false;
+        sortPatternIndex = 0;
+        autoSortState = AutoSortState.FIND_NEXT;
+    }
+
+    public boolean isAutoSorting() {
+        return autoSortActive;
+    }
+
+    public boolean isAutoSortComplete() {
+        return autoSortState == AutoSortState.COMPLETE;
+    }
+
+    public String getAutoSortStateName() {
+        return autoSortState.name();
+    }
+
+    public int getSortPatternIndex() {
+        return sortPatternIndex;
+    }
 
     public void setTargetStatus(boolean x){
         atTarget = x;
