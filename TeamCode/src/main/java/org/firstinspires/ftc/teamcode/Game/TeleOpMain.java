@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.TeleOp;
+package org.firstinspires.ftc.teamcode.Game;
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.closeRPM;
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
 
