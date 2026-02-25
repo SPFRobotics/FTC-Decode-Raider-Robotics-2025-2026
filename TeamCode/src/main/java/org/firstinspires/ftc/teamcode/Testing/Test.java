@@ -171,7 +171,7 @@ public class Test extends LinearOpMode {
             telemetry.addData("Automated Loading", spindex.isAutoLoading());
             telemetry.addData("Autmated Launch", spindex.isAutoLaunching());
             telemetry.addData("Distance", colorSensor.getDistance());
-            telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+            //telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
             telemetry.addData("Outtaking?", spindex.isOuttakeing());
             telemetry.addLine("==========================================");
             telemetry.update();

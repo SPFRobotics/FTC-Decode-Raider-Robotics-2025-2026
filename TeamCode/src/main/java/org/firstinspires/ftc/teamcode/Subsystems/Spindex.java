@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-
+import java.util.Arrays;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -48,8 +48,6 @@ public class Spindex {
     private ElapsedTime autoLaunchTimer = new ElapsedTime();
 
     private char[] slotColors = {'E', 'E', 'E'};
-    private boolean[] slotStatus = {false, false, false};
-    private boolean ballLatched = false;
 
     private enum AutoSortState { FIND_NEXT, ROTATING, LAUNCHING, COMPLETE }
     private AutoSortState autoSortState = AutoSortState.FIND_NEXT;
@@ -190,60 +188,23 @@ public class Spindex {
         }
     }
 
-    public void clearColor(int index){
+    public void clearBall(int index){
         slotColors[index] = 'E';
     }
     /*########################################*/
 
-    /****Methods to control ball detection, not color****/
-    public void addBall(int index){
-        slotStatus[index] = true;
-    }
-
-    public void clearBall(int index){
-        slotStatus[index] = false;
-        ballLatched = false;
-    }
-
-    public boolean[] getSlotStatus(){
-        return slotStatus;
-    }
-
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
 
-        // Latch releases only when sensor reads far enough (ball has cleared)
-        if (ballDistance > SpindexValues.ballReleaseThreshold) {
-            ballLatched = false;
-        }
-
         // Detect a new ball only when unlocked, spindex is settled, and sensor reads close
-        if (!getSlotStatus()[getIndex()] && !isOuttakeing() && !isBusy() && ballDistance < SpindexValues.ballDistanceThreshold){
-            addBall(getIndex());
-            ballLatched = true;
+        if (getSlotColors()[getIndex()] == 'E' && !isOuttakeing() && !isBusy() && ballDistance < SpindexValues.ballDistanceThreshold){
+            setSlotColor(colorSensor.getAverageColor());
         }
 
-        if (isAutoLoading() && slotStatus[getIndex()]) {
-            for (int i = 0; i < slotStatus.length; i++) {
-                if (!slotStatus[i]) {
+        if (isAutoLoading() && slotColors[getIndex()] != 'E') {
+            for (int i = 0; i < slotColors.length; i++) {
+                if (slotColors[i] == 'E') {
                     setIndex(i);
-                    break;
-                }
-            }
-        }
-    }
-
-    boolean ballFound = false;
-    public void autoLaunch(KickerSpindex kicker){
-        if (isAutoLaunching() && !slotStatus[getIndex()]) {
-            if (!ballFound){
-                autoLaunchTimer.reset();
-                ballFound = true;
-            }
-            for (int i = 0; i < slotStatus.length; i++) {
-                if (slotStatus[i] && autoLaunchTimer.milliseconds() >= launchTime && getPower() == 0) {
-                    setIndex(i);
-                    ballFound = false;
                     break;
                 }
             }
@@ -270,7 +231,7 @@ public class Spindex {
                 }
                 char needed = pattern[sortPatternIndex];
                 for (int i = 0; i < 3; i++) {
-                    if (slotStatus[i] && slotColors[i] == needed) {
+                    if (getSlotColors()[i] != 'E' && slotColors[i] == needed) {
                         setIndex(i);
                         setMode(true);
                         autoSortState = AutoSortState.ROTATING;
@@ -299,7 +260,6 @@ public class Spindex {
                 outtake.enableSpindexKickerCycle(true, rpm);
                 if (outtake.getKickerCycleCount() >= 1) {
                     clearBall(getIndex());
-                    clearColor(getIndex());
                     sortPatternIndex++;
                     outtake.resetKickerCycle();
                     autoSortState = AutoSortState.FIND_NEXT;
@@ -428,6 +388,7 @@ public class Spindex {
         telemetry.addLine("Spindex Normalized Angular Position: " + getNormAngPos());
         telemetry.addLine("Spindex Absolute Encoder Position: " + getPos());
         telemetry.addLine("Spindex Absolute Encoder Voltage: " + getVoltage());
+        telemetry.addLine("Slot Colors: "  + Arrays.toString(getSlotColors()));
         telemetry.addLine("------------------------------------------------------------------------------------");
     }
 

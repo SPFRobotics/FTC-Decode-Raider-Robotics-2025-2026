@@ -125,7 +125,6 @@ public class Short12Sorted extends OpMode {
         outtake.setRPM(SHOOT_RPM);
 
         for (int i = 0; i < 3; i++) {
-            spindex.addBall(i);
             spindex.setIndex(i);
             spindex.setSlotColor(PRELOAD_COLORS.charAt(i));
         }
@@ -235,8 +234,8 @@ public class Short12Sorted extends OpMode {
         spindex.autoLoad(colorSensor);
 
         int loadedCount = 0;
-        for (boolean slot : spindex.getSlotStatus()) {
-            if (slot) loadedCount++;
+        for (char slot : spindex.getSlotColors()) {
+            if (slot != 'E') loadedCount++;
         }
         ballsLoaded = loadedCount;
     }
@@ -248,7 +247,6 @@ public class Short12Sorted extends OpMode {
         ballsLoaded = 0;
         for (int i = 0; i < 3; i++) {
             spindex.clearBall(i);
-            spindex.clearColor(i);
         }
     }
 

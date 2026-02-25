@@ -223,7 +223,7 @@ public class FieldCentricDrive extends LinearOpMode {
             telemetry.addData("Speed Factor", speedFactor);
             telemetry.addLine("------------------------------------------");
             telemetry.addData("Spindex Index", spindex.getIndex());
-            telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+            //telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
             telemetry.addData("Color", colorSensor.getHue());
             telemetry.addData("At Target?", spindex.atTarget());
             telemetry.addData("Spindex Power", spindex.getPower());

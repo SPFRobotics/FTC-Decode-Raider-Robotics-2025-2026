@@ -186,8 +186,8 @@ public class BlueShortTwelveBall extends OpMode {
         spindex.autoLoad(colorSensor);
 
         int loadedCount = 0;
-        for (boolean slot : spindex.getSlotStatus()) {
-            if (slot) loadedCount++;
+        for (char slot : spindex.getSlotColors()) {
+            if (slot != 'E') loadedCount++;
         }
         ballsLoaded = loadedCount;
     }

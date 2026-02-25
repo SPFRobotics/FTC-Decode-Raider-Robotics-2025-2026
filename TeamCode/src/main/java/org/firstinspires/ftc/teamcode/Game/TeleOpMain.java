@@ -194,7 +194,8 @@ public class TeleOpMain extends OpMode {
         //Telemetry
         multiTelemetry.addLine("==========================================");
         spindex.showTelemetry(multiTelemetry);
-        turret.showTelemetry(multiTelemetry, currentPose.getX(), currentPose.getY(), currentPose.getHeading());
+        colorSensor.showTelemetry(multiTelemetry);
+        //turret.showTelemetry(multiTelemetry, currentPose.getX(), currentPose.getY(), currentPose.getHeading());
         multiTelemetry.addLine("==========================================");
         multiTelemetry.update();
     }
