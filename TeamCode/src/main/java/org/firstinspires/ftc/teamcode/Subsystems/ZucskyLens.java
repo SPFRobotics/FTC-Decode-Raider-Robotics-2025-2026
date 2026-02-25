@@ -6,10 +6,10 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.tel
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class HuskyLensController {
+public class ZucskyLens {
     private HuskyLens huskyLens = null;
 
-    public HuskyLensController(HardwareMap hardwareMap){
+    public ZucskyLens(HardwareMap hardwareMap){
         HuskyLens huskyLens = hardwareMap.get(HuskyLens.class, "huskyLens");
         huskyLens.selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);
         if (!huskyLens.knock()) {
