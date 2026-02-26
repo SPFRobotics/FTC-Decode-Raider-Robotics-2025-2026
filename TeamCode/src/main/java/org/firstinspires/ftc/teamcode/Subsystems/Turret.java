@@ -34,7 +34,7 @@ public class Turret {
         public static double turretPower = 1;
 
         //1.12, .11, 0, 11.22
-        public static double[] pidf = {1.62, 0.16, 0, 16.22};
+        public static double[] pidf = {35, 0.01, 12, 0};
     }
 
     public Turret(HardwareMap hardwareMap, boolean goalCords){
@@ -64,6 +64,7 @@ public class Turret {
 
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
+        targetDeg += targetDeg > 180 ? -360 : 0;
         int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
