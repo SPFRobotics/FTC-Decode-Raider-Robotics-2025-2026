@@ -22,6 +22,10 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 @Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
 @Configurable
 public class BlueShortTwelveBall extends OpMode {
@@ -55,6 +59,8 @@ public class BlueShortTwelveBall extends OpMode {
 
     private ElapsedTime override = new ElapsedTime();
 
+    PrintWriter pen;
+
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -80,6 +86,15 @@ public class BlueShortTwelveBall extends OpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+        try{
+            pen = new PrintWriter("outtake.txt", "ASCII");
+        }
+        catch (FileNotFoundException e){
+            throw new RuntimeException("File not found!");
+        }
+        catch (UnsupportedEncodingException e){
+            throw new RuntimeException("Invalid character encoding");
+        }
     }
 
     @Override
@@ -100,6 +115,7 @@ public class BlueShortTwelveBall extends OpMode {
 
     public void stop(){
         //spindex.exitProgram();
+        pen.close();
     }
 
     @Override
@@ -130,6 +146,7 @@ public class BlueShortTwelveBall extends OpMode {
 
         telemetry.addLine("Timer: " + timer.milliseconds());
         telemetry.update();
+        pen.write(timer.milliseconds() + ":" + outtake.getRPM() + ":" + (kicker.getState() ? 1 : 0) + "\n");
     }
 
     private void updateSpindexPosition() {
