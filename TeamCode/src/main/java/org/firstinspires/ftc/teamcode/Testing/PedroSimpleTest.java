@@ -16,7 +16,7 @@ public class PedroSimpleTest extends OpMode {
     private Follower follower;
     private Turret turret;
     private Pose currentPose;
-    private boolean fieldCentric = false;
+    //private boolean fieldCentric = false;
     ElapsedTime loopTime;
 
 
@@ -49,7 +49,7 @@ public class PedroSimpleTest extends OpMode {
                 -gamepad1.left_stick_y * speedFactor,
                 gamepad1.left_stick_x * speedFactor,
                 gamepad1.right_stick_x * speedFactor,
-                fieldCentric
+                true
         );
 
         turret.aimAtGoal(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));

@@ -39,7 +39,7 @@ public class Turret {
 
     public Turret(HardwareMap hardwareMap, boolean goalCords){
         this.turret = hardwareMap.get(DcMotorEx.class, "turretMotor");
-        turret.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
+        //turret.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
         turret.setPositionPIDFCoefficients(25);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
