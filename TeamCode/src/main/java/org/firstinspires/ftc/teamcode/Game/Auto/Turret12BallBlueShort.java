@@ -23,6 +23,10 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 @Autonomous(name = "Blue Short 12 Ball Turret", group = "Autonomous")
 @Configurable
 public class Turret12BallBlueShort extends OpMode {
@@ -55,6 +59,8 @@ public class Turret12BallBlueShort extends OpMode {
 
     ElapsedTime timer = null;
 
+    PrintWriter pen;
+
     private ElapsedTime override = new ElapsedTime();
 
     @Override
@@ -82,6 +88,16 @@ public class Turret12BallBlueShort extends OpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+
+        try{
+            pen = new PrintWriter("outtake.txt", "ASCII");
+        }
+        catch (FileNotFoundException e){
+
+        }
+        catch (UnsupportedEncodingException e){
+
+        }
     }
 
     public void init_loop(){
@@ -107,6 +123,7 @@ public class Turret12BallBlueShort extends OpMode {
 
     public void stop(){
         //spindex.exitProgram();
+        pen.close();
     }
 
     @Override
@@ -138,6 +155,8 @@ public class Turret12BallBlueShort extends OpMode {
 
         telemetry.addLine("Timer: " + timer.milliseconds());
         telemetry.update();
+
+        pen.write(timer.milliseconds() + ":" + outtake.getRPM() + ":" + (kicker.getState() ? 1 : 0) + "\n");
     }
 
     private void updateSpindexPosition() {
