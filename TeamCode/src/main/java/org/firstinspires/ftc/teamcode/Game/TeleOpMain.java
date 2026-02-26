@@ -136,7 +136,7 @@ public class TeleOpMain extends OpMode {
             spindex.clearBall(spindex.getIndex());
         }
         /**************************************************************************/
-
+//67
         /*******************************************Spindex Logic********************************************/
         if (spindexRightBumper.press(gamepad2.right_bumper)) {
             if (!spindex.isOuttakeing()) {

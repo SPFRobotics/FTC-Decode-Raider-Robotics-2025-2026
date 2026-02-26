@@ -23,13 +23,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-
-@Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
+@Autonomous(name = "Blue Short 12 Ball Turret", group = "Autonomous")
 @Configurable
-public class BlueShortTwelveBall extends OpMode {
+public class Turret12BallBlueShort extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final double INTAKE_SPEED = 0.25;
@@ -61,14 +57,12 @@ public class BlueShortTwelveBall extends OpMode {
 
     private ElapsedTime override = new ElapsedTime();
 
-    PrintWriter pen;
-
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(270)));
         paths = new Paths(follower);
         turret = new Turret(hardwareMap, true);
         spindex = new Spindex(hardwareMap);
@@ -88,15 +82,6 @@ public class BlueShortTwelveBall extends OpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
-        try{
-            pen = new PrintWriter("outtake.txt", "ASCII");
-        }
-        catch (FileNotFoundException e){
-            throw new RuntimeException("File not found!");
-        }
-        catch (UnsupportedEncodingException e){
-            throw new RuntimeException("Invalid character encoding");
-        }
     }
 
     public void init_loop(){
@@ -122,7 +107,6 @@ public class BlueShortTwelveBall extends OpMode {
 
     public void stop(){
         //spindex.exitProgram();
-        pen.close();
     }
 
     @Override
@@ -135,7 +119,7 @@ public class BlueShortTwelveBall extends OpMode {
             intake.intakeOff();
         }
         follower.update();
-        turret.aimAtGoalManual(0);
+        turret.aimAtGoal(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading());
         leds.cycleColors(10);
         autonomousPathUpdate();
         updateSpindexPosition();
@@ -154,7 +138,6 @@ public class BlueShortTwelveBall extends OpMode {
 
         telemetry.addLine("Timer: " + timer.milliseconds());
         telemetry.update();
-        pen.write(timer.milliseconds() + ":" + outtake.getRPM() + ":" + (kicker.getState() ? 1 : 0) + "\n");
     }
 
     private void updateSpindexPosition() {
@@ -258,123 +241,119 @@ public class BlueShortTwelveBall extends OpMode {
 
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(32.840, 134.827),
-                                    new Pose(44.095, 111.604),
-                                    new Pose(50.199, 93.721)
+                            new BezierLine(
+                                    new Pose(33.091, 134.096),
+
+                                    new Pose(52.535, 89.134)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(270), Math.toRadians(-123))
 
                     .build();
 
             RunToRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(50.199, 93.721),
-                                    new Pose(44.279, 90.511),
-                                    new Pose(43.525, 84.432)
+                                    new Pose(52.535, 89.134),
+                                    new Pose(49.329, 84.075),
+                                    new Pose(41.118, 84.182)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+                    ).setTangentHeadingInterpolation()
 
                     .build();
 
             intakeRowOne = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(43.525, 84.432),
+                                    new Pose(41.118, 84.182),
 
-                                    new Pose(21.315, 83.803)
+                                    new Pose(26.642, 84.086)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
 
                     .build();
 
             shootRowOne = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(21.315, 83.803),
-                                    new Pose(43.580, 78.653),
-                                    new Pose(50.210, 94.008)
+                                    new Pose(26.642, 84.086),
+                                    new Pose(49.348, 83.473),
+                                    new Pose(52.503, 88.861)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-79))
 
                     .build();
 
             RuntoRowTwo = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(50.210, 94.008),
-                                    new Pose(50.928, 70.505),
-                                    new Pose(43.977, 59.881)
+                                    new Pose(52.503, 88.861),
+                                    new Pose(57.874, 73.890),
+                                    new Pose(54.757, 59.869),
+                                    new Pose(42.529, 59.989)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+                    ).setTangentHeadingInterpolation()
 
                     .build();
 
             intakeRowTwo = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(43.977, 59.881),
+                                    new Pose(42.529, 59.989),
 
-                                    new Pose(22.213, 59.787)
+                                    new Pose(27.080, 59.209)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
 
                     .build();
 
             shootRowTwo = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(22.213, 59.787),
-                                    new Pose(35.011, 67.842),
-                                    new Pose(42.455, 76.637),
-                                    new Pose(50.406, 93.232)
+                            new BezierLine(
+                                    new Pose(27.080, 59.209),
+
+                                    new Pose(52.412, 89.717)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-67))
 
                     .build();
 
             RuntoRowThree = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(50.406, 93.232),
-                                    new Pose(52.525, 48.393),
-                                    new Pose(44.105, 38.389)
+                                    new Pose(52.412, 89.717),
+                                    new Pose(67.864, 54.497),
+                                    new Pose(54.115, 36.856),
+                                    new Pose(45.880, 35.353),
+                                    new Pose(41.348, 35.364)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+                    ).setTangentHeadingInterpolation()
 
                     .build();
 
             intakeRowThree = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(44.105, 38.389),
+                                    new Pose(41.348, 35.364),
 
-                                    new Pose(21.230, 35.672)
+                                    new Pose(26.166, 35.011)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(179), Math.toRadians(179))
 
                     .build();
 
             shootRowThree = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(21.230, 35.672),
-                                    new Pose(39.623, 61.934),
-                                    new Pose(49.689, 93.541)
+                            new BezierLine(
+                                    new Pose(26.166, 35.011),
+
+                                    new Pose(53.583, 113.144)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(179), Math.toRadians(180))
 
                     .build();
 
             Leave = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(49.689, 93.541),
-                                    new Pose(51.869, 78.893),
-                                    new Pose(43.721, 71.721)
+                            new BezierLine(
+                                    new Pose(53.583, 113.144),
+
+                                    new Pose(52.711, 110.882)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+                    ).setTangentHeadingInterpolation()
 
                     .build();
         }
     }
-
-
-
-
-
-
 
 
 
