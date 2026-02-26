@@ -27,6 +27,8 @@ public class Turret {
     public final double ticks = 145.1;
     public final double gearRatio = 135/32.0;
 
+    private double initialAngleOffset = 0;
+
     DcMotorEx turret;
 
     @Config
@@ -53,6 +55,15 @@ public class Turret {
         setGoalCords(goalCords);
     }
 
+
+    public void setInitialAngle(double angleDeg) {
+        this.initialAngleOffset = angleDeg;
+    }
+
+    public double getInitialAngle() {
+        return initialAngleOffset;
+    }
+
     private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
 
         double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
@@ -65,7 +76,7 @@ public class Turret {
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
         targetDeg += targetDeg > 180 ? -360 : 0;
-        int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
+        int targetTicks = (int) (((targetDeg - initialAngleOffset) / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
@@ -74,7 +85,7 @@ public class Turret {
 
     public void aimAtGoalManual(double manualGoal){
         double targetDeg = manualGoal;
-        int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
+        int targetTicks = (int) (((targetDeg - initialAngleOffset) / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
