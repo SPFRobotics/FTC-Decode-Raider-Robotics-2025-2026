@@ -191,6 +191,20 @@ public class Spindex {
     public void clearBall(int index){
         slotColors[index] = 'E';
     }
+
+    public int getIndexOfColor(char color){
+        int index = 0;
+        for (int i = 0; i < 3; i++){
+            if (color == slotColors[i]){
+                index = i;
+                break;
+            }
+            else{
+                index = -1;
+            }
+        }
+        return index;
+    }
     /*########################################*/
 
     public void autoLoad(ColorFetch colorSensor){
@@ -397,10 +411,11 @@ public class Spindex {
         telemetry.addLine("Spindex");
         telemetry.addLine("Spindex Encoder Count: " + spindexMotor.getCurrentPosition());
         telemetry.addLine("Spindex Wrapped Encoder Position: " + getNormEnc(spindexMotor.getCurrentPosition()));
-        telemetry.addLine("Spindex Angular Position: " + (((spindexMotor.getCurrentPosition()/537.7*360.0)+offset)%360));
+        telemetry.addLine("Spindex Angular Position: " + ((spindexMotor.getCurrentPosition()/537.7*360.0)+offset));
         telemetry.addLine("Spindex Normalized Angular Position: " + getNormAngPos());
         telemetry.addLine("Spindex Absolute Encoder Position: " + getPos());
         telemetry.addLine("Spindex Absolute Encoder Voltage: " + getVoltage());
+        telemetry.addLine("Slot Colors: "  + Arrays.toString(getSlotColors()));
         telemetry.addLine("------------------------------------------------------------------------------------");
     }
 }

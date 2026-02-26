@@ -192,16 +192,14 @@ public class TeleOpMain extends OpMode {
         /*************************************Turret Auto-Aim**************************************/
         turret.aimAtGoal(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
         /*****************************************************************************************/
-        /*
+
         //Telemetry
         multiTelemetry.addLine("==========================================");
         spindex.showTelemetry(multiTelemetry);
-        colorSensor.showTelemetry(multiTelemetry);
-
-        //turret.showTelemetry(multiTelemetry, currentPose.getX(), currentPose.getY(), currentPose.getHeading());
-        multiTelemetry.addLine("==========================================");
-*/
+        //colorSensor.showTelemetry(multiTelemetry);
+        turret.showTelemetry(multiTelemetry, currentPose.getX(), currentPose.getY(), currentPose.getHeading());
         multiTelemetry.addData("Loop Time", loopTime.milliseconds());
+        multiTelemetry.addLine("==========================================");
         multiTelemetry.update();
     }
 }

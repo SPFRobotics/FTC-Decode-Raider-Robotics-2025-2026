@@ -20,7 +20,7 @@ public class Outtake {
         public static double i = 14.99;
         public static double d = 0;
         public static double f = 14.99;
-        public static double gearRatio = 1.0625;
+        public static double gearRatio = 10.0/7.0;
 
         public static double kickerWaitTIme = 2;
         public static double kickerSettleTime = 0.2;
