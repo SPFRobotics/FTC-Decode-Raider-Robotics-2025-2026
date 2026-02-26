@@ -89,14 +89,14 @@ public class Turret12BallBlueShort extends OpMode {
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
 
-        try{
+        try {
             pen = new PrintWriter("outtake.txt", "ASCII");
-        }
-        catch (FileNotFoundException e){
-
-        }
-        catch (UnsupportedEncodingException e){
-
+        } catch (
+                FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (
+                UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
     }
 
