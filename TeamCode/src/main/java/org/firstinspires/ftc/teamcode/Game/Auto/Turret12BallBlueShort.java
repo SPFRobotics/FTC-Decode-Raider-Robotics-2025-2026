@@ -90,7 +90,7 @@ public class Turret12BallBlueShort extends OpMode {
         panelsTelemetry.update(telemetry);
 
         try {
-            pen = new PrintWriter("outtake.txt", "ASCII");
+            pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
         } catch (
                 FileNotFoundException e) {
             throw new RuntimeException(e);
