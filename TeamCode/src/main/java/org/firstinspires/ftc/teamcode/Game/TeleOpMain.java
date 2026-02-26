@@ -28,6 +28,7 @@ import java.util.List;
 public class TeleOpMain extends OpMode {
     //Hardware Devices
     Intake intake = null;
+    ElapsedTime loopTime;
     Outtake outtake = null;
     KickerSpindex kicker = null;
     Turret turret = null;
@@ -82,13 +83,15 @@ public class TeleOpMain extends OpMode {
         //Caching using LynxModule
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
         //Telemetry
         multiTelemetry.addTelemetry(telemetry);
         multiTelemetry.addTelemetry(dashBoardTele);
         multiTelemetry.setMsTransmissionInterval(16);
+        loopTime = new ElapsedTime();
+
     }
 
     public void init_loop() {
@@ -97,8 +100,7 @@ public class TeleOpMain extends OpMode {
     }
 
     public void loop() {
-        ElapsedTime loopTime = new ElapsedTime();
-
+    loopTime.reset();
         //Reset Cache for Lynx Modules
         for (LynxModule hub : allHubs) {
             hub.clearBulkCache();
@@ -112,7 +114,7 @@ public class TeleOpMain extends OpMode {
         //Using Pedro Pathing for Tele-Op drive
         //Allows speed to be halved
         speedFactor = gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1 ? 0.5 : 1; //Ternary if statement (Condition ? This is true : This is false) will return a value based on the condition
-        follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, fieldCentric); // Remember, Y stick is reversed!
+        follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, gamepad1.left_stick_x * speedFactor, gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
         /**********************************************************************************************/
 
         /*****************************Intake System************************************/
@@ -194,8 +196,9 @@ public class TeleOpMain extends OpMode {
         //Telemetry
         multiTelemetry.addLine("==========================================");
         spindex.showTelemetry(multiTelemetry);
-        colorSensor.showTelemetry(multiTelemetry);
-        //turret.showTelemetry(multiTelemetry, currentPose.getX(), currentPose.getY(), currentPose.getHeading());
+        //colorSensor.showTelemetry(multiTelemetry);
+        turret.showTelemetry(multiTelemetry, currentPose.getX(), currentPose.getY(), currentPose.getHeading());
+        multiTelemetry.addData("Loop Time", loopTime.milliseconds());
         multiTelemetry.addLine("==========================================");
         multiTelemetry.update();
     }

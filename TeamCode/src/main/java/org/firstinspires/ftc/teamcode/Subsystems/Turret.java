@@ -34,12 +34,12 @@ public class Turret {
         public static double turretPower = 1;
 
         //1.12, .11, 0, 11.22
-        public static double[] pidf = {1.62, 0.16, 0, 16.22};
+        public static double[] pidf = {35, 0.01, 12, 0};
     }
 
     public Turret(HardwareMap hardwareMap, boolean goalCords){
         this.turret = hardwareMap.get(DcMotorEx.class, "turretMotor");
-        turret.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
+        //turret.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
         turret.setPositionPIDFCoefficients(25);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -65,7 +65,6 @@ public class Turret {
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
         targetDeg += targetDeg > 180 ? -360 : 0;
-
         int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
@@ -124,7 +123,7 @@ public class Turret {
     }
 
     public void setPower(double power){
-        //turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         turret.setPower(power);
     }
 
