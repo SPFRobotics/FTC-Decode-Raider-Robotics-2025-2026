@@ -64,6 +64,8 @@ public class Turret {
 
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
+        targetDeg += targetDeg > 180 ? -360 : 0;
+
         int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);

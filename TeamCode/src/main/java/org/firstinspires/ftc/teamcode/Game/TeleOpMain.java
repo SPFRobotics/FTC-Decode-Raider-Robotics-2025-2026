@@ -112,7 +112,7 @@ public class TeleOpMain extends OpMode {
         //Using Pedro Pathing for Tele-Op drive
         //Allows speed to be halved
         speedFactor = gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1 ? 0.5 : 1; //Ternary if statement (Condition ? This is true : This is false) will return a value based on the condition
-        follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, gamepad1.left_stick_x * speedFactor, gamepad1.right_stick_x * speedFactor, fieldCentric); // Remember, Y stick is reversed!
+        follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, fieldCentric); // Remember, Y stick is reversed!
         /**********************************************************************************************/
 
         /*****************************Intake System************************************/

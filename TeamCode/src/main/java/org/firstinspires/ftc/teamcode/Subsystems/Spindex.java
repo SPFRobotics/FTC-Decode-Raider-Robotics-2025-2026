@@ -97,7 +97,7 @@ public class Spindex {
     Modes:
     1 - Spindex uses the built-in motor encoder and is controlled with setPower() and the custom made P controller
     2 - Spindex uses the absolute encoder with setPower() and the custom made P controller
-    3 - Removed
+    3 - Removed, defaults to mode 4 if selected
     4 - Spindex uses the absolute encoder with the built-in motor encoder. This uses the built-in PID controller FTC provides within their SDK to control the motor.
     */
     public void moveToPos(double target, int mode) {
