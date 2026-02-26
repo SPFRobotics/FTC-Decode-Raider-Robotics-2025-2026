@@ -82,6 +82,7 @@ public class Turret12BallBlueShort extends OpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+        turret.setInitialAngle(180);
     }
 
     public void init_loop(){
