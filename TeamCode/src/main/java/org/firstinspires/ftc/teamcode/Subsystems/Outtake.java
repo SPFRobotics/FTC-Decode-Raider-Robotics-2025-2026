@@ -58,7 +58,15 @@ public class Outtake {
         outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
         outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        this.kicker = kicker;
+    }
+
+    public Outtake(HardwareMap hardwareMap, KickerSpindex kicker){
+        if (kicker != null){
+            this.kicker = kicker;
+        }
+        else{
+            throw new RuntimeException("The kicker object passed was uninitialized! (NULL)");
+        }
     }
 
     /*public void ColorSort(){
@@ -77,14 +85,6 @@ public class Outtake {
 
     // Switch between far and short locations
 
-    public void initKicker(KickerSpindex kicker){
-        if (kicker != null){
-            this.kicker = kicker;
-        }
-        else{
-            throw new RuntimeException("The kicker object passed was uninitialized! (NULL)");
-        }
-    }
     public void switchLocation() {
         isFarLocation = !isFarLocation;
     }
@@ -121,7 +121,7 @@ public class Outtake {
 
     public void enableKickerCycle(boolean x, double RPM){
         if (kicker == null){
-            throw new RuntimeException("You must initialize the kicker using the initKicker() method!");
+            throw new RuntimeException("You must pass the kicker object to the Outtake constructor!");
         }
         double time = interval.seconds();
         if (x){
@@ -147,7 +147,7 @@ public class Outtake {
 
     public void enableSpindexKickerCycle(boolean x, double RPM){
         if (kicker == null){
-            throw new RuntimeException("You must initialize the kicker using the initKicker() method!");
+            throw new RuntimeException("You must pass the kicker object to the Outtake constructor!");
         }
         double time = interval.seconds();
         if (x){
@@ -181,7 +181,7 @@ public class Outtake {
 
     public void resetKickerCycle(){
         if (kicker == null){
-            throw new RuntimeException("You must initialize the kicker using the initKicker() method!");
+            throw new RuntimeException("You must pass the kicker object to the Outtake constructor!");
         }
         kickerCycleCount = 0;
         launched = false;

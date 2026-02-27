@@ -72,7 +72,7 @@ public class BlueShortTwelveBall extends OpMode {
         paths = new Paths(follower);
         turret = new Turret(hardwareMap, true);
         spindex = new Spindex(hardwareMap);
-        outtake = new Outtake(hardwareMap, true);
+        outtake = new Outtake(hardwareMap, kicker);
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);

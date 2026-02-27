@@ -58,7 +58,7 @@ public class Test extends LinearOpMode {
 
         // Initialize subsystems
         Intake intake = new Intake(hardwareMap);
-        Outtake outtake = new Outtake(hardwareMap, true);
+        Outtake outtake = new Outtake(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         ColorFetch colorSensor = new ColorFetch(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);

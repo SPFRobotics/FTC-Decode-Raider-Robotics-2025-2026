@@ -62,9 +62,9 @@ public class BlueShortTwelveBallClear extends OpMode {
         paths = new Paths(follower);
 
         spindex = new Spindex(hardwareMap);
-        outtake = new Outtake(hardwareMap, true);
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
+        outtake = new Outtake(hardwareMap, kicker);
         colorSensor = new ColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
 

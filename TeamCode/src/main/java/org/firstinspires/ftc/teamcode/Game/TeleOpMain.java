@@ -64,7 +64,7 @@ public class TeleOpMain extends OpMode {
     public void init() {
         // Initialize subsystems
         intake = new Intake(hardwareMap);
-        outtake = new Outtake(hardwareMap, true);
+        outtake = new Outtake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);
         spindex = new Spindex(hardwareMap);
