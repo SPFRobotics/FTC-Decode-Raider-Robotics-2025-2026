@@ -324,7 +324,7 @@ public class Spindex {
         outtakeMode = outtake;
     }
 
-    public void setPower(int power){
+    public void setPower(double power){
         spindexMotor.setPower(power);
     }
 

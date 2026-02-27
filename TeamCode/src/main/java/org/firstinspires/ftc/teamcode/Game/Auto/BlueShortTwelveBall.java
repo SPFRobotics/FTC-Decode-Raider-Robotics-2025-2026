@@ -89,7 +89,7 @@ public class BlueShortTwelveBall extends OpMode {
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
         try{
-            pen = new PrintWriter("outtake.txt", "ASCII");
+            pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
         }
         catch (FileNotFoundException e){
             throw new RuntimeException("File not found!");
@@ -100,7 +100,7 @@ public class BlueShortTwelveBall extends OpMode {
     }
 
     public void init_loop(){
-        outtake.setRPM(2700);
+        outtake.setRPM(SHOOT_RPM);
 
     }
 

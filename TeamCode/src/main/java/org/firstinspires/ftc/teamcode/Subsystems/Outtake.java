@@ -14,7 +14,7 @@ public class Outtake {
     @Config
     public static class OuttakeConfig{
         public static double farRPM = 3200;
-        public static double closeRPM = 2700;
+        public static double closeRPM = 2300;
         public static double sortRPM = 1000;
         public static double p = 268;
         public static double i = 14.99;
@@ -28,9 +28,7 @@ public class Outtake {
 
     public ColorSensor hardwareColorSensor = null;
     public DcMotorEx outtakeMotor = null;
-    private KickerGrav kickerGrav = null;
-
-    private KickerSpindex kickerSpindex = null;
+    private KickerSpindex kicker = null;
     private boolean isActive = false;
     public boolean launched = false;
 
@@ -59,24 +57,8 @@ public class Outtake {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
         outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        kickerGrav = new KickerGrav(hardwareMap);
-        kickerSpindex = new KickerSpindex(hardwareMap);
-        //limelight = new Limelight(hardwareMap);
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-    }
-
-    // Constructor for spindex-only (no KickerGrav servo needed)
-    public Outtake(HardwareMap hardwareMap, boolean useSpindexOnly) {
-        outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
-        outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
-        if (useSpindexOnly) {
-            kickerSpindex = new KickerSpindex(hardwareMap);
-            kickerGrav = null;
-        } else {
-            kickerGrav = new KickerGrav(hardwareMap);
-        }
-        outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.kicker = kicker;
     }
 
     /*public void ColorSort(){
@@ -94,6 +76,15 @@ public class Outtake {
     }*/
 
     // Switch between far and short locations
+
+    public void initKicker(KickerSpindex kicker){
+        if (kicker != null){
+            this.kicker = kicker;
+        }
+        else{
+            throw new RuntimeException("The kicker object passed was uninitialized! (NULL)");
+        }
+    }
     public void switchLocation() {
         isFarLocation = !isFarLocation;
     }
@@ -132,11 +123,11 @@ public class Outtake {
         double time = interval.seconds();
         if (x){
             if (time >= 1 && time < 2 && getRPM() >= RPM-500){
-                kickerGrav.up();
+                kicker.up();
                 launched = true;
             }
             else if (time >= 2){
-                kickerGrav.down();
+                kicker.down();
                 if (launched){
                     kickerCycleCount++;
                 }
@@ -145,7 +136,7 @@ public class Outtake {
             }
         }
         else{
-            kickerGrav.up();
+            kicker.up();
             interval.reset();
         }
     }
@@ -156,20 +147,20 @@ public class Outtake {
         if (x){
             // Phase 1: Wait for flywheel RPM, then kick up and start the timer
             if (!launched && getRPM() >= RPM - 100){
-                kickerSpindex.up();
+                kicker.up();
                 launched = true;
                 interval.reset(); // Timer starts when kick actually begins
             }
             // Phase 2: After a full 200ms of kick travel, bring it back down
             else if (launched && time >= .3){
-                kickerSpindex.down();
+                kicker.down();
                 kickerCycleCount++;
                 launched = false;
                 interval.reset();
             }
         }
         else{
-            kickerSpindex.up();
+            kicker.up();
             interval.reset();
         }
     }
@@ -188,12 +179,7 @@ public class Outtake {
         interval.reset();
         kickerStateTimer.reset();
         kickerState = KickerCycleState.IDLE;
-        if (kickerGrav != null){
-            kickerGrav.down();
-        }
-        if (kickerSpindex != null){
-            kickerSpindex.down();
-        }
+        kicker.down();
     }
 
     public double getCurrentCycleTime(){
