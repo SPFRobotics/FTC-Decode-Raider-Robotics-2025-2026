@@ -120,6 +120,9 @@ public class Outtake {
 
 
     public void enableKickerCycle(boolean x, double RPM){
+        if (kicker == null){
+            throw new RuntimeException("You must initialize the kicker using the initKicker() method!");
+        }
         double time = interval.seconds();
         if (x){
             if (time >= 1 && time < 2 && getRPM() >= RPM-500){
@@ -143,6 +146,9 @@ public class Outtake {
 
 
     public void enableSpindexKickerCycle(boolean x, double RPM){
+        if (kicker == null){
+            throw new RuntimeException("You must initialize the kicker using the initKicker() method!");
+        }
         double time = interval.seconds();
         if (x){
             // Phase 1: Wait for flywheel RPM, then kick up and start the timer
@@ -174,6 +180,9 @@ public class Outtake {
     }
 
     public void resetKickerCycle(){
+        if (kicker == null){
+            throw new RuntimeException("You must initialize the kicker using the initKicker() method!");
+        }
         kickerCycleCount = 0;
         launched = false;
         interval.reset();
@@ -188,12 +197,8 @@ public class Outtake {
 
     public void shortAuto(){
         double RPM = 2700;
-
-
         setRPM(RPM);
         enableKickerCycle(true,RPM);
-
-
     }
 
     public double getPower(){
