@@ -37,8 +37,10 @@ public class Spindex {
     private int index = 0;
     private double threadLoopTime = 0;
     private double currentPos = 0;
-    private double error = 0;
-    private double offset = 0;
+    //Error in ticks
+    double error = 0;
+    double targetPos = 0;
+    protected double offset = 0;
     private final double MAXVOLTAGE = 3.216;
     private boolean outtakeMode = false;
     private boolean autoLoadMode = false;
@@ -101,62 +103,14 @@ public class Spindex {
     4 - Spindex uses the absolute encoder with the built-in motor encoder. This uses the built-in PID controller FTC provides within their SDK to control the motor.
     */
     public void moveToPos(double target, int mode) {
-        double sign = 0;
-        double kp = 0;
-        switch (mode == 3 ? 4 : mode) {
-            case 1:
-                currentPos = AngleUnit.normalizeDegrees((double) spindexMotor.getCurrentPosition() / 537.7 * 360);
+        double currentPos = getNormEnc(spindexMotor.getCurrentPosition() + (offset / 360.0 * 537.7));
+        error = getNormEnc(target / 360.0 * 537.7 - currentPos);
+        targetPos = (spindexMotor.getCurrentPosition() + error + 0.5);
 
-                error = AngleUnit.normalizeDegrees(target - currentPos);
-
-                sign = Math.signum(error);
-
-                kp = maxPower / Threshold;
-
-                if (Math.abs(error) > Threshold) {
-                    spindexMotor.setPower(maxPower * sign);
-                    setTargetStatus(false);
-                } else if (Math.abs(error) > tolorence) {
-                    spindexMotor.setPower(error * kp);
-                    setTargetStatus(false);
-
-                } else {
-                    spindexMotor.setPower(0);
-                    setTargetStatus(true);
-                }
-                break;
-            case 2:
-                currentPos = spindexPos.getVoltage() / MAXVOLTAGE * 360.0;
-
-                error = AngleUnit.normalizeDegrees(target - currentPos);
-
-                sign = Math.signum(error);
-
-                kp = maxPower / (Threshold);
-
-                if (Math.abs(error) > Threshold) {
-                    spindexMotor.setPower(maxPower * sign);
-                    setTargetStatus(false);
-                } else if (Math.abs(error) > tolorence) {
-                    spindexMotor.setPower(error * kp);
-                    setTargetStatus(false);
-                } else {
-                    spindexMotor.setPower(0);
-                    setTargetStatus(true);
-                }
-                break;
-            case 4:
-                double currentPos = getNormEnc(spindexMotor.getCurrentPosition() + (offset / 360.0 * 537.7));
-                double error = getNormEnc(target / 360.0 * 537.7 - currentPos);
-
-                spindexMotor.setTargetPosition((int) (spindexMotor.getCurrentPosition() + error + 0.5));
-                spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
-                spindexMotor.setPower(1);
-                break;
-            default:
-                throw new RuntimeException("The mode of Spindex operation is not an option!");
-        }
+        spindexMotor.setTargetPosition((int)targetPos);
+        spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
+        spindexMotor.setPower(1);
     }
 
     public void addIndex(){
@@ -172,6 +126,10 @@ public class Spindex {
     }
     public int getIndex(){
         return index;
+    }
+
+    public void addToTarget(double x){
+        targetPos += x;
     }
 
 
@@ -360,6 +318,10 @@ public class Spindex {
         return spindexMotor.getPower();
     }
 
+    public void setError(double error){
+        this.error = error;
+    }
+
     public double getError(){
         return error;
     }
@@ -390,6 +352,10 @@ public class Spindex {
 
     public boolean isBusy(){
         return spindexMotor.isBusy();
+    }
+
+    public double getVelocity(){
+        return spindexMotor.getVelocity();
     }
 
     //Telemetry Blocks
