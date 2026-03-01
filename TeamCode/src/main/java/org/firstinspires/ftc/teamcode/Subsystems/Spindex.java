@@ -35,6 +35,8 @@ public class Spindex {
     //Stores weather the class is using a motor or servo
     //Stores position and current index of spindex
     private int index = 0;
+
+    double encoderTicks = 4000;
     private double threadLoopTime = 0;
     private double currentPos = 0;
     //Error in ticks
@@ -87,7 +89,7 @@ public class Spindex {
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
 
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        spindexMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         offset = AngleUnit.normalizeDegrees(spindexPos.getVoltage()/MAXVOLTAGE*360.0);
@@ -103,8 +105,8 @@ public class Spindex {
     4 - Spindex uses the absolute encoder with the built-in motor encoder. This uses the built-in PID controller FTC provides within their SDK to control the motor.
     */
     public void moveToPos(double target, int mode) {
-        double currentPos = getNormEnc(spindexMotor.getCurrentPosition() + (offset / 360.0 * 537.7));
-        error = getNormEnc(target / 360.0 * 537.7 - currentPos);
+        double currentPos = getNormEnc(spindexMotor.getCurrentPosition() + (offset / 360.0 * encoderTicks));
+        error = getNormEnc(target / 360.0 * encoderTicks - currentPos);
         targetPos = (spindexMotor.getCurrentPosition() + error + 0.5);
 
         spindexMotor.setTargetPosition((int)targetPos);
@@ -299,11 +301,11 @@ public class Spindex {
     }
 
     public double getNormAngPos(){
-        return AngleUnit.normalizeDegrees((spindexMotor.getCurrentPosition()/537.7*360.0)+offset);
+        return AngleUnit.normalizeDegrees((spindexMotor.getCurrentPosition()/encoderTicks*360.0)+offset);
     }
 
     public double getNormEnc(double encCounts){
-        return (encCounts + (537.7/2)) % 537.7 - (537.7/2);
+        return (encCounts + (encoderTicks/2)) % encoderTicks - (encoderTicks/2);
     }
 
     public boolean getProgramState(){
@@ -364,7 +366,7 @@ public class Spindex {
         telemetry.addLine("Spindex");
         telemetry.addLine("Spindex Encoder Count: " + spindexMotor.getCurrentPosition());
         telemetry.addLine("Spindex Wrapped Encoder Position: " + getNormEnc(spindexMotor.getCurrentPosition()));
-        telemetry.addLine("Spindex Angular Position: " + ((spindexMotor.getCurrentPosition()/537.7*360.0)+offset));
+        telemetry.addLine("Spindex Angular Position: " + ((spindexMotor.getCurrentPosition()/encoderTicks*360.0)+offset));
         telemetry.addLine("Spindex Normalized Angular Position: " + getNormAngPos());
         telemetry.addLine("Spindex Absolute Encoder Position: " + getPos());
         telemetry.addLine("Spindex Absolute Encoder Voltage: " + getVoltage());
@@ -377,7 +379,7 @@ public class Spindex {
         telemetry.addLine("Spindex");
         telemetry.addLine("Spindex Encoder Count: " + spindexMotor.getCurrentPosition());
         telemetry.addLine("Spindex Wrapped Encoder Position: " + getNormEnc(spindexMotor.getCurrentPosition()));
-        telemetry.addLine("Spindex Angular Position: " + ((spindexMotor.getCurrentPosition()/537.7*360.0)+offset));
+        telemetry.addLine("Spindex Angular Position: " + ((spindexMotor.getCurrentPosition()/encoderTicks*360.0)+offset));
         telemetry.addLine("Spindex Normalized Angular Position: " + getNormAngPos());
         telemetry.addLine("Spindex Absolute Encoder Position: " + getPos());
         telemetry.addLine("Spindex Absolute Encoder Voltage: " + getVoltage());

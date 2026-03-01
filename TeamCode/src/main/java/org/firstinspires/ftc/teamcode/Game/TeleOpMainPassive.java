@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.Game;
+
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.closeRPM;
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
 
@@ -8,11 +9,11 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -23,12 +24,11 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.PassiveSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
-import org.firstinspires.ftc.teamcode.Resources.Button;
 
 import java.util.List;
 
-@TeleOp(name="Tele-Op Main")
-public class TeleOpMain extends LinearOpMode {
+@TeleOp(name="Tele-Op Passive")
+public class TeleOpMainPassive extends LinearOpMode {
     //Hardware Devices
     Intake intake = null;
     ElapsedTime loopTime;
@@ -36,7 +36,7 @@ public class TeleOpMain extends LinearOpMode {
     KickerSpindex kicker = null;
     Turret turret = null;
     ColorFetch colorSensor = null;
-    Spindex spindex = null;
+    PassiveSpindex spindex = null;
     LedLights leds = null;
     List<LynxModule> allHubs = null;
 
@@ -73,14 +73,13 @@ public class TeleOpMain extends LinearOpMode {
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);
-        spindex = new Spindex(hardwareMap);
+        spindex = new PassiveSpindex(hardwareMap, spindex.motif21Pattern.toCharArray());
         leds = new LedLights(hardwareMap);
         //HuskyLensController huskyLens = new HuskyLensController(hardwareMap);
         turret = new Turret(hardwareMap, true, limelight);
 
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);
-
         follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
         follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
@@ -90,7 +89,6 @@ public class TeleOpMain extends LinearOpMode {
 
         //Caching using LynxModule
         allHubs = hardwareMap.getAll(LynxModule.class);
-
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
@@ -165,7 +163,19 @@ public class TeleOpMain extends LinearOpMode {
             spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.triangle) && !spindex.isOuttakeing());
             spindex.autoLoad(colorSensor);
 
-            if (spindex.isOuttakeing()) {
+            if (gamepad1.aWasPressed()){
+                spindex.setCycling(true);
+                currentPos = spindex.spindexMotor.getCurrentPosition();
+            }
+
+            //Controls actual spindex movement
+            if (spindex.isCycling()){
+                spindex.moveTicks(currentPos + 538, 4);
+                if (spindex.getVelocity() == 0){
+                    spindex.setCycling(false);
+                }
+            }
+            else if (spindex.isOuttakeing()) {
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
                 leds.setColor(leds.GREEN, false);
             } else {

@@ -21,8 +21,11 @@ public class KickstandServo {
     /*########################################*/
 
     /*##############CLASS VARIABLES##############*/
-    CRServo kickstand = null;
-    AnalogInput kickstandPos = null;
+    CRServo kickstand1 = null;
+    CRServo kickstand2 = null;
+
+    AnalogInput kickstandPos2 = null;
+    AnalogInput kickstandPos1 = null;
     int relPos = 0;
     int prevPos = 0;
     
@@ -39,31 +42,30 @@ public class KickstandServo {
     /*###########################################*/
 
     public KickstandServo(HardwareMap hardwareMap){
-        kickstand = hardwareMap.get(CRServo.class, "kickstand");
-        kickstandPos = hardwareMap.get(AnalogInput.class, "kickstandPos");
-        kickstand.setPower(0);
+        kickstand1 = hardwareMap.get(CRServo.class, "kickstand1");
+        kickstandPos1 = hardwareMap.get(AnalogInput.class, "kickstandPos1");
+        kickstand2 = hardwareMap.get(CRServo.class, "kickstand2");
+        kickstandPos2 = hardwareMap.get(AnalogInput.class, "kickstandPos2");
+        kickstand1.setPower(0);
         if (reverseDir){
-            kickstand.setDirection(DcMotorSimple.Direction.REVERSE);
+            kickstand1.setDirection(DcMotorSimple.Direction.REVERSE);
         }
     }
 
     /*#####################Methods#####################*/
 
     public void setPower(double x){
-        kickstand.setPower(x);
+        kickstand1.setPower(x);
     }
 
     public double getPosition(){
-        return (kickstandPos.getVoltage()/3.3*360.0);
+        return (kickstandPos1.getVoltage()/3.3*360.0);
     }
 
     public double getVoltage(){
-        return kickstandPos.getVoltage();
+        return kickstandPos1.getVoltage();
     }
 
-    public int getRelPos(){
-        return (int)relPos;
-    }
 
     public void updatePos(int target){
          double error = target - getPosition();
@@ -71,65 +73,23 @@ public class KickstandServo {
          double kp = 1/threshold;
 
          if (Math.abs(error) > threshold){
-             kickstand.setPower(sign);
+             kickstand1.setPower(sign);
+             kickstand2.setPower(sign);
          }
          else if (Math.abs(error) > tolorance){
-             kickstand.setPower(error * kp);
+             kickstand1.setPower(error * kp);
+             kickstand2.setPower((error*kp));
          }
          else {
-             kickstand.setPower(0);
+             kickstand1.setPower(0);
+             kickstand2.setPower(0);
+
          }
     }
 
 
-    public void updatePosFiltered(int target) {
-        double rawPosition = getPosition();  // 0-360 degrees
-        
-        // Initialize on first reading
-        if (isFirstReading) {
-            smoothedPosition = rawPosition;
-            prevSmoothedPosition = rawPosition;
-            accumulatedPosition = 0;
-            isFirstReading = false;
-            return;
-        }
-        
-        smoothedPosition = SMOOTHING_FACTOR * rawPosition + (1 - SMOOTHING_FACTOR) * smoothedPosition;
-        
-        double delta = smoothedPosition - prevSmoothedPosition;
-        
-        if (delta > WRAPAROUND_THRESHOLD) {
-            delta -= 360.0;
-        } else if (delta < -WRAPAROUND_THRESHOLD) {
-            delta += 360.0;
-        }
-        
-        if (Math.abs(delta) > DEAD_ZONE_DEGREES) {
-            accumulatedPosition += delta;
-            prevSmoothedPosition = smoothedPosition;
-        }
-        
-        double error = target - accumulatedPosition;
-        int sign = (int) Math.signum(error);
-        double kp = 1.0 / threshold;
-        
-        if (Math.abs(error) > threshold) {
-            kickstand.setPower(sign * power);
-        } else if (Math.abs(error) > tolorance) {
-            kickstand.setPower(error * kp);
-        } else {
-            kickstand.setPower(0);
-        }
-    }
-    
 
-    public double getAccumulatedPosition() {
-        return accumulatedPosition;
-    }
 
-    public void resetAccumulatedPosition() {
-        accumulatedPosition = 0;
-        isFirstReading = true;
-    }
+
     /*#################################################*/
 }
