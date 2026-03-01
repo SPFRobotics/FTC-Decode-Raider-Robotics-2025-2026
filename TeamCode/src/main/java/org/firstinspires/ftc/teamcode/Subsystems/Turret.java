@@ -44,7 +44,6 @@ public class Turret {
         //1.12, .11, 0, 11.22
         public static double[] pidf = {35, 0.01, 12, 0};
 
-        public static double txFilterAlpha = 0.15;
         public static int correctionThresholdTicks = 20;
     }
 
@@ -146,12 +145,11 @@ public class Turret {
 
         double rawTx = result.getTx();
 
-        // Only update the filter when the turret is close to its target position.
-        // When the turret is in transit, tx reflects the transient position gap (not
-        // odometry error), so folding it in would cause overshoot and oscillation.
+        // Only update when the turret is near its target; during transit
+        // tx reflects the position gap, not odometry error.
         int posError = Math.abs(turret.getCurrentPosition() - turret.getTargetPosition());
         if (posError < TurretConfig.correctionThresholdTicks) {
-            filteredTx += TurretConfig.txFilterAlpha * (rawTx - filteredTx);
+            filteredTx = rawTx;
         }
 
         return filteredTx;
