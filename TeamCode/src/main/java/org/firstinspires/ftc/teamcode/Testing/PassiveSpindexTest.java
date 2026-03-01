@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Testing;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
@@ -16,6 +17,7 @@ public class PassiveSpindexTest extends OpMode {
     Button kickerButton = new Button();
 
     @Config
+    @TeleOp
     public static class PassiveSpindexTestConfig{
         public static double RPM = Outtake.OuttakeConfig.closeRPM;
     }
