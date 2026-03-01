@@ -31,6 +31,7 @@ public class Turret {
     public final double gearRatio = 135/32.0;
 
     private double initialAngleOffset = 0;
+    private double filteredTx = 0;
 
     DcMotorEx turret;
 
@@ -42,6 +43,8 @@ public class Turret {
 
         //1.12, .11, 0, 11.22
         public static double[] pidf = {35, 0.01, 12, 0};
+
+        public static int correctionThresholdTicks = 20;
     }
 
     public Turret(HardwareMap hardwareMap, boolean goalCords){
@@ -100,6 +103,10 @@ public class Turret {
         return wrapDeg360(turretDeg);
     }
 
+    public void resetLimelightCorrection() {
+        filteredTx = 0;
+    }
+
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
         targetDeg += targetDeg > 180 ? -360 : 0;
@@ -126,14 +133,26 @@ public class Turret {
     }
 
     private double limelightOffset(){
+        if (limelight == null) {
+            return 0;
+        }
 
         LLResult result = limelight.getLatestResult();
 
         if (result == null || !result.isValid()) {
-            return 0;
+            return filteredTx;
         }
 
-        return result.getTx();
+        double rawTx = result.getTx();
+
+        // Only update when the turret is near its target; during transit
+        // tx reflects the position gap, not odometry error.
+        int posError = Math.abs(turret.getCurrentPosition() - turret.getTargetPosition());
+        if (posError < TurretConfig.correctionThresholdTicks) {
+            filteredTx = rawTx;
+        }
+
+        return filteredTx;
     }
 
 
@@ -147,7 +166,7 @@ public class Turret {
     }
 
     public double getCurrentAngularPosition(){
-        return turret.getCurrentPosition() / 360.0 * ticks * gearRatio;
+        return turret.getCurrentPosition() / (ticks * gearRatio) * 360.0;
     }
 
     public int getTargetPosition() {

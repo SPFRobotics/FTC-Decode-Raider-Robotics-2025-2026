@@ -62,6 +62,7 @@ public class Outtake {
 
 
     public Outtake(HardwareMap hardwareMap, KickerSpindex kicker){
+        this(hardwareMap);
         if (kicker != null){
             this.kicker = kicker;
         }
