@@ -14,7 +14,7 @@ public class Outtake {
     @Config
     public static class OuttakeConfig{
         public static double farRPM = 3200;
-        public static double closeRPM = 2300;
+        public static double closeRPM = 2700;
         public static double sortRPM = 1000;
         public static double p = 268;
         public static double i = 14.99;
@@ -60,6 +60,7 @@ public class Outtake {
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
+
     public Outtake(HardwareMap hardwareMap, KickerSpindex kicker){
         if (kicker != null){
             this.kicker = kicker;
@@ -97,6 +98,17 @@ public class Outtake {
     // Get current location name
     public String getLocationName() {
         return isFarLocation ? "FAR" : "SHORT";
+    }
+
+    //@param Distance hotizontally from goal
+    public double distanceToRPM(double distance){
+        double x = distance;
+
+
+        double RPS =  (Math.sqrt( (9.8*x*x)/((0.075)*((5.062*x)-0.454025))))/0.603;
+
+        return RPS * 60;
+
     }
 
     // Getter for active state

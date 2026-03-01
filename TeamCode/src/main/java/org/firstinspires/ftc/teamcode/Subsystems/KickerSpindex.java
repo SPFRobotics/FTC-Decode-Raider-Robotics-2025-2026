@@ -17,7 +17,7 @@ public class KickerSpindex {
     }
     private Servo leftKicker = null;
     private Servo rightKicker = null;
-    private boolean state = false;
+    private int state;
     //True if the automate method has completed its run
     private boolean done = true;
     private ElapsedTime kickerClock = new ElapsedTime();
@@ -31,13 +31,13 @@ public class KickerSpindex {
     }
 
     public void up(){
-        state = true;
+        state = 1;
         leftKicker.setPosition(up);
         rightKicker.setPosition(up+offset);
     }
 
     public void down(){
-        state = false;
+        state = 0;
         leftKicker.setPosition(down);
         rightKicker.setPosition(down+offset);
     }
@@ -57,7 +57,7 @@ public class KickerSpindex {
     }
 
     public void zero(){
-        state = false;
+        state = 0;
         leftKicker.setPosition(0);
         rightKicker.setPosition(0);
     }
@@ -65,7 +65,7 @@ public class KickerSpindex {
 
 
 
-    public boolean getState(){
+    public int getState(){
         return state;
     }
 }
