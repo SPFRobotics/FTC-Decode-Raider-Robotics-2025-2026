@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.PassiveSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
@@ -50,6 +51,8 @@ public class TeleOpMain extends LinearOpMode {
     Button spindexLeftBumper = new Button();
     Button intakeButton = new Button();
     Button autoLoad = new Button();
+    Limelight limelight;
+
     Button autoAimTurretButton = new Button();
 
     //Telemetry
@@ -68,12 +71,13 @@ public class TeleOpMain extends LinearOpMode {
         // Initialize subsystems
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
+        limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);
         spindex = new PassiveSpindex(hardwareMap, spindex.motif21Pattern.toCharArray());
         leds = new LedLights(hardwareMap);
         //HuskyLensController huskyLens = new HuskyLensController(hardwareMap);
-        turret = new Turret(hardwareMap, true);
+        turret = new Turret(hardwareMap, true, limelight);
 
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);

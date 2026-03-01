@@ -31,8 +31,8 @@ import java.io.UnsupportedEncodingException;
 @Configurable
 public class BlueShortTwelveBall extends OpMode {
 
-    private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
-    private static final double INTAKE_SPEED = 0.25;
+    private static final double ShootRPM = Outtake.OuttakeConfig.closeRPM;
+    private static final double IntakeSpeed = 0.25;
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -100,7 +100,7 @@ public class BlueShortTwelveBall extends OpMode {
     }
 
     public void init_loop(){
-        outtake.setRPM(SHOOT_RPM);
+        outtake.setRPM(ShootRPM);
 
     }
 
@@ -113,7 +113,7 @@ public class BlueShortTwelveBall extends OpMode {
         lastKickerCycles = 0;
 
         intakeEnabled = true;
-        outtake.setRPM(SHOOT_RPM);
+        outtake.setRPM(ShootRPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
         follower.followPath(paths.shootBallOne, true);
         //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
@@ -154,7 +154,7 @@ public class BlueShortTwelveBall extends OpMode {
 
         telemetry.addLine("Timer: " + timer.milliseconds());
         telemetry.update();
-        pen.write(timer.milliseconds() + ":" + outtake.getRPM() + ":" + (kicker.getState() ? 1 : 0) + "\n");
+        pen.write(timer.milliseconds() + ":" + outtake.getRPM() + ":" + (kicker.getState() + "\n"));
     }
 
     private void updateSpindexPosition() {
@@ -181,7 +181,7 @@ public class BlueShortTwelveBall extends OpMode {
 
         // Only run kicker cycle when aligned
         if (!spindex.isBusy()) {
-            outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
+            outtake.enableSpindexKickerCycle(true, ShootRPM);
         }
 
         // When a shot completes, advance to next slot
@@ -233,7 +233,7 @@ public class BlueShortTwelveBall extends OpMode {
         outtake.resetKickerCycle();
         lastKickerCycles = 0;
         waitingForSpindexAlign = false;
-        outtake.setRPM(SHOOT_RPM);
+        outtake.setRPM(ShootRPM);
     }
 
 
@@ -398,7 +398,7 @@ public class BlueShortTwelveBall extends OpMode {
             case 2: // Run to row 1 intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
-                    follower.followPath(paths.intakeRowOne, INTAKE_SPEED, true);
+                    follower.followPath(paths.intakeRowOne, IntakeSpeed, true);
                     pathState = 3;
                 }
                 break;
@@ -406,7 +406,7 @@ public class BlueShortTwelveBall extends OpMode {
             case 3: // Intake row 1 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
+                    outtake.setRPM(ShootRPM);
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
@@ -436,7 +436,7 @@ public class BlueShortTwelveBall extends OpMode {
             case 5: // Run to row 2 intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
-                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
+                    follower.followPath(paths.intakeRowTwo, IntakeSpeed, true);
                     pathState = 6;
                 }
                 break;
@@ -444,7 +444,7 @@ public class BlueShortTwelveBall extends OpMode {
             case 6: // Intake row 2 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
+                    outtake.setRPM(ShootRPM);
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
@@ -472,7 +472,7 @@ public class BlueShortTwelveBall extends OpMode {
             case 8: // Run to row 3 intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
-                    follower.followPath(paths.intakeRowThree, INTAKE_SPEED, true);
+                    follower.followPath(paths.intakeRowThree, IntakeSpeed, true);
                     pathState = 9;
                 }
                 break;
@@ -480,7 +480,7 @@ public class BlueShortTwelveBall extends OpMode {
             case 9: // Intake row 3 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
+                    outtake.setRPM(ShootRPM);
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {

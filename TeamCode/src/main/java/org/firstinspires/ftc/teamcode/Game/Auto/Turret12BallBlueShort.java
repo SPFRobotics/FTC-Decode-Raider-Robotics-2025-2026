@@ -156,7 +156,7 @@ public class Turret12BallBlueShort extends OpMode {
         telemetry.addLine("Timer: " + timer.milliseconds());
         telemetry.update();
 
-        pen.write(timer.milliseconds() + ":" + outtake.getRPM() + ":" + (kicker.getState() ? 1 : 0) + "\n");
+        pen.write(timer.milliseconds() + ":" + outtake.getRPM() + ":" + (kicker.getState()) + "\n");
     }
 
     private void updateSpindexPosition() {

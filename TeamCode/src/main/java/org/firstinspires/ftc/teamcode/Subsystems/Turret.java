@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.rob
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -20,16 +21,20 @@ public class Turret {
 
     double goalY;
     double goalX;
-    public final double RedGoalX = 132;
-    public final double RedGoalY = 136;
-    public final double BlueGoalX = 12;
-    public final double BlueGoalY = 136;
+
+    double turretLimelightOffset = 0;
+    public final double RedGoalX = 133;
+    public final double RedGoalY = 135;
+    public final double BlueGoalX = 11;
+    public final double BlueGoalY = 135;
     public final double ticks = 145.1;
     public final double gearRatio = 135/32.0;
 
     private double initialAngleOffset = 0;
 
     DcMotorEx turret;
+
+    Limelight limelight = null;
 
     @Config
     public static class TurretConfig{
@@ -50,9 +55,29 @@ public class Turret {
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         turret.setDirection(DcMotor.Direction.REVERSE);
+        turret.setTargetPositionTolerance(3);
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setGoalCords(goalCords);
+    }
+
+    public Turret(HardwareMap hardwareMap, boolean goalCords, Limelight limelight){
+        this.turret = hardwareMap.get(DcMotorEx.class, "turretMotor");
+        //turret.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
+        turret.setPositionPIDFCoefficients(25);
+        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+
+        turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turret.setDirection(DcMotor.Direction.REVERSE);
+        turret.setTargetPositionTolerance(3);
+
+        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setGoalCords(goalCords);
+
+        this.limelight = limelight;
     }
 
 
@@ -66,9 +91,11 @@ public class Turret {
 
     private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
 
+        turretLimelightOffset = limelightOffset();
+
         double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
 
-        double turretDeg = fieldAngleDeg - robotHeading;
+        double turretDeg = fieldAngleDeg - robotHeading + turretLimelightOffset;
 
         return wrapDeg360(turretDeg);
     }
@@ -97,6 +124,19 @@ public class Turret {
         if (deg < 0) deg += 360.0;
         return deg;
     }
+
+    private double limelightOffset(){
+
+        LLResult result = limelight.getLatestResult();
+
+        if (result == null || !result.isValid()) {
+            return 0;
+        }
+
+        return result.getTx();
+    }
+
+
 
     public boolean isTurretAtTarget() {
         return !turret.isBusy();
