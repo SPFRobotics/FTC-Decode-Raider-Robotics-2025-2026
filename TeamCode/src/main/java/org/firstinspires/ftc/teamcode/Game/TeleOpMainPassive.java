@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.PassiveSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
 import java.util.List;
 
@@ -76,11 +77,11 @@ public class TeleOpMainPassive extends LinearOpMode {
         spindex = new PassiveSpindex(hardwareMap, Spindex.motif21Pattern.toCharArray());
         leds = new LedLights(hardwareMap);
         //HuskyLensController huskyLens = new HuskyLensController(hardwareMap);
-        turret = new Turret(hardwareMap, true, limelight);
+        turret = new Turret(hardwareMap, PoseStorage.blueAlliance, limelight);
 
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
+        follower.setStartingPose(PoseStorage.poseEnd);
         follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
 

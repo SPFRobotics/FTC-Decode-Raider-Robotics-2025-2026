@@ -24,7 +24,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.PassiveSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Subsystems.ZucskyLens;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -79,8 +81,8 @@ public class TeleOpMain extends LinearOpMode {
         colorSensor = new ColorFetch(hardwareMap);
         spindex = new Spindex(hardwareMap);
         leds = new LedLights(hardwareMap);
-        //HuskyLensController huskyLens = new HuskyLensController(hardwareMap);
-        turret = new Turret(hardwareMap, true, limelight);
+        ZucskyLens huskyLens = new ZucskyLens(hardwareMap);
+        turret = new Turret(hardwareMap, PoseStorage.blueAlliance, limelight);
         PrintWriter pen = null;
         try{
             pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
@@ -95,7 +97,7 @@ public class TeleOpMain extends LinearOpMode {
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
+        follower.setStartingPose(PoseStorage.poseEnd);
         follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
 

@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
 //@Autonomous(name = "Blue Short (Ramp Empty)", group = "Autonomous")
 @Configurable
@@ -92,6 +93,9 @@ public class BlueShortRampEmpty extends OpMode {
     }
 
     public void stop(){
+        PoseStorage.savePose(follower.getPose());
+        PoseStorage.blueAlliance = true;
+        PoseStorage.redAlliance = false;
         //spindex.exitProgram();
     }
 
