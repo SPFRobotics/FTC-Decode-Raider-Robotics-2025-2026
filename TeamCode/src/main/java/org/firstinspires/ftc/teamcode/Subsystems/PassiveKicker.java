@@ -11,8 +11,8 @@ public class PassiveKicker {
     Servo passiveKicker;
     @Config
     public static class PassiveKickerConfig{
-        public static double upPos = 0;
-        public static double downPos = 0;
+        public static double upPos = 0.4;
+        public static double downPos = 0.2;
 
         public static boolean reverse = false;
 

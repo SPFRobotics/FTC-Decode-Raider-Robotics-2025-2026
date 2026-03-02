@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.PassiveKicker;
@@ -17,18 +19,22 @@ public class PassiveSpindexTest extends OpMode {
     KickerSpindex kicker;
     PassiveKicker passiveKicker;
     Outtake outtake;
+    Intake intake;
     Button kickerButton = new Button();
 
     @Config
     public static class PassiveSpindexTestConfig{
         public static double RPM = Outtake.OuttakeConfig.closeRPM;
+        public static double speedMultiplyer = 1;
     }
 
     public void init(){
         spindex = new Spindex(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         outtake = new Outtake(hardwareMap);
+        intake = new Intake(hardwareMap);
         passiveKicker = new PassiveKicker(hardwareMap);
+        intake.setPower(1);
     }
 
     public void start(){
@@ -36,7 +42,7 @@ public class PassiveSpindexTest extends OpMode {
     }
 
     public void loop(){
-        kicker.automate(kickerButton.press(gamepad1.a));
+        //kicker.automate(kickerButton.press(gamepad1.a));
 
         if (gamepad1.dpadDownWasPressed()){
             passiveKicker.down();
@@ -45,6 +51,7 @@ public class PassiveSpindexTest extends OpMode {
             passiveKicker.up();
         }
 
-        spindex.setPower(-gamepad1.right_trigger + gamepad1.left_trigger);
+        kicker.passive();
+        spindex.setPower((-gamepad1.right_trigger + gamepad1.left_trigger)*1);
     }
 }

@@ -3,12 +3,12 @@ package org.firstinspires.ftc.teamcode.Testing;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
-
 @Config
 @TeleOp
 public class MaxVelocityTest extends LinearOpMode {
@@ -24,7 +24,7 @@ public class MaxVelocityTest extends LinearOpMode {
     public void runOpMode() {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
-        motor = hardwareMap.get(DcMotorEx.class, "turretMotor");
+        motor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         waitForStart();
         motor.setPower(1);

@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.cl
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 
-
+@Disabled
 //@TeleOp(name = "Field Centric TeleOp")
 public class FieldCentricDrive extends LinearOpMode {
     // Speed multiplier for motors

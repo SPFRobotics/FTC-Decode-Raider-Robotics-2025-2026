@@ -36,13 +36,13 @@ public class Spindex {
     //Stores position and current index of spindex
     private int index = 0;
 
-    double encoderTicks = 4000;
+    double encoderTicks = 537.7;
     private double threadLoopTime = 0;
     private double currentPos = 0;
     //Error in ticks
     double error = 0;
     double targetPos = 0;
-    protected double offset = 0;
+    protected double offset = 1;
     private final double MAXVOLTAGE = 3.216;
     private boolean outtakeMode = false;
     private boolean autoLoadMode = false;
@@ -58,9 +58,9 @@ public class Spindex {
     private int sortPatternIndex = 0;
     private boolean autoSortActive = false;
 
-    public  String motif21Pattern = "GPP";
-    public  String motif22Pattern = "PGP";
-    public  String motif23Pattern = "PPG";
+    public static final String motif21Pattern = "GPP";
+    public static final String motif22Pattern = "PGP";
+    public static final String motif23Pattern = "PPG";
 
     @Config
     public static class SpindexValues{
@@ -69,8 +69,9 @@ public class Spindex {
 
         public static double[] pidf = {35, 0.3, 12, 0};
         public static double tolorence = 5;
-        public static double[] intakePos = {2, 122, 242};
-        public static double[] outtakePos = {182, 302, 62};
+        public static double offset = 4;
+        public static double[] intakePos = {0+offset, 120+offset, 240+offset};
+        public static double[] outtakePos = {180+offset, 300+offset, 60+offset};
 
         //Distance/Color sensor
         //Old value is 3.3
@@ -89,7 +90,7 @@ public class Spindex {
         spindexPos = hardwareMap.get(AnalogInput.class, "spindexPos");
 
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        spindexMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         offset = AngleUnit.normalizeDegrees(spindexPos.getVoltage()/MAXVOLTAGE*360.0);
@@ -285,6 +286,7 @@ public class Spindex {
     }
 
     public void setPower(double power){
+        spindexMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         spindexMotor.setPower(power);
     }
 

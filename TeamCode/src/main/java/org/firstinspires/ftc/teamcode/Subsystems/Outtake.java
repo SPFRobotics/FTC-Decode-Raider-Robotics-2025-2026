@@ -16,10 +16,7 @@ public class Outtake {
         public static double farRPM = 3200;
         public static double closeRPM = 2700;
         public static double sortRPM = 1000;
-        public static double p = 268;
-        public static double i = 14.99;
-        public static double d = 0;
-        public static double f = 14.99;
+        public static double[] pidf = {268, 14.99, 0, 14.99};
         public static double gearRatio = 10.0/7.0;
 
         public static double kickerWaitTIme = 2;
@@ -55,7 +52,7 @@ public class Outtake {
 
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
-        outtakeMotor.setVelocityPIDFCoefficients(p, i, d, f);
+        outtakeMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
         outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }

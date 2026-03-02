@@ -21,10 +21,8 @@ public class Limelight {
         limelight.pipelineSwitch(0);
         limelight.start();
     }
-
     //Starts Limelight
 
-    
     public void start() {
         limelight.start();
     }

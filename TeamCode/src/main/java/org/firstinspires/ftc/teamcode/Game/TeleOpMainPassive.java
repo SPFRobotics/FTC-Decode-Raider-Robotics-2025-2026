@@ -73,7 +73,7 @@ public class TeleOpMainPassive extends LinearOpMode {
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);
-        spindex = new PassiveSpindex(hardwareMap, spindex.motif21Pattern.toCharArray());
+        spindex = new PassiveSpindex(hardwareMap, Spindex.motif21Pattern.toCharArray());
         leds = new LedLights(hardwareMap);
         //HuskyLensController huskyLens = new HuskyLensController(hardwareMap);
         turret = new Turret(hardwareMap, true, limelight);

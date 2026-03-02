@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Testing;
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,7 +17,7 @@ import static org.firstinspires.ftc.teamcode.Testing.TurretSpinBenchmark.TurretS
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-
+@Disabled
 @TeleOp
 public class TurretSpinBenchmark extends OpMode {
     @Config

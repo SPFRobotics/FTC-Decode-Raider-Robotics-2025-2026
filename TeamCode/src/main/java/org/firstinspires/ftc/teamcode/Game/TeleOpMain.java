@@ -3,6 +3,7 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.cl
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
@@ -25,6 +26,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Resources.Button;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @TeleOp(name="Tele-Op Main")
@@ -77,6 +81,16 @@ public class TeleOpMain extends LinearOpMode {
         leds = new LedLights(hardwareMap);
         //HuskyLensController huskyLens = new HuskyLensController(hardwareMap);
         turret = new Turret(hardwareMap, true, limelight);
+        PrintWriter pen = null;
+        try{
+            pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
+        }
+        catch(FileNotFoundException e){
+
+        }
+        catch (UnsupportedEncodingException e){
+
+        }
 
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);
@@ -106,6 +120,7 @@ public class TeleOpMain extends LinearOpMode {
             leds.cycleColors(10);
         }
         waitForStart();
+        ElapsedTime runTime = new ElapsedTime();
         while (opModeIsActive()){
             loopTime.reset();
             //Reset Cache for Lynx Modules
@@ -205,10 +220,11 @@ public class TeleOpMain extends LinearOpMode {
             //colorSensor.showTelemetry(multiTelemetry);
             turret.showTelemetry(multiTelemetry, currentPose.getX(), currentPose.getY(), currentPose.getHeading());
             multiTelemetry.addData("Loop Time", loopTime.milliseconds());
+            multiTelemetry.addData("Outtake RPM", outtake.getRPM());
             multiTelemetry.addLine("==========================================");
             multiTelemetry.update();
+            pen.write(runTime.milliseconds() + ":" + outtake.getRPM() + "\n");
         }
-
-
+        pen.close();
     }
 }
