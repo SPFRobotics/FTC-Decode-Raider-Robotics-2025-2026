@@ -109,7 +109,7 @@ public class BlueShortRampEmpty extends OpMode {
             intake.intakeOff();
         }
         follower.update();
-        leds.cycleColors(10);
+        leds.cycleColors(0.1);
         autonomousPathUpdate();
         updateSpindexPosition();
 
