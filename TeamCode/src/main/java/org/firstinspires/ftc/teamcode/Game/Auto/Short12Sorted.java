@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
 @Autonomous(name = "BS 12 Sorted", group = "Autonomous")
 @Configurable
@@ -136,6 +137,9 @@ public class Short12Sorted extends OpMode {
     }
 
     public void stop(){
+        PoseStorage.savePose(follower.getPose());
+        PoseStorage.blueAlliance = true;
+        PoseStorage.redAlliance = false;
         //spindex.exitProgram();
     }
 

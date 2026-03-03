@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
 @Autonomous(name = "Red Short 12 Ball", group = "Autonomous")
 @Configurable
@@ -99,6 +100,9 @@ public class RedShortTwelveBall extends OpMode {
     }
 
     public void stop(){
+        PoseStorage.savePose(follower.getPose());
+        PoseStorage.blueAlliance = false;
+        PoseStorage.redAlliance = true;
         //spindex.exitProgram();
     }
 
