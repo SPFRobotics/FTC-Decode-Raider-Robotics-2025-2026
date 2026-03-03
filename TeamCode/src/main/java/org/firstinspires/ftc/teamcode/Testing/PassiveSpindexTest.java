@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Resources.Button;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -13,6 +14,10 @@ import org.firstinspires.ftc.teamcode.Subsystems.PassiveKicker;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import static org.firstinspires.ftc.teamcode.Testing.PassiveSpindexTest.PassiveSpindexTestConfig.*;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 @TeleOp
 public class PassiveSpindexTest extends OpMode {
     Spindex spindex;
@@ -21,6 +26,9 @@ public class PassiveSpindexTest extends OpMode {
     Outtake outtake;
     Intake intake;
     Button kickerButton = new Button();
+    PrintWriter pen = null;
+    ElapsedTime runTime = null;
+
 
     @Config
     public static class PassiveSpindexTestConfig{
@@ -34,11 +42,21 @@ public class PassiveSpindexTest extends OpMode {
         outtake = new Outtake(hardwareMap);
         intake = new Intake(hardwareMap);
         passiveKicker = new PassiveKicker(hardwareMap);
+        try{
+            pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
+        }
+        catch (FileNotFoundException e){
+
+        }
+        catch (UnsupportedEncodingException e){
+
+        }
         intake.setPower(1);
     }
 
     public void start(){
         outtake.setRPM(RPM);
+        runTime = new ElapsedTime();
     }
 
     public void loop(){
@@ -52,6 +70,11 @@ public class PassiveSpindexTest extends OpMode {
         }
 
         kicker.passive();
-        spindex.setPower((-gamepad1.right_trigger + gamepad1.left_trigger)*1);
+        spindex.setPower((-gamepad1.right_trigger + gamepad1.left_trigger)*speedMultiplyer);
+        pen.write(runTime.milliseconds() + ":" + outtake.getRPM() + "\n");
+    }
+
+    public void stop(){
+        pen.close();
     }
 }
