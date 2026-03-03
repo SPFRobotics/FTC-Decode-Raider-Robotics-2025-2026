@@ -229,7 +229,7 @@ public class BlueShortTwelveBallClear extends OpMode {
         public PathChain Leave;
 
         public Paths(Follower follower) {
-            shootBallOne = follower.pathBuilder().addPath(
+            shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(39.000, 134.442),
                                     new Pose(44.095, 111.604),
@@ -239,7 +239,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            RunToRowOne = follower.pathBuilder().addPath(
+            RunToRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(50.199, 93.721),
                                     new Pose(44.279, 90.511),
@@ -249,7 +249,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            intakeRowOne = follower.pathBuilder().addPath(
+            intakeRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(43.525, 84.432),
 
@@ -259,7 +259,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            ClearRamp = follower.pathBuilder().addPath(
+            ClearRamp = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(21.315, 83.803),
                                     new Pose(22.938, 80.656),
@@ -270,7 +270,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            shootRowOne = follower.pathBuilder().addPath(
+            shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(15.414, 77.508),
                                     new Pose(43.580, 78.653),
@@ -280,7 +280,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            RuntoRowTwo = follower.pathBuilder().addPath(
+            RuntoRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(50.210, 94.008),
                                     new Pose(50.928, 70.505),
@@ -290,7 +290,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            intakeRowTwo = follower.pathBuilder().addPath(
+            intakeRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(43.977, 59.881),
 
@@ -300,7 +300,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            shootRowTwo = follower.pathBuilder().addPath(
+            shootRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(22.213, 59.787),
                                     new Pose(35.011, 67.842),
@@ -311,7 +311,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            RuntoRowThree = follower.pathBuilder().addPath(
+            RuntoRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(50.406, 93.232),
                                     new Pose(51.738, 64.721),
@@ -321,7 +321,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            intakeRowThree = follower.pathBuilder().addPath(
+            intakeRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(45.875, 35.242),
 
@@ -331,7 +331,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            shootRowThree = follower.pathBuilder().addPath(
+            shootRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(21.230, 35.672),
                                     new Pose(39.623, 61.934),
@@ -341,7 +341,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            Leave = follower.pathBuilder().addPath(
+            Leave = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(49.689, 93.541),
                                     new Pose(51.869, 78.893),

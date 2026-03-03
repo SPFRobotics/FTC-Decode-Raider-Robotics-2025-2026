@@ -216,7 +216,7 @@ public class BlueShortObilisk extends OpMode {
         public PathChain LeavePoints;
 
         public Paths(Follower follower) {
-            ReadObilisk = follower.pathBuilder().addPath(
+            ReadObilisk = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(33.176, 134.442),
                                     new Pose(33.431, 115.932),
@@ -226,7 +226,7 @@ public class BlueShortObilisk extends OpMode {
 
                     .build();
 
-            shootBallOne = follower.pathBuilder().addPath(
+            shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(58.644, 113.473),
                                     new Pose(57.219, 102.810),
@@ -236,7 +236,7 @@ public class BlueShortObilisk extends OpMode {
 
                     .build();
 
-            RunToRowOne = follower.pathBuilder().addPath(
+            RunToRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(57.674, 86.442),
                                     new Pose(51.231, 89.286),
@@ -246,7 +246,7 @@ public class BlueShortObilisk extends OpMode {
 
                     .build();
 
-            intakeRowOne = follower.pathBuilder().addPath(
+            intakeRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(43.525, 84.432),
 
@@ -256,7 +256,7 @@ public class BlueShortObilisk extends OpMode {
 
                     .build();
 
-            shootRowOne = follower.pathBuilder().addPath(
+            shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(16.594, 84.000),
                                     new Pose(46.804, 84.684),
@@ -267,7 +267,7 @@ public class BlueShortObilisk extends OpMode {
 
                     .build();
 
-            RuntoRowTwo = follower.pathBuilder().addPath(
+            RuntoRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(57.488, 86.140),
 
@@ -277,7 +277,7 @@ public class BlueShortObilisk extends OpMode {
 
                     .build();
 
-            intakeRowTwo = follower.pathBuilder().addPath(
+            intakeRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(43.154, 59.681),
 
@@ -287,7 +287,7 @@ public class BlueShortObilisk extends OpMode {
 
                     .build();
 
-            shootRowTwo = follower.pathBuilder().addPath(
+            shootRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(17.607, 59.406),
                                     new Pose(23.994, 58.006),
@@ -298,7 +298,7 @@ public class BlueShortObilisk extends OpMode {
 
                     .build();
 
-            LeavePoints = follower.pathBuilder().addPath(
+            LeavePoints = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(57.488, 85.953),
                                     new Pose(49.743, 76.020),

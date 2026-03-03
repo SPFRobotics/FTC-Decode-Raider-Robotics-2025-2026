@@ -239,7 +239,7 @@ public class RedShortTwelveBall extends OpMode {
         public PathChain Leave;
 
         public Paths(Follower follower) {
-            shootBallOne = follower.pathBuilder().addPath(
+            shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(110.775, 134.442),
                                     new Pose(99.905, 111.604),
@@ -249,7 +249,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            RunToRowOne = follower.pathBuilder().addPath(
+            RunToRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(93.801, 93.721),
                                     new Pose(99.721, 90.511),
@@ -259,7 +259,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            intakeRowOne = follower.pathBuilder().addPath(
+            intakeRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(100.475, 84.432),
 
@@ -269,7 +269,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            ClearRamp = follower.pathBuilder().addPath(
+            ClearRamp = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(122.685, 83.803),
                                     new Pose(121.062, 80.656),
@@ -280,7 +280,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            shootRowOne = follower.pathBuilder().addPath(
+            shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(128.586, 77.508),
                                     new Pose(100.420, 78.653),
@@ -290,7 +290,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            RuntoRowTwo = follower.pathBuilder().addPath(
+            RuntoRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(93.790, 94.008),
                                     new Pose(93.072, 70.505),
@@ -300,7 +300,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            intakeRowTwo = follower.pathBuilder().addPath(
+            intakeRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(100.023, 59.881),
 
@@ -310,7 +310,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            shootRowTwo = follower.pathBuilder().addPath(
+            shootRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(121.787, 59.787),
                                     new Pose(108.989, 67.842),
@@ -321,7 +321,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            RuntoRowThree = follower.pathBuilder().addPath(
+            RuntoRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(93.594, 93.232),
                                     new Pose(91.475, 48.393),
@@ -331,7 +331,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            intakeRowThree = follower.pathBuilder().addPath(
+            intakeRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(99.895, 38.389),
 
@@ -341,7 +341,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            shootRowThree = follower.pathBuilder().addPath(
+            shootRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(122.770, 35.672),
                                     new Pose(104.377, 61.934),
@@ -351,7 +351,7 @@ public class RedShortTwelveBall extends OpMode {
 
                     .build();
 
-            Leave = follower.pathBuilder().addPath(
+            Leave = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(94.311, 93.541),
                                     new Pose(92.131, 78.893),

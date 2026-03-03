@@ -220,7 +220,7 @@ public class BlueShortRampEmpty extends OpMode {
         public PathChain LeavePoints;
 
         public Paths(Follower follower) {
-            shootBallOne = follower.pathBuilder().addPath(
+            shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(33.659, 134.031),
                                     new Pose(42.405, 109.179),
@@ -230,7 +230,7 @@ public class BlueShortRampEmpty extends OpMode {
 
                     .build();
 
-            RunToRowOne = follower.pathBuilder().addPath(
+            RunToRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(57.674, 86.442),
                                     new Pose(47.477, 92.547),
@@ -240,7 +240,7 @@ public class BlueShortRampEmpty extends OpMode {
 
                     .build();
 
-            intakeRowOne = follower.pathBuilder().addPath(
+            intakeRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(43.525, 84.432),
 
@@ -250,7 +250,7 @@ public class BlueShortRampEmpty extends OpMode {
 
                     .build();
 
-            ClearRamp = follower.pathBuilder().addPath(
+            ClearRamp = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(16.594, 84.000),
                                     new Pose(25.666, 76.886),
@@ -263,7 +263,7 @@ public class BlueShortRampEmpty extends OpMode {
 
 
 
-            shootRowOne = follower.pathBuilder().addPath(
+            shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(14.856, 75.210),
                                     new Pose(50.268, 79.855),
@@ -273,7 +273,7 @@ public class BlueShortRampEmpty extends OpMode {
 
                     .build();
 
-            RuntoRowTwo = follower.pathBuilder().addPath(
+            RuntoRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(57.488, 86.140),
                                     new Pose(63.461, 79.883),
@@ -284,7 +284,7 @@ public class BlueShortRampEmpty extends OpMode {
 
                     .build();
 
-            intakeRowTwo = follower.pathBuilder().addPath(
+            intakeRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(44.961, 59.881),
 
@@ -294,7 +294,7 @@ public class BlueShortRampEmpty extends OpMode {
 
                     .build();
 
-            shootRowTwo = follower.pathBuilder().addPath(
+            shootRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(11.983, 58.803),
                                     new Pose(24.405, 60.676),
@@ -305,7 +305,7 @@ public class BlueShortRampEmpty extends OpMode {
 
                     .build();
 
-            LeavePoints = follower.pathBuilder().addPath(
+            LeavePoints = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(57.488, 85.953),
                                     new Pose(46.087, 74.436),

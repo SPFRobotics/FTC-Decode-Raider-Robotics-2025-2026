@@ -263,7 +263,7 @@ public class Turret12BallBlueShort extends OpMode {
         public PathChain Leave;
 
         public Paths(Follower follower) {
-            shootBallOne = follower.pathBuilder().addPath(
+            shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(33.091, 134.096),
 
@@ -273,7 +273,7 @@ public class Turret12BallBlueShort extends OpMode {
 
                     .build();
 
-            RunToRowOne = follower.pathBuilder().addPath(
+            RunToRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(52.535, 89.134),
                                     new Pose(49.329, 84.075),
@@ -283,7 +283,7 @@ public class Turret12BallBlueShort extends OpMode {
 
                     .build();
 
-            intakeRowOne = follower.pathBuilder().addPath(
+            intakeRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(41.118, 84.182),
 
@@ -293,7 +293,7 @@ public class Turret12BallBlueShort extends OpMode {
 
                     .build();
 
-            shootRowOne = follower.pathBuilder().addPath(
+            shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(26.642, 84.086),
                                     new Pose(49.348, 83.473),
@@ -303,7 +303,7 @@ public class Turret12BallBlueShort extends OpMode {
 
                     .build();
 
-            RuntoRowTwo = follower.pathBuilder().addPath(
+            RuntoRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(52.503, 88.861),
                                     new Pose(57.874, 73.890),
@@ -314,7 +314,7 @@ public class Turret12BallBlueShort extends OpMode {
 
                     .build();
 
-            intakeRowTwo = follower.pathBuilder().addPath(
+            intakeRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(42.529, 59.989),
 
@@ -324,7 +324,7 @@ public class Turret12BallBlueShort extends OpMode {
 
                     .build();
 
-            shootRowTwo = follower.pathBuilder().addPath(
+            shootRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(27.080, 59.209),
 
@@ -334,7 +334,7 @@ public class Turret12BallBlueShort extends OpMode {
 
                     .build();
 
-            RuntoRowThree = follower.pathBuilder().addPath(
+            RuntoRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(52.412, 89.717),
                                     new Pose(67.864, 54.497),
@@ -346,7 +346,7 @@ public class Turret12BallBlueShort extends OpMode {
 
                     .build();
 
-            intakeRowThree = follower.pathBuilder().addPath(
+            intakeRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(41.348, 35.364),
 
@@ -356,7 +356,7 @@ public class Turret12BallBlueShort extends OpMode {
 
                     .build();
 
-            shootRowThree = follower.pathBuilder().addPath(
+            shootRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(26.166, 35.011),
 
@@ -366,7 +366,7 @@ public class Turret12BallBlueShort extends OpMode {
 
                     .build();
 
-            Leave = follower.pathBuilder().addPath(
+            Leave = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
                                     new Pose(53.583, 113.144),
 
