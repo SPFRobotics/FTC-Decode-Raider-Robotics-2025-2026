@@ -172,7 +172,7 @@ public class TeleOpMainPassive extends LinearOpMode {
             //Controls actual spindex movement
             if (spindex.isCycling()){
                 spindex.moveTicks(currentPos + 538, 4);
-                if (spindex.getVelocity() == 0){
+                if (spindex.isBusy()){
                     spindex.setCycling(false);
                 }
             }

@@ -11,6 +11,7 @@ public class PassiveSpindex extends Spindex{
 
     public PassiveSpindex(HardwareMap hardwareMap, char[] pattern) {
         super(hardwareMap);
+        spindexMotor.setTargetPositionTolerance(20);
         for (int i = 0; i < 3; i++){
             if (pattern[i] == 'G'){
                 greenPatternIndex = i;
