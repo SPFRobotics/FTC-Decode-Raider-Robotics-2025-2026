@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.PassiveKicker;
 import org.firstinspires.ftc.teamcode.Subsystems.PassiveSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
@@ -40,6 +41,7 @@ public class TeleOpMain extends LinearOpMode {
     ElapsedTime loopTime;
     Outtake outtake = null;
     KickerSpindex kicker = null;
+    PassiveKicker passiveKicker = null;
     Turret turret = null;
     ColorFetch colorSensor = null;
     Spindex spindex = null;
@@ -78,6 +80,7 @@ public class TeleOpMain extends LinearOpMode {
         intake = new Intake(hardwareMap);
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
+        passiveKicker = new PassiveKicker(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);
         spindex = new Spindex(hardwareMap);
         leds = new LedLights(hardwareMap);
@@ -159,6 +162,7 @@ public class TeleOpMain extends LinearOpMode {
             if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0) {
                 spindex.clearBall(spindex.getIndex());
             }
+            passiveKicker.down();
             /**************************************************************************/
 //67
             /*******************************************Spindex Logic********************************************/
