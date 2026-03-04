@@ -6,27 +6,172 @@
     "link": "https://github.com/Mallen220/PedroPathingPlusVisualizer"
   },
   "startPoint": {
-    "x": 31.891758917589193,
-    "y": 134.86346863468628,
+    "x": 33.4,
+    "y": 133.9,
     "heading": "linear",
     "startDeg": 180,
-    "endDeg": 180,
+    "endDeg": 90,
     "locked": false
   },
   "lines": [
     {
-      "id": "mmbf19fk-hcbx74",
-      "name": "",
+      "id": "line-071zielfzy93",
+      "name": "RunToShootPreload",
       "endPoint": {
-        "x": 47.71709717097171,
-        "y": 96.40221402214023,
+        "x": 47.776137761377605,
+        "y": 95.8228782287823,
+        "heading": "linear",
+        "startDeg": 180,
+        "endDeg": 180
+      },
+      "controlPoints": [],
+      "color": "#D57C7D",
+      "eventMarkers": [],
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "mmbhbpee-uqd8np",
+      "endPoint": {
+        "x": 47.776137761377605,
+        "y": 60.16359163591635,
+        "heading": "linear",
+        "startDeg": 180,
+        "endDeg": 180
+      },
+      "controlPoints": [],
+      "color": "#977ABC",
+      "name": "RunToSpikeTwo",
+      "eventMarkers": [],
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "mmbhc39j-jcmfha",
+      "name": "IntakeSpikeTwo",
+      "endPoint": {
+        "x": 26.261992619926197,
+        "y": 60.16359163591635,
         "heading": "linear",
         "reverse": false,
         "startDeg": 180,
         "endDeg": 180
       },
       "controlPoints": [],
-      "color": "#7677BA",
+      "color": "#7BB5AB",
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "mmbhcegu-x06y2x",
+      "name": "RunToShootSpikeTwo",
+      "endPoint": {
+        "x": 49.06396063960641,
+        "y": 95.8228782287823,
+        "heading": "linear",
+        "reverse": false,
+        "startDeg": 180,
+        "endDeg": 180
+      },
+      "controlPoints": [],
+      "color": "#AD89CD",
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "mmbhekkz-21v0fh",
+      "name": "RunToSpikeOne",
+      "endPoint": {
+        "x": 33.4,
+        "y": 84.10824108241081,
+        "heading": "linear",
+        "reverse": false,
+        "startDeg": 180,
+        "endDeg": 180
+      },
+      "controlPoints": [],
+      "color": "#B9D77B",
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "mmbhf6xa-dlrsnu",
+      "name": "IntakeSpikeOne",
+      "endPoint": {
+        "x": 25.08610086100861,
+        "y": 84.10824108241081,
+        "heading": "linear",
+        "reverse": false,
+        "startDeg": 180,
+        "endDeg": 180
+      },
+      "controlPoints": [],
+      "color": "#5685C9",
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "mmbhhwy8-vxt762",
+      "name": "ClearRamp",
+      "endPoint": {
+        "x": 16.988929889298916,
+        "y": 77.15375153751536,
+        "heading": "linear",
+        "reverse": false,
+        "startDeg": 90,
+        "endDeg": 90
+      },
+      "controlPoints": [],
+      "color": "#59D67B",
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "mmbhi8oo-2twafu",
+      "name": "RunToShootSpikeOne",
+      "endPoint": {
+        "x": 47.776137761377605,
+        "y": 95.8228782287823,
+        "heading": "linear",
+        "reverse": false,
+        "startDeg": 90,
+        "endDeg": 180
+      },
+      "controlPoints": [],
+      "color": "#7BD79C",
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "mmbhml3g-tdo534",
+      "name": "LeavePoints",
+      "endPoint": {
+        "x": 16.988929889298916,
+        "y": 70.5559655596556,
+        "heading": "linear",
+        "reverse": false,
+        "startDeg": 180,
+        "endDeg": 90
+      },
+      "controlPoints": [],
+      "color": "#CD975B",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
@@ -36,7 +181,53 @@
   "sequence": [
     {
       "kind": "path",
-      "lineId": "mmbf19fk-hcbx74"
+      "lineId": "line-071zielfzy93"
+    },
+    {
+      "kind": "path",
+      "lineId": "mmbhbpee-uqd8np"
+    },
+    {
+      "kind": "path",
+      "lineId": "mmbhc39j-jcmfha"
+    },
+    {
+      "kind": "path",
+      "lineId": "mmbhcegu-x06y2x"
+    },
+    {
+      "kind": "path",
+      "lineId": "mmbhekkz-21v0fh"
+    },
+    {
+      "kind": "path",
+      "lineId": "mmbhf6xa-dlrsnu"
+    },
+    {
+      "kind": "rotate",
+      "id": "mmbhhols-ccbiut",
+      "name": "Rotate90",
+      "degrees": 90,
+      "locked": false
+    },
+    {
+      "kind": "path",
+      "lineId": "mmbhhwy8-vxt762"
+    },
+    {
+      "kind": "wait",
+      "id": "mmbhm8mp-k4aywv",
+      "name": "WaitForRampClear",
+      "durationMs": 500,
+      "locked": false
+    },
+    {
+      "kind": "path",
+      "lineId": "mmbhi8oo-2twafu"
+    },
+    {
+      "kind": "path",
+      "lineId": "mmbhml3g-tdo534"
     }
   ],
   "shapes": [
@@ -46,34 +237,34 @@
       "vertices": [
         {
           "x": 144,
-          "y": 70
+          "y": 69.5
         },
         {
           "x": 144,
           "y": 144
         },
         {
-          "x": 120,
+          "x": 119,
           "y": 144
         },
         {
-          "x": 138,
+          "x": 137.5,
           "y": 119
         },
         {
-          "x": 138,
-          "y": 70
+          "x": 137.5,
+          "y": 69.5
         }
       ],
       "color": "#dc2626",
-      "fillColor": "#ff6b6b"
+      "fillColor": "#fca5a5"
     },
     {
       "id": "triangle-2",
       "name": "Blue Goal",
       "vertices": [
         {
-          "x": 6,
+          "x": 6.5,
           "y": 119
         },
         {
@@ -86,15 +277,15 @@
         },
         {
           "x": 0,
-          "y": 70
+          "y": 69.5
         },
         {
-          "x": 7,
-          "y": 70
+          "x": 6.5,
+          "y": 69.5
         }
       ],
-      "color": "#2563eb",
-      "fillColor": "#60a5fa"
+      "color": "#0b08d9",
+      "fillColor": "#fca5a5"
     }
   ],
   "extraData": {}
