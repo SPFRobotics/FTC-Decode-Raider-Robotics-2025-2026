@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
+import org.firstinspires.ftc.teamcode.Assets.MecanumChassis;
 
 @Disabled
 @Autonomous(name="Auto Short Red")

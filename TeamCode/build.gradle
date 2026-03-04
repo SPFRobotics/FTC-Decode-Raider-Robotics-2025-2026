@@ -57,7 +57,6 @@ dependencies {
         exclude group: "com.acmerobotics.dashboard"
     }
     implementation("com.bylazar.sloth:fullpanels:0.2.4+1.0.12")
-    implementation 'com.github.Mallen220:PedroPathingPlus:master-SNAPSHOT' // or use a specific tag
 
     // Core Dependencies
     implementation 'com.pedropathing:ftc:2.0.6'

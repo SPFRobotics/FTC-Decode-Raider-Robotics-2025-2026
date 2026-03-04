@@ -1,21 +1,13 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-import static org.firstinspires.ftc.teamcode.Subsystems.Turret.TurretConfig.pidf;
-import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotHeading;
-import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotX;
-import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotY;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Resources.Unit;
-import org.intellij.lang.annotations.JdkConstants;
 
 public class Turret {
 

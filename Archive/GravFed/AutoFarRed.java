@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystems.KickerGrav;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
+import org.firstinspires.ftc.teamcode.Assets.MecanumChassis;
 
 @Disabled
         //(name="Auto Red Long")

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Resources;
+package org.firstinspires.ftc.teamcode.Assets;
 
 public class Unit {
     public static double inch_convert(double inch, double motorTicks) { return inch * (motorTicks / (3.78 * Math.PI)); } // converts inches to ticks
