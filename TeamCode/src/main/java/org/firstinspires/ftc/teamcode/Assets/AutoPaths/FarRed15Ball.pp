@@ -127,7 +127,7 @@
       },
       "controlPoints": [],
       "color": "#BC776B",
-      "name": "Path 6",
+      "name": "ContinueHumanSpikeIntake",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
