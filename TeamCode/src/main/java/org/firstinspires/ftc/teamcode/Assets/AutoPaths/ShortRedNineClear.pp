@@ -6,10 +6,10 @@
     "link": "https://github.com/Mallen220/PedroPathingPlusVisualizer"
   },
   "startPoint": {
-    "x": 33.4,
+    "x": 110.6,
     "y": 133.9,
     "heading": "linear",
-    "startDeg": 180,
+    "startDeg": 0,
     "endDeg": 90,
     "locked": false
   },
@@ -18,11 +18,11 @@
       "id": "line-071zielfzy93",
       "name": "RunToShootPreload",
       "endPoint": {
-        "x": 47.776137761377605,
+        "x": 96.22386223862239,
         "y": 95.8228782287823,
         "heading": "linear",
-        "startDeg": 180,
-        "endDeg": 180
+        "startDeg": 0,
+        "endDeg": 0
       },
       "controlPoints": [],
       "color": "#D57C7D",
@@ -36,11 +36,11 @@
     {
       "id": "mmbhbpee-uqd8np",
       "endPoint": {
-        "x": 47.776137761377605,
+        "x": 96.22386223862239,
         "y": 60.16359163591635,
         "heading": "linear",
-        "startDeg": 180,
-        "endDeg": 180
+        "startDeg": 0,
+        "endDeg": 0
       },
       "controlPoints": [],
       "color": "#977ABC",
@@ -55,79 +55,83 @@
       "id": "mmbhc39j-jcmfha",
       "name": "IntakeSpikeTwo",
       "endPoint": {
-        "x": 26.261992619926197,
+        "x": 117.73800738007381,
         "y": 60.16359163591635,
         "heading": "linear",
         "reverse": false,
-        "startDeg": 180,
-        "endDeg": 180
+        "startDeg": 0,
+        "endDeg": 0
       },
       "controlPoints": [],
       "color": "#7BB5AB",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmbhcegu-x06y2x",
       "name": "RunToShootSpikeTwo",
       "endPoint": {
-        "x": 49.06396063960641,
+        "x": 94.9360393603936,
         "y": 95.8228782287823,
         "heading": "linear",
         "reverse": false,
-        "startDeg": 180,
-        "endDeg": 180
+        "startDeg": 0,
+        "endDeg": 0
       },
       "controlPoints": [],
       "color": "#AD89CD",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmbhekkz-21v0fh",
       "name": "RunToSpikeOne",
       "endPoint": {
-        "x": 33.4,
+        "x": 110.6,
         "y": 84.10824108241081,
         "heading": "linear",
         "reverse": false,
-        "startDeg": 180,
-        "endDeg": 180
+        "startDeg": 0,
+        "endDeg": 0
       },
       "controlPoints": [],
       "color": "#B9D77B",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmbhf6xa-dlrsnu",
       "name": "IntakeSpikeOne",
       "endPoint": {
-        "x": 25.08610086100861,
+        "x": 118.91389913899138,
         "y": 84.10824108241081,
         "heading": "linear",
         "reverse": false,
-        "startDeg": 180,
-        "endDeg": 180
+        "startDeg": 0,
+        "endDeg": 0
       },
       "controlPoints": [],
       "color": "#5685C9",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmbhhwy8-vxt762",
       "name": "ClearRamp",
       "endPoint": {
-        "x": 16.988929889298916,
+        "x": 127.01107011070108,
         "y": 77.15375153751536,
         "heading": "linear",
         "reverse": false,
@@ -139,35 +143,37 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmbhi8oo-2twafu",
       "name": "RunToShootSpikeOne",
       "endPoint": {
-        "x": 47.776137761377605,
+        "x": 96.22386223862239,
         "y": 95.8228782287823,
         "heading": "linear",
         "reverse": false,
         "startDeg": 90,
-        "endDeg": 180
+        "endDeg": 0
       },
       "controlPoints": [],
       "color": "#7BD79C",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmbhml3g-tdo534",
       "name": "LeavePoints",
       "endPoint": {
-        "x": 16.988929889298916,
-        "y": 70.5559655596556,
+        "x": 120.12300123001228,
+        "y": 71.29397293972941,
         "heading": "linear",
         "reverse": false,
-        "startDeg": 180,
+        "startDeg": 0,
         "endDeg": 90
       },
       "controlPoints": [],
@@ -175,7 +181,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     }
   ],
   "sequence": [
@@ -236,23 +243,23 @@
       "name": "Red Goal",
       "vertices": [
         {
-          "x": 144,
+          "x": 0,
           "y": 69.5
         },
         {
-          "x": 144,
+          "x": 0,
           "y": 144
         },
         {
-          "x": 119,
+          "x": 25,
           "y": 144
         },
         {
-          "x": 137.5,
+          "x": 6.5,
           "y": 119
         },
         {
-          "x": 137.5,
+          "x": 6.5,
           "y": 69.5
         }
       ],
@@ -264,23 +271,23 @@
       "name": "Blue Goal",
       "vertices": [
         {
-          "x": 6.5,
+          "x": 137.5,
           "y": 119
         },
         {
-          "x": 25,
+          "x": 119,
           "y": 144
         },
         {
-          "x": 0,
+          "x": 144,
           "y": 144
         },
         {
-          "x": 0,
+          "x": 144,
           "y": 69.5
         },
         {
-          "x": 6.5,
+          "x": 137.5,
           "y": 69.5
         }
       ],
