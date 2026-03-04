@@ -1,15 +1,8 @@
-package org.firstinspires.ftc.teamcode.Resources;
-
-import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotHeading;
-import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotX;
-import static org.firstinspires.ftc.teamcode.Testing.TurretTest.TurretTester.robotY;
+package org.firstinspires.ftc.teamcode.Assets;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.intellij.lang.annotations.JdkConstants;
 
 public class ThreadedTurret {
 

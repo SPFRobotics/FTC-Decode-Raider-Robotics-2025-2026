@@ -3,29 +3,27 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.cl
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Subsystems.PassiveSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.PassiveKicker;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
-import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Assets.Button;
 import org.firstinspires.ftc.teamcode.Subsystems.ZucskyLens;
 
 import java.io.FileNotFoundException;
@@ -40,6 +38,7 @@ public class TeleOpMain extends LinearOpMode {
     ElapsedTime loopTime;
     Outtake outtake = null;
     KickerSpindex kicker = null;
+    PassiveKicker passiveKicker = null;
     Turret turret = null;
     ColorFetch colorSensor = null;
     Spindex spindex = null;
@@ -78,6 +77,7 @@ public class TeleOpMain extends LinearOpMode {
         intake = new Intake(hardwareMap);
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
+        passiveKicker = new PassiveKicker(hardwareMap);
         colorSensor = new ColorFetch(hardwareMap);
         spindex = new Spindex(hardwareMap);
         leds = new LedLights(hardwareMap);
@@ -159,6 +159,7 @@ public class TeleOpMain extends LinearOpMode {
             if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0) {
                 spindex.clearBall(spindex.getIndex());
             }
+            passiveKicker.down();
             /**************************************************************************/
 
             /*******************************************Spindex Logic********************************************/

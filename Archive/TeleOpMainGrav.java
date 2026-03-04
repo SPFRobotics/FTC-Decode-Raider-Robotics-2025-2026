@@ -19,10 +19,10 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerGrav;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Assets.Button;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Resources.MecanumChassis;
-import org.firstinspires.ftc.teamcode.Resources.Scroll;
+import org.firstinspires.ftc.teamcode.Assets.MecanumChassis;
+import org.firstinspires.ftc.teamcode.Assets.Scroll;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

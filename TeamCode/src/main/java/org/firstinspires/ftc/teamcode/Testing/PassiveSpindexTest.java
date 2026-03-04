@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Assets.Button;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
@@ -28,6 +28,9 @@ public class PassiveSpindexTest extends OpMode {
     Button kickerButton = new Button();
     PrintWriter pen = null;
     ElapsedTime runTime = null;
+    AnalogInput powerSwitch = null;
+    double maxVoltage = 0;
+
 
 
     @Config
@@ -42,6 +45,7 @@ public class PassiveSpindexTest extends OpMode {
         outtake = new Outtake(hardwareMap);
         intake = new Intake(hardwareMap);
         passiveKicker = new PassiveKicker(hardwareMap);
+        powerSwitch = hardwareMap.get(AnalogInput.class, "kickstandPos");
         try{
             pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
         }
@@ -72,6 +76,10 @@ public class PassiveSpindexTest extends OpMode {
         kicker.passive();
         spindex.setPower((-gamepad1.right_trigger + gamepad1.left_trigger)*speedMultiplyer);
         pen.write(runTime.milliseconds() + ":" + outtake.getRPM() + "\n");
+
+        maxVoltage = powerSwitch.getVoltage() > maxVoltage ? maxVoltage = powerSwitch.getVoltage() : maxVoltage;
+        telemetry.addLine("Max Voltage: " + maxVoltage);
+        telemetry.update();
     }
 
     public void stop(){

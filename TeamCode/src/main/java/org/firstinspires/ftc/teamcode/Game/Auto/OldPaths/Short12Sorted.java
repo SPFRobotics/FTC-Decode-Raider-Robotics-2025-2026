@@ -1,14 +1,13 @@
-package org.firstinspires.ftc.teamcode.Game.Auto;
+package org.firstinspires.ftc.teamcode.Game.Auto.OldPaths;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Resources.PedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -20,12 +19,14 @@ import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
-//@Autonomous(name = "Blue Short OBL", group = "Autonomous")
+//@Autonomous(name = "BS 12 Sorted", group = "Autonomous")
 @Configurable
-public class BlueShortObilisk extends OpMode {
+public class Short12Sorted extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final double INTAKE_SPEED = 0.25;
@@ -42,6 +43,11 @@ public class BlueShortObilisk extends OpMode {
     private ColorFetch colorSensor;
     private LedLights leds = null;
     private Limelight limelight;
+    private Turret turret;
+    private int detectedMotifId = -1;
+
+    // Preloaded ball colors in slot order (0, 1, 2).
+    private static final String PRELOAD_COLORS = "GPP";
 
     private int shotsFired = 0;
     private int ballsLoaded = 0;
@@ -50,9 +56,10 @@ public class BlueShortObilisk extends OpMode {
     private boolean shootingPrepared = false;
     private boolean flywheelStarted = false;
 
-    private int detectedMotifId = -1;
-    private static final double OBELISK_READ_TIMEOUT_MS = 2000;
-    private ElapsedTime obeliskReadTimer = new ElapsedTime();
+    //In order for feature that will unjam to ball to work correctly, it must be run in a loop. This variable is only used to enable and disable the intake and nothing more.
+    private boolean intakeEnabled = false;
+
+    ElapsedTime timer = null;
 
     private ElapsedTime override = new ElapsedTime();
 
@@ -71,27 +78,61 @@ public class BlueShortObilisk extends OpMode {
         colorSensor = new ColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
+        turret = new Turret(hardwareMap, true);
 
         spindex.setAutoLoadMode(true);
         outtake.resetKickerCycle();
         kicker.down();
+
+        FtcDashboard dash = FtcDashboard.getInstance();
+        telemetry = dash.getTelemetry();
+        telemetry.setMsTransmissionInterval(1);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
     }
 
     @Override
+    public void init_loop() {
+        int id = limelight.getMotifId();
+        if (id != -1) {
+            detectedMotifId = id;
+            panelsTelemetry.debug("Detected Motif", detectedMotifId);
+        }
+        else {
+            detectedMotifId = 21;
+            panelsTelemetry.addLine("No Motif Found");
+
+        }
+
+        panelsTelemetry.update(telemetry);
+    }
+
+    @Override
     public void start() {
+        timer = new ElapsedTime();
         pathState = 0;
         shotsFired = 0;
         ballsLoaded = 0;
         lastKickerCycles = 0;
-        detectedMotifId = -1;
 
-        intake.setPower(1);
+        if (detectedMotifId == -1) {
+            detectedMotifId = 21;
+        }
+        limelight.stop();
+
+        intakeEnabled = true;
         outtake.setRPM(SHOOT_RPM);
-        spindex.setMode(true);  // Pre-position spindex for shooting during travel
-        follower.followPath(paths.ReadObilisk, true);
+
+        for (int i = 0; i < 3; i++) {
+            spindex.setIndex(i);
+            spindex.setSlotColor(PRELOAD_COLORS.charAt(i));
+        }
+        spindex.setIndex(0);
+        spindex.setMode(true);
+        follower.followPath(paths.shootBallOne, true);
+        //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
+        //updateSpindex.start();
     }
 
     public void stop(){
@@ -104,13 +145,23 @@ public class BlueShortObilisk extends OpMode {
     @Override
     public void loop() {
         ElapsedTime time = new ElapsedTime();
+        if (intakeEnabled) {
+            intake.intakeOn(true);
+        }
+        else {
+            intake.intakeOff();
+        }
         follower.update();
         leds.cycleColors(10);
+        turret.aimAtGoal(
+                follower.getPose().getX(),
+                follower.getPose().getY(),
+                Math.toDegrees(follower.getPose().getHeading())
+        );
         autonomousPathUpdate();
         updateSpindexPosition();
 
         panelsTelemetry.debug("Path State", pathState);
-        panelsTelemetry.debug("Detected Motif", detectedMotifId);
         panelsTelemetry.debug("Shots Fired", shotsFired);
         panelsTelemetry.debug("Balls Loaded", ballsLoaded);
         panelsTelemetry.debug("X", follower.getPose().getX());
@@ -119,14 +170,24 @@ public class BlueShortObilisk extends OpMode {
         panelsTelemetry.debug("RPM", outtake.getRPM());
         panelsTelemetry.debug("Is Busy", follower.isBusy());
         panelsTelemetry.debug("Loop Time", time.milliseconds());
-        panelsTelemetry.update(telemetry);
+        panelsTelemetry.debug("Error", spindex.getError());
+        panelsTelemetry.debug("Motif ID", detectedMotifId);
+        panelsTelemetry.debug("Sort State", spindex.getAutoSortStateName());
+        panelsTelemetry.debug("Pattern Pos", spindex.getSortPatternIndex());
+        panelsTelemetry.debug("Slot Colors", "" + spindex.getSlotColors()[0] + spindex.getSlotColors()[1] + spindex.getSlotColors()[2]);
+        panelsTelemetry.debug("Turret Pos", turret.getCurrentPosition());
+        panelsTelemetry.debug("Turret Target", turret.getTargetPosition());
+        //panelsTelemetry.update(telemetry);
+
+        telemetry.addLine("Timer: " + timer.milliseconds());
+        telemetry.update();
     }
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
         }
     }
 
@@ -163,7 +224,6 @@ public class BlueShortObilisk extends OpMode {
                 waitingForSpindexAlign = false;
                 return true;
             }
-
             // Advance to next slot and wait for alignment
             spindex.addIndex();
             waitingForSpindexAlign = true;
@@ -186,6 +246,7 @@ public class BlueShortObilisk extends OpMode {
     private void prepareForIntake() {
         spindex.setMode(false);
         spindex.setIndex(0);
+        spindex.resetAutoSort();
         ballsLoaded = 0;
         for (int i = 0; i < 3; i++) {
             spindex.clearBall(i);
@@ -193,19 +254,19 @@ public class BlueShortObilisk extends OpMode {
     }
 
     private void prepareForShooting() {
-        spindex.setMode(true);
-        spindex.setIndex(0);
-        shotsFired = 0;
-        outtake.resetKickerCycle();
-        lastKickerCycles = 0;
-        waitingForSpindexAlign = false;
         outtake.setRPM(SHOOT_RPM);
+        outtake.resetKickerCycle();
+        spindex.setAutoSortActive(true);
     }
 
 
 
+
+
+
+
+
     public static class Paths {
-        public PathChain ReadObilisk;
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
         public PathChain intakeRowOne;
@@ -213,33 +274,26 @@ public class BlueShortObilisk extends OpMode {
         public PathChain RuntoRowTwo;
         public PathChain intakeRowTwo;
         public PathChain shootRowTwo;
-        public PathChain LeavePoints;
+        public PathChain RuntoRowThree;
+        public PathChain intakeRowThree;
+        public PathChain shootRowThree;
+        public PathChain Leave;
 
         public Paths(Follower follower) {
-            ReadObilisk = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierCurve(
-                                    new Pose(33.176, 134.442),
-                                    new Pose(33.431, 115.932),
-                                    new Pose(58.644, 113.473)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(78))
-
-                    .build();
-
             shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(58.644, 113.473),
-                                    new Pose(57.219, 102.810),
-                                    new Pose(57.674, 86.442)
+                                    new Pose(32.840, 134.827),
+                                    new Pose(44.095, 111.604),
+                                    new Pose(50.199, 93.721)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(78), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
 
                     .build();
 
             RunToRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(57.674, 86.442),
-                                    new Pose(51.231, 89.286),
+                                    new Pose(50.199, 93.721),
+                                    new Pose(44.279, 90.511),
                                     new Pose(43.525, 84.432)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
@@ -250,7 +304,7 @@ public class BlueShortObilisk extends OpMode {
                             new BezierLine(
                                     new Pose(43.525, 84.432),
 
-                                    new Pose(16.594, 84.000)
+                                    new Pose(21.315, 83.803)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -258,20 +312,19 @@ public class BlueShortObilisk extends OpMode {
 
             shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(16.594, 84.000),
-                                    new Pose(46.804, 84.684),
-                                    new Pose(53.281, 81.949),
-                                    new Pose(57.488, 86.140)
+                                    new Pose(21.315, 83.803),
+                                    new Pose(43.580, 78.653),
+                                    new Pose(50.210, 94.008)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
 
                     .build();
 
             RuntoRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierLine(
-                                    new Pose(57.488, 86.140),
-
-                                    new Pose(43.154, 59.681)
+                            new BezierCurve(
+                                    new Pose(50.210, 94.008),
+                                    new Pose(50.928, 70.505),
+                                    new Pose(43.977, 59.881)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
@@ -279,9 +332,9 @@ public class BlueShortObilisk extends OpMode {
 
             intakeRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
-                                    new Pose(43.154, 59.681),
+                                    new Pose(43.977, 59.881),
 
-                                    new Pose(17.607, 59.406)
+                                    new Pose(22.213, 59.787)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -289,20 +342,50 @@ public class BlueShortObilisk extends OpMode {
 
             shootRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(17.607, 59.406),
-                                    new Pose(23.994, 58.006),
-                                    new Pose(48.078, 64.834),
-                                    new Pose(57.488, 85.953)
+                                    new Pose(22.213, 59.787),
+                                    new Pose(35.011, 67.842),
+                                    new Pose(42.455, 76.637),
+                                    new Pose(50.406, 93.232)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
 
                     .build();
 
-            LeavePoints = follower.pathBuilder().setGlobalDeceleration().addPath(
+            RuntoRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(57.488, 85.953),
-                                    new Pose(49.743, 76.020),
-                                    new Pose(39.706, 71.911)
+                                    new Pose(50.406, 93.232),
+                                    new Pose(52.525, 48.393),
+                                    new Pose(44.105, 38.389)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+
+                    .build();
+
+            intakeRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierLine(
+                                    new Pose(44.105, 38.389),
+
+                                    new Pose(21.230, 35.672)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+
+                    .build();
+
+            shootRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierCurve(
+                                    new Pose(21.230, 35.672),
+                                    new Pose(39.623, 61.934),
+                                    new Pose(49.689, 93.541)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+
+                    .build();
+
+            Leave = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierCurve(
+                                    new Pose(49.689, 93.541),
+                                    new Pose(51.869, 78.893),
+                                    new Pose(43.721, 71.721)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
@@ -311,53 +394,41 @@ public class BlueShortObilisk extends OpMode {
     }
 
 
+
+
+
+
+
+
+
     public void autonomousPathUpdate() {
         switch (pathState) {
-            case 0: // Travel to obelisk reading position
-                if (!follower.isBusy()) {
-                    obeliskReadTimer.reset();
-                    pathState = 1;
-                }
-                break;
-
-            case 1: // Read obelisk using Limelight
-                int motifId = limelight.getMotifId();
-                if (motifId != -1) {
-                    detectedMotifId = motifId;
-                    panelsTelemetry.debug( "Motif ID: " + detectedMotifId);
-                    follower.followPath(paths.shootBallOne, true);
-                    pathState = 2;
-                } else if (obeliskReadTimer.milliseconds() > OBELISK_READ_TIMEOUT_MS) {
-                    detectedMotifId = 22;
-                    panelsTelemetry.debug("no motif detected");
-                    follower.followPath(paths.shootBallOne, true);
-                    pathState = 2;
-                }
-                break;
-
-            case 2: // Move to first shoot position (flywheel already spinning from start())
+            case 0: // Move to first shoot position (flywheel already spinning from start())
                 if (!follower.isBusy()) {
                     prepareForShooting();
+                    pathState = 1;
+                    //override.reset();
+                }
+                break;
+
+            case 1: // Shoot 3 preloaded balls (sorted by motif)
+                spindex.autoSort(outtake, detectedMotifId);
+                if (spindex.isAutoSortComplete()) {
+                    spindex.resetAutoSort();
+                    follower.followPath(paths.RunToRowOne, true);
+                    pathState = 2;
+                }
+                break;
+
+            case 2: // Run to row 1 intake position
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.intakeRowOne, INTAKE_SPEED, true);
                     pathState = 3;
                 }
                 break;
 
-            case 3: // Shoot 3 preloaded balls
-                if (shootBalls()) {
-                    follower.followPath(paths.RunToRowOne, true);
-                    pathState = 4;
-                }
-                break;
-
-            case 4: // Run to row 1 intake position
-                if (!follower.isBusy()) {
-                    prepareForIntake();
-                    follower.followPath(paths.intakeRowOne, INTAKE_SPEED, true);
-                    pathState = 5;
-                }
-                break;
-
-            case 5: // Intake row 1 (slow) - pre-spin flywheel during intake
+            case 3: // Intake row 1 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
@@ -368,32 +439,35 @@ public class BlueShortObilisk extends OpMode {
                     spindex.setIndex(0);
                     flywheelStarted = false;
                     follower.followPath(paths.shootRowOne, true);
-                    pathState = 6;
+                    pathState = 4;
                 }
                 break;
 
-            case 6: // Move to shoot position + shoot row 1 balls
+            case 4: // Move to shoot position + shoot row 1 balls (sorted)
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
                 }
-                // Only shoot once path completes and robot is in position
-                if (!follower.isBusy() && shootBalls()) {
+                if (!follower.isBusy()) {
+                    spindex.autoSort(outtake, detectedMotifId);
+                }
+                if (spindex.isAutoSortComplete()) {
+                    spindex.resetAutoSort();
                     shootingPrepared = false;
                     follower.followPath(paths.RuntoRowTwo, true);
-                    pathState = 7;
+                    pathState = 5;
                 }
                 break;
 
-            case 7: // Run to row 2 intake position
+            case 5: // Run to row 2 intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
                     follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
-                    pathState = 8;
+                    pathState = 6;
                 }
                 break;
 
-            case 8: // Intake row 2 (slow) - pre-spin flywheel during intake
+            case 6: // Intake row 2 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
@@ -404,39 +478,83 @@ public class BlueShortObilisk extends OpMode {
                     spindex.setIndex(0);
                     flywheelStarted = false;
                     follower.followPath(paths.shootRowTwo, true);
-                    pathState = 9;
+                    pathState = 7;
                 }
                 break;
 
-            case 9: // Move to shoot position + shoot row 2 balls
+            case 7: // Move to shoot position + shoot row 2 balls (sorted)
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
                 }
-                if (!follower.isBusy() && shootBalls()) {
+                if (!follower.isBusy()) {
+                    spindex.autoSort(outtake, detectedMotifId);
+                }
+                if (spindex.isAutoSortComplete()) {
+                    spindex.resetAutoSort();
                     shootingPrepared = false;
-                    follower.followPath(paths.LeavePoints, true);
+                    follower.followPath(paths.RuntoRowThree, true);
+                    pathState = 8;
+                }
+                break;
+
+            case 8: // Run to row 3 intake position
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.intakeRowThree, INTAKE_SPEED, true);
+                    pathState = 9;
+                }
+                break;
+
+            case 9: // Intake row 3 (slow) - pre-spin flywheel during intake
+                runIntake();
+                if (!flywheelStarted) {
+                    outtake.setRPM(SHOOT_RPM);
+                    flywheelStarted = true;
+                }
+                if (!follower.isBusy()) {
+                    spindex.setMode(true);
+                    spindex.setIndex(0);
+                    flywheelStarted = false;
+                    follower.followPath(paths.shootRowThree, true);
                     pathState = 10;
                 }
                 break;
 
-            case 10: // Leave for points
+            case 10: // Move to shoot position + shoot row 3 balls (sorted)
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                }
                 if (!follower.isBusy()) {
+                    spindex.autoSort(outtake, detectedMotifId);
+                }
+                if (spindex.isAutoSortComplete()) {
+                    spindex.resetAutoSort();
+                    shootingPrepared = false;
+                    follower.followPath(paths.Leave, true);
                     pathState = 11;
                 }
                 break;
 
-            case 11: // Done
+            case 11: // Leave for points
+                if (!follower.isBusy()) {
+                    pathState = 12;
+                }
+                break;
+
+            case 12: // Done
                 outtake.setRPM(0);
-                intake.setPower(0);
+                turret.setPower(0);
+                intakeEnabled = false;
                 kicker.down();
-                limelight.stop();
                 requestOpModeStop();
                 break;
 
             default:
                 outtake.setRPM(0);
-                intake.setPower(0);
+                turret.setPower(0);
+                intakeEnabled = false;
                 break;
         }
     }
