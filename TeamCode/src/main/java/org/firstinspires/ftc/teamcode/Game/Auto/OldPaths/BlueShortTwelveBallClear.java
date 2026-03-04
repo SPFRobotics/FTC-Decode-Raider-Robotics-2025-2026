@@ -1,33 +1,28 @@
-package org.firstinspires.ftc.teamcode.Game.Auto;
+package org.firstinspires.ftc.teamcode.Game.Auto.OldPaths;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
-
-import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
+import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
-@Autonomous(name = "BS 12 Sorted", group = "Autonomous")
+//@Autonomous(name = "Blue Short 12 Ball Clear", group = "Autonomous")
 @Configurable
-public class Short12Sorted extends OpMode {
+public class BlueShortTwelveBallClear extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final double INTAKE_SPEED = 0.25;
@@ -43,12 +38,6 @@ public class Short12Sorted extends OpMode {
     private KickerSpindex kicker;
     private ColorFetch colorSensor;
     private LedLights leds = null;
-    private Limelight limelight;
-    private Turret turret;
-    private int detectedMotifId = -1;
-
-    // Preloaded ball colors in slot order (0, 1, 2).
-    private static final String PRELOAD_COLORS = "GPP";
 
     private int shotsFired = 0;
     private int ballsLoaded = 0;
@@ -60,9 +49,9 @@ public class Short12Sorted extends OpMode {
     //In order for feature that will unjam to ball to work correctly, it must be run in a loop. This variable is only used to enable and disable the intake and nothing more.
     private boolean intakeEnabled = false;
 
-    ElapsedTime timer = null;
-
     private ElapsedTime override = new ElapsedTime();
+    private ElapsedTime clearRampTimer = new ElapsedTime();
+    private boolean clearRampWaiting = false;
 
     @Override
     public void init() {
@@ -78,59 +67,25 @@ public class Short12Sorted extends OpMode {
         outtake = new Outtake(hardwareMap, kicker);
         colorSensor = new ColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
-        limelight = new Limelight(hardwareMap);
-        turret = new Turret(hardwareMap, true);
 
         spindex.setAutoLoadMode(true);
         outtake.resetKickerCycle();
         kicker.down();
-
-        FtcDashboard dash = FtcDashboard.getInstance();
-        telemetry = dash.getTelemetry();
-        telemetry.setMsTransmissionInterval(1);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
     }
 
     @Override
-    public void init_loop() {
-        int id = limelight.getMotifId();
-        if (id != -1) {
-            detectedMotifId = id;
-            panelsTelemetry.debug("Detected Motif", detectedMotifId);
-        }
-        else {
-            detectedMotifId = 21;
-            panelsTelemetry.addLine("No Motif Found");
-
-        }
-
-        panelsTelemetry.update(telemetry);
-    }
-
-    @Override
     public void start() {
-        timer = new ElapsedTime();
         pathState = 0;
         shotsFired = 0;
         ballsLoaded = 0;
         lastKickerCycles = 0;
 
-        if (detectedMotifId == -1) {
-            detectedMotifId = 21;
-        }
-        limelight.stop();
-
         intakeEnabled = true;
         outtake.setRPM(SHOOT_RPM);
-
-        for (int i = 0; i < 3; i++) {
-            spindex.setIndex(i);
-            spindex.setSlotColor(PRELOAD_COLORS.charAt(i));
-        }
-        spindex.setIndex(0);
-        spindex.setMode(true);
+        spindex.setMode(true);  // Pre-position spindex for shooting during travel
         follower.followPath(paths.shootBallOne, true);
         //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         //updateSpindex.start();
@@ -154,11 +109,6 @@ public class Short12Sorted extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
-        turret.aimAtGoal(
-                follower.getPose().getX(),
-                follower.getPose().getY(),
-                Math.toDegrees(follower.getPose().getHeading())
-        );
         autonomousPathUpdate();
         updateSpindexPosition();
 
@@ -172,23 +122,14 @@ public class Short12Sorted extends OpMode {
         panelsTelemetry.debug("Is Busy", follower.isBusy());
         panelsTelemetry.debug("Loop Time", time.milliseconds());
         panelsTelemetry.debug("Error", spindex.getError());
-        panelsTelemetry.debug("Motif ID", detectedMotifId);
-        panelsTelemetry.debug("Sort State", spindex.getAutoSortStateName());
-        panelsTelemetry.debug("Pattern Pos", spindex.getSortPatternIndex());
-        panelsTelemetry.debug("Slot Colors", "" + spindex.getSlotColors()[0] + spindex.getSlotColors()[1] + spindex.getSlotColors()[2]);
-        panelsTelemetry.debug("Turret Pos", turret.getCurrentPosition());
-        panelsTelemetry.debug("Turret Target", turret.getTargetPosition());
-        //panelsTelemetry.update(telemetry);
-
-        telemetry.addLine("Timer: " + timer.milliseconds());
-        telemetry.update();
+        panelsTelemetry.update(telemetry);
     }
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
         }
     }
 
@@ -225,6 +166,7 @@ public class Short12Sorted extends OpMode {
                 waitingForSpindexAlign = false;
                 return true;
             }
+
             // Advance to next slot and wait for alignment
             spindex.addIndex();
             waitingForSpindexAlign = true;
@@ -247,7 +189,6 @@ public class Short12Sorted extends OpMode {
     private void prepareForIntake() {
         spindex.setMode(false);
         spindex.setIndex(0);
-        spindex.resetAutoSort();
         ballsLoaded = 0;
         for (int i = 0; i < 3; i++) {
             spindex.clearBall(i);
@@ -255,10 +196,15 @@ public class Short12Sorted extends OpMode {
     }
 
     private void prepareForShooting() {
-        outtake.setRPM(SHOOT_RPM);
+        spindex.setMode(true);
+        spindex.setIndex(0);
+        shotsFired = 0;
         outtake.resetKickerCycle();
-        spindex.setAutoSortActive(true);
+        lastKickerCycles = 0;
+        waitingForSpindexAlign = false;
+        outtake.setRPM(SHOOT_RPM);
     }
+
 
 
 
@@ -271,6 +217,7 @@ public class Short12Sorted extends OpMode {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
         public PathChain intakeRowOne;
+        public PathChain ClearRamp;
         public PathChain shootRowOne;
         public PathChain RuntoRowTwo;
         public PathChain intakeRowTwo;
@@ -283,11 +230,11 @@ public class Short12Sorted extends OpMode {
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(32.840, 134.827),
+                                    new Pose(39.000, 134.442),
                                     new Pose(44.095, 111.604),
                                     new Pose(50.199, 93.721)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(78), Math.toRadians(135))
 
                     .build();
 
@@ -311,13 +258,24 @@ public class Short12Sorted extends OpMode {
 
                     .build();
 
-            shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
+            ClearRamp = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(21.315, 83.803),
+                                    new Pose(22.938, 80.656),
+                                    new Pose(23.627, 76.557),
+                                    new Pose(15.414, 77.508)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
+
+                    .build();
+
+            shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierCurve(
+                                    new Pose(15.414, 77.508),
                                     new Pose(43.580, 78.653),
                                     new Pose(50.210, 94.008)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
 
                     .build();
 
@@ -355,8 +313,8 @@ public class Short12Sorted extends OpMode {
             RuntoRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(50.406, 93.232),
-                                    new Pose(52.525, 48.393),
-                                    new Pose(44.105, 38.389)
+                                    new Pose(51.738, 64.721),
+                                    new Pose(45.875, 35.242)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
@@ -364,7 +322,7 @@ public class Short12Sorted extends OpMode {
 
             intakeRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
-                                    new Pose(44.105, 38.389),
+                                    new Pose(45.875, 35.242),
 
                                     new Pose(21.230, 35.672)
                             )
@@ -412,10 +370,8 @@ public class Short12Sorted extends OpMode {
                 }
                 break;
 
-            case 1: // Shoot 3 preloaded balls (sorted by motif)
-                spindex.autoSort(outtake, detectedMotifId);
-                if (spindex.isAutoSortComplete()) {
-                    spindex.resetAutoSort();
+            case 1: // Shoot 3 preloaded balls
+                if (shootBalls()) {
                     follower.followPath(paths.RunToRowOne, true);
                     pathState = 2;
                 }
@@ -436,39 +392,53 @@ public class Short12Sorted extends OpMode {
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.setMode(true);
-                    spindex.setIndex(0);
                     flywheelStarted = false;
-                    follower.followPath(paths.shootRowOne, true);
+                    follower.followPath(paths.ClearRamp, 1, true);
                     pathState = 4;
                 }
                 break;
 
-            case 4: // Move to shoot position + shoot row 1 balls (sorted)
-                if (!shootingPrepared) {
-                    prepareForShooting();
-                    shootingPrepared = true;
-                }
+            case 4: // Clear ramp (empty ramp) - continue intaking
+                runIntake();
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId);
-                }
-                if (spindex.isAutoSortComplete()) {
-                    spindex.resetAutoSort();
-                    shootingPrepared = false;
-                    follower.followPath(paths.RuntoRowTwo, true);
-                    pathState = 5;
+                    if (!clearRampWaiting) {
+                        clearRampTimer.reset();
+                        clearRampWaiting = true;
+                    }
+                    if (clearRampTimer.milliseconds() >= 500) {
+                        clearRampWaiting = false;
+                        spindex.setMode(true);
+                        spindex.setIndex(0);
+                        follower.followPath(paths.shootRowOne, true);
+                        pathState = 5;
+                    }
                 }
                 break;
 
-            case 5: // Run to row 2 intake position
-                if (!follower.isBusy()) {
-                    prepareForIntake();
-                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
+            case 5: // Move to shoot position + shoot row 1 balls
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                    //override.reset();
+                }
+                // Only shoot once path completes and robot is in position
+                if (!follower.isBusy() && shootBalls()) {
+
+                    shootingPrepared = false;
+                    follower.followPath(paths.RuntoRowTwo, true);
                     pathState = 6;
                 }
                 break;
 
-            case 6: // Intake row 2 (slow) - pre-spin flywheel during intake
+            case 6: // Run to row 2 intake position
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
+                    pathState = 7;
+                }
+                break;
+
+            case 7: // Intake row 2 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
@@ -479,35 +449,32 @@ public class Short12Sorted extends OpMode {
                     spindex.setIndex(0);
                     flywheelStarted = false;
                     follower.followPath(paths.shootRowTwo, true);
-                    pathState = 7;
-                }
-                break;
-
-            case 7: // Move to shoot position + shoot row 2 balls (sorted)
-                if (!shootingPrepared) {
-                    prepareForShooting();
-                    shootingPrepared = true;
-                }
-                if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId);
-                }
-                if (spindex.isAutoSortComplete()) {
-                    spindex.resetAutoSort();
-                    shootingPrepared = false;
-                    follower.followPath(paths.RuntoRowThree, true);
                     pathState = 8;
                 }
                 break;
 
-            case 8: // Run to row 3 intake position
-                if (!follower.isBusy()) {
-                    prepareForIntake();
-                    follower.followPath(paths.intakeRowThree, INTAKE_SPEED, true);
+            case 8: // Move to shoot position + shoot row 2 balls
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                    //override.reset();
+                }
+                if (!follower.isBusy() && shootBalls()) {
+                    shootingPrepared = false;
+                    follower.followPath(paths.RuntoRowThree, true);
                     pathState = 9;
                 }
                 break;
 
-            case 9: // Intake row 3 (slow) - pre-spin flywheel during intake
+            case 9: // Run to row 3 intake position
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.intakeRowThree, INTAKE_SPEED, true);
+                    pathState = 10;
+                }
+                break;
+
+            case 10: // Intake row 3 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
@@ -518,35 +485,31 @@ public class Short12Sorted extends OpMode {
                     spindex.setIndex(0);
                     flywheelStarted = false;
                     follower.followPath(paths.shootRowThree, true);
-                    pathState = 10;
-                }
-                break;
-
-            case 10: // Move to shoot position + shoot row 3 balls (sorted)
-                if (!shootingPrepared) {
-                    prepareForShooting();
-                    shootingPrepared = true;
-                }
-                if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId);
-                }
-                if (spindex.isAutoSortComplete()) {
-                    spindex.resetAutoSort();
-                    shootingPrepared = false;
-                    follower.followPath(paths.Leave, true);
                     pathState = 11;
                 }
                 break;
 
-            case 11: // Leave for points
-                if (!follower.isBusy()) {
+            case 11: // Move to shoot position + shoot row 3 balls
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                    //override.reset();
+                }
+                if (!follower.isBusy() && shootBalls()) {
+                    shootingPrepared = false;
+                    follower.followPath(paths.Leave, true);
                     pathState = 12;
                 }
                 break;
 
-            case 12: // Done
+            case 12: // Leave for points
+                if (!follower.isBusy()) {
+                    pathState = 13;
+                }
+                break;
+
+            case 13: // Done
                 outtake.setRPM(0);
-                turret.setPower(0);
                 intakeEnabled = false;
                 kicker.down();
                 requestOpModeStop();
@@ -554,7 +517,6 @@ public class Short12Sorted extends OpMode {
 
             default:
                 outtake.setRPM(0);
-                turret.setPower(0);
                 intakeEnabled = false;
                 break;
         }

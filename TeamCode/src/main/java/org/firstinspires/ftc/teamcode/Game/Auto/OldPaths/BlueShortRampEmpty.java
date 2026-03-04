@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode.Game.Auto;
+package org.firstinspires.ftc.teamcode.Game.Auto.OldPaths;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -21,16 +19,11 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-
-@Autonomous(name = "Blue Short 12 Ball Turret", group = "Autonomous")
+//@Autonomous(name = "Blue Short (Ramp Empty)", group = "Autonomous")
 @Configurable
-public class Turret12BallBlueShort extends OpMode {
+public class BlueShortRampEmpty extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final double INTAKE_SPEED = 0.25;
@@ -41,7 +34,6 @@ public class Turret12BallBlueShort extends OpMode {
     private int pathState;
 
     private Spindex spindex;
-    private Turret turret;
     private Outtake outtake;
     private Intake intake;
     private KickerSpindex kicker;
@@ -58,20 +50,18 @@ public class Turret12BallBlueShort extends OpMode {
     //In order for feature that will unjam to ball to work correctly, it must be run in a loop. This variable is only used to enable and disable the intake and nothing more.
     private boolean intakeEnabled = false;
 
-    ElapsedTime timer = null;
-
-    PrintWriter pen;
-
     private ElapsedTime override = new ElapsedTime();
+    private ElapsedTime clearRampTimer = new ElapsedTime();
+    private boolean clearRampWaiting = false;
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(270)));
+        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
-        turret = new Turret(hardwareMap, true);
+
         spindex = new Spindex(hardwareMap);
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
@@ -83,32 +73,12 @@ public class Turret12BallBlueShort extends OpMode {
         outtake.resetKickerCycle();
         kicker.down();
 
-        FtcDashboard dash = FtcDashboard.getInstance();
-        telemetry = dash.getTelemetry();
-        telemetry.setMsTransmissionInterval(1);
-
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
-
-        try {
-            pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
-        } catch (
-                FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (
-                UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void init_loop(){
-        outtake.setRPM(2700);
-
     }
 
     @Override
     public void start() {
-        timer = new ElapsedTime();
         pathState = 0;
         shotsFired = 0;
         ballsLoaded = 0;
@@ -127,7 +97,6 @@ public class Turret12BallBlueShort extends OpMode {
         PoseStorage.blueAlliance = true;
         PoseStorage.redAlliance = false;
         //spindex.exitProgram();
-        pen.close();
     }
 
     @Override
@@ -140,8 +109,7 @@ public class Turret12BallBlueShort extends OpMode {
             intake.intakeOff();
         }
         follower.update();
-        turret.aimAtGoal(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading());
-        leds.cycleColors(10);
+        leds.cycleColors(0.1);
         autonomousPathUpdate();
         updateSpindexPosition();
 
@@ -155,19 +123,14 @@ public class Turret12BallBlueShort extends OpMode {
         panelsTelemetry.debug("Is Busy", follower.isBusy());
         panelsTelemetry.debug("Loop Time", time.milliseconds());
         panelsTelemetry.debug("Error", spindex.getError());
-        //panelsTelemetry.update(telemetry);
-
-        telemetry.addLine("Timer: " + timer.milliseconds());
-        telemetry.update();
-
-        pen.write(timer.milliseconds() + ":" + outtake.getRPM() + ":" + (kicker.getState()) + "\n");
+        panelsTelemetry.update(telemetry);
     }
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
         }
     }
 
@@ -204,6 +167,7 @@ public class Turret12BallBlueShort extends OpMode {
                 waitingForSpindexAlign = false;
                 return true;
             }
+
             // Advance to next slot and wait for alignment
             spindex.addIndex();
             waitingForSpindexAlign = true;
@@ -244,139 +208,116 @@ public class Turret12BallBlueShort extends OpMode {
 
 
 
-
-
-
-
-
     public static class Paths {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
         public PathChain intakeRowOne;
+        public PathChain ClearRamp;
         public PathChain shootRowOne;
         public PathChain RuntoRowTwo;
         public PathChain intakeRowTwo;
         public PathChain shootRowTwo;
-        public PathChain RuntoRowThree;
-        public PathChain intakeRowThree;
-        public PathChain shootRowThree;
-        public PathChain Leave;
+        public PathChain LeavePoints;
 
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierLine(
-                                    new Pose(33.091, 134.096),
-
-                                    new Pose(52.535, 89.134)
+                            new BezierCurve(
+                                    new Pose(33.659, 134.031),
+                                    new Pose(42.405, 109.179),
+                                    new Pose(50.8, 91.577)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(270), Math.toRadians(-123))
+                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
 
                     .build();
 
             RunToRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(52.535, 89.134),
-                                    new Pose(49.329, 84.075),
-                                    new Pose(41.118, 84.182)
+                                    new Pose(57.674, 86.442),
+                                    new Pose(47.477, 92.547),
+                                    new Pose(43.525, 84.432)
                             )
-                    ).setTangentHeadingInterpolation()
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
 
             intakeRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
-                                    new Pose(41.118, 84.182),
+                                    new Pose(43.525, 84.432),
 
-                                    new Pose(26.642, 84.086)
+                                    new Pose(16.594, 84.000)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
+            ClearRamp = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierCurve(
+                                    new Pose(16.594, 84.000),
+                                    new Pose(25.666, 76.886),
+                                    new Pose(14.856, 75.210)
+
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+
+                    .build();
+
+
+
             shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(26.642, 84.086),
-                                    new Pose(49.348, 83.473),
-                                    new Pose(52.503, 88.861)
+                                    new Pose(14.856, 75.210),
+                                    new Pose(50.268, 79.855),
+                                    new Pose(57.488, 86.140)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-79))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
 
                     .build();
 
             RuntoRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(52.503, 88.861),
-                                    new Pose(57.874, 73.890),
-                                    new Pose(54.757, 59.869),
-                                    new Pose(42.529, 59.989)
+                                    new Pose(57.488, 86.140),
+                                    new Pose(63.461, 79.883),
+                                    new Pose(53.994, 63.644),
+                                    new Pose(44.961, 59.881)
                             )
-                    ).setTangentHeadingInterpolation()
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
 
             intakeRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
-                                    new Pose(42.529, 59.989),
+                                    new Pose(44.961, 59.881),
 
-                                    new Pose(27.080, 59.209)
+                                    new Pose(11.983, 58.803)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
             shootRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierLine(
-                                    new Pose(27.080, 59.209),
-
-                                    new Pose(52.412, 89.717)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-67))
-
-                    .build();
-
-            RuntoRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(52.412, 89.717),
-                                    new Pose(67.864, 54.497),
-                                    new Pose(54.115, 36.856),
-                                    new Pose(45.880, 35.353),
-                                    new Pose(41.348, 35.364)
+                                    new Pose(11.983, 58.803),
+                                    new Pose(24.405, 60.676),
+                                    new Pose(43.056, 73.256),
+                                    new Pose(57.488, 85.953)
                             )
-                    ).setTangentHeadingInterpolation()
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
 
                     .build();
 
-            intakeRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierLine(
-                                    new Pose(41.348, 35.364),
-
-                                    new Pose(26.166, 35.011)
+            LeavePoints = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierCurve(
+                                    new Pose(57.488, 85.953),
+                                    new Pose(46.087, 74.436),
+                                    new Pose(23.639, 70.104)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(179), Math.toRadians(179))
-
-                    .build();
-
-            shootRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierLine(
-                                    new Pose(26.166, 35.011),
-
-                                    new Pose(53.583, 113.144)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(179), Math.toRadians(180))
-
-                    .build();
-
-            Leave = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierLine(
-                                    new Pose(53.583, 113.144),
-
-                                    new Pose(52.711, 110.882)
-                            )
-                    ).setTangentHeadingInterpolation()
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
         }
     }
+
+
 
 
 
@@ -412,15 +353,30 @@ public class Turret12BallBlueShort extends OpMode {
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.setMode(true);
-                    spindex.setIndex(0);
                     flywheelStarted = false;
-                    follower.followPath(paths.shootRowOne, true);
+                    follower.followPath(paths.ClearRamp, .5, true);
                     pathState = 4;
                 }
                 break;
 
-            case 4: // Move to shoot position + shoot row 1 balls
+            case 4: // Clear ramp (empty ramp) - continue intaking
+                runIntake();
+                if (!follower.isBusy()) {
+                    if (!clearRampWaiting) {
+                        clearRampTimer.reset();
+                        clearRampWaiting = true;
+                    }
+                    if (clearRampTimer.milliseconds() >= 500) {
+                        clearRampWaiting = false;
+                        spindex.setMode(true);
+                        spindex.setIndex(0);
+                        follower.followPath(paths.shootRowOne, true);
+                        pathState = 5;
+                    }
+                }
+                break;
+
+            case 5: // Move to shoot position + shoot row 1 balls
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
@@ -431,19 +387,19 @@ public class Turret12BallBlueShort extends OpMode {
 
                     shootingPrepared = false;
                     follower.followPath(paths.RuntoRowTwo, true);
-                    pathState = 5;
-                }
-                break;
-
-            case 5: // Run to row 2 intake position
-                if (!follower.isBusy()) {
-                    prepareForIntake();
-                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
                     pathState = 6;
                 }
                 break;
 
-            case 6: // Intake row 2 (slow) - pre-spin flywheel during intake
+            case 6: // Run to row 2 intake position
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
+                    pathState = 7;
+                }
+                break;
+
+            case 7: // Intake row 2 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
@@ -454,47 +410,11 @@ public class Turret12BallBlueShort extends OpMode {
                     spindex.setIndex(0);
                     flywheelStarted = false;
                     follower.followPath(paths.shootRowTwo, true);
-                    pathState = 7;
-                }
-                break;
-
-            case 7: // Move to shoot position + shoot row 2 balls
-                if (!shootingPrepared) {
-                    prepareForShooting();
-                    shootingPrepared = true;
-                    //override.reset();
-                }
-                if (!follower.isBusy() && shootBalls()) {
-                    shootingPrepared = false;
-                    follower.followPath(paths.RuntoRowThree, true);
                     pathState = 8;
                 }
                 break;
 
-            case 8: // Run to row 3 intake position
-                if (!follower.isBusy()) {
-                    prepareForIntake();
-                    follower.followPath(paths.intakeRowThree, INTAKE_SPEED, true);
-                    pathState = 9;
-                }
-                break;
-
-            case 9: // Intake row 3 (slow) - pre-spin flywheel during intake
-                runIntake();
-                if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
-                    flywheelStarted = true;
-                }
-                if (!follower.isBusy()) {
-                    spindex.setMode(true);
-                    spindex.setIndex(0);
-                    flywheelStarted = false;
-                    follower.followPath(paths.shootRowThree, true);
-                    pathState = 10;
-                }
-                break;
-
-            case 10: // Move to shoot position + shoot row 3 balls
+            case 8: // Move to shoot position + shoot row 2 balls
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
@@ -502,18 +422,18 @@ public class Turret12BallBlueShort extends OpMode {
                 }
                 if (!follower.isBusy() && shootBalls()) {
                     shootingPrepared = false;
-                    follower.followPath(paths.Leave, true);
-                    pathState = 11;
+                    follower.followPath(paths.LeavePoints, true);
+                    pathState = 9;
                 }
                 break;
 
-            case 11: // Leave for points
+            case 9: // Leave for points
                 if (!follower.isBusy()) {
-                    pathState = 12;
+                    pathState = 10;
                 }
                 break;
 
-            case 12: // Done
+            case 10: // Done
                 outtake.setRPM(0);
                 intakeEnabled = false;
                 kicker.down();

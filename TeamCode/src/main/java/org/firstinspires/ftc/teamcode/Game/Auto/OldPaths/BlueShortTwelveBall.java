@@ -1,31 +1,38 @@
-package org.firstinspires.ftc.teamcode.Game.Auto;
+package org.firstinspires.ftc.teamcode.Game.Auto.OldPaths;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.bylazar.telemetry.PanelsTelemetry;
+
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
-//@Autonomous(name = "Blue Short 12 Ball Clear", group = "Autonomous")
-@Configurable
-public class BlueShortTwelveBallClear extends OpMode {
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
-    private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
-    private static final double INTAKE_SPEED = 0.25;
+//@Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
+@Configurable
+public class BlueShortTwelveBall extends OpMode {
+
+    private static final double ShootRPM = Outtake.OuttakeConfig.closeRPM;
+    private static final double IntakeSpeed = 0.25;
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -33,6 +40,7 @@ public class BlueShortTwelveBallClear extends OpMode {
     private int pathState;
 
     private Spindex spindex;
+    private Turret turret;
     private Outtake outtake;
     private Intake intake;
     private KickerSpindex kicker;
@@ -49,9 +57,11 @@ public class BlueShortTwelveBallClear extends OpMode {
     //In order for feature that will unjam to ball to work correctly, it must be run in a loop. This variable is only used to enable and disable the intake and nothing more.
     private boolean intakeEnabled = false;
 
+    ElapsedTime timer = null;
+
     private ElapsedTime override = new ElapsedTime();
-    private ElapsedTime clearRampTimer = new ElapsedTime();
-    private boolean clearRampWaiting = false;
+
+    PrintWriter pen;
 
     @Override
     public void init() {
@@ -60,11 +70,11 @@ public class BlueShortTwelveBallClear extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
-
+        turret = new Turret(hardwareMap, true);
         spindex = new Spindex(hardwareMap);
+        outtake = new Outtake(hardwareMap, kicker);
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
-        outtake = new Outtake(hardwareMap, kicker);
         colorSensor = new ColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
 
@@ -72,19 +82,38 @@ public class BlueShortTwelveBallClear extends OpMode {
         outtake.resetKickerCycle();
         kicker.down();
 
+        FtcDashboard dash = FtcDashboard.getInstance();
+        telemetry = dash.getTelemetry();
+        telemetry.setMsTransmissionInterval(1);
+
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+        try{
+            pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
+        }
+        catch (FileNotFoundException e){
+            throw new RuntimeException("File not found!");
+        }
+        catch (UnsupportedEncodingException e){
+            throw new RuntimeException("Invalid character encoding");
+        }
+    }
+
+    public void init_loop(){
+        outtake.setRPM(ShootRPM);
+
     }
 
     @Override
     public void start() {
+        timer = new ElapsedTime();
         pathState = 0;
         shotsFired = 0;
         ballsLoaded = 0;
         lastKickerCycles = 0;
 
         intakeEnabled = true;
-        outtake.setRPM(SHOOT_RPM);
+        outtake.setRPM(ShootRPM);
         spindex.setMode(true);  // Pre-position spindex for shooting during travel
         follower.followPath(paths.shootBallOne, true);
         //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
@@ -96,6 +125,7 @@ public class BlueShortTwelveBallClear extends OpMode {
         PoseStorage.blueAlliance = true;
         PoseStorage.redAlliance = false;
         //spindex.exitProgram();
+        pen.close();
     }
 
     @Override
@@ -108,6 +138,7 @@ public class BlueShortTwelveBallClear extends OpMode {
             intake.intakeOff();
         }
         follower.update();
+        turret.aimAtGoalManual(0);
         leds.cycleColors(10);
         autonomousPathUpdate();
         updateSpindexPosition();
@@ -122,14 +153,18 @@ public class BlueShortTwelveBallClear extends OpMode {
         panelsTelemetry.debug("Is Busy", follower.isBusy());
         panelsTelemetry.debug("Loop Time", time.milliseconds());
         panelsTelemetry.debug("Error", spindex.getError());
-        panelsTelemetry.update(telemetry);
+        //panelsTelemetry.update(telemetry);
+
+        telemetry.addLine("Timer: " + timer.milliseconds());
+        telemetry.update();
+        pen.write(timer.milliseconds() + ":" + outtake.getRPM() + ":" + (kicker.getState() + "\n"));
     }
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
         }
     }
 
@@ -149,7 +184,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
         // Only run kicker cycle when aligned
         if (!spindex.isBusy()) {
-            outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
+            outtake.enableSpindexKickerCycle(true, ShootRPM);
         }
 
         // When a shot completes, advance to next slot
@@ -166,7 +201,6 @@ public class BlueShortTwelveBallClear extends OpMode {
                 waitingForSpindexAlign = false;
                 return true;
             }
-
             // Advance to next slot and wait for alignment
             spindex.addIndex();
             waitingForSpindexAlign = true;
@@ -202,9 +236,8 @@ public class BlueShortTwelveBallClear extends OpMode {
         outtake.resetKickerCycle();
         lastKickerCycles = 0;
         waitingForSpindexAlign = false;
-        outtake.setRPM(SHOOT_RPM);
+        outtake.setRPM(ShootRPM);
     }
-
 
 
 
@@ -217,7 +250,6 @@ public class BlueShortTwelveBallClear extends OpMode {
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
         public PathChain intakeRowOne;
-        public PathChain ClearRamp;
         public PathChain shootRowOne;
         public PathChain RuntoRowTwo;
         public PathChain intakeRowTwo;
@@ -230,11 +262,11 @@ public class BlueShortTwelveBallClear extends OpMode {
         public Paths(Follower follower) {
             shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(39.000, 134.442),
+                                    new Pose(32.840, 134.827),
                                     new Pose(44.095, 111.604),
                                     new Pose(50.199, 93.721)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(78), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
 
                     .build();
 
@@ -258,24 +290,13 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     .build();
 
-            ClearRamp = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierCurve(
-                                    new Pose(21.315, 83.803),
-                                    new Pose(22.938, 80.656),
-                                    new Pose(23.627, 76.557),
-                                    new Pose(15.414, 77.508)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
-
-                    .build();
-
             shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(15.414, 77.508),
+                                    new Pose(21.315, 83.803),
                                     new Pose(43.580, 78.653),
                                     new Pose(50.210, 94.008)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
 
                     .build();
 
@@ -313,8 +334,8 @@ public class BlueShortTwelveBallClear extends OpMode {
             RuntoRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
                                     new Pose(50.406, 93.232),
-                                    new Pose(51.738, 64.721),
-                                    new Pose(45.875, 35.242)
+                                    new Pose(52.525, 48.393),
+                                    new Pose(44.105, 38.389)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
@@ -322,7 +343,7 @@ public class BlueShortTwelveBallClear extends OpMode {
 
             intakeRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierLine(
-                                    new Pose(45.875, 35.242),
+                                    new Pose(44.105, 38.389),
 
                                     new Pose(21.230, 35.672)
                             )
@@ -380,7 +401,7 @@ public class BlueShortTwelveBallClear extends OpMode {
             case 2: // Run to row 1 intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
-                    follower.followPath(paths.intakeRowOne, INTAKE_SPEED, true);
+                    follower.followPath(paths.intakeRowOne, IntakeSpeed, true);
                     pathState = 3;
                 }
                 break;
@@ -388,34 +409,19 @@ public class BlueShortTwelveBallClear extends OpMode {
             case 3: // Intake row 1 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
+                    outtake.setRPM(ShootRPM);
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
+                    spindex.setMode(true);
+                    spindex.setIndex(0);
                     flywheelStarted = false;
-                    follower.followPath(paths.ClearRamp, 1, true);
+                    follower.followPath(paths.shootRowOne, true);
                     pathState = 4;
                 }
                 break;
 
-            case 4: // Clear ramp (empty ramp) - continue intaking
-                runIntake();
-                if (!follower.isBusy()) {
-                    if (!clearRampWaiting) {
-                        clearRampTimer.reset();
-                        clearRampWaiting = true;
-                    }
-                    if (clearRampTimer.milliseconds() >= 500) {
-                        clearRampWaiting = false;
-                        spindex.setMode(true);
-                        spindex.setIndex(0);
-                        follower.followPath(paths.shootRowOne, true);
-                        pathState = 5;
-                    }
-                }
-                break;
-
-            case 5: // Move to shoot position + shoot row 1 balls
+            case 4: // Move to shoot position + shoot row 1 balls
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
@@ -426,22 +432,22 @@ public class BlueShortTwelveBallClear extends OpMode {
 
                     shootingPrepared = false;
                     follower.followPath(paths.RuntoRowTwo, true);
+                    pathState = 5;
+                }
+                break;
+
+            case 5: // Run to row 2 intake position
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.intakeRowTwo, IntakeSpeed, true);
                     pathState = 6;
                 }
                 break;
 
-            case 6: // Run to row 2 intake position
-                if (!follower.isBusy()) {
-                    prepareForIntake();
-                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
-                    pathState = 7;
-                }
-                break;
-
-            case 7: // Intake row 2 (slow) - pre-spin flywheel during intake
+            case 6: // Intake row 2 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
+                    outtake.setRPM(ShootRPM);
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
@@ -449,11 +455,11 @@ public class BlueShortTwelveBallClear extends OpMode {
                     spindex.setIndex(0);
                     flywheelStarted = false;
                     follower.followPath(paths.shootRowTwo, true);
-                    pathState = 8;
+                    pathState = 7;
                 }
                 break;
 
-            case 8: // Move to shoot position + shoot row 2 balls
+            case 7: // Move to shoot position + shoot row 2 balls
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
@@ -462,22 +468,22 @@ public class BlueShortTwelveBallClear extends OpMode {
                 if (!follower.isBusy() && shootBalls()) {
                     shootingPrepared = false;
                     follower.followPath(paths.RuntoRowThree, true);
+                    pathState = 8;
+                }
+                break;
+
+            case 8: // Run to row 3 intake position
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.intakeRowThree, IntakeSpeed, true);
                     pathState = 9;
                 }
                 break;
 
-            case 9: // Run to row 3 intake position
-                if (!follower.isBusy()) {
-                    prepareForIntake();
-                    follower.followPath(paths.intakeRowThree, INTAKE_SPEED, true);
-                    pathState = 10;
-                }
-                break;
-
-            case 10: // Intake row 3 (slow) - pre-spin flywheel during intake
+            case 9: // Intake row 3 (slow) - pre-spin flywheel during intake
                 runIntake();
                 if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
+                    outtake.setRPM(ShootRPM);
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
@@ -485,11 +491,11 @@ public class BlueShortTwelveBallClear extends OpMode {
                     spindex.setIndex(0);
                     flywheelStarted = false;
                     follower.followPath(paths.shootRowThree, true);
-                    pathState = 11;
+                    pathState = 10;
                 }
                 break;
 
-            case 11: // Move to shoot position + shoot row 3 balls
+            case 10: // Move to shoot position + shoot row 3 balls
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
@@ -498,17 +504,17 @@ public class BlueShortTwelveBallClear extends OpMode {
                 if (!follower.isBusy() && shootBalls()) {
                     shootingPrepared = false;
                     follower.followPath(paths.Leave, true);
+                    pathState = 11;
+                }
+                break;
+
+            case 11: // Leave for points
+                if (!follower.isBusy()) {
                     pathState = 12;
                 }
                 break;
 
-            case 12: // Leave for points
-                if (!follower.isBusy()) {
-                    pathState = 13;
-                }
-                break;
-
-            case 13: // Done
+            case 12: // Done
                 outtake.setRPM(0);
                 intakeEnabled = false;
                 kicker.down();
