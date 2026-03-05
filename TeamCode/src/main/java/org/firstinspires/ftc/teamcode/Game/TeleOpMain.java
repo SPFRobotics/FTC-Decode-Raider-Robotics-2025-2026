@@ -151,6 +151,9 @@ public class TeleOpMain extends LinearOpMode {
                 intake.setPower(0);
 
             }
+            if (intake.getPower() > 0){
+                gamepad2.rumble(100);
+            }
             /******************************************************************************/
 
             /*********************Kicker and index emptying logic**********************/
@@ -180,15 +183,38 @@ public class TeleOpMain extends LinearOpMode {
             spindex.setMode(spindexModeToggle.toggle(gamepad2.circle));
 
             //Automatic Loading
-            spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.triangle) && !spindex.isOuttakeing());
+            spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.share) && !spindex.isOuttakeing());
             spindex.autoLoad(colorSensor);
 
             if (spindex.isOuttakeing()) {
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
-                leds.setColor(leds.GREEN, false);
-            } else {
+                if (spindex.getSlotColors()[spindex.getIndex()] == 'E'){
+                    leds.setColor(LedLights.RED);
+                }
+                if (gamepad2.squareWasPressed()){
+                    int indexOfColor = spindex.getIndexOfColor('P');
+                    if (indexOfColor == -1){
+                        leds.setColor(LedLights.RED, false);
+                    }
+                    else{
+                        leds.setColor(LedLights.INDIGO, false);
+                    }
+                    spindex.setIndex(indexOfColor);
+                }
+                else if (gamepad2.triangleWasPressed()){
+                    int indexOfColor = spindex.getIndexOfColor('G');
+                    if (indexOfColor == -1){
+                        leds.setColor(LedLights.RED, false);
+                    }
+                    else{
+                        leds.setColor(LedLights.GREEN, false);
+                    }
+                    spindex.setIndex(indexOfColor < 0 ? spindex.getIndex() : indexOfColor);
+                }
+            }
+            else {
                 spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
-                leds.setColor(leds.BLUE, false);
+                leds.setColor(LedLights.BLUE, false);
             }
             /****************************************************************************************************/
 
