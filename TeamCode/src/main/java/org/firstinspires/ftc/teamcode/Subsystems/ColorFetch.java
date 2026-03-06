@@ -24,13 +24,20 @@ public class ColorFetch {
     /*****************Class varibles**********************/
     private NormalizedColorSensor colorSensor = null;
     private RevColorSensorV3 distanceSensor = null;
+    private NormalizedColorSensor colorSensor2 = null;
+    private RevColorSensorV3 distanceSensor2 = null;
     /*****************************************************/
 
     /**************************************Constructor******************************************/
     public ColorFetch(HardwareMap hardwareMap){
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
         distanceSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
+
+        colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "colorSensor2");
+        distanceSensor2 = hardwareMap.get(RevColorSensorV3.class, "distanceSensor2");
+
         colorSensor.setGain(3.0f);
+        colorSensor2.setGain(3.0f);
     }
     /******************************************************************************************/
 
