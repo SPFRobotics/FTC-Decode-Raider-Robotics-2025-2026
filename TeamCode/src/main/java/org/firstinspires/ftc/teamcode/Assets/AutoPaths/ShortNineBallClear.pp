@@ -10,7 +10,7 @@
     "y": 133.9,
     "heading": "linear",
     "startDeg": 180,
-    "endDeg": -138.62632780408728,
+    "endDeg": 90,
     "locked": false
   },
   "lines": [
@@ -36,13 +36,18 @@
     {
       "id": "mmbhbpee-uqd8np",
       "endPoint": {
-        "x": 47.776137761377605,
+        "x": 44.23370233702336,
         "y": 60.16359163591635,
         "heading": "linear",
         "startDeg": 180,
         "endDeg": 180
       },
-      "controlPoints": [],
+      "controlPoints": [
+        {
+          "x": 54.97416974169742,
+          "y": 75.13284132841329
+        }
+      ],
       "color": "#977ABC",
       "name": "RunToSpikeTwo",
       "eventMarkers": [],
@@ -55,8 +60,8 @@
       "id": "mmbhc39j-jcmfha",
       "name": "IntakeSpikeTwo",
       "endPoint": {
-        "x": 26.261992619926197,
-        "y": 60.16359163591635,
+        "x": 15,
+        "y": 57.94956949569496,
         "heading": "linear",
         "reverse": false,
         "startDeg": 180,
@@ -81,7 +86,12 @@
         "startDeg": 180,
         "endDeg": 180
       },
-      "controlPoints": [],
+      "controlPoints": [
+        {
+          "x": 57.920049200492016,
+          "y": 72.07011070110701
+        }
+      ],
       "color": "#AD89CD",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
@@ -93,7 +103,7 @@
       "id": "mmbhekkz-21v0fh",
       "name": "RunToSpikeOne",
       "endPoint": {
-        "x": 33.4,
+        "x": 45.7,
         "y": 84.10824108241081,
         "heading": "linear",
         "reverse": false,
@@ -112,7 +122,7 @@
       "id": "mmbhf6xa-dlrsnu",
       "name": "IntakeSpikeOne",
       "endPoint": {
-        "x": 25.08610086100861,
+        "x": 24.20049200492005,
         "y": 84.10824108241081,
         "heading": "linear",
         "reverse": false,
@@ -155,7 +165,7 @@
         "heading": "linear",
         "reverse": false,
         "startDeg": 90,
-        "endDeg": 0
+        "endDeg": 180
       },
       "controlPoints": [],
       "color": "#7BD79C",
@@ -167,12 +177,14 @@
     },
     {
       "id": "mmbhml3g-tdo534",
-      "name": "",
+      "name": "Leave",
       "endPoint": {
         "x": 23,
         "y": 74,
-        "heading": "tangential",
-        "reverse": false
+        "heading": "linear",
+        "reverse": false,
+        "startDeg": 180,
+        "endDeg": 90
       },
       "controlPoints": [],
       "color": "#CD975B",

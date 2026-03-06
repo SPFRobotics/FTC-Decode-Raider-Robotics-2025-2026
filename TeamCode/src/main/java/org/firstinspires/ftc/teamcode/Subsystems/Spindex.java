@@ -179,6 +179,10 @@ public class Spindex {
     }
 
     public void autoSort(Outtake outtake, int motifId) {
+        autoSort(outtake, motifId, null);
+    }
+
+    public void autoSort(Outtake outtake, int motifId, Turret turret) {
         if (!autoSortActive || motifId < 21 || motifId > 23) return;
 
         String patternStr;
@@ -213,7 +217,7 @@ public class Spindex {
                         : Outtake.OuttakeConfig.closeRPM;
                 outtake.setRPM(targetRPM);
                 moveToPos(SpindexValues.outtakePos[getIndex()], 4);
-                if (!isBusy()) {
+                if (!isBusy() && isTurretReady(turret)) {
                     outtake.resetKickerCycle();
                     autoSortState = AutoSortState.LAUNCHING;
                 }
@@ -224,7 +228,9 @@ public class Spindex {
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
                 moveToPos(SpindexValues.outtakePos[getIndex()], 4);
-                outtake.enableSpindexKickerCycle(true, rpm);
+                if (isTurretReady(turret)) {
+                    outtake.enableSpindexKickerCycle(true, rpm);
+                }
                 if (outtake.getKickerCycleCount() >= 1) {
                     clearBall(getIndex());
                     sortPatternIndex++;
@@ -237,6 +243,10 @@ public class Spindex {
                 autoSortActive = false;
                 break;
         }
+    }
+
+    private boolean isTurretReady(Turret turret) {
+        return turret == null || turret.isTurretAtTarget();
     }
 
     public void setAutoSortActive(boolean active) {
