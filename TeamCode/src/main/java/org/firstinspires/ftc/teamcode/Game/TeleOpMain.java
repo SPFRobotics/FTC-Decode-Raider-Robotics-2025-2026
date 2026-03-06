@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Vector;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -81,7 +82,7 @@ public class TeleOpMain extends LinearOpMode {
         colorSensor = new ColorFetch(hardwareMap);
         spindex = new Spindex(hardwareMap);
         leds = new LedLights(hardwareMap);
-        ZucskyLens huskyLens = new ZucskyLens(hardwareMap);
+        //ZucskyLens huskyLens = new ZucskyLens(hardwareMap);
         turret = new Turret(hardwareMap, PoseStorage.blueAlliance, limelight);
         PrintWriter pen = null;
         try{
@@ -214,7 +215,11 @@ public class TeleOpMain extends LinearOpMode {
             /********************************************************/
 
             /*************************************Turret Auto-Aim**************************************/
-            //turret.aimAtGoal(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
+            Vector velocity = follower.getVelocity();
+            turret.aimAtGoal(
+                    currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()),
+                    velocity.getXComponent(), velocity.getYComponent()
+            );
             /*****************************************************************************************/
 
             //Telemetry
