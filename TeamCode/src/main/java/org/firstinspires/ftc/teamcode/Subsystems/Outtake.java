@@ -41,6 +41,8 @@ public class Outtake {
     private KickerCycleState kickerState = KickerCycleState.IDLE;
     private ElapsedTime kickerStateTimer = new ElapsedTime();
 
+    Turret turret;
+
     //The "E"ncoder "R"esolution our current motor runs at.
     int motorER = 28;
 
@@ -62,6 +64,17 @@ public class Outtake {
         this(hardwareMap);
         if (kicker != null){
             this.kicker = kicker;
+        }
+        else{
+            throw new RuntimeException("The kicker object passed was uninitialized! (NULL)");
+        }
+    }
+
+    public Outtake(HardwareMap hardwareMap, KickerSpindex kicker, Turret turret){
+        this(hardwareMap);
+        if (kicker != null){
+            this.kicker = kicker;
+            this.turret = turret;
         }
         else{
             throw new RuntimeException("The kicker object passed was uninitialized! (NULL)");
@@ -99,8 +112,8 @@ public class Outtake {
     }
 
     //@param Distance hotizontally from goal
-    public double distanceToRPM(double distance){
-        double x = distance;
+    public double distanceToRPM(double x){
+
 
 
         double RPS =  (Math.sqrt( (9.8*x*x)/((0.075)*((5.062*x)-0.454025))))/0.603;

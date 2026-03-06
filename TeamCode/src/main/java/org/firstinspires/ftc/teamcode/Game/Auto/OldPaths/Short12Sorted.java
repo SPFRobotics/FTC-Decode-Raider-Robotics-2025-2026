@@ -90,6 +90,7 @@ public class Short12Sorted extends OpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+        turret.setInitialAngle(0);
     }
 
     @Override
@@ -412,7 +413,7 @@ public class Short12Sorted extends OpMode {
                 break;
 
             case 1: // Shoot 3 preloaded balls (sorted by motif)
-                spindex.autoSort(outtake, detectedMotifId);
+                spindex.autoSort(outtake, detectedMotifId, turret);
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
                     follower.followPath(paths.RunToRowOne, true);
@@ -449,7 +450,7 @@ public class Short12Sorted extends OpMode {
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId);
+                    spindex.autoSort(outtake, detectedMotifId, turret);
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
@@ -488,7 +489,7 @@ public class Short12Sorted extends OpMode {
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId);
+                    spindex.autoSort(outtake, detectedMotifId, turret);
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
@@ -527,7 +528,7 @@ public class Short12Sorted extends OpMode {
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId);
+                    spindex.autoSort(outtake, detectedMotifId, turret);
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();

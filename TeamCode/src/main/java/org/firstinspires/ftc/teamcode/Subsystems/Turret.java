@@ -15,6 +15,7 @@ public class Turret {
     double goalX;
 
     double turretLimelightOffset = 0;
+    private double sotmDistance = 0;
     public final double RedGoalX = 133;
     public final double RedGoalY = 135;
     public final double BlueGoalX = 11;
@@ -37,6 +38,11 @@ public class Turret {
         public static double[] pidf = {35, 0.01, 12, 0};
 
         public static int correctionThresholdTicks = 20;
+
+        public static double sotmForwardScale = 0.001;
+        public static double sotmLateralScale = 0.01;
+        public static double sotmMaxForwardScale = 1.0;
+        public static double sotmMaxLateralScale = 1.0;
     }
 
     public Turret(HardwareMap hardwareMap, boolean goalCords){
@@ -101,13 +107,58 @@ public class Turret {
 
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
-        targetDeg += targetDeg > 180 ? -360 : 0;
+        targetDeg += targetDeg > 360 ? -360 : 0;
         int targetTicks = (int) (((targetDeg - initialAngleOffset) / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
     }
 
+
+    public void aimAtGoal(double robotX, double robotY, double robotHeading,
+                          double velX, double velY) {
+        double rawAngle = Math.atan2(goalY - robotY, goalX - robotX);
+        double rawDistance = Math.hypot(goalX - robotX, goalY - robotY);
+
+        double cos = Math.cos(-rawAngle);
+        double sin = Math.sin(-rawAngle);
+        double forwardVel = velX * cos - velY * sin;
+        double lateralVel = velX * sin + velY * cos;
+
+        double fwdScale = clamp(
+                rawDistance * TurretConfig.sotmForwardScale,
+                -TurretConfig.sotmMaxForwardScale, TurretConfig.sotmMaxForwardScale);
+        double latScale = clamp(
+                rawDistance * TurretConfig.sotmLateralScale,
+                -TurretConfig.sotmMaxLateralScale, TurretConfig.sotmMaxLateralScale);
+
+        double scaledFwd = fwdScale * forwardVel;
+        double scaledLat = latScale * lateralVel;
+
+        double cos2 = Math.cos(rawAngle);
+        double sin2 = Math.sin(rawAngle);
+        double adjustX = scaledFwd * cos2 - scaledLat * sin2;
+        double adjustY = scaledFwd * sin2 + scaledLat * cos2;
+
+        double newGoalX = goalX - adjustX;
+        double newGoalY = goalY - adjustY;
+
+        sotmDistance = Math.hypot(newGoalX - robotX, newGoalY - robotY);
+
+        turretLimelightOffset = limelightOffset();
+        double fieldAngleDeg = Math.toDegrees(Math.atan2(newGoalY - robotY, newGoalX - robotX));
+        double turretDeg = fieldAngleDeg - robotHeading + turretLimelightOffset;
+        double targetDeg = wrapDeg360(turretDeg);
+        targetDeg += targetDeg > 360 ? -360 : 0;
+
+        int targetTicks = (int) (((targetDeg - initialAngleOffset) / 360.0) * ticks * gearRatio);
+        turret.setTargetPosition(targetTicks);
+        turret.setPower(TurretConfig.turretPower);
+    }
+
+    public double getSOTMDistance() {
+        return sotmDistance;
+    }
 
     public void aimAtGoalManual(double manualGoal){
         double targetDeg = manualGoal;
@@ -122,6 +173,10 @@ public class Turret {
         deg = deg % 360.0;
         if (deg < 0) deg += 360.0;
         return deg;
+    }
+
+    private static double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
     }
 
     private double limelightOffset(){
