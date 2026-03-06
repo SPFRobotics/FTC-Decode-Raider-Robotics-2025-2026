@@ -267,6 +267,7 @@ public class Turret {
         telemetry.addLine("Robot Y: " + robotY);
         telemetry.addLine("Robot Heading: " + robotHeading);
         telemetry.addLine("Turret Target Degrees: " + getTargetDeg(robotX, robotY, robotHeading));
+        telemetry.addLine("Turret Degrees: " + (turret.getCurrentPosition()/537.7*360)%360);
         telemetry.addLine("Turret Power: " + turret.getPower());
         telemetry.addLine("------------------------------------------------------------------------------------");
     }

@@ -242,10 +242,10 @@ public class TeleOpMain extends LinearOpMode {
 //bradley test
             /*************************************Turret Auto-Aim**************************************/
             Vector velocity = follower.getVelocity();
-            turret.aimAtGoal(
+            /*turret.aimAtGoal(
                     currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()),
                     velocity.getXComponent(), velocity.getYComponent()
-            );
+            );*/
             /*****************************************************************************************/
 
             //Telemetry

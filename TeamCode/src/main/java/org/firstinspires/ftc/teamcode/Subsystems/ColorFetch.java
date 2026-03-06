@@ -34,7 +34,7 @@ public class ColorFetch {
         distanceSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
 
         colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "colorSensor2");
-        distanceSensor2 = hardwareMap.get(RevColorSensorV3.class, "distanceSensor2");
+        //distanceSensor2 = hardwareMap.get(RevColorSensorV3.class, "distanceSensor2");
 
         colorSensor.setGain(3.0f);
         colorSensor2.setGain(3.0f);
