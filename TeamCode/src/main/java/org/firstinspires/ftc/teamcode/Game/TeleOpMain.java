@@ -213,7 +213,7 @@ public class TeleOpMain extends LinearOpMode {
                 gamepad2.stopRumble();
             }
             /********************************************************/
-
+//bradley test
             /*************************************Turret Auto-Aim**************************************/
             Vector velocity = follower.getVelocity();
             turret.aimAtGoal(
