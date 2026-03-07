@@ -10,7 +10,7 @@
     "y": 9,
     "heading": "linear",
     "startDeg": 180,
-    "endDeg": 126.52885536698523,
+    "endDeg": -180,
     "locked": false
   },
   "lines": [
@@ -18,7 +18,7 @@
       "id": "line-xhmxzrfd0j8",
       "name": "",
       "endPoint": {
-        "x": 56,
+        "x": 41.16605166051661,
         "y": 36,
         "heading": "linear",
         "startDeg": 180,
@@ -37,8 +37,8 @@
       "id": "mmc7anyf-v2vk1w",
       "name": "",
       "endPoint": {
-        "x": 36,
-        "y": 63,
+        "x": 24.07749077490775,
+        "y": 36,
         "heading": "tangential",
         "reverse": false
       },
@@ -47,7 +47,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     }
   ],
   "sequence": [
