@@ -138,7 +138,7 @@ public class BlueShortTwelveBall extends OpMode {
             intake.intakeOff();
         }
         follower.update();
-        turret.aimAtGoalManual(0);
+        //turret.aimAtGoalManual(0);
         leds.cycleColors(10);
         autonomousPathUpdate();
         updateSpindexPosition();

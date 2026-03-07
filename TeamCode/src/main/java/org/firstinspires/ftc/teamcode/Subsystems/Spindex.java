@@ -162,7 +162,6 @@ public class Spindex {
 
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
-        double ballDistance2 = colorSensor.getDistance();
 
         // Detect a new ball only when unlocked, spindex is settled, and sensor reads close
         if (getSlotColors()[getIndex()] == 'E' && !isOuttakeing() && !isBusy() && ballDistance < SpindexValues.ballDistanceThreshold){

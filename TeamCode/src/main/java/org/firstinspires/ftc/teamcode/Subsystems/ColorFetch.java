@@ -50,8 +50,6 @@ public class ColorFetch {
         return hsv;
     }
 
-
-
     /*Returns only the hue from the array returned by the getHSVArray class*/
     public float getHue(){
         return getHSVArray()[0];
@@ -102,7 +100,6 @@ public class ColorFetch {
     public double getDistance(){
         return distanceSensor.getDistance(DistanceUnit.CM);
     }
-
 
     public void showTelemetry(Telemetry telemetry){
         telemetry.addLine("------------------------------------------------------------------------------------");

@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
@@ -79,7 +80,7 @@ public class TeleOpMain extends LinearOpMode {
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         passiveKicker = new PassiveKicker(hardwareMap);
-        colorSensor = new ColorFetch(hardwareMap);
+        colorSensor = new DualColorFetch(hardwareMap);
         spindex = new Spindex(hardwareMap);
         leds = new LedLights(hardwareMap);
         //ZucskyLens huskyLens = new ZucskyLens(hardwareMap);

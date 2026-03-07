@@ -49,7 +49,7 @@ public class TurretTest extends OpMode {
             telemetry.addData("Target Angle (deg)", targetDeg);
         }
         else{
-            turret.aimAtGoalManual(TurretTester.manualGoal);
+            //turret.aimAtGoalManual(TurretTester.manualGoal);
             telemetry.addData("Mode", "Manual");
             telemetry.addLine("--- Turret ---");
             telemetry.addData("Manual Goal (deg)", TurretTester.manualGoal);
