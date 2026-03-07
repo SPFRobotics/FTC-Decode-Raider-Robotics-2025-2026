@@ -85,6 +85,8 @@ public class Short12Sorted extends OpMode {
         outtake.resetKickerCycle();
         kicker.down();
 
+
+
         FtcDashboard dash = FtcDashboard.getInstance();
         telemetry = dash.getTelemetry();
         telemetry.setMsTransmissionInterval(1);
@@ -116,7 +118,7 @@ public class Short12Sorted extends OpMode {
         timer = new ElapsedTime();
         pathState = 0;
         shotsFired = 0;
-        ballsLoaded = 0;
+        ballsLoaded = 3;
         lastKickerCycles = 0;
 
         if (detectedMotifId == -1) {
