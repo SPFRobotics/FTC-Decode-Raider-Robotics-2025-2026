@@ -178,6 +178,11 @@ public class Spindex {
         }
     }
 
+    //Overloaded to use both color sensors and picking the one with a valid reading
+    public void autoLoad(DualColorFetch colorSensor){
+
+    }
+
     public void autoSort(Outtake outtake, int motifId) {
         autoSort(outtake, motifId, null);
     }

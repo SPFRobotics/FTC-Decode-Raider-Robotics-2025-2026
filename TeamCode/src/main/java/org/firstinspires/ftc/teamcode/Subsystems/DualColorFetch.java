@@ -19,6 +19,8 @@ public class DualColorFetch extends ColorFetch{
 
         colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "colorSensor2");
         distanceSensor2 = hardwareMap.get(RevColorSensorV3.class, "colorSensor2");
+
+        colorSensor2.setGain(3.0f);
     }
 
     public double[] getDistances(){
@@ -32,5 +34,9 @@ public class DualColorFetch extends ColorFetch{
             Color.colorToHSV(colorInteger[i], hsv[i]);
         }
         return hsv;
+    }
+
+    public float[] getHues(){
+        return new float[]{getHSVArrays()[0][0], getHSVArrays()[0][1]};
     }
 }
