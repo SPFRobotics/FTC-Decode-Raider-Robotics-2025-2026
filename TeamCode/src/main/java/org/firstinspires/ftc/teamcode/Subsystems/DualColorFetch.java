@@ -14,7 +14,11 @@ public class DualColorFetch extends ColorFetch{
 
     public DualColorFetch(HardwareMap hardwareMap){
         super(hardwareMap);
+        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
+        distanceSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
 
+        colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "colorSensor2");
+        distanceSensor2 = hardwareMap.get(RevColorSensorV3.class, "colorSensor2");
     }
 
     public double[] getDistances(){
