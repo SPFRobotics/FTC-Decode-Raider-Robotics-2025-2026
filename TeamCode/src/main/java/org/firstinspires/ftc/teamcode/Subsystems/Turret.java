@@ -15,72 +15,81 @@ public class Turret {
     double goalX;
 
     double turretLimelightOffset = 0;
-    private double sotmDistance = 0;
     public final double RedGoalX = 133;
     public final double RedGoalY = 135;
     public final double BlueGoalX = 11;
     public final double BlueGoalY = 135;
     public final double ticks = 145.1;
-    public final double gearRatio = 135/32.0;
+    public final double gearRatio = 135 / 32.0;
 
     private double initialAngleOffset = 0;
     private double filteredTx = 0;
 
-    DcMotorEx turret;
+    private boolean alignment = false;
+    private AlignmentMode state = AlignmentMode.OFF;
 
+    DcMotorEx turret;
     Limelight limelight = null;
 
+    public enum AlignmentMode {
+        Limelight,
+        Odometry,
+        OFF
+    }
+
     @Config
-    public static class TurretConfig{
+    public static class TurretConfig {
         public static double turretPower = 1;
 
-        //1.12, .11, 0, 11.22
+        // 1.12, .11, 0, 11.22
         public static double[] pidf = {35, 0.01, 12, 0};
 
         public static int correctionThresholdTicks = 20;
 
-        public static double sotmForwardScale = 0.001;
-        public static double sotmLateralScale = 0.01;
-        public static double sotmMaxForwardScale = 1.0;
-        public static double sotmMaxLateralScale = 1.0;
+        public static double limelightTicksPerDegree = 2.872;
+        public static double limelightAngularOffset = 0.0;
     }
 
-    public Turret(HardwareMap hardwareMap, boolean goalCords){
+    public Turret(HardwareMap hardwareMap, boolean goalCords) {
         this.turret = hardwareMap.get(DcMotorEx.class, "turretMotor");
-        //turret.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
         turret.setPositionPIDFCoefficients(25);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         turret.setDirection(DcMotor.Direction.REVERSE);
         turret.setTargetPositionTolerance(3);
-
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setGoalCords(goalCords);
     }
 
-    public Turret(HardwareMap hardwareMap, boolean goalCords, Limelight limelight){
+    public Turret(HardwareMap hardwareMap, boolean goalCords, Limelight limelight) {
         this.turret = hardwareMap.get(DcMotorEx.class, "turretMotor");
-        //turret.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
         turret.setPositionPIDFCoefficients(25);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         turret.setDirection(DcMotor.Direction.REVERSE);
         turret.setTargetPositionTolerance(3);
-
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setGoalCords(goalCords);
 
         this.limelight = limelight;
     }
 
+    public void setAlignmentEnabled(boolean enabled) {
+        this.alignment = enabled;
+        if (!enabled) {
+            state = AlignmentMode.OFF;
+        }
+    }
+
+    public boolean isAlignmentEnabled() {
+        return alignment;
+    }
+
+    public AlignmentMode getAlignmentMode() {
+        return state;
+    }
 
     public void setInitialAngle(double angleDeg) {
         this.initialAngleOffset = angleDeg;
@@ -91,12 +100,10 @@ public class Turret {
     }
 
     private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
-
         turretLimelightOffset = limelightOffset();
 
         double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
-
-        double turretDeg = fieldAngleDeg - robotHeading - turretLimelightOffset;
+        double turretDeg = fieldAngleDeg - robotHeading + turretLimelightOffset;
 
         return wrapDeg360(turretDeg);
     }
@@ -106,68 +113,58 @@ public class Turret {
     }
 
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
+        ensureRunToPositionMode();
+
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
-        targetDeg += targetDeg > 326 ? -360 : 0;
+        targetDeg += targetDeg > 34 ? -360 : 0;
+
         int targetTicks = (int) (((targetDeg - initialAngleOffset) / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
     }
 
+    public void periodic(double robotX, double robotY, double robotHeading) {
+        LLResult result = (limelight != null) ? limelight.getLatestResult() : null;
 
-    public void aimAtGoal(double robotX, double robotY, double robotHeading,
-                          double velX, double velY) {
-        double rawAngle = Math.atan2(goalY - robotY, goalX - robotX);
-        double rawDistance = Math.hypot(goalX - robotX, goalY - robotY);
+        if (!alignment) {
+            state = AlignmentMode.OFF;
+        } else if (result != null && result.isValid()) {
+            state = AlignmentMode.Limelight;
+        } else {
+            state = AlignmentMode.Odometry;
+        }
 
-        double cos = Math.cos(-rawAngle);
-        double sin = Math.sin(-rawAngle);
-        double forwardVel = velX * cos - velY * sin;
-        double lateralVel = velX * sin + velY * cos;
+        switch (state) {
+            case Limelight:
+                aimWithLimelight(result);
+                break;
 
-        double fwdScale = clamp(
-                rawDistance * TurretConfig.sotmForwardScale,
-                -TurretConfig.sotmMaxForwardScale, TurretConfig.sotmMaxForwardScale);
-        double latScale = clamp(
-                rawDistance * TurretConfig.sotmLateralScale,
-                -TurretConfig.sotmMaxLateralScale, TurretConfig.sotmMaxLateralScale);
+            case Odometry:
+                aimAtGoal(robotX, robotY, robotHeading);
+                break;
 
-        double scaledFwd = fwdScale * forwardVel;
-        double scaledLat = latScale * lateralVel;
-
-        double cos2 = Math.cos(rawAngle);
-        double sin2 = Math.sin(rawAngle);
-        double adjustX = scaledFwd * cos2 - scaledLat * sin2;
-        double adjustY = scaledFwd * sin2 + scaledLat * cos2;
-
-        double newGoalX = goalX - adjustX;
-        double newGoalY = goalY - adjustY;
-
-        sotmDistance = Math.hypot(newGoalX - robotX, newGoalY - robotY);
-
-        turretLimelightOffset = limelightOffset();
-        double fieldAngleDeg = Math.toDegrees(Math.atan2(newGoalY - robotY, newGoalX - robotX));
-        double turretDeg = fieldAngleDeg - robotHeading + turretLimelightOffset;
-        double targetDeg = wrapDeg360(turretDeg);
-        targetDeg += targetDeg > 360 ? -360 : 0;
-
-        int targetTicks = (int) (((targetDeg - initialAngleOffset) / 360.0) * ticks * gearRatio);
-        turret.setTargetPosition(targetTicks);
-        turret.setPower(TurretConfig.turretPower);
+            case OFF:
+                break;
+        }
     }
 
-    public double getSOTMDistance() {
-        return sotmDistance;
-    }
+    private void aimWithLimelight(LLResult result) {
+        ensureRunToPositionMode();
 
-    public void aimAtGoalManual(double manualGoal){
-        double targetDeg = manualGoal;
-        int targetTicks = (int) (((targetDeg - initialAngleOffset) / 360.0) * ticks * gearRatio);
+        if (result == null || !result.isValid()) {
+            turret.setTargetPosition(turret.getCurrentPosition());
+            turret.setPower(TurretConfig.turretPower);
+            return;
+        }
+
+        double adjustedTx = result.getTx() + TurretConfig.limelightAngularOffset;
+        int currentPos = turret.getCurrentPosition();
+        int targetTicks = (int) Math.round(currentPos + adjustedTx * TurretConfig.limelightTicksPerDegree);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
     }
-
 
     private static double wrapDeg360(double deg) {
         deg = deg % 360.0;
@@ -175,11 +172,7 @@ public class Turret {
         return deg;
     }
 
-    private static double clamp(double value, double min, double max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
-    private double limelightOffset(){
+    private double limelightOffset() {
         if (limelight == null) {
             return 0;
         }
@@ -192,8 +185,6 @@ public class Turret {
 
         double rawTx = result.getTx();
 
-        // Only update when the turret is near its target; during transit
-        // tx reflects the position gap, not odometry error.
         int posError = Math.abs(turret.getCurrentPosition() - turret.getTargetPosition());
         if (posError < TurretConfig.correctionThresholdTicks) {
             filteredTx = rawTx;
@@ -202,7 +193,13 @@ public class Turret {
         return filteredTx;
     }
 
-
+    private void ensureRunToPositionMode() {
+        if (turret.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+            turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            turret.setTargetPositionTolerance(3);
+        }
+    }
 
     public boolean isTurretAtTarget() {
         return !turret.isBusy();
@@ -212,7 +209,7 @@ public class Turret {
         return turret.getCurrentPosition();
     }
 
-    public double getCurrentAngularPosition(){
+    public double getCurrentAngularPosition() {
         return turret.getCurrentPosition() / (ticks * gearRatio) * 360.0;
     }
 
@@ -224,50 +221,58 @@ public class Turret {
         return turretDegToShoot(robotX, robotY, robotHeading);
     }
 
-    public double getGoalX() { return goalX; }
-    public double getGoalY() { return goalY; }
+    public double getGoalX() {
+        return goalX;
+    }
 
-    //@param goalCords True for blue, false for red
-    private void setGoalCords(boolean goalCords){
-        if(goalCords){
+    public double getGoalY() {
+        return goalY;
+    }
+
+    // @param goalCords true for blue, false for red
+    private void setGoalCords(boolean goalCords) {
+        if (goalCords) {
             goalX = BlueGoalX;
             goalY = BlueGoalY;
-
-        }else{
+        } else {
             goalX = RedGoalX;
             goalY = RedGoalY;
         }
     }
 
-    public void setPower(double power){
+    public void setPower(double power) {
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         turret.setPower(power);
     }
 
-    public double getVelocity(){
+    public double getVelocity() {
         return turret.getVelocity();
     }
 
-    //Telemetry Blocks
-    public void showTelemetry(Telemetry telemetry, double robotX, double robotY, double robotHeading){
+    public void showTelemetry(Telemetry telemetry, double robotX, double robotY, double robotHeading) {
         telemetry.addLine("------------------------------------------");
         telemetry.addLine("Turret");
+        telemetry.addLine("Mode: " + state);
+        telemetry.addLine("Alignment Enabled: " + alignment);
         telemetry.addLine("Robot X: " + robotX);
         telemetry.addLine("Robot Y: " + robotY);
         telemetry.addLine("Robot Heading: " + robotHeading);
         telemetry.addLine("Turret Target Degrees: " + getTargetDeg(robotX, robotY, robotHeading));
+        telemetry.addLine("Turret Degrees: " + getCurrentAngularPosition());
         telemetry.addLine("Turret Power: " + turret.getPower());
         telemetry.addLine("------------------------------------------");
     }
 
-    public void showTelemetry(MultipleTelemetry telemetry, double robotX, double robotY, double robotHeading){
+    public void showTelemetry(MultipleTelemetry telemetry, double robotX, double robotY, double robotHeading) {
         telemetry.addLine("------------------------------------------------------------------------------------");
         telemetry.addLine("Turret");
+        telemetry.addLine("Mode: " + state);
+        telemetry.addLine("Alignment Enabled: " + alignment);
         telemetry.addLine("Robot X: " + robotX);
         telemetry.addLine("Robot Y: " + robotY);
         telemetry.addLine("Robot Heading: " + robotHeading);
         telemetry.addLine("Turret Target Degrees: " + getTargetDeg(robotX, robotY, robotHeading));
-        telemetry.addLine("Turret Degrees: " + (turret.getCurrentPosition()/537.7*360)%360);
+        telemetry.addLine("Turret Degrees: " + getCurrentAngularPosition());
         telemetry.addLine("Turret Power: " + turret.getPower());
         telemetry.addLine("------------------------------------------------------------------------------------");
     }
