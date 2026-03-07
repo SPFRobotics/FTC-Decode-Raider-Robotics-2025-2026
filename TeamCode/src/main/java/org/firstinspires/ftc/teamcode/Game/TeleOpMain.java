@@ -188,7 +188,7 @@ public class TeleOpMain extends LinearOpMode {
             spindex.autoLoad(colorSensor);
 
             if (spindex.isOuttakeing()) {
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
+                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
                 if (spindex.getSlotColors()[spindex.getIndex()] == 'E'){
                     leds.setColor(LedLights.RED);
                 }
@@ -214,7 +214,7 @@ public class TeleOpMain extends LinearOpMode {
                 }
             }
             else {
-                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
+                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
                 leds.setColor(LedLights.BLUE, false);
             }
             /****************************************************************************************************/
@@ -231,9 +231,10 @@ public class TeleOpMain extends LinearOpMode {
             outtake.setRPM(setRPM);
 
             //Controls gamepad rumble
-            if (setRPM == closeRPM && outtake.getRPM() >= setRPM) {
+            double rumbleRange = Math.abs(setRPM - outtake.getRPM());
+            if (setRPM == closeRPM && rumbleRange <= 50) {
                 gamepad2.rumble(100);
-            } else if (setRPM == farRPM & outtake.getRPM() >= setRPM) {
+            } else if (setRPM == farRPM & rumbleRange <= 50) {
                 gamepad2.rumble(100);
             } else {
                 gamepad2.stopRumble();
@@ -242,10 +243,7 @@ public class TeleOpMain extends LinearOpMode {
 //bradley test
             /*************************************Turret Auto-Aim**************************************/
             Vector velocity = follower.getVelocity();
-            /*turret.aimAtGoal(
-                    currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()),
-                    velocity.getXComponent(), velocity.getYComponent()
-            );*/
+            turret.aimAtGoal(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
             /*****************************************************************************************/
 
             //Telemetry

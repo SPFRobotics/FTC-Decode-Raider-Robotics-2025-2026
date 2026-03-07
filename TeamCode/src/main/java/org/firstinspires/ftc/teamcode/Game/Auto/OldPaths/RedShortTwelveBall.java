@@ -137,9 +137,9 @@ public class RedShortTwelveBall extends OpMode {
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 3);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 3);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
         }
     }
 

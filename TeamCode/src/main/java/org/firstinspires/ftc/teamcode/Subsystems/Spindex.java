@@ -97,7 +97,7 @@ public class Spindex {
     3 - Removed, defaults to mode 4 if selected
     4 - Spindex uses the absolute encoder with the built-in motor encoder. This uses the built-in PID controller FTC provides within their SDK to control the motor.
     */
-    public void moveToPos(double target, int mode) {
+    public void moveToPos(double target) {
         double currentPos = getNormEnc(spindexMotor.getCurrentPosition() + (offset / 360.0 * encoderTicks));
         error = getNormEnc(target / 360.0 * encoderTicks - currentPos);
         targetPos = (spindexMotor.getCurrentPosition() + error + 0.5);
@@ -162,6 +162,7 @@ public class Spindex {
 
     public void autoLoad(ColorFetch colorSensor){
         double ballDistance = colorSensor.getDistance();
+        double ballDistance2 = colorSensor.getDistance();
 
         // Detect a new ball only when unlocked, spindex is settled, and sensor reads close
         if (getSlotColors()[getIndex()] == 'E' && !isOuttakeing() && !isBusy() && ballDistance < SpindexValues.ballDistanceThreshold){
@@ -216,7 +217,7 @@ public class Spindex {
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
                 outtake.setRPM(targetRPM);
-                moveToPos(SpindexValues.outtakePos[getIndex()], 4);
+                moveToPos(SpindexValues.outtakePos[getIndex()]);
                 if (!isBusy() && isTurretReady(turret)) {
                     outtake.resetKickerCycle();
                     autoSortState = AutoSortState.LAUNCHING;
@@ -227,7 +228,7 @@ public class Spindex {
                 double rpm = outtake.isFarLocation()
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
-                moveToPos(SpindexValues.outtakePos[getIndex()], 4);
+                moveToPos(SpindexValues.outtakePos[getIndex()]);
                 if (isTurretReady(turret)) {
                     outtake.enableSpindexKickerCycle(true, rpm);
                 }

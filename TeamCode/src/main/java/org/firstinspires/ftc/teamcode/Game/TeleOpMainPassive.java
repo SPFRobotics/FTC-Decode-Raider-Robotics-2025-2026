@@ -177,10 +177,10 @@ public class TeleOpMainPassive extends LinearOpMode {
                 }
             }
             else if (spindex.isOuttakeing()) {
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
+                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
                 leds.setColor(leds.GREEN, false);
             } else {
-                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
+                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
                 leds.setColor(leds.BLUE, false);
             }
             /****************************************************************************************************/

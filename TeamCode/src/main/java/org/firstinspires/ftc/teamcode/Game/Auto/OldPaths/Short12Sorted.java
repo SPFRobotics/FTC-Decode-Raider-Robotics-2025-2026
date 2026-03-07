@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game.Auto.OldPaths;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
@@ -24,7 +25,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
-//@Autonomous(name = "BS 12 Sorted", group = "Autonomous")
+@Autonomous(name = "BS 12 Sorted", group = "Autonomous")
 @Configurable
 public class Short12Sorted extends OpMode {
 
@@ -186,9 +187,9 @@ public class Short12Sorted extends OpMode {
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
         }
     }
 

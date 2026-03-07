@@ -164,9 +164,9 @@ public class Turret12BallBlueShort extends OpMode {
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], 4);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], 4);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
         }
     }
 
