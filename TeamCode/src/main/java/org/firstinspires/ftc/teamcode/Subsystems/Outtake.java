@@ -15,7 +15,6 @@ public class Outtake {
     public static class OuttakeConfig{
         public static double farRPM = 3200;
         public static double closeRPM = 2700;
-        public static double sortRPM = 1000;
         public static double[] pidf = {268, 14.99, 0, 14.99};
         public static double gearRatio = 10.0/7.0;
 

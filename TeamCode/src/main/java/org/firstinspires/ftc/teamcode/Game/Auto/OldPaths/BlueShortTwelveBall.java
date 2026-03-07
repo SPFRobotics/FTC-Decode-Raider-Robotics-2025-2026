@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game.Auto.OldPaths;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
@@ -27,7 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-//@Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
+@Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
 @Configurable
 public class BlueShortTwelveBall extends OpMode {
 
@@ -72,9 +73,9 @@ public class BlueShortTwelveBall extends OpMode {
         paths = new Paths(follower);
         turret = new Turret(hardwareMap, true);
         spindex = new Spindex(hardwareMap);
-        outtake = new Outtake(hardwareMap, kicker);
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
+        outtake = new Outtake(hardwareMap, kicker);
         colorSensor = new ColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
 

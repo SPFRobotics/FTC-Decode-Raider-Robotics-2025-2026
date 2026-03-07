@@ -244,7 +244,7 @@ public class Spindex {
                 break;
 
             case LAUNCHING:
-                double rpm = 2700;
+                double rpm = Outtake.OuttakeConfig.closeRPM;
                 if (turret.isTurretAtTarget()) {
                     outtake.enableSpindexKickerCycle(true, rpm);
                     System.out.println("WORK PLEASE!!!!");

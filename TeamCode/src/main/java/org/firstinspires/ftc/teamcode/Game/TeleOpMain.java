@@ -41,7 +41,7 @@ public class TeleOpMain extends LinearOpMode {
     Outtake outtake = null;
     KickerSpindex kicker = null;
     Turret turret = null;
-    ColorFetch colorSensor = null;
+    DualColorFetch colorSensor = null;
     Spindex spindex = null;
     LedLights leds = null;
     List<LynxModule> allHubs = null;
@@ -83,7 +83,6 @@ public class TeleOpMain extends LinearOpMode {
         leds = new LedLights(hardwareMap);
         //ZucskyLens huskyLens = new ZucskyLens(hardwareMap);
         turret = new Turret(hardwareMap, PoseStorage.blueAlliance, limelight);
-        turret.setAlignmentEnabled(true);
         PrintWriter pen = null;
         try{
             pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
@@ -97,9 +96,9 @@ public class TeleOpMain extends LinearOpMode {
 
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);
-        //Pose pose = new Pose(72,72,45);
-        follower.setStartingPose(PoseStorage.poseEnd);
-        //follower.setStartingPose(pose);
+        Pose pose = new Pose(72,72,45);
+        //follower.setStartingPose(PoseStorage.poseEnd);
+        follower.setStartingPose(pose);
 
         follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
@@ -244,7 +243,7 @@ public class TeleOpMain extends LinearOpMode {
 //bradley test
             /*************************************Turret Auto-Aim**************************************/
             //Vector velocity = follower.getVelocity();
-            turret.periodic(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
+            turret.aimAtGoal(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
             /*****************************************************************************************/
 
             //Telemetry
