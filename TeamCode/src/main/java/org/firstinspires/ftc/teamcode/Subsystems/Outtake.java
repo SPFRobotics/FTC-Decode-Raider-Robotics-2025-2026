@@ -36,6 +36,9 @@ public class Outtake {
     private ElapsedTime boostTimer = new ElapsedTime(); // Timer for boost duration
     private int updateCounter = 0; // Counter for RPM checking interval
     private double lastRPM = 0; // Store last RPM reading
+    private int prevEncoderPos = 0;
+    private ElapsedTime rpmCalcTimer = new ElapsedTime();
+    private double calculatedRPM = 0;
     private int kickerCycleCount = 0;
     private enum KickerCycleState { IDLE, ENSURE_DOWN, DOWN_SETTLE, WAIT_FOR_RPM, MOVING_UP, MOVING_DOWN }
     private KickerCycleState kickerState = KickerCycleState.IDLE;
@@ -140,7 +143,19 @@ public class Outtake {
 
     //This returns the speed of the flywheel NOT the motor itself
     public double getRPM() {
-        return ((outtakeMotor.getVelocity()*60)/28/gearRatio);
+        double velocity = outtakeMotor.getVelocity();
+        if (Math.abs(velocity) > 1) {
+            return ((velocity * 60) / 28 / gearRatio);
+        }
+        int currentPos = outtakeMotor.getCurrentPosition();
+        double dt = rpmCalcTimer.seconds();
+        if (dt >= 0.02) {
+            double ticksPerSec = (currentPos - prevEncoderPos) / dt;
+            calculatedRPM = Math.abs((ticksPerSec * 60.0) / 28.0 / gearRatio);
+            prevEncoderPos = currentPos;
+            rpmCalcTimer.reset();
+        }
+        return calculatedRPM;
     }
 
 

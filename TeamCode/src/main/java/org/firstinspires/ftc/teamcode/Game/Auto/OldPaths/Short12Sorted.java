@@ -73,15 +73,15 @@ public class Short12Sorted extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
-
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         outtake = new Outtake(hardwareMap, kicker);
         colorSensor = new ColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
-        turret = new Turret(hardwareMap, true);
+        turret = new Turret(hardwareMap, true,limelight);
         spindex = new Spindex(hardwareMap);
+        spindex.setAutoSortActive(true);
 
 
         spindex.setAutoLoadMode(true);
@@ -164,7 +164,7 @@ public class Short12Sorted extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
-        turret.periodic(
+        turret.aimAtGoal(
                 follower.getPose().getX(),
                 follower.getPose().getY(),
                 Math.toDegrees(follower.getPose().getHeading())
@@ -206,6 +206,7 @@ public class Short12Sorted extends OpMode {
         telemetry.addData("Turret Pos", turret.getCurrentPosition());
         telemetry.addData("Turret Target", turret.getTargetPosition());
         telemetry.addData("Turret is Busy:",turret.isTurretAtTarget());
+        telemetry.addData("Spindex is busy?:", spindex.isBusy());
         telemetry.addData("RPM", outtake.getRPM());
 
         //)

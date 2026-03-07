@@ -223,8 +223,9 @@ public class Spindex {
                 char needed = pattern[sortPatternIndex];
                 for (int i = 0; i < 3; i++) {
                     if (slotColors[i] == needed) {
-                        setIndex(i);
                         setMode(true);
+                        setIndex(i);
+
                         autoSortState = AutoSortState.ROTATING;
                         return;
                     }
