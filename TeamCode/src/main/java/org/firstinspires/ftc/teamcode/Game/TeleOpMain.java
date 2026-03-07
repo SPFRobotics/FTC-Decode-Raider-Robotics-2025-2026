@@ -123,6 +123,8 @@ public class TeleOpMain extends LinearOpMode {
             follower.update();
             leds.cycleColors(10);
         }
+
+        turret.setAlignmentEnabled(true);
         waitForStart();
         ElapsedTime runTime = new ElapsedTime();
         while (opModeIsActive()){
@@ -243,7 +245,7 @@ public class TeleOpMain extends LinearOpMode {
 //bradley test
             /*************************************Turret Auto-Aim**************************************/
             //Vector velocity = follower.getVelocity();
-            turret.aimAtGoal(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
+            turret.periodic(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
             /*****************************************************************************************/
 
             //Telemetry
