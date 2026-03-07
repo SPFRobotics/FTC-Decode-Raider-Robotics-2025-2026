@@ -36,6 +36,18 @@ public class DualColorFetch extends ColorFetch{
         return hsv;
     }
 
+    public char getColor(float hue){
+        if (hue >= 200.0f && hue <= 240.0f){
+            return 'P';
+        }
+        else if (hue >= 100.0f && hue <= 170.0f){
+            return 'G';
+        }
+        else{
+            return 'E';
+        }
+    }
+
     public float[] getHues(){
         return new float[]{getHSVArrays()[0][0], getHSVArrays()[0][1]};
     }

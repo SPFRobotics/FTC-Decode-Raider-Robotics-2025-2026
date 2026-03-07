@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 //import org.firstinspires.ftc.teamcode.Testing.Test;
+import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.ballDistanceThreshold;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.pidf;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.tolorence;
 import static java.lang.Thread.sleep;
@@ -67,7 +68,7 @@ public class Spindex {
 
         //Distance/Color sensor
         //Old value is 3.3
-        public static double ballDistanceThreshold = 3;
+        public static double ballDistanceThreshold = 2.3;
         public static double ballReleaseThreshold = 4.0;
         public static double launchTime = 900;
 
@@ -88,6 +89,8 @@ public class Spindex {
         offset = AngleUnit.normalizeDegrees(spindexPos.getVoltage()/MAXVOLTAGE*360.0);
         index = 0;
     }
+
+
 
     //Overloaded method that contains three options in order to maintain compatibility with older programs while adding support for using the abs and relative encoders together.
     /*
@@ -180,7 +183,19 @@ public class Spindex {
 
     //Overloaded to use both color sensors and picking the one with a valid reading
     public void autoLoad(DualColorFetch colorSensor){
+        double[] ballDistances = colorSensor.getDistances();
+        char currentColor = 0;
 
+        if (ballDistances[0] <= ballDistanceThreshold){
+            currentColor = colorSensor.getColor(colorSensor.getHues()[0]);
+        }
+        else if (ballDistances[1] <= ballDistanceThreshold){
+            currentColor = colorSensor.getColor(colorSensor.getHues()[1]);
+        }
+
+        if (getSlotColors()[getIndex()] == 'E' && ballDistances[0] <= ballDistanceThreshold && !isBusy()){
+
+        }
     }
 
     public void autoSort(Outtake outtake, int motifId) {
@@ -222,18 +237,17 @@ public class Spindex {
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
                 outtake.setRPM(targetRPM);
-                if (!isBusy() && isTurretReady(turret)) {
+                if (!isBusy() && turret.isTurretAtTarget()) {
                     outtake.resetKickerCycle();
                     autoSortState = AutoSortState.LAUNCHING;
                 }
                 break;
 
             case LAUNCHING:
-                double rpm = outtake.isFarLocation()
-                        ? Outtake.OuttakeConfig.farRPM
-                        : Outtake.OuttakeConfig.closeRPM;
-                if (isTurretReady(turret)) {
+                double rpm = 2700;
+                if (turret.isTurretAtTarget()) {
                     outtake.enableSpindexKickerCycle(true, rpm);
+                    System.out.println("WORK PLEASE!!!!");
                 }
                 if (outtake.getKickerCycleCount() >= 1) {
                     clearBall(getIndex());
@@ -247,10 +261,6 @@ public class Spindex {
                 autoSortActive = false;
                 break;
         }
-    }
-
-    private boolean isTurretReady(Turret turret) {
-        return turret == null || turret.isTurretAtTarget();
     }
 
     public void setAutoSortActive(boolean active) {

@@ -7,6 +7,7 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
@@ -33,6 +34,7 @@ public class Short12Sorted extends OpMode {
     private static final double INTAKE_SPEED = 0.25;
 
     private TelemetryManager panelsTelemetry;
+
     public Follower follower;
     private Paths paths;
     private int pathState;
@@ -72,7 +74,6 @@ public class Short12Sorted extends OpMode {
         follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
 
-        spindex = new Spindex(hardwareMap);
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         outtake = new Outtake(hardwareMap, kicker);
@@ -80,6 +81,8 @@ public class Short12Sorted extends OpMode {
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
         turret = new Turret(hardwareMap, true);
+        spindex = new Spindex(hardwareMap);
+
 
         spindex.setAutoLoadMode(true);
         outtake.resetKickerCycle();
@@ -89,7 +92,7 @@ public class Short12Sorted extends OpMode {
 
         FtcDashboard dash = FtcDashboard.getInstance();
         telemetry = dash.getTelemetry();
-        telemetry.setMsTransmissionInterval(1);
+        telemetry.setMsTransmissionInterval(16);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -185,6 +188,27 @@ public class Short12Sorted extends OpMode {
         panelsTelemetry.debug("Slot Colors", "" + spindex.getSlotColors()[0] + spindex.getSlotColors()[1] + spindex.getSlotColors()[2]);
         panelsTelemetry.debug("Turret Pos", turret.getCurrentPosition());
         panelsTelemetry.debug("Turret Target", turret.getTargetPosition());
+
+        telemetry.addData("Path State", pathState);
+        telemetry.addData("Shots Fired", shotsFired);
+        telemetry.addData("Balls Loaded", ballsLoaded);
+        telemetry.addData("X", follower.getPose().getX());
+        telemetry.addData("Y", follower.getPose().getY());
+        telemetry.addData("Heading", follower.getPose().getHeading());
+        telemetry.addData("RPM", outtake.getRPM());
+        telemetry.addData("Is Busy", follower.isBusy());
+        telemetry.addData("Loop Time", time.milliseconds());
+        telemetry.addData("Error", spindex.getError());
+        telemetry.addData("Motif ID", detectedMotifId);
+        telemetry.addData("Sort State", spindex.getAutoSortStateName());
+        telemetry.addData("Pattern Pos", spindex.getSortPatternIndex());
+        telemetry.addData("Slot Colors", "" + spindex.getSlotColors()[0] + spindex.getSlotColors()[1] + spindex.getSlotColors()[2]);
+        telemetry.addData("Turret Pos", turret.getCurrentPosition());
+        telemetry.addData("Turret Target", turret.getTargetPosition());
+        telemetry.addData("Turret is Busy:",turret.isTurretAtTarget());
+        telemetry.addData("RPM", outtake.getRPM());
+
+        //)
         //panelsTelemetry.update(telemetry);
 
         telemetry.addLine("Timer: " + timer.milliseconds());
@@ -266,7 +290,6 @@ public class Short12Sorted extends OpMode {
         outtake.resetKickerCycle();
         spindex.setAutoSortActive(true);
     }
-
 
 
 
