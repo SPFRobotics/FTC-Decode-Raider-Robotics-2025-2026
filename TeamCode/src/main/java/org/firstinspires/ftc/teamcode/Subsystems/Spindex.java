@@ -225,7 +225,15 @@ public class Spindex {
                     if (slotColors[i] == needed) {
                         setMode(true);
                         setIndex(i);
-
+                        autoSortState = AutoSortState.ROTATING;
+                        return;
+                    }
+                }
+                // No matching color found — shoot any remaining ball instead of skipping
+                for (int i = 0; i < 3; i++) {
+                    if (slotColors[i] != 'E') {
+                        setMode(true);
+                        setIndex(i);
                         autoSortState = AutoSortState.ROTATING;
                         return;
                     }
