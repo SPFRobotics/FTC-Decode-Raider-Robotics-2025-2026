@@ -139,8 +139,8 @@ public class BlueShortTwelveBall extends OpMode {
             intake.intakeOff();
         }
         follower.update();
-        //turret.aimAtGoalManual(0);
         leds.cycleColors(10);
+
         autonomousPathUpdate();
         updateSpindexPosition();
 
@@ -154,6 +154,7 @@ public class BlueShortTwelveBall extends OpMode {
         panelsTelemetry.debug("Is Busy", follower.isBusy());
         panelsTelemetry.debug("Loop Time", time.milliseconds());
         panelsTelemetry.debug("Error", spindex.getError());
+
         //panelsTelemetry.update(telemetry);
 
         telemetry.addLine("Timer: " + timer.milliseconds());
