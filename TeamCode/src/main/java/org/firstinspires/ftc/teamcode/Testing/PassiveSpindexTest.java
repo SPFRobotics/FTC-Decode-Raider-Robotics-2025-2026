@@ -73,7 +73,6 @@ public class PassiveSpindexTest extends OpMode {
             passiveKicker.up();
         }
 
-        kicker.passive();
         spindex.setPower((-gamepad1.right_trigger + gamepad1.left_trigger)*speedMultiplyer);
         pen.write(runTime.milliseconds() + ":" + outtake.getRPM() + "\n");
 

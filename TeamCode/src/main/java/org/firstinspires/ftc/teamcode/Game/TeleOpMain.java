@@ -40,7 +40,6 @@ public class TeleOpMain extends LinearOpMode {
     ElapsedTime loopTime;
     Outtake outtake = null;
     KickerSpindex kicker = null;
-    PassiveKicker passiveKicker = null;
     Turret turret = null;
     ColorFetch colorSensor = null;
     Spindex spindex = null;
@@ -79,12 +78,12 @@ public class TeleOpMain extends LinearOpMode {
         intake = new Intake(hardwareMap);
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
-        passiveKicker = new PassiveKicker(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
         spindex = new Spindex(hardwareMap);
         leds = new LedLights(hardwareMap);
         //ZucskyLens huskyLens = new ZucskyLens(hardwareMap);
         turret = new Turret(hardwareMap, PoseStorage.blueAlliance, limelight);
+        turret.setAlignmentEnabled(true);
         PrintWriter pen = null;
         try{
             pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
@@ -98,8 +97,10 @@ public class TeleOpMain extends LinearOpMode {
 
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);
-
+        //Pose pose = new Pose(72,72,45);
         follower.setStartingPose(PoseStorage.poseEnd);
+        //follower.setStartingPose(pose);
+
         follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
 
@@ -145,7 +146,7 @@ public class TeleOpMain extends LinearOpMode {
 
             /*****************************Intake System************************************/
             boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper);
-            if (intakeActive && !gamepad1.left_bumper) {
+            if (intakeActive && !gamepad1.left_bumper && !spindex.isOuttakeing()) {
                 intake.intakeOn(true);
             } else if (gamepad1.left_bumper) {
                 intake.setPower(-1);
@@ -164,7 +165,6 @@ public class TeleOpMain extends LinearOpMode {
             if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0) {
                 spindex.clearBall(spindex.getIndex());
             }
-            passiveKicker.down();
             /**************************************************************************/
 
             /*******************************************Spindex Logic********************************************/

@@ -10,9 +10,8 @@ import static org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex.KickerConf
 public class KickerSpindex {
     @Config
     public static class KickerConfig{
-        public static double down = 0.15;
-        public static double up = 0.37;
-        public static double passive = 0.11;
+        public static double down = 0.25;
+        public static double up = 0.41;
         public static double offset = 0.4;
         public static double kickerTimer = 250;
     }
@@ -41,11 +40,6 @@ public class KickerSpindex {
         state = 0;
         leftKicker.setPosition(down);
         rightKicker.setPosition(down+offset);
-    }
-
-    public void passive(){
-        leftKicker.setPosition(passive);
-        rightKicker.setPosition(passive+offset);
     }
 
     //Automates the motions of moving the kicker up and down combining the two methods allowing both to be done with the click of a button
