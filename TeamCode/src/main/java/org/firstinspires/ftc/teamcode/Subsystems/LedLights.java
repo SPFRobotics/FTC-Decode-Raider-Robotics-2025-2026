@@ -37,7 +37,9 @@ public class LedLights {
         rightLed = hardwareMap.get(Servo.class, "rightLed");
     }
 
-    //One interval is the amount of time in seconds it takes to get back to the value of
+    /**
+    @param interval One interval is the amount of time in seconds it takes to get back to the start
+            **/
     public void cycleColors(double interval){
         if (colorTimer.seconds() >= interval/495.0/2){
             colorTimer.reset();

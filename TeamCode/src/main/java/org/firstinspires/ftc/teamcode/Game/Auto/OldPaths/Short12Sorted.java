@@ -100,6 +100,7 @@ public class Short12Sorted extends OpMode {
         if (id != -1) {
             detectedMotifId = id;
             panelsTelemetry.debug("Detected Motif", detectedMotifId);
+
         }
         else {
             detectedMotifId = 21;

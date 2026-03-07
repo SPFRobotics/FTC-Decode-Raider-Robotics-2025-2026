@@ -216,7 +216,6 @@ public class Spindex {
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
                 outtake.setRPM(targetRPM);
-                moveToPos(SpindexValues.outtakePos[getIndex()]);
                 if (!isBusy() && isTurretReady(turret)) {
                     outtake.resetKickerCycle();
                     autoSortState = AutoSortState.LAUNCHING;
@@ -227,7 +226,6 @@ public class Spindex {
                 double rpm = outtake.isFarLocation()
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
-                moveToPos(SpindexValues.outtakePos[getIndex()]);
                 if (isTurretReady(turret)) {
                     outtake.enableSpindexKickerCycle(true, rpm);
                 }
