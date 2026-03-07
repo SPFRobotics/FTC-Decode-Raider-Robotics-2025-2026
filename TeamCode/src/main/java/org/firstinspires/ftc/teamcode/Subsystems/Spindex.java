@@ -186,15 +186,16 @@ public class Spindex {
         double[] ballDistances = colorSensor.getDistances();
         char currentColor = 0;
 
+        //currentColor is set to the distance sensor which reads a distance under the threshold first
         if (ballDistances[0] <= ballDistanceThreshold){
             currentColor = colorSensor.getColor(colorSensor.getHues()[0]);
         }
-        else if (ballDistances[1] <= ballDistanceThreshold){
+        if (ballDistances[1] <= ballDistanceThreshold){
             currentColor = colorSensor.getColor(colorSensor.getHues()[1]);
         }
 
-        if (getSlotColors()[getIndex()] == 'E' && ballDistances[0] <= ballDistanceThreshold && !isBusy()){
-
+        if (getSlotColors()[getIndex()] == 'E' && !isBusy()){
+            setSlotColor(currentColor);
         }
     }
 
