@@ -237,10 +237,10 @@ public class Spindex {
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
                 outtake.setRPM(targetRPM);
-               // if (!isBusy() && turret.isTurretAtTarget()) {
+                if (!isBusy() && turret.isTurretAtTarget()) {
                     outtake.resetKickerCycle();
                     autoSortState = AutoSortState.LAUNCHING;
-                //}
+                }
                 break;
 
             case LAUNCHING:
