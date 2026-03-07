@@ -183,14 +183,14 @@ public class Spindex {
     }
 
     public void autoSort(Outtake outtake, int motifId, Turret turret) {
-        if (!autoSortActive || motifId < 21 || motifId > 23) return;
+        if (!autoSortActive) return;
+        if (motifId < 21 || motifId > 23) motifId = 21;
 
         String patternStr;
         switch (motifId) {
-            case 21: patternStr = motif21Pattern; break;
             case 22: patternStr = motif22Pattern; break;
             case 23: patternStr = motif23Pattern; break;
-            default: return;
+            default: patternStr = motif21Pattern; break;
         }
         char[] pattern = patternStr.toCharArray();
 
@@ -202,13 +202,14 @@ public class Spindex {
                 }
                 char needed = pattern[sortPatternIndex];
                 for (int i = 0; i < 3; i++) {
-                    if (getSlotColors()[i] != 'E' && slotColors[i] == needed) {
+                    if (slotColors[i] == needed) {
                         setIndex(i);
                         setMode(true);
                         autoSortState = AutoSortState.ROTATING;
                         return;
                     }
                 }
+                sortPatternIndex++;
                 break;
 
             case ROTATING:

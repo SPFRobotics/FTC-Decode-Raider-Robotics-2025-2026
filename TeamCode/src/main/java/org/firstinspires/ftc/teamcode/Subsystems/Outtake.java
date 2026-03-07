@@ -111,10 +111,12 @@ public class Outtake {
         return isFarLocation ? "FAR" : "SHORT";
     }
 
-    //@param Distance hotizontally from goal
-    public double distanceToRPM(double x){
+    /**
+    @param distance hotizontally from goal
+            **/
+    public double distanceToRPM(double distance){
 
-
+        double x =distance;
 
         double RPS =  (Math.sqrt( (9.8*x*x)/((0.075)*((5.062*x)-0.454025))))/0.603;
 
