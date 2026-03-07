@@ -123,7 +123,11 @@ public class Turret {
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
     }
-
+/**
+@param robotX robot x coord
+@param robotY robot y coord
+@param robotHeading robot's heading
+ */
     public void periodic(double robotX, double robotY, double robotHeading) {
         LLResult result = (limelight != null) ? limelight.getLatestResult() : null;
 
