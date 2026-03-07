@@ -124,6 +124,9 @@ public class Short12Sorted extends OpMode {
         limelight.stop();
 
         intakeEnabled = true;
+        if (outtake.isFarLocation()) {
+            outtake.switchLocation();
+        }
         outtake.setRPM(SHOOT_RPM);
 
         for (int i = 0; i < 3; i++) {
