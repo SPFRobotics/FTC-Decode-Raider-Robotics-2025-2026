@@ -29,7 +29,7 @@ public class DualColorFetch extends ColorFetch{
 
     public float[][] getHSVArrays(){
         int[] colorInteger = {colorSensor.getNormalizedColors().toColor(), colorSensor2.getNormalizedColors().toColor()};
-        float[][] hsv = new float[3][2];
+        float[][] hsv = new float[2][3];
         for (int i = 0; i < 2; i++){
             Color.colorToHSV(colorInteger[i], hsv[i]);
         }
