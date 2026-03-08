@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.Vector;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -98,9 +99,9 @@ public class TeleOpMain extends LinearOpMode {
 
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);
-        Pose pose = new Pose(72,72,45);
-        //follower.setStartingPose(PoseStorage.poseEnd);
+        Pose pose = new Pose(72, 72, Math.toRadians(45));
         follower.setStartingPose(pose);
+        //follower.setStartingPose(PoseStorage.poseEnd);
 
         follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
@@ -246,15 +247,18 @@ public class TeleOpMain extends LinearOpMode {
             /********************************************************/
 //bradley test
             /*************************************Turret Auto-Aim**************************************/
+            //LLResult result = limelight.getLatestResult();
             //Vector velocity = follower.getVelocity();
             turret.periodic(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
+            //turret.aimWithLimelight(result);
+
             /*****************************************************************************************/
 
             //Telemetry
             multiTelemetry.addLine("==========================================");
             spindex.showTelemetry(multiTelemetry);
             //colorSensor.showTelemetry(multiTelemetry);
-            turret.showTelemetry(multiTelemetry, currentPose.getX(), currentPose.getY(), currentPose.getHeading());
+            turret.showTelemetry(multiTelemetry);
             colorSensor.showTelemetry(telemetry);
             multiTelemetry.addData("Loop Time", loopTime.milliseconds());
             multiTelemetry.addData("Outtake RPM", outtake.getRPM());

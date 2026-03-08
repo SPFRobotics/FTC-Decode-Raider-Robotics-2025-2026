@@ -14,6 +14,10 @@ public class Turret {
     double goalY;
     double goalX;
 
+    private double lastRobotX;
+    private double lastRobotY;
+    private double lastRobotHeading;
+
     double turretLimelightOffset = 0;
     public final double RedGoalX = 133;
     public final double RedGoalY = 135;
@@ -102,7 +106,7 @@ public class Turret {
     private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
         turretLimelightOffset = limelightOffset();
 
-        double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
+        double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY-1.5, goalX - robotX));
         double turretDeg = fieldAngleDeg - robotHeading + turretLimelightOffset;
 
         return wrapDeg360(turretDeg);
@@ -118,7 +122,7 @@ public class Turret {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
         targetDeg += targetDeg > 326 ? -360 : 0;
 
-        int targetTicks = (int) (((targetDeg - initialAngleOffset) / 360.0) * ticks * gearRatio);
+        int targetTicks = (int) (((targetDeg) / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
@@ -129,6 +133,10 @@ public class Turret {
 @param robotHeading robot's heading
  */
     public void periodic(double robotX, double robotY, double robotHeading) {
+        this.lastRobotX = robotX;
+        this.lastRobotY = robotY;
+        this.lastRobotHeading = robotHeading;
+
         LLResult result = (limelight != null) ? limelight.getLatestResult() : null;
 
         if (!alignment) {
@@ -153,7 +161,7 @@ public class Turret {
         }
     }
 
-    private void aimWithLimelight(LLResult result) {
+    public void aimWithLimelight(LLResult result) {
         ensureRunToPositionMode();
 
         if (result == null || !result.isValid()) {
@@ -162,7 +170,7 @@ public class Turret {
             return;
         }
 
-        double adjustedTx = result.getTx() + TurretConfig.limelightAngularOffset;
+        double adjustedTx = -result.getTx() + TurretConfig.limelightAngularOffset;
         int currentPos = turret.getCurrentPosition();
         int targetTicks = (int) Math.round(currentPos + adjustedTx * TurretConfig.limelightTicksPerDegree);
 
@@ -253,29 +261,29 @@ public class Turret {
         return turret.getVelocity();
     }
 
-    public void showTelemetry(Telemetry telemetry, double robotX, double robotY, double robotHeading) {
+    public void showTelemetry(Telemetry telemetry) {
         telemetry.addLine("------------------------------------------");
         telemetry.addLine("Turret");
         telemetry.addLine("Mode: " + state);
         telemetry.addLine("Alignment Enabled: " + alignment);
-        telemetry.addLine("Robot X: " + robotX);
-        telemetry.addLine("Robot Y: " + robotY);
-        telemetry.addLine("Robot Heading: " + robotHeading);
-        telemetry.addLine("Turret Target Degrees: " + getTargetDeg(robotX, robotY, robotHeading));
+        telemetry.addLine("Robot X: " + lastRobotX);
+        telemetry.addLine("Robot Y: " + lastRobotY);
+        telemetry.addLine("Robot Heading: " + lastRobotHeading);
+        telemetry.addLine("Turret Target Degrees: " + getTargetDeg(lastRobotX, lastRobotY, lastRobotHeading));
         telemetry.addLine("Turret Degrees: " + getCurrentAngularPosition());
         telemetry.addLine("Turret Power: " + turret.getPower());
         telemetry.addLine("------------------------------------------");
     }
 
-    public void showTelemetry(MultipleTelemetry telemetry, double robotX, double robotY, double robotHeading) {
+    public void showTelemetry(MultipleTelemetry telemetry) {
         telemetry.addLine("------------------------------------------------------------------------------------");
         telemetry.addLine("Turret");
         telemetry.addLine("Mode: " + state);
         telemetry.addLine("Alignment Enabled: " + alignment);
-        telemetry.addLine("Robot X: " + robotX);
-        telemetry.addLine("Robot Y: " + robotY);
-        telemetry.addLine("Robot Heading: " + robotHeading);
-        telemetry.addLine("Turret Target Degrees: " + getTargetDeg(robotX, robotY, robotHeading));
+        telemetry.addLine("Robot X: " + lastRobotX);
+        telemetry.addLine("Robot Y: " + lastRobotY);
+        telemetry.addLine("Robot Heading: " + lastRobotHeading);
+        telemetry.addLine("Turret Target Degrees: " + getTargetDeg(lastRobotX, lastRobotY, lastRobotHeading));
         telemetry.addLine("Turret Degrees: " + getCurrentAngularPosition());
         telemetry.addLine("Turret Power: " + turret.getPower());
         telemetry.addLine("------------------------------------------------------------------------------------");
