@@ -189,7 +189,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             //Sets either intake or outtake mode
-            spindex.setMode(autoLaunch ? true : spindexModeToggle.toggle(gamepad2.circle));
+            spindex.setMode(autoLaunch || spindexModeToggle.toggle(gamepad2.circle));
 
             //Automatic Loading
             spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.share) && !spindex.isOuttakeing());
