@@ -16,7 +16,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 //import org.firstinspires.ftc.teamcode.Testing.Test;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.ballDistanceThreshold;
 import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.pidf;
-import static org.firstinspires.ftc.teamcode.Subsystems.Spindex.SpindexValues.tolorence;
 import static java.lang.Thread.sleep;
 
 public class Spindex {
@@ -61,8 +60,7 @@ public class Spindex {
         public static double Threshold = 63.75;
 
         public static double[] pidf = {35, 0.3, 12, 0};
-        public static double tolorence = 5;
-        public static double offset = 7;
+        public static double offset = 10;
         public static double[] intakePos = {0+offset, 120+offset, 240+offset};
         public static double[] outtakePos = {180+offset, 300+offset, 60+offset};
 
@@ -432,10 +430,6 @@ public class Spindex {
 
     public boolean isAutoLaunching(){
         return autoLaunchMode;
-    }
-
-    public boolean atTarget(){
-        return Math.abs(error) <= tolorence;
     }
 
     public boolean atTarget(int tolorence){
