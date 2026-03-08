@@ -110,7 +110,7 @@ public class ColorFetch {
         telemetry.addLine("HSV: " + Arrays.toString(getHSVArray()));
         telemetry.addLine("Color: " + getColor());
         telemetry.addLine("Average Hue: " + getAverageHue());
-        telemetry.addLine("Average Color: " + getAverageColor());
+        //telemetry.addLine("Average Color: " + getAverageColor());
         telemetry.addLine("Distance: " + getDistance());
         telemetry.addLine("------------------------------------------------------------------------------------");
     }

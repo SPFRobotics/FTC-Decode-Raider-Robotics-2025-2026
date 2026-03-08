@@ -184,18 +184,56 @@ public class Spindex {
     //Overloaded to use both color sensors and picking the one with a valid reading
     public void autoLoad(DualColorFetch colorSensor){
         double[] ballDistances = colorSensor.getDistances();
-        char currentColor = 0;
+        float currentHue = 0;
 
         //currentColor is set to the distance sensor which reads a distance under the threshold first
         if (ballDistances[0] <= ballDistanceThreshold){
-            currentColor = colorSensor.getColor(colorSensor.getHues()[0]);
+            currentHue = colorSensor.getHues()[0];
         }
         if (ballDistances[1] <= ballDistanceThreshold){
-            currentColor = colorSensor.getColor(colorSensor.getHues()[1]);
+            currentHue = colorSensor.getHues()[1];
         }
 
-        if (getSlotColors()[getIndex()] == 'E' && !isBusy()){
-            setSlotColor(currentColor);
+        if (currentHue != 0 && getSlotColors()[getIndex()] == 'E' && !isBusy()){
+            setSlotColor(colorSensor.getColor(currentHue));
+        }
+
+        if (isAutoLoading() && slotColors[getIndex()] != 'E') {
+            for (int i = 0; i < slotColors.length; i++) {
+                if (slotColors[i] == 'E') {
+                    setIndex(i);
+                    break;
+                }
+            }
+        }
+    }
+    enum AutoLaunchState {
+        WAITFORSPINDEX,
+        LAUNCH
+    }
+    AutoLaunchState autoLaunchState = null;
+    int kickerCycleCount = 1;
+    ElapsedTime kickerTimer = new ElapsedTime();
+
+    public void autoLaunch(KickerSpindex kicker){
+        switch (autoLaunchState){
+            case WAITFORSPINDEX:
+                kicker.down();
+                if (!isBusy()){
+                    autoLaunchState = AutoLaunchState.WAITFORSPINDEX;
+                    kickerTimer.reset();
+                }
+                break;
+            case LAUNCH:
+                kicker.up();
+                if (kickerTimer.milliseconds() >= 500){
+                    kicker.down();
+                }
+                else if (kickerTimer.milliseconds() >= 1000){
+                    autoLaunchState = AutoLaunchState.WAITFORSPINDEX;
+                    addIndex();
+                }
+                break;
         }
     }
 

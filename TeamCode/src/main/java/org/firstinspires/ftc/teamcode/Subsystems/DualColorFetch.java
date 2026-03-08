@@ -49,6 +49,6 @@ public class DualColorFetch extends ColorFetch{
     }
 
     public float[] getHues(){
-        return new float[]{getHSVArrays()[0][0], getHSVArrays()[0][1]};
+        return new float[]{getHSVArrays()[0][0], getHSVArrays()[1][0]};
     }
 }
