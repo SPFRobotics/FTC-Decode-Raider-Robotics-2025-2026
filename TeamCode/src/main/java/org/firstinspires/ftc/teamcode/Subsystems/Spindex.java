@@ -220,7 +220,7 @@ public class Spindex {
             case FIND_NEXT:
                 boolean found = false;
                 for (int i = 0; i < 3; i++) {
-                    int idx = (index + i) % 3;
+                    int idx = Math.floorMod(index + i, 3);
                     if (slotColors[idx] != 'E') {
                         setIndex(idx);
                         found = true;

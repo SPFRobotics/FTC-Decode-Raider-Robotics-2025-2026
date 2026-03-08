@@ -217,7 +217,7 @@ public class TeleOpMain extends LinearOpMode {
                     else{
                         leds.setColor(LedLights.INDIGO, false);
                     }
-                    spindex.setIndex(indexOfColor);
+                    spindex.setIndex(indexOfColor < 0 ? spindex.getIndex() : indexOfColor);
                 }
                 else if (gamepad2.triangleWasPressed()){
                     int indexOfColor = spindex.getIndexOfColor('G');
