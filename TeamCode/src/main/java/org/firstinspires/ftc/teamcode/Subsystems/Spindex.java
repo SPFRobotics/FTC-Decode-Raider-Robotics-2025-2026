@@ -208,32 +208,57 @@ public class Spindex {
         }
     }
     enum AutoLaunchState {
+        FIND_NEXT,
         WAITFORSPINDEX,
         LAUNCH
     }
-    AutoLaunchState autoLaunchState = null;
+    AutoLaunchState autoLaunchState = AutoLaunchState.FIND_NEXT;
     ElapsedTime kickerTimer = new ElapsedTime();
 
     public void autoLaunch(KickerSpindex kicker){
+        if (!autoLaunchMode) return;
+
         switch (autoLaunchState){
+            case FIND_NEXT:
+                boolean found = false;
+                for (int i = 0; i < 3; i++) {
+                    int idx = (index + i) % 3;
+                    if (slotColors[idx] != 'E') {
+                        setIndex(idx);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    autoLaunchMode = false;
+                    return;
+                }
+                autoLaunchState = AutoLaunchState.WAITFORSPINDEX;
+                break;
+
             case WAITFORSPINDEX:
                 kicker.down();
                 if (!isBusy()){
-                    autoLaunchState = AutoLaunchState.WAITFORSPINDEX;
+                    autoLaunchState = AutoLaunchState.LAUNCH;
                     kickerTimer.reset();
                 }
                 break;
+
             case LAUNCH:
-                kicker.up();
-                if (kickerTimer.milliseconds() >= 500){
+                if (kickerTimer.milliseconds() < 500) {
+                    kicker.up();
+                } else if (kickerTimer.milliseconds() < 1000) {
                     kicker.down();
-                }
-                else if (kickerTimer.milliseconds() >= 1000){
-                    autoLaunchState = AutoLaunchState.WAITFORSPINDEX;
-                    addIndex();
+                } else {
+                    clearBall(index);
+                    autoLaunchState = AutoLaunchState.FIND_NEXT;
                 }
                 break;
         }
+    }
+
+    public void resetAutoLaunch() {
+        autoLaunchState = AutoLaunchState.FIND_NEXT;
     }
 
     public void autoSort(Outtake outtake, int motifId) {

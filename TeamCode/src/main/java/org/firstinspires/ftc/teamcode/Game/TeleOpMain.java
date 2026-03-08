@@ -60,6 +60,7 @@ public class TeleOpMain extends LinearOpMode {
     Button autoLoad = new Button();
     Limelight limelight;
 
+    Button autoLaunchButton = new Button();
     Button autoAimTurretButton = new Button();
 
     //Telemetry
@@ -164,10 +165,12 @@ public class TeleOpMain extends LinearOpMode {
             /******************************************************************************/
 
             /*********************Kicker and index emptying logic**********************/
-            boolean crossWasPressed = gamepad2.crossWasPressed();
-            kicker.automate(crossWasPressed && spindex.isOuttakeing());
-            if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0) {
-                spindex.clearBall(spindex.getIndex());
+            if (!autoLaunch) {
+                boolean crossWasPressed = gamepad2.crossWasPressed();
+                kicker.automate(crossWasPressed && spindex.isOuttakeing());
+                if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0) {
+                    spindex.clearBall(spindex.getIndex());
+                }
             }
             /**************************************************************************/
 
@@ -191,6 +194,15 @@ public class TeleOpMain extends LinearOpMode {
             //Automatic Loading
             spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.share) && !spindex.isOuttakeing());
             spindex.autoLoad(colorSensor);
+
+            //Auto Launch: automatically cycles through loaded slots and kicks balls
+            autoLaunch = autoLaunchButton.toggle(gamepad2.options);
+            spindex.setAutoLaunchMode(autoLaunch);
+            if (autoLaunch) {
+                spindex.autoLaunch(kicker);
+            } else {
+                spindex.resetAutoLaunch();
+            }
 
             if (spindex.isOuttakeing()) {
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
