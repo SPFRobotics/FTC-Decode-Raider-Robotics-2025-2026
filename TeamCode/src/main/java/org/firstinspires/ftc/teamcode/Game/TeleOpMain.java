@@ -196,7 +196,7 @@ public class TeleOpMain extends LinearOpMode {
             spindex.autoLoad(colorSensor);
 
             //Auto Launch: automatically cycles through loaded slots and kicks balls
-            autoLaunch = autoLaunchButton.toggle(gamepad2.options);
+            autoLaunch = autoLaunchButton.toggle((int) gamepad2.right_trigger);
             spindex.setAutoLaunchMode(autoLaunch);
             if (autoLaunch) {
                 spindex.autoLaunch(kicker);
