@@ -195,6 +195,10 @@ public class TeleOpMain extends LinearOpMode {
             spindex.setAutoLaunchMode(autoLaunch);
             if (autoLaunch) {
                 spindex.autoLaunch(kicker);
+                if (!spindex.isAutoLaunching()) {
+                    autoLaunch = false;
+                    autoLaunchButton.changeState(false);
+                }
             } else {
                 spindex.resetAutoLaunch();
             }
