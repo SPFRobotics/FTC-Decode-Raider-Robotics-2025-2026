@@ -271,7 +271,7 @@ public class TeleOpMain extends LinearOpMode {
             spindex.showTelemetry(multiTelemetry);
             //colorSensor.showTelemetry(multiTelemetry);
             turret.showTelemetry(multiTelemetry);
-            colorSensor.showTelemetry(telemetry);
+            //colorSensor.showTelemetry(telemetry);
             multiTelemetry.addData("Loop Time", loopTime.milliseconds());
             multiTelemetry.addData("Outtake RPM", outtake.getRPM());
             multiTelemetry.addData("Colors", colorSensor.getHues());
