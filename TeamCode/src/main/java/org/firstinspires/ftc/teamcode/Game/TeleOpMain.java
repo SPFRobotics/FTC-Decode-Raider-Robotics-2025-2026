@@ -266,6 +266,7 @@ public class TeleOpMain extends LinearOpMode {
             /*****************************************************************************************/
 
             //Telemetry
+            /*
             multiTelemetry.addLine("==========================================");
             spindex.showTelemetry(multiTelemetry);
             //colorSensor.showTelemetry(multiTelemetry);
@@ -276,6 +277,8 @@ public class TeleOpMain extends LinearOpMode {
             multiTelemetry.addData("Colors", colorSensor.getHues());
             multiTelemetry.addLine("==========================================");
             multiTelemetry.update();
+
+             */
             pen.write(runTime.milliseconds() + ":" + outtake.getRPM() + "\n");
         }
         pen.close();
