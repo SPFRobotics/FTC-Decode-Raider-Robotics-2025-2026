@@ -235,9 +235,9 @@ public class Spindex {
                 break;
 
             case LAUNCH:
-                if (kickerTimer.milliseconds() < 250) {
+                if (kickerTimer.milliseconds() < 200) {
                     kicker.up();
-                } else if (kickerTimer.milliseconds() < 500) {
+                } else if (kickerTimer.milliseconds() < 400) {
                     kicker.down();
                 } else {
                     clearBall(index);
