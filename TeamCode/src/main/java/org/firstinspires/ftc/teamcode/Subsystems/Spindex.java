@@ -206,50 +206,29 @@ public class Spindex {
         }
     }
     enum AutoLaunchState {
-        FIND_NEXT,
         WAITFORSPINDEX,
         LAUNCH
     }
-    AutoLaunchState autoLaunchState = AutoLaunchState.FIND_NEXT;
+    AutoLaunchState autoLaunchState = null;
     ElapsedTime kickerTimer = new ElapsedTime();
 
     public void autoLaunch(KickerSpindex kicker){
-        if (!autoLaunchMode) return;
-
         switch (autoLaunchState){
-            case FIND_NEXT:
-                boolean found = false;
-                for (int i = 0; i < 3; i++) {
-                    int idx = (index + i) % 3;
-                    if (slotColors[idx] != 'E') {
-                        setIndex(idx);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    autoLaunchMode = false;
-                    return;
-                }
-                autoLaunchState = AutoLaunchState.WAITFORSPINDEX;
-                break;
-
             case WAITFORSPINDEX:
                 kicker.down();
                 if (!isBusy()){
-                    autoLaunchState = AutoLaunchState.LAUNCH;
+                    autoLaunchState = AutoLaunchState.WAITFORSPINDEX;
                     kickerTimer.reset();
                 }
                 break;
-
             case LAUNCH:
-                if (kickerTimer.milliseconds() < .1) {
-                    kicker.up();
-                } else if (kickerTimer.milliseconds() < .3) {
+                kicker.up();
+                if (kickerTimer.milliseconds() >= .1){
                     kicker.down();
-                } else {
-                    clearBall(index);
-                    autoLaunchState = AutoLaunchState.FIND_NEXT;
+                }
+                else if (kickerTimer.milliseconds() >= .3){
+                    autoLaunchState = AutoLaunchState.WAITFORSPINDEX;
+                    addIndex();
                 }
                 break;
         }
