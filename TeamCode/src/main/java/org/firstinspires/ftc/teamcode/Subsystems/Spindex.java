@@ -62,7 +62,7 @@ public class Spindex {
 
         public static double[] pidf = {35, 0.3, 12, 0};
         public static double tolorence = 5;
-        public static double offset = 4;
+        public static double offset = 7;
         public static double[] intakePos = {0+offset, 120+offset, 240+offset};
         public static double[] outtakePos = {180+offset, 300+offset, 60+offset};
 
