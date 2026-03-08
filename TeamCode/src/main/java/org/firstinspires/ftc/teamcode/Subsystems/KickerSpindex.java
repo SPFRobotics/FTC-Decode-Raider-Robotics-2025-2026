@@ -13,7 +13,7 @@ public class KickerSpindex {
         public static double down = 0.28;
         public static double up = 0.46;
         public static double offset = 0.4;
-        public static double kickerTimer = 250;
+        public static double kickerTimer = 350;
     }
     private Servo leftKicker = null;
     private Servo rightKicker = null;

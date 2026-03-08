@@ -145,8 +145,8 @@ public class TeleOpMain extends LinearOpMode {
             /**********************************************************************************************/
 
             /*****************************Intake System************************************/
-            boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper);
-            if (intakeActive && !gamepad1.left_bumper && !spindex.isOuttakeing()) {
+            boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper && !spindex.isOuttakeing());
+            if (intakeActive && !gamepad1.left_bumper) {
                 intake.intakeOn(true);
             } else if (gamepad1.left_bumper) {
                 intake.setPower(-1);
