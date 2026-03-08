@@ -72,6 +72,8 @@ public class TeleOpMain extends LinearOpMode {
     boolean fieldCentric = true;
     double setRPM = 0;
     int currentPos = 0;
+    int kickerCount = 1;
+    boolean autoLaunch = false;
 
     public void runOpMode(){
         // Initialize subsystems
@@ -169,13 +171,13 @@ public class TeleOpMain extends LinearOpMode {
             /**************************************************************************/
 
             /*******************************************Spindex Logic********************************************/
-            if (spindexRightBumper.press(gamepad2.right_bumper)) {
+            if (spindexRightBumper.press(gamepad2.right_bumper) && !autoLaunch) {
                 if (!spindex.isOuttakeing()) {
                     autoLoad.changeState(false);
                 }
                 spindex.addIndex();
             }
-            if (spindexLeftBumper.press(gamepad2.left_bumper)) {
+            if (spindexLeftBumper.press(gamepad2.left_bumper) && !autoLaunch) {
                 if (!spindex.isOuttakeing()) {
                     autoLoad.changeState(false);
                 }
@@ -183,7 +185,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             //Sets either intake or outtake mode
-            spindex.setMode(spindexModeToggle.toggle(gamepad2.circle));
+            spindex.setMode(autoLaunch ? true : spindexModeToggle.toggle(gamepad2.circle));
 
             //Automatic Loading
             spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.share) && !spindex.isOuttakeing());

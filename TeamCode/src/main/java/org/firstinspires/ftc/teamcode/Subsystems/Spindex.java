@@ -212,7 +212,6 @@ public class Spindex {
         LAUNCH
     }
     AutoLaunchState autoLaunchState = null;
-    int kickerCycleCount = 1;
     ElapsedTime kickerTimer = new ElapsedTime();
 
     public void autoLaunch(KickerSpindex kicker){
