@@ -206,28 +206,20 @@ public class Spindex {
         }
     }
     enum AutoLaunchState {
-        FIND_NEXT,
+        NEXT_SLOT,
         WAITFORSPINDEX,
         LAUNCH
     }
-    AutoLaunchState autoLaunchState = AutoLaunchState.FIND_NEXT;
+    AutoLaunchState autoLaunchState = AutoLaunchState.NEXT_SLOT;
     ElapsedTime kickerTimer = new ElapsedTime();
+    int autoLaunchCount = 0;
 
     public void autoLaunch(KickerSpindex kicker){
         if (!autoLaunchMode) return;
 
         switch (autoLaunchState){
-            case FIND_NEXT:
-                boolean found = false;
-                for (int i = 0; i < 3; i++) {
-                    int idx = Math.floorMod(index + i, 3);
-                    if (slotColors[idx] != 'E') {
-                        setIndex(idx);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
+            case NEXT_SLOT:
+                if (autoLaunchCount >= 3) {
                     autoLaunchMode = false;
                     return;
                 }
@@ -249,14 +241,17 @@ public class Spindex {
                     kicker.down();
                 } else {
                     clearBall(index);
-                    autoLaunchState = AutoLaunchState.FIND_NEXT;
+                    addIndex();
+                    autoLaunchCount++;
+                    autoLaunchState = AutoLaunchState.NEXT_SLOT;
                 }
                 break;
         }
     }
 
     public void resetAutoLaunch() {
-        autoLaunchState = AutoLaunchState.FIND_NEXT;
+        autoLaunchState = AutoLaunchState.NEXT_SLOT;
+        autoLaunchCount = 0;
     }
 
     public void autoSort(Outtake outtake, int motifId) {

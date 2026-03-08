@@ -159,6 +159,19 @@ public class TeleOpMain extends LinearOpMode {
             }
             /******************************************************************************/
 
+            //Auto Launch: update toggle first so all controls below see the current state
+            autoLaunch = autoLaunchButton.toggle((gamepad2.right_trigger>=0.3));
+            spindex.setAutoLaunchMode(autoLaunch);
+            if (autoLaunch) {
+                spindex.autoLaunch(kicker);
+                if (!spindex.isAutoLaunching()) {
+                    autoLaunch = false;
+                    autoLaunchButton.changeState(false);
+                }
+            } else {
+                spindex.resetAutoLaunch();
+            }
+
             /*********************Kicker and index emptying logic**********************/
             if (!autoLaunch) {
                 boolean crossWasPressed = gamepad2.crossWasPressed();
@@ -189,19 +202,6 @@ public class TeleOpMain extends LinearOpMode {
             //Automatic Loading
             spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.share) && !spindex.isOuttakeing());
             spindex.autoLoad(colorSensor);
-
-            //Auto Launch: automatically cycles through loaded slots and kicks balls
-            autoLaunch = autoLaunchButton.toggle((gamepad2.right_trigger>=0.3));
-            spindex.setAutoLaunchMode(autoLaunch);
-            if (autoLaunch) {
-                spindex.autoLaunch(kicker);
-                if (!spindex.isAutoLaunching()) {
-                    autoLaunch = false;
-                    autoLaunchButton.changeState(false);
-                }
-            } else {
-                spindex.resetAutoLaunch();
-            }
 
             if (spindex.isOuttakeing()) {
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
