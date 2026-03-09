@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
-@Autonomous(name = "BS 12 Sorted", group = "Autonomous")
+@Autonomous(name = "BS 12 Sorted", group = "Autonomous", preselectTeleOp = "TeleOpMain")
 @Configurable
 public class Short12Sorted extends OpMode {
 
