@@ -277,7 +277,9 @@ public class Turret {
         return goalY;
     }
 
-    // @param goalCords true for blue, false for red
+    /**
+     * @param goalCords true for blue, false for red
+     */
     private void setGoalCords(boolean goalCords) {
         if (goalCords) {
             goalX = BlueGoalX;
