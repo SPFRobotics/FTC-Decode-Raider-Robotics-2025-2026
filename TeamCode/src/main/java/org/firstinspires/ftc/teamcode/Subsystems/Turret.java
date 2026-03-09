@@ -110,7 +110,7 @@ public class Turret {
         turretLimelightOffset = limelightOffset();
 
         double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY-1.5, goalX - robotX));
-        double turretDeg = fieldAngleDeg - robotHeading + turretLimelightOffset;
+        double turretDeg = fieldAngleDeg - robotHeading;
 
         return wrapDeg360(turretDeg);
     }
@@ -215,6 +215,9 @@ public class Turret {
 
         if (result == null || !result.isValid()) {
             return filteredTx;
+        }
+        if (!hasShootingTag(result)) {
+            return 0;
         }
 
         double rawTx = result.getTx();
