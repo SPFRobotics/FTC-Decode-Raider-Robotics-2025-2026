@@ -175,6 +175,15 @@ public class Turret {
         int currentPos = turret.getCurrentPosition();
         int targetTicks = (int) Math.round(currentPos + adjustedTx * limelightTicksPerDegree);
 
+        double ticksPerRotation = ticks * gearRatio;
+        double maxTicks = (326.0 / 360.0) * ticksPerRotation;
+
+        if (targetTicks > maxTicks) {
+            targetTicks -= (int) Math.round(ticksPerRotation);
+        } else if (targetTicks < -maxTicks) {
+            targetTicks += (int) Math.round(ticksPerRotation);
+        }
+
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
     }
