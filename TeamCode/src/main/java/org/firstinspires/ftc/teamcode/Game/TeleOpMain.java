@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -84,7 +85,7 @@ public class TeleOpMain extends LinearOpMode {
         turret = new Turret(hardwareMap, PoseStorage.blueAlliance, limelight);
         PrintWriter pen = null;
         try{
-            pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
+            pen = new PrintWriter("/sdcard/turret.txt", "ASCII");
         }
         catch(FileNotFoundException e){
 
@@ -266,7 +267,7 @@ public class TeleOpMain extends LinearOpMode {
             /*****************************************************************************************/
 
             //Telemetry
-            /*
+
             multiTelemetry.addLine("==========================================");
             spindex.showTelemetry(multiTelemetry);
             //colorSensor.showTelemetry(multiTelemetry);
@@ -277,10 +278,8 @@ public class TeleOpMain extends LinearOpMode {
             multiTelemetry.addLine("==========================================");
             multiTelemetry.update();
 
-             */
             multiTelemetry.addData("Loop Time", loopTime.milliseconds());
-
-            pen.write(runTime.milliseconds() + ":" + outtake.getRPM() + "\n");
+            turret.log(pen);
         }
         pen.close();
     }

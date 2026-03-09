@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.io.PrintWriter;
+
 public class Turret {
 
     double goalY;
@@ -25,6 +27,7 @@ public class Turret {
     public final double BlueGoalY = 135;
     public final double ticks = 145.1;
     public final double gearRatio = 135 / 32.0;
+    public final double limelightTicksPerDegree = (ticks/360)*(135.0/32.0);
 
     private double initialAngleOffset = 0;
     private double filteredTx = 0;
@@ -49,8 +52,6 @@ public class Turret {
         public static double[] pidf = {35, 0.01, 12, 0};
 
         public static int correctionThresholdTicks = 20;
-
-        public static double limelightTicksPerDegree = 2.872;
         public static double limelightAngularOffset = 0.0;
     }
 
@@ -172,7 +173,7 @@ public class Turret {
 
         double adjustedTx = -result.getTx() + TurretConfig.limelightAngularOffset;
         int currentPos = turret.getCurrentPosition();
-        int targetTicks = (int) Math.round(currentPos + adjustedTx * TurretConfig.limelightTicksPerDegree);
+        int targetTicks = (int) Math.round(currentPos + adjustedTx * limelightTicksPerDegree);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
@@ -287,5 +288,17 @@ public class Turret {
         telemetry.addLine("Turret Degrees: " + getCurrentAngularPosition());
         telemetry.addLine("Turret Power: " + turret.getPower());
         telemetry.addLine("------------------------------------------------------------------------------------");
+    }
+
+    public void log(PrintWriter pen){
+        pen.write("Mode: " + state);
+        pen.write("\nAlignment Enabled: " + alignment);
+        pen.write("\nRobot X: " + lastRobotX);
+        pen.write("\nRobot Y:" + lastRobotY);
+        pen.write("\nRobot Heading: " + lastRobotHeading);
+        pen.write("\nTurret Target Degrees: " + getTargetDeg(lastRobotX, lastRobotY, lastRobotHeading));
+        pen.write("\nTurret Degrees: " + getCurrentAngularPosition());
+        pen.write("\nTurret Power: " + turret.getPower());
+        pen.write("\nLimelight Offset Angle: " + limelight.getLatestResult().getTx() + "\n\n");
     }
 }

@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.Game;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@TeleOp
+@Disabled
 public class DIH67 extends OpMode {
 
     CRServo josh;
