@@ -68,6 +68,7 @@ public class TeleOpMain extends LinearOpMode {
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motor
     double speedFactor = 1;
     boolean fieldCentric = true;
+    boolean missing = false;
     double setRPM = 0;
     int currentPos = 0;
     int kickerCount = 1;
@@ -189,12 +190,14 @@ public class TeleOpMain extends LinearOpMode {
                     autoLoad.changeState(false);
                 }
                 spindex.addIndex();
+                missing = false;
             }
             if (spindexLeftBumper.press(gamepad2.left_bumper) && !autoLaunch) {
                 if (!spindex.isOuttakeing()) {
                     autoLoad.changeState(false);
                 }
                 spindex.subtractIndex();
+                missing = false;
             }
 
             //Sets either intake or outtake mode
@@ -208,21 +211,23 @@ public class TeleOpMain extends LinearOpMode {
                 char[] slotColors = spindex.getSlotColors();
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
 
-                if (slotColors[spindex.getIndex()] == 'E'){
-                    leds.setColor(LedLights.RED);
+                if (slotColors[spindex.getIndex()] == 'E' || missing){
+                    leds.setColor(LedLights.RED, false);
                 }
                 else if (slotColors[spindex.getIndex()] == 'G'){
-                    leds.setColor(LedLights.GREEN);
+                    leds.setColor(LedLights.GREEN, false);
                 }
                 else if (slotColors[spindex.getIndex()] == 'P'){
-                    leds.setColor(LedLights.INDIGO);
+                    leds.setColor(LedLights.INDIGO, false);
                 }
                 if (gamepad2.squareWasPressed()){
                     int indexOfColor = spindex.getIndexOfColor('P');
+                    missing = indexOfColor < 0;
                     spindex.setIndex(indexOfColor < 0 ? spindex.getIndex() : indexOfColor);
                 }
                 else if (gamepad2.triangleWasPressed()){
                     int indexOfColor = spindex.getIndexOfColor('G');
+                    missing = indexOfColor < 0;
                     spindex.setIndex(indexOfColor < 0 ? spindex.getIndex() : indexOfColor);
                 }
             }
@@ -264,17 +269,17 @@ public class TeleOpMain extends LinearOpMode {
 
             //Telemetry
 
-            multiTelemetry.addLine("==========================================");
+            /*multiTelemetry.addLine("==========================================");
             spindex.showTelemetry(multiTelemetry);
             //colorSensor.showTelemetry(multiTelemetry);
             turret.showTelemetry(multiTelemetry);
             //colorSensor.showTelemetry(telemetry);
             multiTelemetry.addData("Outtake RPM", outtake.getRPM());
             multiTelemetry.addData("Colors", colorSensor.getHues());
-            multiTelemetry.addLine("==========================================");
-            multiTelemetry.update();
+            multiTelemetry.addLine("==========================================");*/
 
             multiTelemetry.addData("Loop Time", loopTime.milliseconds());
+            multiTelemetry.update();
             turret.log(pen);
         }
         pen.close();
