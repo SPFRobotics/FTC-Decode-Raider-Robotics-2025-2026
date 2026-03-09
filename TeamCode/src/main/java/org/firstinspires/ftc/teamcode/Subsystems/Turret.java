@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.io.PrintWriter;
+import java.util.List;
 
 public class Turret {
 
@@ -142,7 +144,7 @@ public class Turret {
 
         if (!alignment) {
             state = AlignmentMode.OFF;
-        } else if (result != null && result.isValid()) {
+        } else if (result != null && result.isValid() && hasShootingTag(result)) {
             state = AlignmentMode.Limelight;
         } else {
             state = AlignmentMode.Odometry;
@@ -186,6 +188,16 @@ public class Turret {
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
+    }
+
+    private static boolean hasShootingTag(LLResult result) {
+        List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
+        if (fiducialResults == null || fiducialResults.isEmpty()) return false;
+        for (LLResultTypes.FiducialResult fr : fiducialResults) {
+            int id = fr.getFiducialId();
+            if (id == 20 || id == 24 || id == 21) return true;
+        }
+        return false;
     }
 
     private static double wrapDeg360(double deg) {
