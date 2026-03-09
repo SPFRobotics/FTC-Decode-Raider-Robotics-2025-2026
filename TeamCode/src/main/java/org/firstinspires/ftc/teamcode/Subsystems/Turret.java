@@ -26,8 +26,8 @@ public class Turret {
     public final double BlueGoalX = 11;
     public final double BlueGoalY = 135;
     public final double ticks = 145.1;
-    public final double gearRatio = 135 / 32.0;
-    public final double limelightTicksPerDegree = (ticks/360)*(135.0/32.0);
+    public final double gearRatio = 135.0 / 32.0;
+    public final double limelightTicksPerDegree = (ticks/360)*(gearRatio);
 
     private double initialAngleOffset = 0;
     private double filteredTx = 0;

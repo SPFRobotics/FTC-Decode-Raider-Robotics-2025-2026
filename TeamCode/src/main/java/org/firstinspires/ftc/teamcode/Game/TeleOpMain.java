@@ -205,28 +205,24 @@ public class TeleOpMain extends LinearOpMode {
             spindex.autoLoad(colorSensor);
 
             if (spindex.isOuttakeing()) {
+                char[] slotColors = spindex.getSlotColors();
                 spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
-                if (spindex.getSlotColors()[spindex.getIndex()] == 'E'){
+
+                if (slotColors[spindex.getIndex()] == 'E'){
                     leds.setColor(LedLights.RED);
+                }
+                else if (slotColors[spindex.getIndex()] == 'G'){
+                    leds.setColor(LedLights.GREEN);
+                }
+                else if (slotColors[spindex.getIndex()] == 'P'){
+                    leds.setColor(LedLights.INDIGO);
                 }
                 if (gamepad2.squareWasPressed()){
                     int indexOfColor = spindex.getIndexOfColor('P');
-                    if (indexOfColor == -1){
-                        leds.setColor(LedLights.RED, false);
-                    }
-                    else{
-                        leds.setColor(LedLights.INDIGO, false);
-                    }
                     spindex.setIndex(indexOfColor < 0 ? spindex.getIndex() : indexOfColor);
                 }
                 else if (gamepad2.triangleWasPressed()){
                     int indexOfColor = spindex.getIndexOfColor('G');
-                    if (indexOfColor == -1){
-                        leds.setColor(LedLights.RED, false);
-                    }
-                    else{
-                        leds.setColor(LedLights.GREEN, false);
-                    }
                     spindex.setIndex(indexOfColor < 0 ? spindex.getIndex() : indexOfColor);
                 }
             }
@@ -249,15 +245,15 @@ public class TeleOpMain extends LinearOpMode {
 
             //Controls gamepad rumble
             double rumbleRange = Math.abs(setRPM - outtake.getRPM());
-            if (setRPM == closeRPM && rumbleRange <= 50) {
+            if (setRPM == closeRPM && rumbleRange <= 100) {
                 gamepad2.rumble(100);
-            } else if (setRPM == farRPM & rumbleRange <= 50) {
+            } else if (setRPM == farRPM & rumbleRange <= 100) {
                 gamepad2.rumble(100);
             } else {
                 gamepad2.stopRumble();
             }
             /********************************************************/
-//bradley test
+
             /*************************************Turret Auto-Aim**************************************/
             //LLResult result = limelight.getLatestResult();
             //Vector velocity = follower.getVelocity();

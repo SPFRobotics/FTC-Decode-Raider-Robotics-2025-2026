@@ -312,7 +312,6 @@ public class Spindex {
                 double rpm = Outtake.OuttakeConfig.closeRPM;
                 if (turret.isTurretAtTarget()) {
                     outtake.enableSpindexKickerCycle(true, rpm);
-                    System.out.println("WORK PLEASE!!!!");
                 }
                 if (outtake.getKickerCycleCount() >= 1) {
                     clearBall(getIndex());
