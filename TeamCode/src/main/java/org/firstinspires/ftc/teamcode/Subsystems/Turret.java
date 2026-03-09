@@ -29,7 +29,7 @@ public class Turret {
     public final double BlueGoalY = 135;
     public final double ticks = 145.1;
     public final double gearRatio = 135.0 / 32.0;
-    public final double limelightTicksPerDegree = (ticks/360)*(gearRatio);
+    public final double limelightTicksPerDegree = (ticks / 360.0) * gearRatio;
 
     private double initialAngleOffset = 0;
     private double filteredTx = 0;
@@ -87,6 +87,7 @@ public class Turret {
         this.alignment = enabled;
         if (!enabled) {
             state = AlignmentMode.OFF;
+            filteredTx = 0;
         }
     }
 
@@ -107,11 +108,8 @@ public class Turret {
     }
 
     private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
-        turretLimelightOffset = limelightOffset();
-
-        double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY-1.5, goalX - robotX));
+        double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY - 1.5, goalX - robotX));
         double turretDeg = fieldAngleDeg - robotHeading;
-
         return wrapDeg360(turretDeg);
     }
 
@@ -125,16 +123,17 @@ public class Turret {
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
         targetDeg += targetDeg > 326 ? -360 : 0;
 
-        int targetTicks = (int) (((targetDeg) / 360.0) * ticks * gearRatio);
+        int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
     }
-/**
-@param robotX robot x coord
-@param robotY robot y coord
-@param robotHeading robot's heading
- */
+
+    /**
+     * @param robotX robot x coord
+     * @param robotY robot y coord
+     * @param robotHeading robot's heading
+     */
     public void periodic(double robotX, double robotY, double robotHeading) {
         this.lastRobotX = robotX;
         this.lastRobotY = robotY;
@@ -144,8 +143,14 @@ public class Turret {
 
         if (!alignment) {
             state = AlignmentMode.OFF;
-        } else if (result != null && result.isValid() && hasShootingTag(result)) {
-            state = AlignmentMode.Limelight;
+            filteredTx = 0;
+        } else if (result != null && result.isValid()) {
+            if (hasShootingTag(result)) {
+                state = AlignmentMode.Limelight;
+            } else {
+                state = AlignmentMode.Odometry;
+                filteredTx = 0;
+            }
         } else {
             state = AlignmentMode.Odometry;
         }
@@ -167,13 +172,16 @@ public class Turret {
     public void aimWithLimelight(LLResult result) {
         ensureRunToPositionMode();
 
-        if (result == null || !result.isValid()) {
+        if (result == null || !result.isValid() || !hasShootingTag(result)) {
+            filteredTx = 0;
             turret.setTargetPosition(turret.getCurrentPosition());
             turret.setPower(TurretConfig.turretPower);
             return;
         }
 
         double adjustedTx = -result.getTx() + TurretConfig.limelightAngularOffset;
+        filteredTx = adjustedTx;
+
         int currentPos = turret.getCurrentPosition();
         int targetTicks = (int) Math.round(currentPos + adjustedTx * limelightTicksPerDegree);
 
@@ -193,6 +201,7 @@ public class Turret {
     private static boolean hasShootingTag(LLResult result) {
         List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
         if (fiducialResults == null || fiducialResults.isEmpty()) return false;
+
         for (LLResultTypes.FiducialResult fr : fiducialResults) {
             int id = fr.getFiducialId();
             if (id == 20 || id == 24 || id == 21) return true;
@@ -216,11 +225,13 @@ public class Turret {
         if (result == null || !result.isValid()) {
             return filteredTx;
         }
+
         if (!hasShootingTag(result)) {
+            filteredTx = 0;
             return 0;
         }
 
-        double rawTx = result.getTx();
+        double rawTx = -result.getTx() + TurretConfig.limelightAngularOffset;
 
         int posError = Math.abs(turret.getCurrentPosition() - turret.getTargetPosition());
         if (posError < TurretConfig.correctionThresholdTicks) {
@@ -239,7 +250,7 @@ public class Turret {
     }
 
     public boolean isTurretAtTarget() {
-        return turret.isBusy();
+        return !turret.isBusy();
     }
 
     public int getCurrentPosition() {
@@ -297,6 +308,7 @@ public class Turret {
         telemetry.addLine("Turret Target Degrees: " + getTargetDeg(lastRobotX, lastRobotY, lastRobotHeading));
         telemetry.addLine("Turret Degrees: " + getCurrentAngularPosition());
         telemetry.addLine("Turret Power: " + turret.getPower());
+        telemetry.addLine("Filtered Tx: " + filteredTx);
         telemetry.addLine("------------------------------------------");
     }
 
@@ -311,18 +323,29 @@ public class Turret {
         telemetry.addLine("Turret Target Degrees: " + getTargetDeg(lastRobotX, lastRobotY, lastRobotHeading));
         telemetry.addLine("Turret Degrees: " + getCurrentAngularPosition());
         telemetry.addLine("Turret Power: " + turret.getPower());
+        telemetry.addLine("Filtered Tx: " + filteredTx);
         telemetry.addLine("------------------------------------------------------------------------------------");
     }
 
-    public void log(PrintWriter pen){
+    public void log(PrintWriter pen) {
         pen.write("Mode: " + state);
         pen.write("\nAlignment Enabled: " + alignment);
         pen.write("\nRobot X: " + lastRobotX);
-        pen.write("\nRobot Y:" + lastRobotY);
+        pen.write("\nRobot Y: " + lastRobotY);
         pen.write("\nRobot Heading: " + lastRobotHeading);
         pen.write("\nTurret Target Degrees: " + getTargetDeg(lastRobotX, lastRobotY, lastRobotHeading));
         pen.write("\nTurret Degrees: " + getCurrentAngularPosition());
         pen.write("\nTurret Power: " + turret.getPower());
-        pen.write("\nLimelight Offset Angle: " + limelight.getLatestResult().getTx() + "\n\n");
+        pen.write("\nFiltered Tx: " + filteredTx);
+
+        double tx = 0;
+        if (limelight != null) {
+            LLResult result = limelight.getLatestResult();
+            if (result != null && result.isValid()) {
+                tx = result.getTx();
+            }
+        }
+
+        pen.write("\nLimelight Offset Angle: " + tx + "\n\n");
     }
 }
