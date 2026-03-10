@@ -250,7 +250,7 @@ public class Turret {
     }
 
     public boolean isTurretAtTarget() {
-        return !turret.isBusy();
+        return turret.isBusy();
     }
 
     public int getCurrentPosition() {
