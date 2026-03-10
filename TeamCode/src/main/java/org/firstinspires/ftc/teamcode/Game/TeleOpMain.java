@@ -150,7 +150,7 @@ public class TeleOpMain extends LinearOpMode {
             //follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
             speedFactor = (gamepad1.right_trigger > 0.1)
                     ? 0.5
-                    : (gamepad1.right_trigger > 25 && gamepad1.left_trigger > 25)
+                    : (gamepad1.right_trigger > .25 && gamepad1.left_trigger > .25)
                     ? 0.25
                     : 1;
             double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
