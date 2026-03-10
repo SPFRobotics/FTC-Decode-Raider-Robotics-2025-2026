@@ -109,8 +109,7 @@ public class Turret {
 
     private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
         double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY - 1.5, goalX - robotX));
-        double robotHeadingDeg = Math.toDegrees(robotHeading);
-        double turretDeg = fieldAngleDeg - robotHeadingDeg;
+        double turretDeg = fieldAngleDeg - robotHeading;
         return wrapDeg360(turretDeg);
     }
 
