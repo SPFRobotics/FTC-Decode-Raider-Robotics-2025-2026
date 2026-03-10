@@ -39,7 +39,7 @@ public class TeleOpMain extends LinearOpMode {
     ElapsedTime loopTime;
     Outtake outtake = null;
     KickerSpindex kicker = null;
-    Chassis chassis = null;
+    //Chassis chassis = null;
     Turret turret = null;
     DualColorFetch colorSensor = null;
     Spindex spindex = null;
@@ -84,7 +84,7 @@ public class TeleOpMain extends LinearOpMode {
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
         spindex = new Spindex(hardwareMap);
-        chassis = new Chassis(hardwareMap);
+        //chassis = new Chassis(hardwareMap);
         leds = new LedLights(hardwareMap);
         //ZucskyLens huskyLens = new ZucskyLens(hardwareMap);
         turret = new Turret(hardwareMap, PoseStorage.blueAlliance, limelight);
@@ -105,7 +105,7 @@ public class TeleOpMain extends LinearOpMode {
         //follower.setStartingPose(pose);
         follower.setStartingPose(PoseStorage.poseEnd);
 
-        //follower.startTeleopDrive();
+        follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
 
         //Set autoload and launch to true as default
