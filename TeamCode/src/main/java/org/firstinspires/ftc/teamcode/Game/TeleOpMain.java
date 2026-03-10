@@ -148,15 +148,11 @@ public class TeleOpMain extends LinearOpMode {
             //Allows speed to be halved
             //speedFactor = gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1 ? 0.5 : 1; //Ternary if statement (Condition ? This is true : This is false) will return a value based on the condition
             //follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
-            if (gamepad1.right_trigger > 0){
-                speedFactor = 0.5;
-            }else if(gamepad1.right_trigger>25 && gamepad1.left_trigger>25){
-                speedFactor = 0.25;
-            }
-            else{
-                speedFactor = 1;
-            }
-
+            speedFactor = (gamepad1.right_trigger > 0.1)
+                    ? 0.5
+                    : (gamepad1.right_trigger > 25 && gamepad1.left_trigger > 25)
+                    ? 0.25
+                    : 1;
             double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
             double x = gamepad1.left_stick_x * speedFactor;
             double rx = gamepad1.right_stick_x * speedFactor;
