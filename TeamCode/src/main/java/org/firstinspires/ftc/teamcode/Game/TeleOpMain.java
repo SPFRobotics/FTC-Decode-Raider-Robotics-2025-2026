@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.Game;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.closeRPM;
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
 
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.Subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
@@ -37,6 +39,7 @@ public class TeleOpMain extends LinearOpMode {
     ElapsedTime loopTime;
     Outtake outtake = null;
     KickerSpindex kicker = null;
+    Chassis chassis = null;
     Turret turret = null;
     DualColorFetch colorSensor = null;
     Spindex spindex = null;
@@ -81,6 +84,7 @@ public class TeleOpMain extends LinearOpMode {
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
         spindex = new Spindex(hardwareMap);
+        chassis = new Chassis(hardwareMap);
         leds = new LedLights(hardwareMap);
         //ZucskyLens huskyLens = new ZucskyLens(hardwareMap);
         turret = new Turret(hardwareMap, PoseStorage.blueAlliance, limelight);
@@ -101,7 +105,7 @@ public class TeleOpMain extends LinearOpMode {
         //follower.setStartingPose(pose);
         follower.setStartingPose(PoseStorage.poseEnd);
 
-        follower.startTeleopDrive();
+        //follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
 
         //Set autoload and launch to true as default
@@ -142,8 +146,23 @@ public class TeleOpMain extends LinearOpMode {
             /*************************************Drive Train Control**************************************/
             //Using Pedro Pathing for Tele-Op drive
             //Allows speed to be halved
-            speedFactor = gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1 ? 0.5 : 1; //Ternary if statement (Condition ? This is true : This is false) will return a value based on the condition
-            follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
+            //speedFactor = gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1 ? 0.5 : 1; //Ternary if statement (Condition ? This is true : This is false) will return a value based on the condition
+            //follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
+            if (gamepad1.right_trigger > 0){
+                speedFactor = 0.5;
+            }else if(gamepad1.right_trigger>25 && gamepad1.left_trigger>25){
+                speedFactor = 0.25;
+            }
+            else{
+                speedFactor = 1;
+            }
+
+            double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
+            double x = gamepad1.left_stick_x * speedFactor;
+            double rx = gamepad1.right_stick_x * speedFactor;
+
+            chassis.setTeleOpDrive(y,x,rx);
+
             /**********************************************************************************************/
 
             /*****************************Intake System************************************/
