@@ -146,9 +146,9 @@ public class TeleOpMain extends LinearOpMode {
             /*************************************Drive Train Control**************************************/
             //Using Pedro Pathing for Tele-Op drive
             //Allows speed to be halved
-            //speedFactor = gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1 ? 0.5 : 1; //Ternary if statement (Condition ? This is true : This is false) will return a value based on the condition
-            //follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
-            speedFactor = (gamepad1.right_trigger > 0.1)
+            speedFactor = gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1 ? 0.5 : 1; //Ternary if statement (Condition ? This is true : This is false) will return a value based on the condition
+            follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
+            /*speedFactor = (gamepad1.right_trigger > 0.1)
                     ? 0.5
                     : (gamepad1.right_trigger > .25 && gamepad1.left_trigger > .25)
                     ? 0.25
@@ -157,7 +157,7 @@ public class TeleOpMain extends LinearOpMode {
             double x = gamepad1.left_stick_x * speedFactor;
             double rx = gamepad1.right_stick_x * speedFactor;
 
-            chassis.setTeleOpDrive(y,x,rx);
+            chassis.setTeleOpDrive(y,x,rx);*/
 
             /**********************************************************************************************/
 
