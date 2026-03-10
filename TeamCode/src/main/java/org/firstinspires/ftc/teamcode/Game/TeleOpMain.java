@@ -97,9 +97,9 @@ public class TeleOpMain extends LinearOpMode {
 
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);
-        Pose pose = new Pose(72, 72, Math.toRadians(45));
-        follower.setStartingPose(pose);
-        //follower.setStartingPose(PoseStorage.poseEnd);
+        //Pose pose = new Pose(72, 72, Math.toRadians(45));
+        //follower.setStartingPose(pose);
+        follower.setStartingPose(PoseStorage.poseEnd);
 
         follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
