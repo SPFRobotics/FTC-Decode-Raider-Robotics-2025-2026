@@ -295,13 +295,15 @@ public class TeleOpMain extends LinearOpMode {
             /********************************************************/
 
             /*************************************Turret Auto-Aim**************************************/
-            //LLResult result = limelight.getLatestResult();
             //Vector velocity = follower.getVelocity();
-            if (turretToggle.toggle(gamepad1.share)){
+            if (turretToggle.toggle(gamepad1.share) && gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0){
                 if (gamepad1.shareWasPressed()){
                     turret.noEncoder();
                 }
                 turret.setPower((gamepad1.left_trigger - gamepad1.right_trigger)*0.25);
+            }
+            else if (turretToggle.toggle(gamepad1.share)){
+                turret.aimWithLimelight(limelight.getLatestResult());
             }
             else{
                 if (gamepad1.shareWasPressed()){
@@ -309,7 +311,6 @@ public class TeleOpMain extends LinearOpMode {
                 }
                 turret.periodic(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
             }
-            //turret.aimWithLimelight(result);
 
             /*****************************************************************************************/
 
