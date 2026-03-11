@@ -44,6 +44,7 @@ public class OuttakeTesting extends LinearOpMode {
             telemetryM.addData("RPM", outtake.getRPM());
             telemetryM.debug("RPM", outtake.getRPM());
             telemetry.addData("RPM", outtake.getRPM());
+            telemetry.addData("Outtake Vel:", outtake.outtakeMotor.getVelocity());
             telemetryM.update();
             telemetry.update();
         }

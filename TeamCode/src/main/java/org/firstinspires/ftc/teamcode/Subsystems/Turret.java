@@ -86,6 +86,14 @@ public class Turret {
         this.limelight = limelight;
     }
 
+    public void useEncoder(){
+        turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void noEncoder(){
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     public void setAlignmentEnabled(boolean enabled) {
         this.alignment = enabled;
         if (!enabled) {
@@ -124,7 +132,7 @@ public class Turret {
         ensureRunToPositionMode();
 
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
-        targetDeg += targetDeg > 326 ? -360 : 0;
+        targetDeg += targetDeg > 300 ? -300 : 0;
 
         int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 

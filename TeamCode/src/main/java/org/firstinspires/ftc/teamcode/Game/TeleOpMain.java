@@ -39,7 +39,7 @@ public class TeleOpMain extends LinearOpMode {
     ElapsedTime loopTime;
     Outtake outtake = null;
     KickerSpindex kicker = null;
-    //Chassis chassis = null;
+    Chassis chassis = null;
     Turret turret = null;
     DualColorFetch colorSensor = null;
     Spindex spindex = null;
@@ -57,6 +57,7 @@ public class TeleOpMain extends LinearOpMode {
     Button spindexLeftBumper = new Button();
     Button intakeButton = new Button();
     Button autoLoad = new Button();
+    Button turretToggle = new Button();
     Limelight limelight;
 
     Button autoLaunchButton = new Button();
@@ -84,7 +85,7 @@ public class TeleOpMain extends LinearOpMode {
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
         spindex = new Spindex(hardwareMap);
-        //chassis = new Chassis(hardwareMap);
+        chassis = new Chassis(hardwareMap);
         leds = new LedLights(hardwareMap);
         //ZucskyLens huskyLens = new ZucskyLens(hardwareMap);
         turret = new Turret(hardwareMap, PoseStorage.blueAlliance, limelight);
@@ -105,7 +106,7 @@ public class TeleOpMain extends LinearOpMode {
         //follower.setStartingPose(pose);
         follower.setStartingPose(PoseStorage.poseEnd);
 
-        follower.startTeleopDrive();
+        //follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
 
         //Set autoload and launch to true as default
@@ -132,6 +133,7 @@ public class TeleOpMain extends LinearOpMode {
         turret.setAlignmentEnabled(true);
         waitForStart();
         ElapsedTime runTime = new ElapsedTime();
+        chassis.setBrakeMode();
         while (opModeIsActive()){
             loopTime.reset();
             //Reset Cache for Lynx Modules
@@ -146,18 +148,23 @@ public class TeleOpMain extends LinearOpMode {
             /*************************************Drive Train Control**************************************/
             //Using Pedro Pathing for Tele-Op drive
             //Allows speed to be halved
-            speedFactor = gamepad1.right_trigger > 0.1 || gamepad1.left_trigger > 0.1 ? 0.5 : 1; //Ternary if statement (Condition ? This is true : This is false) will return a value based on the condition
-            follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
-            /*speedFactor = (gamepad1.right_trigger > 0.1)
-                    ? 0.5
-                    : (gamepad1.right_trigger > .25 && gamepad1.left_trigger > .25)
-                    ? 0.25
-                    : 1;
+            if (gamepad1.right_bumper){
+                speedFactor = 0.25;
+            }
+            else if (gamepad1.left_bumper){
+                speedFactor = 0.1;
+            }
+            else{
+                speedFactor = 1;
+            }
+
+            //follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
+
             double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
             double x = gamepad1.left_stick_x * speedFactor;
             double rx = gamepad1.right_stick_x * speedFactor;
 
-            chassis.setTeleOpDrive(y,x,rx);*/
+            chassis.setTeleOpDrive(y,x,rx);
 
             /**********************************************************************************************/
 
@@ -277,7 +284,18 @@ public class TeleOpMain extends LinearOpMode {
             /*************************************Turret Auto-Aim**************************************/
             //LLResult result = limelight.getLatestResult();
             //Vector velocity = follower.getVelocity();
-            turret.periodic(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
+            if (turretToggle.toggle(gamepad1.share)){
+                if (gamepad1.shareWasPressed()){
+                    turret.noEncoder();
+                }
+                turret.setPower((gamepad1.left_trigger - gamepad1.right_trigger)*0.25);
+            }
+            else{
+                if (gamepad1.shareWasPressed()){
+                    turret.useEncoder();
+                }
+                turret.periodic(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
+            }
             //turret.aimWithLimelight(result);
 
             /*****************************************************************************************/
@@ -285,18 +303,17 @@ public class TeleOpMain extends LinearOpMode {
             //Telemetry
 
             multiTelemetry.addLine("==========================================");
-            spindex.showTelemetry(multiTelemetry);
+            //spindex.showTelemetry(multiTelemetry);
             //colorSensor.showTelemetry(multiTelemetry);
             turret.showTelemetry(multiTelemetry);
             //colorSensor.showTelemetry(telemetry);
             multiTelemetry.addData("Outtake RPM", outtake.getRPM());
-            multiTelemetry.addData("Colors", colorSensor.getHues());
             multiTelemetry.addLine("==========================================");
 
             multiTelemetry.addData("Loop Time", loopTime.milliseconds());
             multiTelemetry.update();
-            turret.log(pen);
+            //turret.log(pen);
         }
-        pen.close();
+        //pen.close();
     }
 }

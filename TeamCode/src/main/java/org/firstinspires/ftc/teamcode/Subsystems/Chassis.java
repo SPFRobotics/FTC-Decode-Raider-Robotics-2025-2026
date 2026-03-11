@@ -20,11 +20,6 @@ public class Chassis {
             frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
             backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
 
-            frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
             backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -40,5 +35,15 @@ public class Chassis {
             frontLeftDrive.setPower(y + x + rx);
             backLeftDrive.setPower(y - x + rx);
             frontRightDrive.setPower(y - x - rx);
-            backRightDrive.setPower(y + x - rx);}
+            backRightDrive.setPower(y + x - rx);
+    }
+
+    public void setBrakeMode(){
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
 }
+
+

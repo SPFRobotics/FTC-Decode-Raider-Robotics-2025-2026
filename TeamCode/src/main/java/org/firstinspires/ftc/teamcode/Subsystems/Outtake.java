@@ -191,7 +191,7 @@ public class Outtake {
         double time = interval.seconds();
         if (x){
             // Phase 1: Wait for flywheel RPM, then kick up and start the timer
-            System.out.println(getRPM());
+
             if (!launched && Math.abs(RPM-getRPM()) <= 100){
                 kicker.up();
                 launched = true;
