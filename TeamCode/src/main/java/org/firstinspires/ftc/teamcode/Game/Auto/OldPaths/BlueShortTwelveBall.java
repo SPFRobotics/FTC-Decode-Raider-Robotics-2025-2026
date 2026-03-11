@@ -7,6 +7,7 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
+import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
@@ -45,7 +46,7 @@ public class BlueShortTwelveBall extends OpMode {
     private Outtake outtake;
     private Intake intake;
     private KickerSpindex kicker;
-    private ColorFetch colorSensor;
+    private DualColorFetch colorSensor;
     private LedLights leds = null;
 
     private int shotsFired = 0;
@@ -76,7 +77,7 @@ public class BlueShortTwelveBall extends OpMode {
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         outtake = new Outtake(hardwareMap, kicker);
-        colorSensor = new ColorFetch(hardwareMap);
+        colorSensor = new DualColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
 
         spindex.setAutoLoadMode(true);
