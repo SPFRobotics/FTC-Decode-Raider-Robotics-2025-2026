@@ -11,7 +11,7 @@ public class KickerSpindex {
     @Config
     public static class KickerConfig{
         public static double down = 0.28;
-        public static double up = 0.45;
+        public static double up = 0.42;
         public static double offset = 0.4;
         public static double kickerTimer = 350;
     }
