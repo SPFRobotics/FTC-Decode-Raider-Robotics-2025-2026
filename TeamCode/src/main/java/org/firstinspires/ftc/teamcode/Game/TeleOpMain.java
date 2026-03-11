@@ -107,6 +107,8 @@ public class TeleOpMain extends LinearOpMode {
         //Pose pose = new Pose(72, 72, Math.toRadians(45));
         //follower.setStartingPose(pose);
         follower.setStartingPose(PoseStorage.poseEnd);
+        Pose parkingPose = new Pose(39, 33, 180);
+
 
         //follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
@@ -283,9 +285,8 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             if (gamepad1.circleWasPressed() && !follower.isBusy()) {
-                Pose targetPose = new Pose(39, 33, 180);
-                Path pathToTarget = new Path(new BezierLine(currentPose, targetPose));
-                pathToTarget.setLinearHeadingInterpolation(currentPose.getHeading(),targetPose.getHeading());
+                Path pathToTarget = new Path(new BezierLine(currentPose, parkingPose));
+                pathToTarget.setLinearHeadingInterpolation(currentPose.getHeading(),parkingPose.getHeading());
                 follower.followPath(pathToTarget);
             }
             /********************************************************/
