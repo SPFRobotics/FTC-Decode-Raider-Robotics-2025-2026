@@ -168,7 +168,10 @@ public class TeleOpMain extends LinearOpMode {
             double x = gamepad1.left_stick_x * speedFactor;
             double rx = gamepad1.right_stick_x * speedFactor;
 
-            chassis.setTeleOpDrive(y,x,rx);
+            // When following a path, let the follower control the drive; chassis would overwrite and cause shuddering
+            if (!follower.isBusy()) {
+                chassis.setTeleOpDrive(y, x, rx);
+            }
 
             /**********************************************************************************************/
 
