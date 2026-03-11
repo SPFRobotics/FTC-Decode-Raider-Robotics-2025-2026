@@ -13,6 +13,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * @author 67Demon
+ */
 public class Turret {
 
     double goalY;
@@ -130,6 +133,7 @@ public class Turret {
     }
 
     /**
+     *
      * @param robotX robot x coord
      * @param robotY robot y coord
      * @param robotHeading robot's heading
