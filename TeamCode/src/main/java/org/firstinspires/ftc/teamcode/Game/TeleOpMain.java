@@ -6,7 +6,9 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.fa
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -278,6 +280,13 @@ public class TeleOpMain extends LinearOpMode {
                 gamepad2.rumble(100);
             } else {
                 gamepad2.stopRumble();
+            }
+
+            if (gamepad1.circleWasPressed() && !follower.isBusy()) {
+                Pose targetPose = new Pose(39, 33, 180);
+                Path pathToTarget = new Path(new BezierLine(currentPose, targetPose));
+                pathToTarget.setLinearHeadingInterpolation(currentPose.getHeading(),targetPose.getHeading());
+                follower.followPath(pathToTarget);
             }
             /********************************************************/
 
