@@ -132,7 +132,7 @@ public class Turret {
         ensureRunToPositionMode();
 
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
-        targetDeg += targetDeg > 300 ? -300 : 0;
+        targetDeg += targetDeg > 340 ? -360 : 0;
 
         int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 
