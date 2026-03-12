@@ -132,7 +132,7 @@ public class Turret {
         ensureRunToPositionMode();
 
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
-        targetDeg += targetDeg > 340 ? -360 : 0;
+        targetDeg += targetDeg > 348 ? -360 : 0;
 
         int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 
@@ -198,11 +198,12 @@ public class Turret {
         int targetTicks = (int) Math.round(currentPos + adjustedTx * limelightTicksPerDegree);
 
         double ticksPerRotation = ticks * gearRatio;
-        double maxTicks = (326.0 / 360.0) * ticksPerRotation;
+        double lowerLimitTicks = (-12.0 / 360.0) * ticksPerRotation;
+        double upperLimitTicks = (348.0 / 360.0) * ticksPerRotation;
 
-        if (targetTicks > maxTicks) {
+        if (targetTicks > upperLimitTicks) {
             targetTicks -= (int) Math.round(ticksPerRotation);
-        } else if (targetTicks < -maxTicks) {
+        } else if (targetTicks < lowerLimitTicks) {
             targetTicks += (int) Math.round(ticksPerRotation);
         }
 
@@ -216,7 +217,7 @@ public class Turret {
 
         for (LLResultTypes.FiducialResult fr : fiducialResults) {
             int id = fr.getFiducialId();
-            if (id == 20 || id == 24 || id == 21) return true;
+            if (id == 20 || id == 24) return true;
         }
         return false;
     }
@@ -278,7 +279,9 @@ public class Turret {
     }
 
     public double getTargetDeg(double robotX, double robotY, double robotHeading) {
-        return turretDegToShoot(robotX, robotY, robotHeading);
+        double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
+        if (targetDeg > 348) targetDeg -= 360;
+        return targetDeg;
     }
 
     public double getGoalX() {
