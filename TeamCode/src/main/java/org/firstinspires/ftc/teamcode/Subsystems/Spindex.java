@@ -45,10 +45,14 @@ public class Spindex {
 
     private char[] slotColors = {'E', 'E', 'E'};
 
-    private enum AutoSortState { FIND_NEXT, ROTATING, LAUNCHING, COMPLETE }
+    private enum AutoSortState { FIND_NEXT, ROTATING, LAUNCHING, TRY_SHOOT_UNDETECTED, COMPLETE }
     private AutoSortState autoSortState = AutoSortState.FIND_NEXT;
     private int sortPatternIndex = 0;
     private boolean autoSortActive = false;
+    private int tryShootSlot = 0;
+    private boolean tryingUndetected = false;
+    private ElapsedTime tryShootTimer = new ElapsedTime();
+    private static final long TRY_SHOOT_TIMEOUT_MS = 400;
 
     public static final String motif21Pattern = "GPP";
     public static final String motif22Pattern = "PGP";
@@ -290,11 +294,23 @@ public class Spindex {
                     if (slotColors[i] != 'E') {
                         setMode(true);
                         setIndex(i);
+                        tryingUndetected = false;
                         autoSortState = AutoSortState.ROTATING;
                         return;
                     }
                 }
-                sortPatternIndex++;
+                // No balls in slot colors — try each slot in case color sensor missed detection
+                tryShootSlot = 0;
+                tryingUndetected = true;
+                tryShootTimer.reset();
+                autoSortState = AutoSortState.TRY_SHOOT_UNDETECTED;
+                break;
+
+            case TRY_SHOOT_UNDETECTED:
+                setMode(true);
+                setIndex(tryShootSlot);
+                tryShootTimer.reset();
+                autoSortState = AutoSortState.ROTATING;
                 break;
 
             case ROTATING:
@@ -304,6 +320,7 @@ public class Spindex {
                 outtake.setRPM(targetRPM);
                 if (!isBusy()) {
                     outtake.resetKickerCycle();
+                    if (tryingUndetected) tryShootTimer.reset();
                     autoSortState = AutoSortState.LAUNCHING;
                 }
                 break;
@@ -312,14 +329,24 @@ public class Spindex {
                 targetRPM = outtake.isFarLocation()
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
-                if (turret.isTurretAtTarget()) {
+                if (turret == null || turret.isTurretAtTarget()) {
                     outtake.enableSpindexKickerCycle(true, targetRPM);
                 }
                 if (outtake.getKickerCycleCount() >= 1) {
                     clearBall(getIndex());
-                    sortPatternIndex++;
+                    if (!tryingUndetected) sortPatternIndex++;
+                    tryingUndetected = false;
                     outtake.resetKickerCycle();
                     autoSortState = AutoSortState.FIND_NEXT;
+                } else if (tryingUndetected && tryShootTimer.milliseconds() > TRY_SHOOT_TIMEOUT_MS) {
+                    tryShootSlot++;
+                    if (tryShootSlot < 3) {
+                        autoSortState = AutoSortState.TRY_SHOOT_UNDETECTED;
+                    } else {
+                        sortPatternIndex++;
+                        tryingUndetected = false;
+                        autoSortState = AutoSortState.FIND_NEXT;
+                    }
                 }
                 break;
 
@@ -333,6 +360,7 @@ public class Spindex {
         autoSortActive = active;
         if (active) {
             sortPatternIndex = 0;
+            tryingUndetected = false;
             autoSortState = AutoSortState.FIND_NEXT;
         }
     }
@@ -340,6 +368,7 @@ public class Spindex {
     public void resetAutoSort() {
         autoSortActive = false;
         sortPatternIndex = 0;
+        tryingUndetected = false;
         autoSortState = AutoSortState.FIND_NEXT;
     }
 
