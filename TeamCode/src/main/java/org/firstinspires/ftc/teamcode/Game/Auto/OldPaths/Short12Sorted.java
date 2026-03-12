@@ -84,7 +84,7 @@ public class Short12Sorted extends OpMode {
         spindex = new Spindex(hardwareMap);
         spindex.setAutoSortActive(true);
 
-
+        turret.setAlignmentEnabled(true);
         spindex.setAutoLoadMode(true);
         outtake.resetKickerCycle();
         kicker.down();

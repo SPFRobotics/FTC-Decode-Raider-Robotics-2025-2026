@@ -134,7 +134,7 @@ public class TeleOpMain extends LinearOpMode {
             leds.cycleColors(10);
         }
 
-        turret.setAlignmentEnabled(true);
+        turret.setAlignmentEnabled(false);
         waitForStart();
         ElapsedTime runTime = new ElapsedTime();
         chassis.setBrakeMode();

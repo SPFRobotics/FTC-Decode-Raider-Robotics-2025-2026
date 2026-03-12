@@ -51,7 +51,7 @@ public class Turret {
 
     @Config
     public static class TurretConfig {
-        public static double turretPower = 1;
+        public static double turretPower = 0.8;
 
         // 1.12, .11, 0, 11.22
         public static double[] pidf = {35, 0.01, 12, 0};
@@ -132,7 +132,7 @@ public class Turret {
         ensureRunToPositionMode();
 
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
-        targetDeg += targetDeg > 348 ? -360 : 0;
+        targetDeg += targetDeg > 320 ? -360 : 0;
 
         int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 
@@ -194,18 +194,11 @@ public class Turret {
         double adjustedTx = -result.getTx() + TurretConfig.limelightAngularOffset;
         filteredTx = adjustedTx;
 
-        int currentPos = turret.getCurrentPosition();
-        int targetTicks = (int) Math.round(currentPos + adjustedTx * limelightTicksPerDegree);
+        double currentDeg = getCurrentAngularPosition();
+        double targetDeg = wrapDeg360(currentDeg + adjustedTx);
+        targetDeg += targetDeg > 320 ? -360 : 0;  // shorter path when near 360
 
-        double ticksPerRotation = ticks * gearRatio;
-        double lowerLimitTicks = (-12.0 / 360.0) * ticksPerRotation;
-        double upperLimitTicks = (348.0 / 360.0) * ticksPerRotation;
-
-        if (targetTicks > upperLimitTicks) {
-            targetTicks -= (int) Math.round(ticksPerRotation);
-        } else if (targetTicks < lowerLimitTicks) {
-            targetTicks += (int) Math.round(ticksPerRotation);
-        }
+        int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
 
         turret.setTargetPosition(targetTicks);
         turret.setPower(TurretConfig.turretPower);
@@ -279,9 +272,7 @@ public class Turret {
     }
 
     public double getTargetDeg(double robotX, double robotY, double robotHeading) {
-        double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
-        if (targetDeg > 348) targetDeg -= 360;
-        return targetDeg;
+        return turretDegToShoot(robotX, robotY, robotHeading);
     }
 
     public double getGoalX() {
