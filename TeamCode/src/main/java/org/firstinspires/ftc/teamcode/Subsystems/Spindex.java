@@ -60,8 +60,8 @@ public class Spindex {
 
     @Config
     public static class SpindexValues{
-        public static double maxPower = 1;
-        public static double Threshold = 63.75;
+        //public static double maxPower = 1;
+        //public static double Threshold = 63.75;
 
         public static double[] pidf = {35, 0.3, 12, 0};
         public static double offset = 10;
@@ -70,9 +70,9 @@ public class Spindex {
 
         //Distance/Color sensor
         //Old value is 3.3
-        public static double ballDistanceThreshold = 2.3;
-        public static double ballReleaseThreshold = 4.0;
-        public static double launchTime = 900;
+       public static double ballDistanceThreshold = 2.3;
+        //public static double ballReleaseThreshold = 4.0;
+       // public static double launchTime = 900;
 
         // Motif patterns: each string is the launch order of colors (P=purple, G=green)
         // These build the pattern on the ramp from bottom to top
