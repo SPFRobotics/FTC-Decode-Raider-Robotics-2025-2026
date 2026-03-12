@@ -165,7 +165,7 @@ public class Short12Sorted extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
-        turret.aimAtGoal(
+        turret.periodic(
                 follower.getPose().getX(),
                 follower.getPose().getY(),
                 Math.toDegrees(follower.getPose().getHeading())
