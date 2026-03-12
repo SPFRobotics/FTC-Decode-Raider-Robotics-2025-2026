@@ -292,6 +292,8 @@ public class TeleOpMain extends LinearOpMode {
                 pathToTarget.setLinearHeadingInterpolation(currentPose.getHeading(),parkingPose.getHeading());
                 follower.followPath(pathToTarget);
             }
+
+           // outtake.setPower(1);
             /********************************************************/
 
             /*************************************Turret Auto-Aim**************************************/

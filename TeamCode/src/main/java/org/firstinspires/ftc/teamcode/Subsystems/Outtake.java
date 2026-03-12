@@ -56,7 +56,7 @@ public class Outtake {
 
     public Outtake(HardwareMap hardwareMap) {
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "OuttakeMotor");
-        outtakeMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
+       outtakeMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
         outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
@@ -107,6 +107,10 @@ public class Outtake {
     public boolean isFarLocation() {
         return isFarLocation;
     }
+
+    public void setPower(double x){
+        outtakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        outtakeMotor.setPower(x);}
 
     // Get current location name
     public String getLocationName() {

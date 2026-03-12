@@ -302,16 +302,18 @@ public class Spindex {
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
                 outtake.setRPM(targetRPM);
-                if (!isBusy() && turret.isTurretAtTarget()) {
+                if (!isBusy()) {
                     outtake.resetKickerCycle();
                     autoSortState = AutoSortState.LAUNCHING;
                 }
                 break;
 
             case LAUNCHING:
-                double rpm = Outtake.OuttakeConfig.closeRPM;
+                targetRPM = outtake.isFarLocation()
+                        ? Outtake.OuttakeConfig.farRPM
+                        : Outtake.OuttakeConfig.closeRPM;
                 if (turret.isTurretAtTarget()) {
-                    outtake.enableSpindexKickerCycle(true, rpm);
+                    outtake.enableSpindexKickerCycle(true, targetRPM);
                 }
                 if (outtake.getKickerCycleCount() >= 1) {
                     clearBall(getIndex());
