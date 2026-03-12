@@ -110,7 +110,7 @@ public class TeleOpMain extends LinearOpMode {
         Pose parkingPose = new Pose(39, 33, 180);
 
 
-        //follower.startTeleopDrive();
+        follower.startTeleopDrive();
         outtake = new Outtake(hardwareMap, kicker);
 
         //Set autoload and launch to true as default
@@ -162,7 +162,6 @@ public class TeleOpMain extends LinearOpMode {
                 speedFactor = 1;
             }
 
-            //follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
 
             double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
             double x = gamepad1.left_stick_x * speedFactor;
@@ -170,7 +169,7 @@ public class TeleOpMain extends LinearOpMode {
 
             // When following a path, let the follower control the drive; chassis would overwrite and cause shuddering
             if (!follower.isBusy()) {
-                chassis.setTeleOpDrive(y, x, rx);
+                follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
             }
 
             /**********************************************************************************************/
