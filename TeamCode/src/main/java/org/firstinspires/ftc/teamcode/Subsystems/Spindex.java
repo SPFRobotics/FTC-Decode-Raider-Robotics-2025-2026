@@ -52,6 +52,7 @@ public class Spindex {
     private int tryShootSlot = 0;
     private boolean tryingUndetected = false;
     private ElapsedTime tryShootTimer = new ElapsedTime();
+    private ElapsedTime someTimer = new ElapsedTime();
     private static final long TRY_SHOOT_TIMEOUT_MS = 400;
 
     public static final String motif21Pattern = "GPP";
@@ -318,7 +319,8 @@ public class Spindex {
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
                 outtake.setRPM(targetRPM);
-                if (!isBusy()) {
+                if (!isBusy() && someTimer.milliseconds() > 200) {
+
                     outtake.resetKickerCycle();
                     if (tryingUndetected) tryShootTimer.reset();
                     autoSortState = AutoSortState.LAUNCHING;
