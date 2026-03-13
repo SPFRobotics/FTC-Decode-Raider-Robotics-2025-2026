@@ -115,7 +115,7 @@ public class Turret {
 
     public void setInitialAngle(double angleDeg) {
         angleDeg = wrapDeg360(angleDeg);
-        if (angleDeg > 320) angleDeg -= 360;
+        if (angleDeg > 340) angleDeg -= 360;
         this.initialAngleOffset = angleDeg;
     }
 
@@ -296,11 +296,11 @@ public class Turret {
     /**
      * Converts a physical turret angle to encoder ticks, accounting for
      * the initialAngleOffset (where encoder 0 sits physically).
-     * Wraps to ~[-40, 320) physical range to prevent wire tangling.
+     * Wraps to ~[-20, 340) physical range to prevent wire tangling.
      */
     private int degreesToTicks(double physicalDeg) {
         physicalDeg = wrapDeg360(physicalDeg);
-        if (physicalDeg > 320) physicalDeg -= 360;
+        if (physicalDeg > 340) physicalDeg -= 360;
         double encoderDeg = physicalDeg - initialAngleOffset;
         return (int) ((encoderDeg / 360.0) * ticks * gearRatio);
     }
