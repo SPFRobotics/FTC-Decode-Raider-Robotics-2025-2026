@@ -315,8 +315,18 @@ public class Short12Sorted extends OpMode {
 
 
 
+    /* ============================================================= *
+     *        Pedro Pathing Plus Visualizer — Auto-Generated         *
+     *                                                               *
+     *  Version: 1.7.5.                                              *
+     *  Copyright (c) 2026 Matthew Allen                             *
+     *                                                               *
+     *  THIS FILE IS AUTO-GENERATED — DO NOT EDIT MANUALLY.          *
+     *  Changes will be overwritten when regenerated.                *
+     * ============================================================= */
 
     public static class Paths {
+
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
         public PathChain intakeRowOne;
@@ -330,125 +340,119 @@ public class Short12Sorted extends OpMode {
         public PathChain Leave;
 
         public Paths(Follower follower) {
-            shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
+            shootBallOne = follower
+                    .pathBuilder().setGlobalDeceleration()
+                    .addPath(
                             new BezierCurve(
-                                    new Pose(32.840, 134.827),
-                                    new Pose(44.095, 111.604),
-                                    new Pose(50.199, 93.721)
+                                    new Pose(33.638, 133.314),
+                                    new Pose(33.638, 109.321),
+                                    new Pose(48.251, 95.336)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
                     .build();
 
-            RunToRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
+            RunToRowOne = follower
+                    .pathBuilder().setGlobalDeceleration()
+                    .addPath(
+                            new BezierLine(new Pose(48.251, 95.336), new Pose(42.196, 84.299))
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .build();
+
+            intakeRowOne = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(42.196, 84.299), new Pose(27.155, 84.299))
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .build();
+
+            shootRowOne = follower
+                    .pathBuilder().setGlobalDeceleration()
+                    .addPath(
+                            new BezierLine(new Pose(27.155, 84.299), new Pose(49.856, 95.336))
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .build();
+
+            RuntoRowTwo = follower
+                    .pathBuilder().setGlobalDeceleration()
+                    .addPath(
                             new BezierCurve(
-                                    new Pose(50.199, 93.721),
-                                    new Pose(44.279, 90.511),
-                                    new Pose(43.525, 84.432)
+                                    new Pose(49.856, 95.336),
+                                    new Pose(54.177, 71.465),
+                                    new Pose(42.196, 59.786)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            intakeRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierLine(
-                                    new Pose(43.525, 84.432),
-
-                                    new Pose(21.315, 83.803)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
+            intakeRowTwo = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(42.196, 59.786), new Pose(27.155, 59.786))
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
+            shootRowTwo = follower
+                    .pathBuilder().setGlobalDeceleration()
+                    .addPath(
                             new BezierCurve(
-                                    new Pose(21.315, 83.803),
-                                    new Pose(43.580, 78.653),
-                                    new Pose(50.210, 94.008)
+                                    new Pose(27.155, 59.786),
+                                    new Pose(43.886, 75.934),
+                                    new Pose(48.251, 95.336)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
-
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            RuntoRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
+            RuntoRowThree = follower
+                    .pathBuilder().setGlobalDeceleration()
+                    .addPath(
                             new BezierCurve(
-                                    new Pose(50.210, 94.008),
-                                    new Pose(50.928, 70.505),
-                                    new Pose(43.977, 59.881)
+                                    new Pose(48.251, 95.336),
+                                    new Pose(53.277, 54.277),
+                                    new Pose(42.196, 35.941)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            intakeRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierLine(
-                                    new Pose(43.977, 59.881),
-
-                                    new Pose(22.213, 59.787)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
+            intakeRowThree = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(42.196, 35.941), new Pose(27.155, 35.941))
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            shootRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
+            shootRowThree = follower
+                    .pathBuilder().setGlobalDeceleration()
+                    .addPath(
                             new BezierCurve(
-                                    new Pose(22.213, 59.787),
-                                    new Pose(35.011, 67.842),
-                                    new Pose(42.455, 76.637),
-                                    new Pose(50.406, 93.232)
+                                    new Pose(27.155, 35.941),
+                                    new Pose(43.823, 57.631),
+                                    new Pose(54.963, 108.203)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
-
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            RuntoRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
+            Leave = follower
+                    .pathBuilder()
+                    .addPath(
                             new BezierCurve(
-                                    new Pose(50.406, 93.232),
-                                    new Pose(52.525, 48.393),
-                                    new Pose(44.105, 38.389)
+                                    new Pose(54.963, 108.203),
+                                    new Pose(54.963, 115.066),
+                                    new Pose(48.251, 115.066)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-
-                    .build();
-
-            intakeRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierLine(
-                                    new Pose(44.105, 38.389),
-
-                                    new Pose(21.230, 35.672)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
-                    .build();
-
-            shootRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierCurve(
-                                    new Pose(21.230, 35.672),
-                                    new Pose(39.623, 61.934),
-                                    new Pose(49.689, 93.541)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
-
-                    .build();
-
-            Leave = follower.pathBuilder().setGlobalDeceleration().addPath(
-                            new BezierCurve(
-                                    new Pose(49.689, 93.541),
-                                    new Pose(51.869, 78.893),
-                                    new Pose(43.721, 71.721)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-90))
                     .build();
         }
     }
-
-
-
-
-
-
-
 
 
     public void autonomousPathUpdate() {
