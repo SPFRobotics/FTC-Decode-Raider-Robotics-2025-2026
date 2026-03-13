@@ -145,7 +145,7 @@ public class Turret {
     }
 
     private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
-        double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY - 1.5, goalX - robotX));
+        double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
         double turretDeg = fieldAngleDeg - robotHeading;
         return wrapDeg360(turretDeg);
     }
@@ -213,14 +213,16 @@ public class Turret {
     public void aimWithLimelight(LLResult result) {
         ensureRunToPositionMode();
 
-        if (result == null || !result.isValid() || !hasShootingTag(result)) {
+        Double tagTx = (result != null && result.isValid()) ? getShootingTagTx(result) : null;
+
+        if (tagTx == null) {
             filteredTx = 0;
             turret.setTargetPosition(turret.getCurrentPosition());
             turret.setPower(TurretConfig.turretPower);
             return;
         }
 
-        double adjustedTx = -result.getTx() + TurretConfig.limelightAngularOffset;
+        double adjustedTx = -tagTx + TurretConfig.limelightAngularOffset;
         filteredTx = adjustedTx;
 
         double currentDeg = getCurrentAngularPosition();
@@ -231,14 +233,19 @@ public class Turret {
     }
 
     private static boolean hasShootingTag(LLResult result) {
+        return getShootingTagTx(result) != null;
+    }
+
+
+    private static Double getShootingTagTx(LLResult result) {
         List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-        if (fiducialResults == null || fiducialResults.isEmpty()) return false;
+        if (fiducialResults == null || fiducialResults.isEmpty()) return null;
 
         for (LLResultTypes.FiducialResult fr : fiducialResults) {
             int id = fr.getFiducialId();
-            if (id == 20 || id == 24) return true;
+            if (id == 20 || id == 24) return fr.getTargetXDegrees();
         }
-        return false;
+        return null;
     }
 
     private static double wrapDeg360(double deg) {
@@ -258,12 +265,13 @@ public class Turret {
             return filteredTx;
         }
 
-        if (!hasShootingTag(result)) {
+        Double tagTx = getShootingTagTx(result);
+        if (tagTx == null) {
             filteredTx = 0;
             return 0;
         }
 
-        double rawTx = -result.getTx() + TurretConfig.limelightAngularOffset;
+        double rawTx = -tagTx + TurretConfig.limelightAngularOffset;
 
         int posError = Math.abs(turret.getCurrentPosition() - turret.getTargetPosition());
         if (posError < TurretConfig.correctionThresholdTicks) {

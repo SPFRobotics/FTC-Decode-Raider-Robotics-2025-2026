@@ -14,8 +14,8 @@ public class Outtake {
     @Config
     public static class OuttakeConfig{
         public static double farRPM = 3200;
-        public static double closeRPM = 2700;
-        public static double[] pidf = {200, 14.99, 0, 14.99};
+        public static double closeRPM = 2600;
+        public static double[] pidf = {268, 14.99, 0, 14.99};
         public static double gearRatio = 18.0/16.0;
 
         public static double kickerWaitTIme = 2;
@@ -197,14 +197,14 @@ public class Outtake {
         if (x){
             // Phase 1: Wait for flywheel RPM, then kick up and start the timer
 
-            if (!launched && Math.abs(RPM-getRPM()) <= 100){
+            if (!launched && Math.abs(RPM-getRPM()) >0){
                 kicker.up();
                 launched = true;
                 interval.reset(); // Timer starts when kick actually begins
                 //System.out.printf("enableSpindexKickerCycle: Kicker up%n");
             }
             // Phase 2: After a full 200ms of kick travel, bring it back down
-            else if (launched && time >= .150){
+            else if (launched && time >= .1){
                 kicker.down();
                 kickerCycleCount++;
                 launched = false;

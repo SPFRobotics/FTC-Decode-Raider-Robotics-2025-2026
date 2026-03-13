@@ -33,8 +33,8 @@ import java.io.PrintWriter;
 @Configurable
 public class Short12Sorted extends OpMode {
 
-    private static final double SHOOT_RPM = 2600;
-    private static final double INTAKE_SPEED = .3;
+    private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
+    private static final double INTAKE_SPEED = .25;
 
     private TelemetryManager panelsTelemetry;
 
@@ -102,7 +102,7 @@ public class Short12Sorted extends OpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
-        turret.setInitialAngle(0);
+        turret.setInitialAngle(180);
     }
 
     @Override

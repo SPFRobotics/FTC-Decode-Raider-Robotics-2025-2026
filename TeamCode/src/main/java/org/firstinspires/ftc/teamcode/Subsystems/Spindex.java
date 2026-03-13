@@ -360,9 +360,9 @@ public class Spindex {
             case ROTATING:
                 double targetRPM = outtake.isFarLocation()
                         ? Outtake.OuttakeConfig.farRPM
-                        : 2600;
+                        : Outtake.OuttakeConfig.closeRPM;
                 outtake.setRPM(targetRPM);
-                if (!isBusy() && rotateSettleTimer.milliseconds() > 200) {
+                if (!isBusy() && rotateSettleTimer.milliseconds() > 0) {
                     autoSortState = AutoSortState.LAUNCHING;
                 }
                 break;
@@ -371,10 +371,10 @@ public class Spindex {
                 targetRPM = outtake.isFarLocation()
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
-                if (turret == null || turret.isTurretAtTarget()) {
+            
                     outtake.enableSpindexKickerCycle(true, targetRPM);
                     //System.out.printf("autoSort: ROTATING-Launching %n");
-                }
+
                 if (outtake.getKickerCycleCount() >= 1) {
                     clearBall(getIndex());
                     outtake.resetKickerCycle();
