@@ -339,6 +339,10 @@ public class Turret {
         turret.setPower(power);
     }
 
+    public void setLimelightOffset(double x){
+        turretLimelightOffset = x;
+    }
+
     public double getVelocity() {
         return turret.getVelocity();
     }

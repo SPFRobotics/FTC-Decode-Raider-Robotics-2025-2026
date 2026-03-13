@@ -301,6 +301,13 @@ public class TeleOpMain extends LinearOpMode {
             /*************************************Turret Auto-Aim**************************************/
             //Vector velocity = follower.getVelocity();
 
+            if (setRPM == farRPM){
+                turret.setLimelightOffset(5.0);
+            }
+            else if (setRPM == closeRPM){
+                turret.setLimelightOffset(1.0);
+            }
+
             if (turretToggle.toggle(gamepad1.share) && (gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0)){
                 if (gamepad1.shareWasPressed()){
                     turret.unlockTurret();
