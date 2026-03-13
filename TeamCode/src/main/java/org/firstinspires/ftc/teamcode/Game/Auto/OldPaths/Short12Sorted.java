@@ -33,7 +33,7 @@ import java.io.PrintWriter;
 @Configurable
 public class Short12Sorted extends OpMode {
 
-    private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
+    private static final double SHOOT_RPM = 2600;
     private static final double INTAKE_SPEED = .3;
 
     private TelemetryManager panelsTelemetry;
@@ -110,15 +110,10 @@ public class Short12Sorted extends OpMode {
         int id = limelight.getMotifId();
         if (id != -1) {
             detectedMotifId = id;
-            panelsTelemetry.debug("Detected Motif", detectedMotifId);
-
-        }
-        else {
-            detectedMotifId = 21;
-            panelsTelemetry.addLine("No Motif Found");
-
         }
 
+        panelsTelemetry.debug("Raw Limelight ID", id);
+        panelsTelemetry.debug("Stored Motif", detectedMotifId);
         panelsTelemetry.update(telemetry);
     }
 
@@ -133,7 +128,7 @@ public class Short12Sorted extends OpMode {
         if (detectedMotifId == -1) {
             detectedMotifId = 21;
         }
-        limelight.start();
+        limelight.stop();
 
         intakeEnabled = true;
         if (outtake.isFarLocation()) {
@@ -171,7 +166,7 @@ public class Short12Sorted extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
-        turret.lockToAngle(pathState >= 8 ? 345 : 315);
+        turret.lockToAngle(pathState >= 8 ? 333 : 319);
         autonomousPathUpdate();
         updateSpindexPosition();
 
@@ -330,7 +325,8 @@ public class Short12Sorted extends OpMode {
 
         public Paths(Follower follower) {
             shootBallOne = follower
-                    .pathBuilder().setGlobalDeceleration()
+                    .pathBuilder()
+                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
                                     new Pose(33.638, 133.314),
@@ -342,9 +338,9 @@ public class Short12Sorted extends OpMode {
                     .build();
 
             RunToRowOne = follower
-                    .pathBuilder().setGlobalDeceleration()
+                    .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(48.251, 95.336), new Pose(42.196, 84.299))
+                            new BezierLine(new Pose(48.251, 95.336), new Pose(43.745, 84.742))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
@@ -352,26 +348,28 @@ public class Short12Sorted extends OpMode {
             intakeRowOne = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(42.196, 84.299), new Pose(27.155, 84.299))
+                            new BezierLine(new Pose(43.745, 84.742), new Pose(21.620, 83.192))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             shootRowOne = follower
-                    .pathBuilder().setGlobalDeceleration()
+                    .pathBuilder()
+                    .setGlobalDeceleration()
                     .addPath(
-                            new BezierLine(new Pose(27.155, 84.299), new Pose(49.856, 95.336))
+                            new BezierLine(new Pose(21.620, 83.192), new Pose(49.856, 95.336))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             RuntoRowTwo = follower
-                    .pathBuilder().setGlobalDeceleration()
+                    .pathBuilder()
+                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
                                     new Pose(49.856, 95.336),
-                                    new Pose(54.177, 71.465),
-                                    new Pose(42.196, 59.786)
+                                    new Pose(51.963, 79.435),
+                                    new Pose(43.745, 59.786)
                             )
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
@@ -380,16 +378,17 @@ public class Short12Sorted extends OpMode {
             intakeRowTwo = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(42.196, 59.786), new Pose(27.155, 59.786))
+                            new BezierLine(new Pose(43.745, 59.786), new Pose(21.620, 59.786))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             shootRowTwo = follower
-                    .pathBuilder().setGlobalDeceleration()
+                    .pathBuilder()
+                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(27.155, 59.786),
+                                    new Pose(21.620, 59.786),
                                     new Pose(43.886, 75.934),
                                     new Pose(48.251, 95.336)
                             )
@@ -398,12 +397,13 @@ public class Short12Sorted extends OpMode {
                     .build();
 
             RuntoRowThree = follower
-                    .pathBuilder().setGlobalDeceleration()
+                    .pathBuilder()
+                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
                                     new Pose(48.251, 95.336),
-                                    new Pose(53.277, 54.277),
-                                    new Pose(42.196, 35.941)
+                                    new Pose(51.063, 58.262),
+                                    new Pose(43.745, 35.941)
                             )
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
@@ -412,16 +412,17 @@ public class Short12Sorted extends OpMode {
             intakeRowThree = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(42.196, 35.941), new Pose(27.155, 35.941))
+                            new BezierLine(new Pose(43.745, 35.941), new Pose(21.620, 35.941))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             shootRowThree = follower
-                    .pathBuilder().setGlobalDeceleration()
+                    .pathBuilder()
+                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(27.155, 35.941),
+                                    new Pose(21.620, 35.941),
                                     new Pose(43.823, 57.631),
                                     new Pose(54.963, 108.203)
                             )
@@ -432,16 +433,13 @@ public class Short12Sorted extends OpMode {
             Leave = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierCurve(
-                                    new Pose(54.963, 108.203),
-                                    new Pose(54.963, 115.066),
-                                    new Pose(48.251, 115.066)
-                            )
+                            new BezierLine(new Pose(54.963, 108.203), new Pose(59.605, 108.203))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-90))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
         }
     }
+
 
 
     public void autonomousPathUpdate() {

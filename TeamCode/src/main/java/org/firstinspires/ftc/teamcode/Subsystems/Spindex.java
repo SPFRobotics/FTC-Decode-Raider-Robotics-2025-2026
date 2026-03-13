@@ -360,7 +360,7 @@ public class Spindex {
             case ROTATING:
                 double targetRPM = outtake.isFarLocation()
                         ? Outtake.OuttakeConfig.farRPM
-                        : Outtake.OuttakeConfig.closeRPM;
+                        : 2600;
                 outtake.setRPM(targetRPM);
                 if (!isBusy() && rotateSettleTimer.milliseconds() > 200) {
                     autoSortState = AutoSortState.LAUNCHING;
