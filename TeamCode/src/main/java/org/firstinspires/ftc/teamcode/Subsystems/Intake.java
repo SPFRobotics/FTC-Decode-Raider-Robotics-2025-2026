@@ -19,6 +19,7 @@ public class Intake {
 
     private ElapsedTime clock = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
+    private ElapsedTime waitOnStart = new ElapsedTime();
     // Constructor - initializes the intake motor
     public Intake(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "IntakeMotor");
@@ -52,7 +53,7 @@ public class Intake {
             isReversed = true;
         }
 
-        if (jamTimer.seconds() > 1.0){
+        if (waitOnStart.seconds() < 1.0 || jamTimer.seconds() > 1.0){
             intakeMotor.setPower(1);
             isReversed = false;
         }
