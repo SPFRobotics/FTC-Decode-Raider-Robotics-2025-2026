@@ -34,7 +34,7 @@ import java.io.PrintWriter;
 public class Short12Sorted extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
-    private static final double INTAKE_SPEED = 0.25;
+    private static final double INTAKE_SPEED = .5;
 
     private TelemetryManager panelsTelemetry;
 

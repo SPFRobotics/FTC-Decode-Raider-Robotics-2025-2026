@@ -52,7 +52,7 @@ public class Spindex {
     private int tryShootSlot = 0;
     private boolean tryingUndetected = false;
     private ElapsedTime tryShootTimer = new ElapsedTime();
-    private ElapsedTime someTimer = new ElapsedTime();
+    private ElapsedTime rotateSettleTimer = new ElapsedTime();
     private static final long TRY_SHOOT_TIMEOUT_MS = 400;
 
     public static final String motif21Pattern = "GPP";
@@ -326,6 +326,7 @@ public class Spindex {
                     if (slotColors[i] == needed) {
                         setMode(true);
                         setIndex(i);
+                        rotateSettleTimer.reset();
                         autoSortState = AutoSortState.ROTATING;
                         return;
                     }
@@ -334,6 +335,7 @@ public class Spindex {
                     if (slotColors[i] != 'E') {
                         setMode(true);
                         setIndex(i);
+                        rotateSettleTimer.reset();
                         autoSortState = AutoSortState.ROTATING;
                         System.out.printf("autoSort: FIND_NEXT-Found needed %c,%d%n",
                                 needed,i);
@@ -351,6 +353,7 @@ public class Spindex {
                 }
                 setMode(true);
                 setIndex(tryShootSlot);
+                rotateSettleTimer.reset();
                 autoSortState = AutoSortState.ROTATING;
                 break;
 
@@ -359,8 +362,7 @@ public class Spindex {
                         ? Outtake.OuttakeConfig.farRPM
                         : Outtake.OuttakeConfig.closeRPM;
                 outtake.setRPM(targetRPM);
-                if (!isBusy() && someTimer.milliseconds() > 200) {
-                    outtake.resetKickerCycle();
+                if (!isBusy() && rotateSettleTimer.milliseconds() > 200) {
                     autoSortState = AutoSortState.LAUNCHING;
                 }
                 break;
