@@ -210,6 +210,21 @@ public class Spindex {
             }
         }
     }
+    public void autoLoadByDistance(DualColorFetch colorSensor) {
+        if (getSlotColors()[getIndex()] == 'E' && !isBusy() && colorSensor.ballDetected()) {
+            slotColors[getIndex()] = 'U';
+        }
+
+        if (isAutoLoading() && slotColors[getIndex()] != 'E') {
+            for (int i = 0; i < slotColors.length; i++) {
+                if (slotColors[i] == 'E') {
+                    setIndex(i);
+                    break;
+                }
+            }
+        }
+    }
+
     enum AutoLaunchState {
         NEXT_SLOT,
         WAITFORSPINDEX,

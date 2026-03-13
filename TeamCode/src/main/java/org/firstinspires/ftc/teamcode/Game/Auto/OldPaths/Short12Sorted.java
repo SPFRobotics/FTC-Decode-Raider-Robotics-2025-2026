@@ -277,6 +277,17 @@ public class Short12Sorted extends OpMode {
         ballsLoaded = loadedCount;
     }
 
+    private void runIntakeByDistance() {
+        spindex.setMode(false);
+        spindex.autoLoadByDistance(colorSensor);
+
+        int loadedCount = 0;
+        for (char slot : spindex.getSlotColors()) {
+            if (slot != 'E') loadedCount++;
+        }
+        ballsLoaded = loadedCount;
+    }
+
     private void prepareForIntake() {
         spindex.setMode(false);
         spindex.setIndex(0);
@@ -462,7 +473,7 @@ public class Short12Sorted extends OpMode {
                 break;
 
             case 3: // Intake row 1 (slow) - pre-spin flywheel during intake
-                runIntake();
+                runIntakeByDistance();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
                     flywheelStarted = true;
@@ -501,7 +512,7 @@ public class Short12Sorted extends OpMode {
                 break;
 
             case 6: // Intake row 2 (slow) - pre-spin flywheel during intake
-                runIntake();
+                runIntakeByDistance();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
                     flywheelStarted = true;
@@ -540,7 +551,7 @@ public class Short12Sorted extends OpMode {
                 break;
 
             case 9: // Intake row 3 (slow) - pre-spin flywheel during intake
-                runIntake();
+                runIntakeByDistance();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
                     flywheelStarted = true;
