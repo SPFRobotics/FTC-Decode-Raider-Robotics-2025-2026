@@ -193,6 +193,7 @@ public class Outtake {
             throw new RuntimeException("You must pass the kicker object to the Outtake constructor!");
         }
         double time = interval.seconds();
+        System.out.printf("enableSpindexKickerCycle: %.3f,%.1f,%.1f%n",time,getRPM(),RPM);
         if (x){
             // Phase 1: Wait for flywheel RPM, then kick up and start the timer
 
@@ -200,6 +201,7 @@ public class Outtake {
                 kicker.up();
                 launched = true;
                 interval.reset(); // Timer starts when kick actually begins
+                System.out.printf("enableSpindexKickerCycle: Kicker up%n");
             }
             // Phase 2: After a full 200ms of kick travel, bring it back down
             else if (launched && time >= .2){
@@ -207,6 +209,7 @@ public class Outtake {
                 kickerCycleCount++;
                 launched = false;
                 interval.reset();
+                System.out.printf("enableSpindexKickerCycle: Kicker down%n");
             }
         }
         else{
@@ -232,6 +235,7 @@ public class Outtake {
         interval.reset();
         kickerStateTimer.reset();
         kickerState = KickerCycleState.IDLE;
+        System.out.printf("Outtake.getKickerState:resetKickerCycle%n");
         kicker.down();
     }
 

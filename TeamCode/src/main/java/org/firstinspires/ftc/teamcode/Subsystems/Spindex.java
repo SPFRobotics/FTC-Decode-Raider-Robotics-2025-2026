@@ -300,11 +300,16 @@ public class Spindex {
             default: patternStr = motif21Pattern; break;
         }
         char[] pattern = patternStr.toCharArray();
+        System.out.printf("autoSort: target pattern- %s%n",patternStr);
+        System.out.printf("autosort: slotColors %s%n", slotColors.toString());
+        System.out.printf("autoSort:sortPatternIndex %d%n",sortPatternIndex);
 
         switch (autoSortState) {
             case FIND_NEXT:
+                System.out.printf("autoSort: FIND_NEXT-sortPatternIndex%n");
                 if (sortPatternIndex >= pattern.length) {
                     autoSortState = AutoSortState.COMPLETE;
+                    System.out.printf("autoSort: FIND_NEXT-COMPLETE%n");
                     return;
                 }
 
@@ -330,9 +335,12 @@ public class Spindex {
                         setMode(true);
                         setIndex(i);
                         autoSortState = AutoSortState.ROTATING;
+                        System.out.printf("autoSort: FIND_NEXT-Found needed %c,%d%n",
+                                needed,i);
                         return;
                     }
                 }
+                System.out.printf("autoSort: FIND_NEXT-No artifacts found%n");
                 sortPatternIndex++;
                 break;
 
@@ -363,6 +371,7 @@ public class Spindex {
                         : Outtake.OuttakeConfig.closeRPM;
                 if (turret == null || turret.isTurretAtTarget()) {
                     outtake.enableSpindexKickerCycle(true, targetRPM);
+                    System.out.printf("autoSort: ROTATING-Launching %n");
                 }
                 if (outtake.getKickerCycleCount() >= 1) {
                     clearBall(getIndex());
@@ -373,12 +382,14 @@ public class Spindex {
                     } else {
                         sortPatternIndex++;
                         autoSortState = AutoSortState.FIND_NEXT;
+                        System.out.printf("autoSort: LAUNCHING-Kicker>=1%n");
                     }
                 }
                 break;
 
             case COMPLETE:
                 autoSortActive = false;
+                System.out.printf("autoSort: COMPLETE%n");
                 break;
         }
     }
