@@ -123,6 +123,7 @@ public class BlueShort9BallClear extends OpMode {
         PoseStorage.savePose(follower.getPose());
         PoseStorage.blueAlliance = true;
         PoseStorage.redAlliance = false;
+        PoseStorage.setTurretStartPos(turret.getCurrentAngularPosition());
     }
 
     @Override
@@ -137,11 +138,7 @@ public class BlueShort9BallClear extends OpMode {
 
         follower.update();
         leds.cycleColors(10);
-        turret.aimAtGoal(
-                follower.getPose().getX(),
-                follower.getPose().getY(),
-                Math.toDegrees(follower.getPose().getHeading())
-        );
+        turret.lockToAngle(45);
         autonomousPathUpdate();
         updateSpindexPosition();
 

@@ -204,7 +204,7 @@ public class Outtake {
                 System.out.printf("enableSpindexKickerCycle: Kicker up%n");
             }
             // Phase 2: After a full 200ms of kick travel, bring it back down
-            else if (launched && time >= .2){
+            else if (launched && time >= .150){
                 kicker.down();
                 kickerCycleCount++;
                 launched = false;

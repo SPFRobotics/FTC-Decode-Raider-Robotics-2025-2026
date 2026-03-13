@@ -91,6 +91,9 @@ public class TeleOpMain extends LinearOpMode {
         leds = new LedLights(hardwareMap);
         //ZucskyLens huskyLens = new ZucskyLens(hardwareMap);
         turret = new Turret(hardwareMap, PoseStorage.blueAlliance, limelight);
+        if (PoseStorage.turretValid) {
+            turret.setInitialAngle(PoseStorage.turretStartPos);
+        }
         PrintWriter pen = null;
         try{
             pen = new PrintWriter("/sdcard/turret.txt", "ASCII");
@@ -300,15 +303,18 @@ public class TeleOpMain extends LinearOpMode {
 
             if (turretToggle.toggle(gamepad1.share) && gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0){
                 if (gamepad1.shareWasPressed()){
+                    turret.unlockTurret();
                     turret.noEncoder();
                 }
                 turret.setPower((gamepad1.left_trigger - gamepad1.right_trigger)*0.25);
             }
             else if (turretToggle.toggle(gamepad1.share)){
+                turret.unlockTurret();
                 turret.aimWithLimelight(limelight.getLatestResult());
             }
             else{
                 if (gamepad1.shareWasPressed()){
+                    turret.unlockTurret();
                     turret.useEncoder();
                 }
                 turret.periodic(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));

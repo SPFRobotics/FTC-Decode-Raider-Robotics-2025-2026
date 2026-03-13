@@ -38,6 +38,8 @@ public class Turret {
     private double filteredTx = 0;
 
     private boolean alignment = false;
+    private boolean locked = false;
+    private double lockedAngleDeg = 0;
     private AlignmentMode state = AlignmentMode.OFF;
 
     DcMotorEx turret;
@@ -46,6 +48,7 @@ public class Turret {
     public enum AlignmentMode {
         Limelight,
         Odometry,
+        Locked,
         OFF
     }
 
@@ -118,6 +121,27 @@ public class Turret {
         return initialAngleOffset;
     }
 
+    /**
+     * Locks the turret to a fixed angle (in degrees) regardless of robot heading or position.
+     * Can be called standalone (like aimAtGoal) or will be respected by periodic().
+     */
+    public void lockToAngle(double degrees) {
+        locked = true;
+        lockedAngleDeg = degrees;
+        ensureRunToPositionMode();
+
+        turret.setTargetPosition(degreesToTicks(degrees));
+        turret.setPower(TurretConfig.turretPower);
+    }
+
+    public void unlockTurret() {
+        locked = false;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
     private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
         double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY - 1.5, goalX - robotX));
         double turretDeg = fieldAngleDeg - robotHeading;
@@ -132,11 +156,8 @@ public class Turret {
         ensureRunToPositionMode();
 
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
-        targetDeg += targetDeg > 320 ? -360 : 0;
 
-        int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
-
-        turret.setTargetPosition(targetTicks);
+        turret.setTargetPosition(degreesToTicks(targetDeg));
         turret.setPower(TurretConfig.turretPower);
     }
 
@@ -150,6 +171,12 @@ public class Turret {
         this.lastRobotX = robotX;
         this.lastRobotY = robotY;
         this.lastRobotHeading = robotHeading;
+
+        if (locked) {
+            state = AlignmentMode.Locked;
+            lockToAngle(lockedAngleDeg);
+            return;
+        }
 
         LLResult result = (limelight != null) ? limelight.getLatestResult() : null;
 
@@ -195,12 +222,9 @@ public class Turret {
         filteredTx = adjustedTx;
 
         double currentDeg = getCurrentAngularPosition();
-        double targetDeg = wrapDeg360(currentDeg + adjustedTx);
-        targetDeg += targetDeg > 320 ? -360 : 0;  // shorter path when near 360
+        double targetDeg = currentDeg + adjustedTx;
 
-        int targetTicks = (int) ((targetDeg / 360.0) * ticks * gearRatio);
-
-        turret.setTargetPosition(targetTicks);
+        turret.setTargetPosition(degreesToTicks(targetDeg));
         turret.setPower(TurretConfig.turretPower);
     }
 
@@ -264,7 +288,18 @@ public class Turret {
     }
 
     public double getCurrentAngularPosition() {
-        return turret.getCurrentPosition() / (ticks * gearRatio) * 360.0;
+        return turret.getCurrentPosition() / (ticks * gearRatio) * 360.0 + initialAngleOffset;
+    }
+
+    /**
+     * Converts a physical turret angle to encoder ticks, accounting for
+     * the initialAngleOffset (where encoder 0 sits physically).
+     * Normalizes to [-180, 180) so the motor always takes the shortest path.
+     */
+    private int degreesToTicks(double physicalDeg) {
+        double encoderDeg = physicalDeg - initialAngleOffset;
+        encoderDeg = ((encoderDeg % 360) + 540) % 360 - 180;
+        return (int) ((encoderDeg / 360.0) * ticks * gearRatio);
     }
 
     public int getTargetPosition() {

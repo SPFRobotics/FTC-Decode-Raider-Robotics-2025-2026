@@ -314,7 +314,7 @@ public class Spindex {
                 }
 
                 boolean allFilled = slotColors[0] != 'E' && slotColors[1] != 'E' && slotColors[2] != 'E';
-                if (!allFilled) {
+                if (!allFilled && sortPatternIndex == 0) {
                     tryShootSlot = 0;
                     tryingUndetected = true;
                     autoSortState = AutoSortState.TRY_SHOOT_UNDETECTED;

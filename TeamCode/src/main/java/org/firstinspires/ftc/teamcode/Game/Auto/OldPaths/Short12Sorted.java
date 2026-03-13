@@ -34,7 +34,7 @@ import java.io.PrintWriter;
 public class Short12Sorted extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
-    private static final double INTAKE_SPEED = .5;
+    private static final double INTAKE_SPEED = .3;
 
     private TelemetryManager panelsTelemetry;
 
@@ -156,6 +156,7 @@ public class Short12Sorted extends OpMode {
         PoseStorage.savePose(follower.getPose());
         PoseStorage.blueAlliance = true;
         PoseStorage.redAlliance = false;
+        PoseStorage.setTurretStartPos(turret.getCurrentAngularPosition());
         //spindex.exitProgram();
     }
 
@@ -170,11 +171,7 @@ public class Short12Sorted extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
-        turret.periodic(
-                follower.getPose().getX(),
-                follower.getPose().getY(),
-                Math.toDegrees(follower.getPose().getHeading())
-        );
+        turret.lockToAngle(pathState >= 8 ? 345 : 315);
         autonomousPathUpdate();
         updateSpindexPosition();
 
