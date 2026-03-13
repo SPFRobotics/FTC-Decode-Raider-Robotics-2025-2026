@@ -76,7 +76,7 @@ public class Short12Sorted extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(180)));
         paths = new Paths(follower);
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
@@ -312,15 +312,7 @@ public class Short12Sorted extends OpMode {
 
 
 
-    /* ============================================================= *
-     *        Pedro Pathing Plus Visualizer — Auto-Generated         *
-     *                                                               *
-     *  Version: 1.7.5.                                              *
-     *  Copyright (c) 2026 Matthew Allen                             *
-     *                                                               *
-     *  THIS FILE IS AUTO-GENERATED — DO NOT EDIT MANUALLY.          *
-     *  Changes will be overwritten when regenerated.                *
-     * ============================================================= */
+
 
     public static class Paths {
 
@@ -342,11 +334,11 @@ public class Short12Sorted extends OpMode {
                     .addPath(
                             new BezierCurve(
                                     new Pose(33.638, 133.314),
-                                    new Pose(33.638, 109.321),
+                                    new Pose(49.856, 113.306),
                                     new Pose(48.251, 95.336)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             RunToRowOne = follower
