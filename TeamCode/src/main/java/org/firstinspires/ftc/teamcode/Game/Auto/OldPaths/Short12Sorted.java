@@ -128,7 +128,7 @@ public class Short12Sorted extends OpMode {
         if (detectedMotifId == -1) {
             detectedMotifId = 21;
         }
-        limelight.stop();
+        limelight.start();
 
         intakeEnabled = true;
         if (outtake.isFarLocation()) {
@@ -482,7 +482,7 @@ public class Short12Sorted extends OpMode {
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret);
+                    spindex.autoSort(outtake, detectedMotifId, turret,"PPG");
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
@@ -521,7 +521,7 @@ public class Short12Sorted extends OpMode {
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret);
+                    spindex.autoSort(outtake, detectedMotifId, turret,"PGP");
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
@@ -560,7 +560,7 @@ public class Short12Sorted extends OpMode {
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret);
+                    spindex.autoSort(outtake, detectedMotifId, turret,"GPP");
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();

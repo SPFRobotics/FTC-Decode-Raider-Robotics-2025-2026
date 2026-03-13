@@ -259,8 +259,19 @@ public class Spindex {
         autoLaunchCount = 0;
     }
 
-    public void autoSort(Outtake outtake, int motifId) {
-        autoSort(outtake, motifId, null);
+
+
+    public void autoSort(Outtake outtake, int motifId, String knownSlotColors) {
+        autoSort(outtake, motifId, null, knownSlotColors);
+    }
+
+    public void autoSort(Outtake outtake, int motifId, Turret turret, String knownSlotColors) {
+        if (autoSortState == AutoSortState.FIND_NEXT && sortPatternIndex == 0) {
+            for (int i = 0; i < 3 && i < knownSlotColors.length(); i++) {
+                slotColors[i] = knownSlotColors.charAt(i);
+            }
+        }
+        autoSort(outtake, motifId, turret);
     }
 
     public void autoSort(Outtake outtake, int motifId, Turret turret) {
@@ -281,6 +292,15 @@ public class Spindex {
                     autoSortState = AutoSortState.COMPLETE;
                     return;
                 }
+
+                boolean allFilled = slotColors[0] != 'E' && slotColors[1] != 'E' && slotColors[2] != 'E';
+                if (!allFilled) {
+                    tryShootSlot = 0;
+                    tryingUndetected = true;
+                    autoSortState = AutoSortState.TRY_SHOOT_UNDETECTED;
+                    return;
+                }
+
                 char needed = pattern[sortPatternIndex];
                 for (int i = 0; i < 3; i++) {
                     if (slotColors[i] == needed) {
@@ -290,27 +310,24 @@ public class Spindex {
                         return;
                     }
                 }
-                // No matching color found — shoot any remaining ball instead of skipping
                 for (int i = 0; i < 3; i++) {
                     if (slotColors[i] != 'E') {
                         setMode(true);
                         setIndex(i);
-                        tryingUndetected = false;
                         autoSortState = AutoSortState.ROTATING;
                         return;
                     }
                 }
-                // No balls in slot colors — try each slot in case color sensor missed detection
-                tryShootSlot = 0;
-                tryingUndetected = true;
-                tryShootTimer.reset();
-                autoSortState = AutoSortState.TRY_SHOOT_UNDETECTED;
+                sortPatternIndex++;
                 break;
 
             case TRY_SHOOT_UNDETECTED:
+                if (tryShootSlot >= 3) {
+                    autoSortState = AutoSortState.COMPLETE;
+                    return;
+                }
                 setMode(true);
                 setIndex(tryShootSlot);
-                tryShootTimer.reset();
                 autoSortState = AutoSortState.ROTATING;
                 break;
 
@@ -320,9 +337,7 @@ public class Spindex {
                         : Outtake.OuttakeConfig.closeRPM;
                 outtake.setRPM(targetRPM);
                 if (!isBusy() && someTimer.milliseconds() > 200) {
-
                     outtake.resetKickerCycle();
-                    if (tryingUndetected) tryShootTimer.reset();
                     autoSortState = AutoSortState.LAUNCHING;
                 }
                 break;
@@ -336,17 +351,12 @@ public class Spindex {
                 }
                 if (outtake.getKickerCycleCount() >= 1) {
                     clearBall(getIndex());
-                    if (!tryingUndetected) sortPatternIndex++;
-                    tryingUndetected = false;
                     outtake.resetKickerCycle();
-                    autoSortState = AutoSortState.FIND_NEXT;
-                } else if (tryingUndetected && tryShootTimer.milliseconds() > TRY_SHOOT_TIMEOUT_MS) {
-                    tryShootSlot++;
-                    if (tryShootSlot < 3) {
+                    if (tryingUndetected) {
+                        tryShootSlot++;
                         autoSortState = AutoSortState.TRY_SHOOT_UNDETECTED;
                     } else {
                         sortPatternIndex++;
-                        tryingUndetected = false;
                         autoSortState = AutoSortState.FIND_NEXT;
                     }
                 }
