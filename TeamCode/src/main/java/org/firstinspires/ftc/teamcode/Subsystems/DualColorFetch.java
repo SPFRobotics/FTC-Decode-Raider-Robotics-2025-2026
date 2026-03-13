@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 import android.graphics.Color;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -12,10 +14,17 @@ public class DualColorFetch extends ColorFetch{
     private NormalizedColorSensor colorSensor2 = null;
     private RevColorSensorV3 distanceSensor2 = null;
 
+    @Config
+    public static class DualColorFetchConfig{
+        public static double distanceThreshold = 3.3;
+    }
+
     public DualColorFetch(HardwareMap hardwareMap){
         super(hardwareMap);
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
         distanceSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
+
+        colorSensor.setGain(3.0f);
 
         colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "colorSensor2");
         distanceSensor2 = hardwareMap.get(RevColorSensorV3.class, "colorSensor2");
@@ -25,6 +34,10 @@ public class DualColorFetch extends ColorFetch{
 
     public double[] getDistances(){
         return new double[]{distanceSensor.getDistance(DistanceUnit.CM), distanceSensor2.getDistance(DistanceUnit.CM)};
+    }
+
+    public boolean ballDetected(){
+        return getDistances()[0] <= DualColorFetchConfig.distanceThreshold || getDistances()[1] <= DualColorFetchConfig.distanceThreshold;
     }
 
     public float[][] getHSVArrays(){
