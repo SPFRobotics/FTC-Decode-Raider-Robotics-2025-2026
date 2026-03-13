@@ -10,10 +10,10 @@ import static org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex.KickerConf
 public class KickerSpindex {
     @Config
     public static class KickerConfig{
-        public static double down = 0.3;
+        public static double down = 0.30;
         public static double up = 0.45;
         public static double offset = 0.4;
-        public static double kickerTimer = 300;
+        public static double kickerTimer = 100;
     }
     private Servo leftKicker = null;
     private Servo rightKicker = null;
