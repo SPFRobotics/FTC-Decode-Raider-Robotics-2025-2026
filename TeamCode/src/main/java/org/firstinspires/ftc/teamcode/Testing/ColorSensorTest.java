@@ -41,6 +41,6 @@ public class ColorSensorTest extends OpMode {
         }
 
         telemetry.addLine("Runs: " + runs);
-        //telemetry.addLine("Accuracy: " + runs != 0 ? correct/runs : runs + "%");
+        telemetry.addLine("Accuracy: " + (runs != 0 ? correct/runs : runs) + "%");
     }
 }
