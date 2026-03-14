@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 public class SLAMSLAMSLAM extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.farRPM;
-    private static final double INTAKE_SPEED = IntakeSpeed;
+    private static final double INTAKE_SPEED = .5;
 
     private TelemetryManager panelsTelemetry;
 
@@ -198,23 +198,32 @@ public class SLAMSLAMSLAM extends OpMode {
         spindex.setAutoSortActive(true);
     }
 
+    /* ============================================================= *
+     *        Pedro Pathing Plus Visualizer — Auto-Generated         *
+     *                                                               *
+     *  Version: 1.7.5.                                              *
+     *  Copyright (c) 2026 Matthew Allen                             *
+     *                                                               *
+     *  THIS FILE IS AUTO-GENERATED — DO NOT EDIT MANUALLY.          *
+     *  Changes will be overwritten when regenerated.                *
+     * ============================================================= */
+
     public static class Paths {
+
         public PathChain RunToSpikeOne;
         public PathChain IntakeSpikeOne;
         public PathChain ShootSpikeOne;
         public PathChain RunToSlam;
         public PathChain SlamParking;
+        public PathChain Reverse;
+        public PathChain ReSlam;
         public PathChain ShootParking;
-        public PathChain RunToSlam2;
-        public PathChain SlamParking2;
-        public PathChain ShootParking2;
-        public PathChain RunToSlam3;
-        public PathChain SlamParking3;
-        public PathChain ShootParking3;
         public PathChain Leave;
 
         public Paths(Follower follower) {
-            RunToSpikeOne = follower.pathBuilder()
+            RunToSpikeOne = follower
+                    .pathBuilder()
+                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
                                     new Pose(56.000, 8.000),
@@ -225,122 +234,66 @@ public class SLAMSLAMSLAM extends OpMode {
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            IntakeSpikeOne = follower.pathBuilder()
+            IntakeSpikeOne = follower
+                    .pathBuilder()
                     .addPath(
-                            new BezierLine(
-                                    new Pose(41.116, 35.349),
-                                    new Pose(24.791, 35.674)
-                            )
+                            new BezierLine(new Pose(48.116, 35.349), new Pose(24.791, 35.674))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            ShootSpikeOne = follower.pathBuilder()
+            ShootSpikeOne = follower
+                    .pathBuilder()
+                    .setGlobalDeceleration()
+
                     .addPath(
-                            new BezierLine(
-                                    new Pose(24.791, 35.674),
-                                    new Pose(56.070, 8.651)
-                            )
+                            new BezierLine(new Pose(24.791, 35.674), new Pose(56.070, 8.651))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
+
             RunToSlam = follower
                     .pathBuilder()
-                    .addPath(new BezierLine(new Pose(56.070, 8.651), new Pose(29.162, 9.000)))
+                    .addPath(new BezierLine(new Pose(56.070, 8.651), new Pose(26.760, 9.000)))
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            SlamParking = follower.pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(56.070, 8.651),
-                                    new Pose(16.328, 9.000)
-                            )
-                    )
+            SlamParking = follower
+                    .pathBuilder()
+                    .addPath(new BezierLine(new Pose(26.760, 9.000), new Pose(16.328, 9.000)))
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            ShootParking = follower.pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(16.328, 9.000),
-                                    new Pose(56.070, 9.000)
-                            )
-                    )
+            Reverse = follower
+                    .pathBuilder()
+                    .addPath(new BezierLine(new Pose(16.328, 9.000), new Pose(36.399, 9.000)))
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            RunToSlam2 = follower.pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(56.070, 9.000),
-                                    new Pose(29.162, 9.000)
-                            )
-                    )
+            ReSlam = follower
+                    .pathBuilder()
+                    .addPath(new BezierLine(new Pose(36.399, 9.000), new Pose(14.967, 9.000)))
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            SlamParking2 = follower.pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(56.070, 9.000),
-                                    new Pose(16.328, 9.000)
-                            )
-                    )
+            ShootParking = follower
+                    .pathBuilder()
+                    .setGlobalDeceleration()
+
+                    .addPath(new BezierLine(new Pose(14.967, 9.000), new Pose(56.070, 9.000)))
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            ShootParking2 = follower.pathBuilder()
+            Leave = follower
+                    .pathBuilder()
                     .addPath(
-                            new BezierLine(
-                                    new Pose(16.328, 9.000),
-                                    new Pose(56.070, 9.000)
-                            )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
-                    .build();
-
-            RunToSlam3 = follower.pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(56.070, 9.000),
-                                    new Pose(29.162, 9.000)
-                            )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
-                    .build();
-
-            SlamParking3 = follower.pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(56.070, 9.000),
-                                    new Pose(16.328, 9.000)
-                            )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
-                    .build();
-
-            ShootParking3 = follower.pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(16.328, 9.000),
-                                    new Pose(56.070, 9.000)
-                            )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
-                    .build();
-
-            Leave = follower.pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(56.070, 9.000),
-                                    new Pose(49.192, 26.185)
-                            )
+                            new BezierLine(new Pose(56.070, 9.000), new Pose(49.192, 26.185))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
                     .build();
         }
     }
+
 
     public void autonomousPathUpdate() {
         switch (pathState) {
@@ -392,14 +345,36 @@ public class SLAMSLAMSLAM extends OpMode {
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
                     shootingPrepared = false;
-                    prepareForIntake();
-                    follower.followPath(paths.SlamParking, INTAKE_SPEED, true);
+                    follower.followPath(paths.RunToSlam, true);
                     setPathState(5);
                 }
                 break;
 
-            // ---- Slam 1 ----
-            case 5: // Intake during slam path 1
+            // ---- Slam Cycle 1 ----
+            case 5: // RunToSlam done, start SlamParking intake
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.SlamParking, INTAKE_SPEED, true);
+                    setPathState(6);
+                }
+                break;
+
+            case 6: // Intake during SlamParking
+                runIntake();
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Reverse, true);
+                    setPathState(7);
+                }
+                break;
+
+            case 7: // Reverse done, start ReSlam intake
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.ReSlam, INTAKE_SPEED, true);
+                    setPathState(8);
+                }
+                break;
+
+            case 8: // Intake during ReSlam, pre-spin flywheel
                 runIntake();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
@@ -410,62 +385,51 @@ public class SLAMSLAMSLAM extends OpMode {
                     spindex.setIndex(0);
                     flywheelStarted = false;
                     follower.followPath(paths.ShootParking, true);
-                    setPathState(6);
-                }
-                break;
-
-            case 6: // Shoot slam 1
-                if (!shootingPrepared) {
-                    prepareForShooting();
-                    shootingPrepared = true;
-                }
-                if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret);
-                }
-                if (spindex.isAutoSortComplete()) {
-                    spindex.resetAutoSort();
-                    shootingPrepared = false;
-                    prepareForIntake();
-                    follower.followPath(paths.SlamParking2, INTAKE_SPEED, true);
-                    setPathState(7);
-                }
-                break;
-
-            // ---- Slam 2 ----
-            case 7: // Intake during slam path 2
-                runIntake();
-                if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
-                    flywheelStarted = true;
-                }
-                if (!follower.isBusy()) {
-                    spindex.setMode(true);
-                    spindex.setIndex(0);
-                    flywheelStarted = false;
-                    follower.followPath(paths.ShootParking2, true);
-                    setPathState(8);
-                }
-                break;
-
-            case 8: // Shoot slam 2
-                if (!shootingPrepared) {
-                    prepareForShooting();
-                    shootingPrepared = true;
-                }
-                if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret);
-                }
-                if (spindex.isAutoSortComplete()) {
-                    spindex.resetAutoSort();
-                    shootingPrepared = false;
-                    prepareForIntake();
-                    follower.followPath(paths.SlamParking3, INTAKE_SPEED, true);
                     setPathState(9);
                 }
                 break;
 
-            // ---- Slam 3 ----
-            case 9: // Intake during slam path 3
+            case 9: // Shoot slam cycle 1
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                }
+                if (!follower.isBusy()) {
+                    spindex.autoSort(outtake, detectedMotifId, turret);
+                }
+                if (spindex.isAutoSortComplete()) {
+                    spindex.resetAutoSort();
+                    shootingPrepared = false;
+                    follower.followPath(paths.RunToSlam, true);
+                    setPathState(10);
+                }
+                break;
+
+            // ---- Slam Cycle 2 ----
+            case 10: // RunToSlam done, start SlamParking intake
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.SlamParking, INTAKE_SPEED, true);
+                    setPathState(11);
+                }
+                break;
+
+            case 11: // Intake during SlamParking
+                runIntake();
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Reverse, true);
+                    setPathState(12);
+                }
+                break;
+
+            case 12: // Reverse done, start ReSlam intake
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.ReSlam, INTAKE_SPEED, true);
+                    setPathState(13);
+                }
+                break;
+
+            case 13: // Intake during ReSlam, pre-spin flywheel
                 runIntake();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
@@ -475,12 +439,67 @@ public class SLAMSLAMSLAM extends OpMode {
                     spindex.setMode(true);
                     spindex.setIndex(0);
                     flywheelStarted = false;
-                    follower.followPath(paths.ShootParking3, true);
-                    setPathState(10);
+                    follower.followPath(paths.ShootParking, true);
+                    setPathState(14);
                 }
                 break;
 
-            case 10: // Shoot slam 3
+            case 14: // Shoot slam cycle 2
+                if (!shootingPrepared) {
+                    prepareForShooting();
+                    shootingPrepared = true;
+                }
+                if (!follower.isBusy()) {
+                    spindex.autoSort(outtake, detectedMotifId, turret);
+                }
+                if (spindex.isAutoSortComplete()) {
+                    spindex.resetAutoSort();
+                    shootingPrepared = false;
+                    follower.followPath(paths.RunToSlam, true);
+                    setPathState(15);
+                }
+                break;
+
+            // ---- Slam Cycle 3 ----
+            case 15: // RunToSlam done, start SlamParking intake
+                if (!follower.isBusy()) {
+                    prepareForIntake();
+                    follower.followPath(paths.SlamParking, INTAKE_SPEED, true);
+                    setPathState(16);
+                }
+                break;
+
+            case 16: // Intake during SlamParking
+                runIntake();
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Reverse, true);
+                    setPathState(17);
+                }
+                break;
+
+            case 17: // Reverse done, start ReSlam intake
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.ReSlam, INTAKE_SPEED, true);
+                    setPathState(18);
+                }
+                break;
+
+            case 18: // Intake during ReSlam, pre-spin flywheel
+                runIntake();
+                if (!flywheelStarted) {
+                    outtake.setRPM(SHOOT_RPM);
+                    flywheelStarted = true;
+                }
+                if (!follower.isBusy()) {
+                    spindex.setMode(true);
+                    spindex.setIndex(0);
+                    flywheelStarted = false;
+                    follower.followPath(paths.ShootParking, true);
+                    setPathState(19);
+                }
+                break;
+
+            case 19: // Shoot slam cycle 3
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
@@ -492,17 +511,17 @@ public class SLAMSLAMSLAM extends OpMode {
                     spindex.resetAutoSort();
                     shootingPrepared = false;
                     follower.followPath(paths.Leave, true);
-                    setPathState(11);
+                    setPathState(20);
                 }
                 break;
 
-            case 11: // Leave for points
+            case 20: // Leave for points
                 if (!follower.isBusy()) {
-                    setPathState(12);
+                    setPathState(21);
                 }
                 break;
 
-            case 12: // Done
+            case 21: // Done
                 outtake.setRPM(0);
                 turret.setPower(0);
                 intakeEnabled = false;
