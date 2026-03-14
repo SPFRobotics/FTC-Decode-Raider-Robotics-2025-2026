@@ -164,10 +164,10 @@ public class TeleOpMain extends LinearOpMode {
             /*************************************Drive Train Control**************************************/
             //Using Pedro Pathing for Tele-Op drive
             //Allows speed to be halved
-            if (gamepad1.right_bumper){
+            if (gamepad1.left_stick_button){
                 speedFactor = 0.25;
             }
-            else if (gamepad1.left_bumper){
+            else if (gamepad1.right_stick_button){
                 speedFactor = 0.1;
             }
             else{
