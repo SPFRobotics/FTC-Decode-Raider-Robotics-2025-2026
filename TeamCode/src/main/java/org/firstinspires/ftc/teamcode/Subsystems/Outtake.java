@@ -13,7 +13,7 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.*;
 public class Outtake {
     @Config
     public static class OuttakeConfig{
-        public static double farRPM = 3200;
+        public static double farRPM = 3300;
         public static double closeRPM = 2600;
         public static double[] pidf = {268, 14.99, 0, 14.99};
         public static double gearRatio = 18.0/16.0;

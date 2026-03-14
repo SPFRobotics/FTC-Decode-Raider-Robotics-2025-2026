@@ -279,8 +279,10 @@ public class TeleOpMain extends LinearOpMode {
             // Outtake control
             if (gamepad2.dpad_up) {
                 setRPM = farRPM;
+                turret.setShortMode(false);
             } else if (gamepad2.dpad_down) {
                 setRPM = closeRPM;
+                turret.setShortMode(true);
             } else if (gamepad2.touchpad) {
                 setRPM = 0;
             }

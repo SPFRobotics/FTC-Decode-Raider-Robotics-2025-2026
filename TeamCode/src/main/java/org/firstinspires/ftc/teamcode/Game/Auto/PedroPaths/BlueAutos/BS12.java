@@ -343,7 +343,7 @@ public class BS12 extends OpMode {
             RunToRowOne = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(48.251, 95.336), new Pose(43.745, 84.742))
+                            new BezierLine(new Pose(48.251, 95.336), new Pose(45.745, 84.742))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
@@ -575,7 +575,7 @@ public class BS12 extends OpMode {
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
                     shootingPrepared = false;
-                    follower.followPath(paths.Leave, true);
+                    //follower.followPath(paths.Leave, true);
                     pathState = 11;
                 }
                 break;

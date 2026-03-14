@@ -41,6 +41,8 @@ public class Turret {
     private boolean locked = false;
     private double lockedAngleDeg = 0;
     private AlignmentMode state = AlignmentMode.OFF;
+    private boolean shortMode = true;
+    private int lastPipeline = -1;
 
     DcMotorEx turret;
     Limelight limelight = null;
@@ -59,6 +61,8 @@ public class Turret {
         public static int turretShortLockLine = 322;
 
         public static int turretSHortLockTri = 335;
+
+        public static int turretFarLock = 297;
 
         // 1.12, .11, 0, 11.22
         public static double[] pidf = {35, 0.01, 12, 0};
@@ -96,6 +100,8 @@ public class Turret {
     public void useEncoder(){
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+    
 
     public void noEncoder(){
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -148,6 +154,19 @@ public class Turret {
         return locked;
     }
 
+    public void setShortMode(boolean isShort) {
+        this.shortMode = isShort;
+    }
+
+    private void updatePipeline() {
+        if (limelight == null) return;
+        int desired = shortMode ? 1 : 0;
+        if (desired != lastPipeline) {
+            limelight.setPipeline(desired);
+            lastPipeline = desired;
+        }
+    }
+
     private double turretDegToShoot(double robotX, double robotY, double robotHeading) {
         double fieldAngleDeg = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
         double turretDeg = fieldAngleDeg - robotHeading;
@@ -178,6 +197,8 @@ public class Turret {
         this.lastRobotY = robotY;
         this.lastRobotHeading = robotHeading;
 
+        updatePipeline();
+
         if (locked) {
             state = AlignmentMode.Locked;
             lockToAngle(lockedAngleDeg);
@@ -185,24 +206,21 @@ public class Turret {
         }
 
         LLResult result = (limelight != null) ? limelight.getLatestResult() : null;
+        Double shootingTagTx = (result != null && result.isValid()) ? getShootingTagTx(result) : null;
 
         if (!alignment) {
             state = AlignmentMode.OFF;
             filteredTx = 0;
-        } else if (result != null && result.isValid()) {
-            if (hasShootingTag(result)) {
-                state = AlignmentMode.Limelight;
-            } else {
-                state = AlignmentMode.Odometry;
-                filteredTx = 0;
-            }
+        } else if (shootingTagTx != null) {
+            state = AlignmentMode.Limelight;
         } else {
             state = AlignmentMode.Odometry;
+            filteredTx = 0;
         }
 
         switch (state) {
             case Limelight:
-                aimWithLimelight(result);
+                aimWithShootingTag(shootingTagTx);
                 break;
 
             case Odometry:
@@ -215,9 +233,12 @@ public class Turret {
     }
 
     public void aimWithLimelight(LLResult result) {
-        ensureRunToPositionMode();
-
         Double tagTx = (result != null && result.isValid()) ? getShootingTagTx(result) : null;
+        aimWithShootingTag(tagTx);
+    }
+
+    private void aimWithShootingTag(Double tagTx) {
+        ensureRunToPositionMode();
 
         if (tagTx == null) {
             filteredTx = 0;
@@ -241,14 +262,23 @@ public class Turret {
     }
 
 
+    private static int lastTrackedTagId = -1;
+
     private static Double getShootingTagTx(LLResult result) {
         List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-        if (fiducialResults == null || fiducialResults.isEmpty()) return null;
+        if (fiducialResults == null || fiducialResults.isEmpty()) {
+            lastTrackedTagId = -1;
+            return null;
+        }
 
         for (LLResultTypes.FiducialResult fr : fiducialResults) {
             int id = fr.getFiducialId();
-            if (id == 20 || id == 24) return fr.getTargetXDegrees();
+            if (id == 20 || id == 24) {
+                lastTrackedTagId = id;
+                return fr.getTargetXDegrees();
+            }
         }
+        lastTrackedTagId = -1;
         return null;
     }
 
@@ -359,11 +389,28 @@ public class Turret {
         return turret.getVelocity();
     }
 
+    private String getAllDetectedTagIds() {
+        if (limelight == null) return "no LL";
+        LLResult result = limelight.getLatestResult();
+        if (result == null || !result.isValid()) return "none";
+        List<LLResultTypes.FiducialResult> fids = result.getFiducialResults();
+        if (fids == null || fids.isEmpty()) return "none";
+        StringBuilder sb = new StringBuilder();
+        for (LLResultTypes.FiducialResult fr : fids) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(fr.getFiducialId()).append(" (tx=")
+              .append(String.format("%.2f", fr.getTargetXDegrees())).append(")");
+        }
+        return sb.toString();
+    }
+
     public void showTelemetry(Telemetry telemetry) {
         telemetry.addLine("------------------------------------------");
         telemetry.addLine("Turret");
         telemetry.addLine("Mode: " + state);
         telemetry.addLine("Alignment Enabled: " + alignment);
+        telemetry.addLine("All Detected Tags: " + getAllDetectedTagIds());
+        telemetry.addLine("Tracking Tag ID: " + lastTrackedTagId);
         telemetry.addLine("Robot X: " + lastRobotX);
         telemetry.addLine("Robot Y: " + lastRobotY);
         telemetry.addLine("Robot Heading: " + lastRobotHeading);
@@ -379,6 +426,8 @@ public class Turret {
         telemetry.addLine("Turret");
         telemetry.addLine("Mode: " + state);
         telemetry.addLine("Alignment Enabled: " + alignment);
+        telemetry.addLine("All Detected Tags: " + getAllDetectedTagIds());
+        telemetry.addLine("Tracking Tag ID: " + lastTrackedTagId);
         telemetry.addLine("Robot X: " + lastRobotX);
         telemetry.addLine("Robot Y: " + lastRobotY);
         telemetry.addLine("Robot Heading: " + lastRobotHeading);
