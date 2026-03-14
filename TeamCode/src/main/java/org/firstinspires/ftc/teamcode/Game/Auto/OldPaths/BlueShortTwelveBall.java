@@ -29,9 +29,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-
-//@Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
 @Disabled
+
+@Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
 
 @Configurable
 public class BlueShortTwelveBall extends OpMode {

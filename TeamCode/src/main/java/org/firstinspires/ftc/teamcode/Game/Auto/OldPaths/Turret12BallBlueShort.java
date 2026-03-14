@@ -28,9 +28,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+@Disabled
 
 @Autonomous(name = "Blue Short 12 Ball Turret", group = "Autonomous")
-@Disabled
 
 
 @Configurable

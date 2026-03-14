@@ -23,9 +23,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
+@Disabled
 
 @Autonomous(name = "Blue Short OBL", group = "Autonomous")
-@Disabled
 @Configurable
 public class BlueShortObilisk extends OpMode {
 
