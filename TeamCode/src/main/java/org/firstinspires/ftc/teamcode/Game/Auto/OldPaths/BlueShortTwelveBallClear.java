@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 @Disabled
 
-@Autonomous(name = "Blue Short 12 Ball Clear", group = "Autonomous")
+//@Autonomous(name = "Blue Short 12 Ball Clear", group = "Autonomous")
 
 @Configurable
 public class BlueShortTwelveBallClear extends OpMode {

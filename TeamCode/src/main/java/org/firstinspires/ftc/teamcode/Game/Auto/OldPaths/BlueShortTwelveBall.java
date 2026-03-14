@@ -31,7 +31,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 @Disabled
 
-@Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
+//@Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
 
 @Configurable
 public class BlueShortTwelveBall extends OpMode {

@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 @Disabled
 
-@Autonomous(name = "Red Short 12 Ball", group = "Autonomous")
+//@Autonomous(name = "Red Short 12 Ball", group = "Autonomous")
 
 @Configurable
 public class RedShortTwelveBall extends OpMode {

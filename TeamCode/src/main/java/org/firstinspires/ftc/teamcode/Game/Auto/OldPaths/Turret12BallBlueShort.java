@@ -30,7 +30,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 @Disabled
 
-@Autonomous(name = "Blue Short 12 Ball Turret", group = "Autonomous")
+//@Autonomous(name = "Blue Short 12 Ball Turret", group = "Autonomous")
 
 
 @Configurable
