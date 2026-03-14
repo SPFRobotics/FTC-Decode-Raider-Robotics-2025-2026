@@ -8,6 +8,8 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -20,7 +22,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
-//@Autonomous(name = "Blue Short 12 Ball Clear", group = "Autonomous")
+@Autonomous(name = "Blue Short 12 Ball Clear", group = "Autonomous")
+@Disabled
+
 @Configurable
 public class BlueShortTwelveBallClear extends OpMode {
 

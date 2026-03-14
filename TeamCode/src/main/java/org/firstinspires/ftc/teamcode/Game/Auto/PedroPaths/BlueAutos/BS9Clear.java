@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.BlueAutos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.bylazar.configurables.annotations.Configurable;
@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 @Autonomous(name = "BlueShortClear", group = "Autonomous")
 @Configurable
-public class BlueShort9BallClear extends OpMode {
+public class BS9Clear extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final double INTAKE_SPEED = 0.25;

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.OldPaths;
+package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.BlueAutos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -7,7 +7,6 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
@@ -18,7 +17,6 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
@@ -31,10 +29,10 @@ import java.io.PrintWriter;
 
 @Autonomous(name = "BS 12 Sorted", group = "Autonomous", preselectTeleOp = "TeleOpMain")
 @Configurable
-public class Short12Sorted extends OpMode {
+public class BS12 extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
-    private static final double INTAKE_SPEED = .25;
+    private static final double INTAKE_SPEED = .32;
 
     private TelemetryManager panelsTelemetry;
 
@@ -157,7 +155,7 @@ public class Short12Sorted extends OpMode {
 
     @Override
     public void loop() {
-        ElapsedTime time = new ElapsedTime();
+       // ElapsedTime time = new ElapsedTime();
         if (intakeEnabled) {
             intake.intakeOn(true);
         }
@@ -169,7 +167,7 @@ public class Short12Sorted extends OpMode {
         turret.lockToAngle(pathState >= 8 ? 333 : 319);
         autonomousPathUpdate();
         updateSpindexPosition();
-
+/*
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
         panelsTelemetry.debug("Balls Loaded", ballsLoaded);
@@ -212,6 +210,8 @@ public class Short12Sorted extends OpMode {
 
         telemetry.addLine("Timer: " + timer.milliseconds());
         telemetry.update();
+
+ */
     }
 
     private void updateSpindexPosition() {
@@ -299,7 +299,6 @@ public class Short12Sorted extends OpMode {
         outtake.setRPM(SHOOT_RPM);
         outtake.resetKickerCycle();
         spindex.setAutoSortActive(true);
-        System.out.printf("short12Sorted: Prepare for shooting%n");
     }
 
 
@@ -433,7 +432,7 @@ public class Short12Sorted extends OpMode {
             Leave = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(54.963, 108.203), new Pose(59.605, 108.203))
+                            new BezierLine(new Pose(54.963, 108.203), new Pose(52.605, 108.203))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
@@ -454,10 +453,8 @@ public class Short12Sorted extends OpMode {
 
             case 1: // Shoot 3 preloaded balls (sorted by motif)
                 spindex.autoSort(outtake, detectedMotifId, turret);
-                System.out.printf("short12Sorted: case1 up%n");
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
-                    System.out.printf("short12Sorted: case1- autosort completed%n");
                     follower.followPath(paths.RunToRowOne, true);
                     pathState = 2;
                 }
@@ -487,19 +484,16 @@ public class Short12Sorted extends OpMode {
                 break;
 
             case 4: // Move to shoot position + shoot row 1 balls (sorted)
-                System.out.printf("short12Sorted: case 4 up%n");
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
                     spindex.autoSort(outtake, detectedMotifId, turret,"PPG");
-                    System.out.printf("short12Sorted: case4 follower not busy%n");
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
                     shootingPrepared = false;
-                    System.out.printf("short12Sorted: case 4 auto sort complete%n");
                     follower.followPath(paths.RuntoRowTwo, true);
                     pathState = 5;
                 }

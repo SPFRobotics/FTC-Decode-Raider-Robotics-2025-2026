@@ -197,7 +197,7 @@ public class Outtake {
         if (x){
             // Phase 1: Wait for flywheel RPM, then kick up and start the timer
 
-            if (!launched && Math.abs(RPM-getRPM()) >0){
+            if (!launched && Math.abs(RPM-getRPM()) <=100){
                 kicker.up();
                 launched = true;
                 interval.reset(); // Timer starts when kick actually begins

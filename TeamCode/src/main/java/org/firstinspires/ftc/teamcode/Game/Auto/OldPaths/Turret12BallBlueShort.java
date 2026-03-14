@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Game.Auto.OldPaths;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
@@ -27,7 +29,10 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-//@Autonomous(name = "Blue Short 12 Ball Turret", group = "Autonomous")
+@Autonomous(name = "Blue Short 12 Ball Turret", group = "Autonomous")
+@Disabled
+
+
 @Configurable
 public class Turret12BallBlueShort extends OpMode {
 
