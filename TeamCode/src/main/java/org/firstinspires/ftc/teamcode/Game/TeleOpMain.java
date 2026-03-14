@@ -69,7 +69,7 @@ public class TeleOpMain extends LinearOpMode {
     Button turretToggle = new Button();
     Limelight limelight;
 
-    Button autoLaunchButton = new Button();
+    //Button autoLaunchButton = new Button();
     Button autoAimTurretButton = new Button();
 
     //Telemetry
@@ -85,7 +85,7 @@ public class TeleOpMain extends LinearOpMode {
     double setRPM = 0;
     int currentPos = 0;
     int kickerCount = 1;
-    boolean autoLaunch = false;
+    //boolean autoLaunch = false;
 
     public void runOpMode(){
         // Initialize subsystems
@@ -202,7 +202,7 @@ public class TeleOpMain extends LinearOpMode {
             /******************************************************************************/
 
             //Auto Launch: update toggle first so all controls below see the current state
-            autoLaunch = autoLaunchButton.toggle((gamepad2.right_trigger>=0.3));
+            /*autoLaunch = autoLaunchButton.toggle((gamepad2.right_trigger>=0.3));
             spindex.setAutoLaunchMode(autoLaunch);
             if (autoLaunch) {
                 spindex.autoLaunch(kicker);
@@ -212,27 +212,25 @@ public class TeleOpMain extends LinearOpMode {
                 }
             } else {
                 spindex.resetAutoLaunch();
-            }
+            }*/
 
             /*********************Kicker and index emptying logic**********************/
-            if (!autoLaunch) {
-                boolean crossWasPressed = gamepad2.crossWasPressed();
-                kicker.automate(crossWasPressed && spindex.isOuttakeing());
-                if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0) {
-                    spindex.clearBall(spindex.getIndex());
-                }
+            boolean crossWasPressed = gamepad2.crossWasPressed();
+            kicker.automate(crossWasPressed && spindex.isOuttakeing());
+            if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0) {
+                spindex.clearBall(spindex.getIndex());
             }
             /**************************************************************************/
 
             /*******************************************Spindex Logic********************************************/
-            if (spindexRightBumper.press(gamepad2.right_bumper) && !autoLaunch) {
+            if (spindexRightBumper.press(gamepad2.right_bumper)) {
                 if (!spindex.isOuttakeing()) {
                     autoLoad.changeState(false);
                 }
                 spindex.addIndex();
                 missing = false;
             }
-            if (spindexLeftBumper.press(gamepad2.left_bumper) && !autoLaunch) {
+            if (spindexLeftBumper.press(gamepad2.left_bumper)) {
                 if (!spindex.isOuttakeing()) {
                     autoLoad.changeState(false);
                 }
@@ -241,7 +239,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             //Sets either intake or outtake mode
-            spindex.setMode(autoLaunch || spindexModeToggle.toggle(gamepad2.circle));
+            spindex.setMode(spindexModeToggle.toggle(gamepad2.circle));
 
             //Automatic Loading
             spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.share) && !spindex.isOuttakeing());
