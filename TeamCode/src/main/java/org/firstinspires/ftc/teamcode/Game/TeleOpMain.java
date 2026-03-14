@@ -67,6 +67,7 @@ public class TeleOpMain extends LinearOpMode {
     Button intakeButton = new Button();
     Button autoLoad = new Button();
     Button turretToggle = new Button();
+    Button holdPos = new Button();
     Limelight limelight;
 
     //Button autoLaunchButton = new Button();
@@ -120,6 +121,7 @@ public class TeleOpMain extends LinearOpMode {
         //follower.setStartingPose(pose);
         follower.setStartingPose(PoseStorage.poseEnd);
         Pose parkingPose = new Pose(39, 33, 180);
+        Pose holdingPosition = null;
 
 
         follower.startTeleopDrive();
@@ -175,13 +177,19 @@ public class TeleOpMain extends LinearOpMode {
             }
 
 
-            double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
+            /*double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
             double x = gamepad1.left_stick_x * speedFactor;
-            double rx = gamepad1.right_stick_x * speedFactor;
+            double rx = gamepad1.right_stick_x * speedFactor;*/
 
             // When following a path, let the follower control the drive; chassis would overwrite and cause shuddering
-            if (!follower.isBusy()) {
+            if (!follower.isBusy() && !holdPos.toggle(gamepad1.touchpad)) {
                 follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
+            }
+            else{
+                if (gamepad1.touchpadWasPressed()){
+                    holdingPosition = new Pose(currentPose.getX(), currentPose.getY(), currentPose.getHeading());
+                }
+                follower.holdPoint(holdingPosition);
             }
 
             /**********************************************************************************************/
