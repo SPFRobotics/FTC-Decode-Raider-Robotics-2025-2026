@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.cl
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -36,6 +37,12 @@ import java.util.List;
 
 @TeleOp(name="Tele-Op Main")
 public class TeleOpMain extends LinearOpMode {
+    @Config
+    public static class TeleOpMainConfig{
+        public static double farOffset = 20;
+        public static double shortOffset = 1.0;
+    }
+
     //Hardware Devices
     Intake intake = null;
     ElapsedTime loopTime;
@@ -95,8 +102,10 @@ public class TeleOpMain extends LinearOpMode {
             turret.setInitialAngle(PoseStorage.turretStartPos);
         }
         PrintWriter pen = null;
+        PrintWriter pen1 = null;
         try{
-            pen = new PrintWriter("/sdcard/turret.txt", "ASCII");
+            pen = new PrintWriter("/sdcard/colorSensor1.txt", "ASCII");
+            pen1 = new PrintWriter("/sdcard/colorSensor2.txt", "ASCII");
         }
         catch(FileNotFoundException e){
 
@@ -139,8 +148,8 @@ public class TeleOpMain extends LinearOpMode {
 
         turret.setAlignmentEnabled(true);
         waitForStart();
-        ElapsedTime runTime = new ElapsedTime();
         chassis.setBrakeMode();
+        ElapsedTime runTime = new ElapsedTime();
         while (opModeIsActive()){
             loopTime.reset();
             //Reset Cache for Lynx Modules
@@ -302,20 +311,21 @@ public class TeleOpMain extends LinearOpMode {
             //Vector velocity = follower.getVelocity();
 
             if (setRPM == farRPM){
-                turret.setLimelightOffset(5.0);
+                //turret.setLimelightOffset(TeleOpMainConfig.farOffset);
             }
             else if (setRPM == closeRPM){
-                turret.setLimelightOffset(1.0);
+                //turret.setLimelightOffset(TeleOpMainConfig.shortOffset);
             }
 
-            if (turretToggle.toggle(gamepad1.share) && (gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0)){
+            boolean turretToggleState = turretToggle.toggle(gamepad1.share);
+            if (turretToggleState && (gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0)){
                 if (gamepad1.shareWasPressed()){
                     turret.unlockTurret();
                     turret.noEncoder();
                 }
                 turret.setPower((gamepad1.left_trigger - gamepad1.right_trigger)*0.25);
             }
-            else if (turretToggle.toggle(gamepad1.share)){
+            else if (turretToggleState){
                 turret.unlockTurret();
                 turret.aimWithLimelight(limelight.getLatestResult());
             }
@@ -342,7 +352,9 @@ public class TeleOpMain extends LinearOpMode {
             multiTelemetry.addData("Loop Time", loopTime.milliseconds());
             multiTelemetry.update();
             //turret.log(pen);*/
+            pen.write(runTime.milliseconds() + ":" + colorSensor.getDistances()[0] + "\n");
+            pen1.write(runTime.milliseconds() + ":" + colorSensor.getDistances()[1] + "\n");
         }
-        //pen.close();
+        pen.close();
     }
 }

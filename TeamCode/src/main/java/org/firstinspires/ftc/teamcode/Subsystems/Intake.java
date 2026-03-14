@@ -82,4 +82,8 @@ public class Intake {
             return 0;
         }
     }
+
+    public double getCurrent(){
+        return intakeMotor.getCurrent(CurrentUnit.MILLIAMPS);
+    }
 }
