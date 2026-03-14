@@ -56,6 +56,10 @@ public class Turret {
     public static class TurretConfig {
         public static double turretPower = 0.8;
 
+        public static int turretShortLockLine = 322;
+
+        public static int turretSHortLockTri = 335;
+
         // 1.12, .11, 0, 11.22
         public static double[] pidf = {35, 0.01, 12, 0};
 

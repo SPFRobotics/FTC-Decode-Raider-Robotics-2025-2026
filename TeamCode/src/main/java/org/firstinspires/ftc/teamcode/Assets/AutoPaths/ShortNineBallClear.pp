@@ -24,7 +24,12 @@
         "startDeg": 180,
         "endDeg": 180
       },
-      "controlPoints": [],
+      "controlPoints": [
+        {
+          "x": 36.749077490774894,
+          "y": 105.56457564575645
+        }
+      ],
       "color": "#D57C7D",
       "eventMarkers": [],
       "locked": false,
@@ -167,7 +172,12 @@
         "startDeg": 90,
         "endDeg": 180
       },
-      "controlPoints": [],
+      "controlPoints": [
+        {
+          "x": 39.32226322263223,
+          "y": 80.02583025830259
+        }
+      ],
       "color": "#7BD79C",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,

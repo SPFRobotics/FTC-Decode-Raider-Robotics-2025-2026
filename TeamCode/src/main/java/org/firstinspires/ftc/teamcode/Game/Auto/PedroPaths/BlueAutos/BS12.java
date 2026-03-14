@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.BlueAutos;
 
+import static org.firstinspires.ftc.teamcode.Subsystems.PoseStorage.IntakeSpeed;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -32,7 +34,7 @@ import java.io.PrintWriter;
 public class BS12 extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
-    private static final double INTAKE_SPEED = .32;
+    private static final double INTAKE_SPEED = IntakeSpeed;
 
     private TelemetryManager panelsTelemetry;
 
@@ -164,7 +166,9 @@ public class BS12 extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
-        turret.lockToAngle(pathState >= 8 ? 333 : 319);
+        turret.lockToAngle(pathState >= 8 ?
+                Turret.TurretConfig.turretSHortLockTri :
+                Turret.TurretConfig.turretShortLockLine);
         autonomousPathUpdate();
         updateSpindexPosition();
 /*
@@ -365,9 +369,8 @@ public class BS12 extends OpMode {
                     .pathBuilder()
                     .setGlobalDeceleration()
                     .addPath(
-                            new BezierCurve(
+                            new BezierLine(
                                     new Pose(49.856, 95.336),
-                                    new Pose(51.963, 79.435),
                                     new Pose(43.745, 59.786)
                             )
                     )

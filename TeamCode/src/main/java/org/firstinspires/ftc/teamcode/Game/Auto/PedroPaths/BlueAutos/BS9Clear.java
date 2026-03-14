@@ -1,85 +1,95 @@
 package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.BlueAutos;
 
+import static org.firstinspires.ftc.teamcode.Subsystems.PoseStorage.IntakeSpeed;
+
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.bylazar.telemetry.PanelsTelemetry;
+
+import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
+import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
-@Autonomous(name = "BlueShortClear", group = "Autonomous")
+@Autonomous(name = "BS 9 Clear", group = "Autonomous", preselectTeleOp = "TeleOpMain")
 @Configurable
 public class BS9Clear extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
-    private static final double INTAKE_SPEED = 0.25;
-    private static final String PRELOAD_COLORS = "GPP";
+    private static final double INTAKE_SPEED = IntakeSpeed;
 
     private TelemetryManager panelsTelemetry;
+
     public Follower follower;
     private Paths paths;
     private int pathState;
-    private ElapsedTime pathTimer;
 
-    private Turret turret;
     private Spindex spindex;
     private Outtake outtake;
     private Intake intake;
     private KickerSpindex kicker;
-    private ColorFetch colorSensor;
-    private LedLights leds;
+    private DualColorFetch colorSensor;
+    private LedLights leds = null;
     private Limelight limelight;
-
+    private Turret turret;
     private int detectedMotifId = -1;
+
+    private static final String PRELOAD_COLORS = "GPP";
+
     private int ballsLoaded = 0;
     private boolean shootingPrepared = false;
     private boolean flywheelStarted = false;
     private boolean intakeEnabled = false;
+
+    ElapsedTime timer = null;
+    private ElapsedTime pathTimer;
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(33.400, 133.900, Math.toRadians(180.000)));
+        follower.setStartingPose(new Pose(33.400, 133.900, Math.toRadians(180)));
         paths = new Paths(follower);
         pathTimer = new ElapsedTime();
-
-        spindex = new Spindex(hardwareMap);
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         outtake = new Outtake(hardwareMap, kicker);
-        colorSensor = new ColorFetch(hardwareMap);
+        colorSensor = new DualColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
-        turret = new Turret(hardwareMap, true);
+        turret = new Turret(hardwareMap, true, limelight);
+        spindex = new Spindex(hardwareMap);
 
+        spindex.setAutoSortActive(true);
+        turret.setAlignmentEnabled(true);
         spindex.setAutoLoadMode(true);
         outtake.resetKickerCycle();
         kicker.down();
 
         FtcDashboard dash = FtcDashboard.getInstance();
         telemetry = dash.getTelemetry();
-        telemetry.setMsTransmissionInterval(1);
+        telemetry.setMsTransmissionInterval(16);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+        turret.setInitialAngle(180);
     }
 
     @Override
@@ -87,19 +97,19 @@ public class BS9Clear extends OpMode {
         int id = limelight.getMotifId();
         if (id != -1) {
             detectedMotifId = id;
-            panelsTelemetry.debug("Detected Motif", detectedMotifId);
-        } else {
-            detectedMotifId = 21;
-            panelsTelemetry.addLine("No Motif Found");
         }
+
+        panelsTelemetry.debug("Raw Limelight ID", id);
+        panelsTelemetry.debug("Stored Motif", detectedMotifId);
         panelsTelemetry.update(telemetry);
     }
 
     @Override
     public void start() {
-        pathTimer.reset();
+        timer = new ElapsedTime();
+        pathTimer = new ElapsedTime();
         pathState = 0;
-        ballsLoaded = 0;
+        ballsLoaded = 3;
 
         if (detectedMotifId == -1) {
             detectedMotifId = 21;
@@ -107,6 +117,9 @@ public class BS9Clear extends OpMode {
         limelight.stop();
 
         intakeEnabled = true;
+        if (outtake.isFarLocation()) {
+            outtake.switchLocation();
+        }
         outtake.setRPM(SHOOT_RPM);
 
         for (int i = 0; i < 3; i++) {
@@ -128,35 +141,16 @@ public class BS9Clear extends OpMode {
 
     @Override
     public void loop() {
-        ElapsedTime loopTimer = new ElapsedTime();
-
         if (intakeEnabled) {
             intake.intakeOn(true);
         } else {
             intake.intakeOff();
         }
-
         follower.update();
         leds.cycleColors(10);
-        turret.lockToAngle(45);
+        turret.lockToAngle(Turret.TurretConfig.turretShortLockLine);
         autonomousPathUpdate();
         updateSpindexPosition();
-
-        panelsTelemetry.debug("Path State", pathState);
-        panelsTelemetry.debug("Balls Loaded", ballsLoaded);
-        panelsTelemetry.debug("X", follower.getPose().getX());
-        panelsTelemetry.debug("Y", follower.getPose().getY());
-        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
-        panelsTelemetry.debug("RPM", outtake.getRPM());
-        panelsTelemetry.debug("Is Busy", follower.isBusy());
-        panelsTelemetry.debug("Turret At Target", turret.isTurretAtTarget());
-        panelsTelemetry.debug("Turret Pos", turret.getCurrentPosition());
-        panelsTelemetry.debug("Turret Target", turret.getTargetPosition());
-        panelsTelemetry.debug("Sort State", spindex.getAutoSortStateName());
-        panelsTelemetry.debug("Slot Colors", "" + spindex.getSlotColors()[0] + spindex.getSlotColors()[1] + spindex.getSlotColors()[2]);
-        panelsTelemetry.debug("Motif ID", detectedMotifId);
-        panelsTelemetry.debug("Loop Time", loopTimer.milliseconds());
-        panelsTelemetry.update(telemetry);
     }
 
     private void updateSpindexPosition() {
@@ -170,6 +164,18 @@ public class BS9Clear extends OpMode {
     private void runIntake() {
         spindex.setMode(false);
         spindex.autoLoad(colorSensor);
+
+        int loadedCount = 0;
+        for (char slot : spindex.getSlotColors()) {
+            if (slot != 'E') loadedCount++;
+        }
+        ballsLoaded = loadedCount;
+    }
+
+    private void runIntakeByDistance() {
+        spindex.setMode(false);
+        spindex.autoLoadByDistance(colorSensor);
+
         int loadedCount = 0;
         for (char slot : spindex.getSlotColors()) {
             if (slot != 'E') loadedCount++;
@@ -203,13 +209,17 @@ public class BS9Clear extends OpMode {
         public PathChain IntakeSpikeOne;
         public PathChain ClearRamp;
         public PathChain RunToShootSpikeOne;
-        public PathChain line9;
+        public PathChain Leave;
 
         public Paths(Follower follower) {
             RunToShootPreload = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(33.400, 133.900), new Pose(47.776, 95.823))
+                            new BezierCurve(
+                                    new Pose(33.400, 133.900),
+                                    new Pose(36.749, 105.565),
+                                    new Pose(47.776, 95.823)
+                            )
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
@@ -217,7 +227,11 @@ public class BS9Clear extends OpMode {
             RunToSpikeTwo = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(47.776, 95.823), new Pose(47.776, 60.164))
+                            new BezierCurve(
+                                    new Pose(47.776, 95.823),
+                                    new Pose(54.974, 75.133),
+                                    new Pose(44.234, 60.164)
+                            )
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
@@ -225,7 +239,7 @@ public class BS9Clear extends OpMode {
             IntakeSpikeTwo = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(47.776, 60.164), new Pose(26.262, 60.164))
+                            new BezierLine(new Pose(44.234, 60.164), new Pose(15.000, 57.950))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
@@ -233,7 +247,11 @@ public class BS9Clear extends OpMode {
             RunToShootSpikeTwo = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(26.262, 60.164), new Pose(49.064, 95.823))
+                            new BezierCurve(
+                                    new Pose(15.000, 57.950),
+                                    new Pose(57.920, 72.070),
+                                    new Pose(49.064, 95.823)
+                            )
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
@@ -241,7 +259,7 @@ public class BS9Clear extends OpMode {
             RunToSpikeOne = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(49.064, 95.823), new Pose(33.400, 84.108))
+                            new BezierLine(new Pose(49.064, 95.823), new Pose(45.700, 84.108))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
@@ -249,7 +267,9 @@ public class BS9Clear extends OpMode {
             IntakeSpikeOne = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(33.400, 84.108), new Pose(25.086, 84.108))
+                            new BezierLine(
+                                    new Pose(45.700, 84.108),
+                                    new Pose(24.200, 84.108))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
@@ -257,7 +277,7 @@ public class BS9Clear extends OpMode {
             ClearRamp = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(25.086, 84.108), new Pose(16.989, 77.154))
+                            new BezierLine(new Pose(24.200, 84.108), new Pose(16.989, 77.154))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(90))
                     .build();
@@ -265,31 +285,35 @@ public class BS9Clear extends OpMode {
             RunToShootSpikeOne = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(16.989, 77.154), new Pose(47.776, 95.823))
+                            new BezierCurve(
+                                    new Pose(16.989, 77.154),
+                                    new Pose(39.322, 80.026),
+                                    new Pose(47.776, 95.823)
+                            )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(0))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
-            line9 = follower
+            Leave = follower
                     .pathBuilder()
                     .addPath(
                             new BezierLine(new Pose(47.776, 95.823), new Pose(23.000, 74.000))
                     )
-                    .setTangentHeadingInterpolation()
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
                     .build();
         }
     }
 
     public void autonomousPathUpdate() {
         switch (pathState) {
-            case 0: // Arrive at shoot preload position
+            case 0: // Drive to shoot position (flywheel already spinning from start())
                 if (!follower.isBusy()) {
                     prepareForShooting();
                     setPathState(1);
                 }
                 break;
 
-            case 1: // Shoot 3 preloaded balls sorted — only fire when turret is aimed
+            case 1: // Shoot 3 preloaded balls (sorted by motif)
                 spindex.autoSort(outtake, detectedMotifId, turret);
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
@@ -298,7 +322,7 @@ public class BS9Clear extends OpMode {
                 }
                 break;
 
-            case 2: // Run to spike two
+            case 2: // Run to spike two intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
                     follower.followPath(paths.IntakeSpikeTwo, INTAKE_SPEED, true);
@@ -321,13 +345,13 @@ public class BS9Clear extends OpMode {
                 }
                 break;
 
-            case 4: // Move to shoot position + shoot spike two balls (turret-gated)
+            case 4: // Shoot spike two balls (sorted, color sensor detected)
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret);
+                    spindex.autoSort(outtake, detectedMotifId, turret,"PGP");
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
@@ -337,7 +361,7 @@ public class BS9Clear extends OpMode {
                 }
                 break;
 
-            case 5: // Run to spike one
+            case 5: // Run to spike one intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
                     follower.followPath(paths.IntakeSpikeOne, INTAKE_SPEED, true);
@@ -355,7 +379,7 @@ public class BS9Clear extends OpMode {
                     spindex.setMode(true);
                     spindex.setIndex(0);
                     flywheelStarted = false;
-                    follower.turnTo(1.571);
+                    follower.turnTo(Math.toDegrees(90));
                     setPathState(7);
                 }
                 break;
@@ -373,36 +397,43 @@ public class BS9Clear extends OpMode {
                 }
                 break;
 
-            case 9: // Brief settle before heading to shoot
+            case 9: // Brief settle, then turn from 90 back to 180
                 if (pathTimer.milliseconds() > 500) {
-                    follower.followPath(paths.RunToShootSpikeOne, true);
+                    follower.turnTo(Math.toRadians(180));
                     setPathState(10);
                 }
                 break;
 
-            case 10: // Move to shoot position + shoot spike one balls (turret-gated)
+            case 10: // Wait for turn, then drive to shoot
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.RunToShootSpikeOne, true);
+                    setPathState(11);
+                }
+                break;
+
+            case 11: // Shoot spike one balls (sorted, color sensor detected)
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret);
+                    spindex.autoSort(outtake, detectedMotifId, turret, "GGP");
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
                     shootingPrepared = false;
-                    follower.followPath(paths.line9, true);
-                    setPathState(11);
-                }
-                break;
-
-            case 11: // Park
-                if (!follower.isBusy()) {
+                    follower.followPath(paths.Leave, true);
                     setPathState(12);
                 }
                 break;
 
-            case 12: // Done
+            case 12: // Leave for points
+                if (!follower.isBusy()) {
+                    setPathState(13);
+                }
+                break;
+
+            case 13: // Done
                 outtake.setRPM(0);
                 turret.setPower(0);
                 intakeEnabled = false;

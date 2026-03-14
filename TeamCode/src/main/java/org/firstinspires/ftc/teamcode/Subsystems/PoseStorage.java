@@ -5,6 +5,8 @@ import static org.firstinspires.ftc.teamcode.Assets.PedroPathing.Tuning.follower
 import com.pedropathing.geometry.Pose;
 
 public class PoseStorage {
+
+    public static double IntakeSpeed = .3;
     public static Pose poseEnd = new Pose();
     public static boolean blueAlliance = false;
     public static boolean redAlliance = false;
