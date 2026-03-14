@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 
-    @Autonomous(name = "Pedro Pathing Autonomous", group = "Autonomous")
+    @Autonomous(name = "Blue Far 15", group = "Autonomous")
     @Configurable // Panels
     public class BF15 extends OpMode {
 
