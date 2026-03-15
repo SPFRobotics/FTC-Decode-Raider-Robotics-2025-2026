@@ -49,8 +49,8 @@
       },
       "controlPoints": [
         {
-          "x": 54.97416974169742,
-          "y": 75.13284132841329
+          "x": 52.981549815498155,
+          "y": 72.4760147601476
         }
       ],
       "color": "#977ABC",
@@ -81,6 +81,29 @@
       "eventMarkers": []
     },
     {
+      "id": "mmqur3xa-uzfca6",
+      "endPoint": {
+        "x": 17.435424354243544,
+        "y": 70.25830258302584,
+        "heading": "linear",
+        "startDeg": 180,
+        "endDeg": 180
+      },
+      "controlPoints": [
+        {
+          "x": 54.46494464944649,
+          "y": 63.291512915129125
+        }
+      ],
+      "color": "#995995",
+      "name": "ClearRamp",
+      "eventMarkers": [],
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
       "id": "mmbhcegu-x06y2x",
       "name": "RunToShootSpikeTwo",
       "endPoint": {
@@ -93,8 +116,8 @@
       },
       "controlPoints": [
         {
-          "x": 57.920049200492016,
-          "y": 72.07011070110701
+          "x": 79.39606396063961,
+          "y": 70.25830258302584
         }
       ],
       "color": "#AD89CD",
@@ -136,25 +159,6 @@
       },
       "controlPoints": [],
       "color": "#5685C9",
-      "waitBeforeMs": 0,
-      "waitAfterMs": 0,
-      "waitBeforeName": "",
-      "waitAfterName": "",
-      "eventMarkers": []
-    },
-    {
-      "id": "mmbhhwy8-vxt762",
-      "name": "ClearRamp",
-      "endPoint": {
-        "x": 16.988929889298916,
-        "y": 77.15375153751536,
-        "heading": "linear",
-        "reverse": false,
-        "startDeg": 90,
-        "endDeg": 90
-      },
-      "controlPoints": [],
-      "color": "#59D67B",
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
@@ -220,6 +224,10 @@
     },
     {
       "kind": "path",
+      "lineId": "mmqur3xa-uzfca6"
+    },
+    {
+      "kind": "path",
       "lineId": "mmbhcegu-x06y2x"
     },
     {
@@ -229,24 +237,6 @@
     {
       "kind": "path",
       "lineId": "mmbhf6xa-dlrsnu"
-    },
-    {
-      "kind": "rotate",
-      "id": "mmbhhols-ccbiut",
-      "name": "Rotate90",
-      "degrees": 90,
-      "locked": false
-    },
-    {
-      "kind": "path",
-      "lineId": "mmbhhwy8-vxt762"
-    },
-    {
-      "kind": "wait",
-      "id": "mmbhm8mp-k4aywv",
-      "name": "WaitForRampClear",
-      "durationMs": 500,
-      "locked": false
     },
     {
       "kind": "path",

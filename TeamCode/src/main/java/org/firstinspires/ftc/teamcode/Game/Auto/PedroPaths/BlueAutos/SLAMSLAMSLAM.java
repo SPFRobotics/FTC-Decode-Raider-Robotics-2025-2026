@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 public class SLAMSLAMSLAM extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.farRPM;
-    private static final double INTAKE_SPEED = .5;
+    private static final double INTAKE_SPEED = .7;
 
     private TelemetryManager panelsTelemetry;
 
@@ -223,7 +223,6 @@ public class SLAMSLAMSLAM extends OpMode {
         public Paths(Follower follower) {
             RunToSpikeOne = follower
                     .pathBuilder()
-                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
                                     new Pose(56.000, 8.000),
@@ -244,50 +243,56 @@ public class SLAMSLAMSLAM extends OpMode {
 
             ShootSpikeOne = follower
                     .pathBuilder()
-                    .setGlobalDeceleration()
-
                     .addPath(
-                            new BezierLine(new Pose(24.791, 35.674), new Pose(56.070, 8.651))
+                            new BezierLine(new Pose(24.791, 35.674), new Pose(56.070, 17.000))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             RunToSlam = follower
                     .pathBuilder()
-                    .addPath(new BezierLine(new Pose(56.070, 8.651), new Pose(26.760, 9.000)))
+                    .addPath(
+                            new BezierLine(new Pose(56.070, 17.000), new Pose(26.760, 17.000))
+                    )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             SlamParking = follower
                     .pathBuilder()
-                    .addPath(new BezierLine(new Pose(26.760, 9.000), new Pose(16.328, 9.000)))
+                    .addPath(
+                            new BezierLine(new Pose(26.760, 17.000), new Pose(16.328, 17.000))
+                    )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             Reverse = follower
                     .pathBuilder()
-                    .addPath(new BezierLine(new Pose(16.328, 9.000), new Pose(36.399, 9.000)))
+                    .addPath(
+                            new BezierLine(new Pose(16.328, 17.000), new Pose(36.399, 17.000))
+                    )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             ReSlam = follower
                     .pathBuilder()
-                    .addPath(new BezierLine(new Pose(36.399, 9.000), new Pose(14.967, 9.000)))
+                    .addPath(
+                            new BezierLine(new Pose(36.399, 17.000), new Pose(14.967, 17.000))
+                    )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             ShootParking = follower
                     .pathBuilder()
-                    .setGlobalDeceleration()
-
-                    .addPath(new BezierLine(new Pose(14.967, 9.000), new Pose(56.070, 9.000)))
+                    .addPath(
+                            new BezierLine(new Pose(14.967, 17.000), new Pose(56.070, 17.000))
+                    )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             Leave = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(56.070, 9.000), new Pose(49.192, 26.185))
+                            new BezierLine(new Pose(56.070, 17.000), new Pose(49.192, 26.185))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
                     .build();
@@ -314,7 +319,7 @@ public class SLAMSLAMSLAM extends OpMode {
             case 2: // Run to spike one intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
-                    follower.followPath(paths.IntakeSpikeOne, INTAKE_SPEED, true);
+                    follower.followPath(paths.IntakeSpikeOne, .3, true);
                     setPathState(3);
                 }
                 break;

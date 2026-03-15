@@ -7,6 +7,7 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -41,6 +42,8 @@ public class Turret {
     private boolean locked = false;
     private double lockedAngleDeg = 0;
     private AlignmentMode state = AlignmentMode.OFF;
+    private final ElapsedTime tagLostTimer = new ElapsedTime();
+    private boolean tagLostTimerRunning = false;
     private boolean shortMode = true;
     private int lastPipeline = -1;
 
@@ -69,11 +72,12 @@ public class Turret {
 
         public static int correctionThresholdTicks = 20;
         public static double limelightAngularOffset = 0.0;
+        public static double wrapGracePeriodMs = 1500;
     }
 
     public Turret(HardwareMap hardwareMap, boolean goalCords) {
         this.turret = hardwareMap.get(DcMotorEx.class, "turretMotor");
-        turret.setPositionPIDFCoefficients(25);
+        turret.setPositionPIDFCoefficients(20);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -84,16 +88,7 @@ public class Turret {
     }
 
     public Turret(HardwareMap hardwareMap, boolean goalCords, Limelight limelight) {
-        this.turret = hardwareMap.get(DcMotorEx.class, "turretMotor");
-        turret.setPositionPIDFCoefficients(25);
-        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turret.setDirection(DcMotor.Direction.REVERSE);
-        turret.setTargetPositionTolerance(3);
-        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        setGoalCords(goalCords);
-
+   this(hardwareMap, goalCords);
         this.limelight = limelight;
     }
 
@@ -211,16 +206,31 @@ public class Turret {
         if (!alignment) {
             state = AlignmentMode.OFF;
             filteredTx = 0;
+            tagLostTimerRunning = false;
         } else if (shootingTagTx != null) {
             state = AlignmentMode.Limelight;
+            tagLostTimerRunning = false;
+        } else if (state == AlignmentMode.Limelight) {
+            if (!tagLostTimerRunning) {
+                tagLostTimer.reset();
+                tagLostTimerRunning = true;
+            }
+            if (tagLostTimer.milliseconds() >= TurretConfig.wrapGracePeriodMs) {
+                state = AlignmentMode.Odometry;
+                filteredTx = 0;
+                tagLostTimerRunning = false;
+            }
         } else {
             state = AlignmentMode.Odometry;
             filteredTx = 0;
+            tagLostTimerRunning = false;
         }
 
         switch (state) {
             case Limelight:
-                aimWithShootingTag(shootingTagTx);
+                if (shootingTagTx != null) {
+                    aimWithShootingTag(shootingTagTx);
+                }
                 break;
 
             case Odometry:

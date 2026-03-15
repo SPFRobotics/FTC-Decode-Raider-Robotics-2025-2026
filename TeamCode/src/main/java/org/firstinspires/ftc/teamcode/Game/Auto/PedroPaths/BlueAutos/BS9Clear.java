@@ -199,15 +199,27 @@ public class BS9Clear extends OpMode {
         spindex.setAutoSortActive(true);
     }
 
+
+
+    /* ============================================================= *
+     *        Pedro Pathing Plus Visualizer — Auto-Generated         *
+     *                                                               *
+     *  Version: 1.7.5.                                              *
+     *  Copyright (c) 2026 Matthew Allen                             *
+     *                                                               *
+     *  THIS FILE IS AUTO-GENERATED — DO NOT EDIT MANUALLY.          *
+     *  Changes will be overwritten when regenerated.                *
+     * ============================================================= */
+
     public static class Paths {
 
         public PathChain RunToShootPreload;
         public PathChain RunToSpikeTwo;
         public PathChain IntakeSpikeTwo;
+        public PathChain ClearRamp;
         public PathChain RunToShootSpikeTwo;
         public PathChain RunToSpikeOne;
         public PathChain IntakeSpikeOne;
-        public PathChain ClearRamp;
         public PathChain RunToShootSpikeOne;
         public PathChain Leave;
 
@@ -229,7 +241,7 @@ public class BS9Clear extends OpMode {
                     .addPath(
                             new BezierCurve(
                                     new Pose(47.776, 95.823),
-                                    new Pose(54.974, 75.133),
+                                    new Pose(52.982, 72.476),
                                     new Pose(44.234, 60.164)
                             )
                     )
@@ -244,12 +256,24 @@ public class BS9Clear extends OpMode {
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            RunToShootSpikeTwo = follower
+            ClearRamp = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
                                     new Pose(15.000, 57.950),
-                                    new Pose(57.920, 72.070),
+                                    new Pose(54.465, 63.292),
+                                    new Pose(17.435, 70.258)
+                            )
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .build();
+
+            RunToShootSpikeTwo = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(17.435, 70.258),
+                                    new Pose(79.396, 70.258),
                                     new Pose(49.064, 95.823)
                             )
                     )
@@ -267,31 +291,21 @@ public class BS9Clear extends OpMode {
             IntakeSpikeOne = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(
-                                    new Pose(45.700, 84.108),
-                                    new Pose(24.200, 84.108))
+                            new BezierLine(new Pose(45.700, 84.108), new Pose(24.200, 84.108))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                    .build();
-
-            ClearRamp = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(24.200, 84.108), new Pose(16.989, 77.154))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(90))
                     .build();
 
             RunToShootSpikeOne = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(16.989, 77.154),
+                                    new Pose(24.200, 84.108),
                                     new Pose(39.322, 80.026),
                                     new Pose(47.776, 95.823)
                             )
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
                     .build();
 
             Leave = follower
@@ -314,7 +328,7 @@ public class BS9Clear extends OpMode {
                 break;
 
             case 1: // Shoot 3 preloaded balls (sorted by motif)
-                spindex.autoSort(outtake, detectedMotifId, turret);
+                spindex.autoSort(outtake, detectedMotifId, turret, "GPP");
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
                     follower.followPath(paths.RunToSpikeTwo, true);
@@ -331,7 +345,7 @@ public class BS9Clear extends OpMode {
                 break;
 
             case 3: // Intake spike two (slow), pre-spin flywheel
-                runIntake();
+                runIntakeByDistance();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
                     flywheelStarted = true;
@@ -340,37 +354,52 @@ public class BS9Clear extends OpMode {
                     spindex.setMode(true);
                     spindex.setIndex(0);
                     flywheelStarted = false;
-                    follower.followPath(paths.RunToShootSpikeTwo, true);
+                    intakeEnabled = false;
+                    follower.followPath(paths.ClearRamp,.7, true);
                     setPathState(4);
                 }
                 break;
 
-            case 4: // Shoot spike two balls (sorted, color sensor detected)
+            case 4: // Clear ramp (intake off), wait for completion
+                if (!follower.isBusy()) {
+                    setPathState(5);
+                }
+                break;
+
+            case 5: // Settle after ramp clear, then drive to shoot
+                if (pathTimer.milliseconds() > 500) {
+                    intakeEnabled = true;
+                    follower.followPath(paths.RunToShootSpikeTwo, true);
+                    setPathState(6);
+                }
+                break;
+
+            case 6: // Shoot spike two balls (sorted)
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret,"PGP");
+                    spindex.autoSort(outtake, detectedMotifId, turret, "PGP");
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
                     shootingPrepared = false;
                     follower.followPath(paths.RunToSpikeOne, true);
-                    setPathState(5);
+                    setPathState(7);
                 }
                 break;
 
-            case 5: // Run to spike one intake position
+            case 7: // Run to spike one intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
                     follower.followPath(paths.IntakeSpikeOne, INTAKE_SPEED, true);
-                    setPathState(6);
+                    setPathState(8);
                 }
                 break;
 
-            case 6: // Intake spike one (slow), pre-spin flywheel
-                runIntake();
+            case 8: // Intake spike one (slow), pre-spin flywheel
+                runIntakeByDistance();
                 if (!flywheelStarted) {
                     outtake.setRPM(SHOOT_RPM);
                     flywheelStarted = true;
@@ -379,61 +408,34 @@ public class BS9Clear extends OpMode {
                     spindex.setMode(true);
                     spindex.setIndex(0);
                     flywheelStarted = false;
-                    follower.turnTo(Math.toDegrees(90));
-                    setPathState(7);
-                }
-                break;
-
-            case 7: // Wait for turn, then clear ramp
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.ClearRamp, true);
-                    setPathState(8);
-                }
-                break;
-
-            case 8: // Wait for ramp clear to finish
-                if (!follower.isBusy()) {
+                    follower.followPath(paths.RunToShootSpikeOne, true);
                     setPathState(9);
                 }
                 break;
 
-            case 9: // Brief settle, then turn from 90 back to 180
-                if (pathTimer.milliseconds() > 500) {
-                    follower.turnTo(Math.toRadians(180));
-                    setPathState(10);
-                }
-                break;
-
-            case 10: // Wait for turn, then drive to shoot
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.RunToShootSpikeOne, true);
-                    setPathState(11);
-                }
-                break;
-
-            case 11: // Shoot spike one balls (sorted, color sensor detected)
+            case 9: // Shoot spike one balls (sorted)
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
                 }
                 if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret, "GGP");
+                    spindex.autoSort(outtake, detectedMotifId, turret, "PPG");
                 }
                 if (spindex.isAutoSortComplete()) {
                     spindex.resetAutoSort();
                     shootingPrepared = false;
                     follower.followPath(paths.Leave, true);
-                    setPathState(12);
+                    setPathState(10);
                 }
                 break;
 
-            case 12: // Leave for points
+            case 10: // Leave for points
                 if (!follower.isBusy()) {
-                    setPathState(13);
+                    setPathState(11);
                 }
                 break;
 
-            case 13: // Done
+            case 11: // Done
                 outtake.setRPM(0);
                 turret.setPower(0);
                 intakeEnabled = false;

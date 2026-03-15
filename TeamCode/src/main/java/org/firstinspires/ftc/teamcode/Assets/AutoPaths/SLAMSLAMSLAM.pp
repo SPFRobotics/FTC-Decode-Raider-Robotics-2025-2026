@@ -77,6 +77,23 @@
       "eventMarkers": []
     },
     {
+      "id": "mmqqtzbz-yf9tgf",
+      "endPoint": {
+        "x": 26.760147601476017,
+        "y": 9,
+        "heading": "constant",
+        "degrees": 180
+      },
+      "controlPoints": [],
+      "color": "#875888",
+      "name": "RunToSlam",
+      "eventMarkers": [],
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
       "id": "mm9re6p3-xbq4k6",
       "name": "SlamParking",
       "endPoint": {
@@ -97,6 +114,40 @@
       "eventMarkers": []
     },
     {
+      "id": "mmqquvg8-1eekrh",
+      "endPoint": {
+        "x": 36.39852398523985,
+        "y": 9,
+        "heading": "constant",
+        "degrees": 180
+      },
+      "controlPoints": [],
+      "color": "#896AC5",
+      "name": "Reverse",
+      "eventMarkers": [],
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "mmqqv64i-bmgmja",
+      "endPoint": {
+        "x": 14.966789667896675,
+        "y": 9,
+        "heading": "constant",
+        "degrees": 180
+      },
+      "controlPoints": [],
+      "color": "#CA6B86",
+      "name": "ReSlam",
+      "eventMarkers": [],
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
       "id": "mmqi7ktz-wnmt2t",
       "name": "ShootParking",
       "endPoint": {
@@ -111,7 +162,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmqiefm0-3icyb8",
@@ -130,7 +182,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     }
   ],
   "sequence": [
@@ -148,7 +201,19 @@
     },
     {
       "kind": "path",
+      "lineId": "mmqqtzbz-yf9tgf"
+    },
+    {
+      "kind": "path",
       "lineId": "mm9re6p3-xbq4k6"
+    },
+    {
+      "kind": "path",
+      "lineId": "mmqquvg8-1eekrh"
+    },
+    {
+      "kind": "path",
+      "lineId": "mmqqv64i-bmgmja"
     },
     {
       "kind": "path",
