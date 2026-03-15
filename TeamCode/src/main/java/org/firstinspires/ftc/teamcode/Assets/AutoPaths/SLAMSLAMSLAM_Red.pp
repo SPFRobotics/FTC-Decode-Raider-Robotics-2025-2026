@@ -6,10 +6,10 @@
     "link": "https://github.com/Mallen220/PedroPathingPlusVisualizer"
   },
   "startPoint": {
-    "x": 56.000000000000014,
+    "x": 87.99999999999999,
     "y": 7.999999999999984,
     "heading": "linear",
-    "startDeg": 180,
+    "startDeg": 0,
     "endDeg": 90,
     "locked": false
   },
@@ -18,15 +18,15 @@
       "id": "line-h9ylsdtjteu",
       "name": "RunToSpikeOne",
       "endPoint": {
-        "x": 48.11627906976744,
+        "x": 95.88372093023256,
         "y": 35.34883720930233,
         "heading": "linear",
-        "startDeg": 180,
-        "endDeg": 180
+        "startDeg": 0,
+        "endDeg": 0
       },
       "controlPoints": [
         {
-          "x": 51.58139534883721,
+          "x": 92.41860465116278,
           "y": 25.79069767441861
         }
       ],
@@ -42,11 +42,11 @@
       "id": "mm9q3byt-bvphld",
       "name": "IntakeSpikeOne",
       "endPoint": {
-        "x": 24.79069767441861,
+        "x": 119.20930232558139,
         "y": 35.67441860465115,
         "heading": "constant",
         "reverse": false,
-        "degrees": 180
+        "degrees": 0
       },
       "controlPoints": [],
       "color": "#7DA578",
@@ -60,11 +60,11 @@
       "id": "mm9q4avc-aol3pw",
       "name": "ShootSpikeOne",
       "endPoint": {
-        "x": 56.06976744186046,
+        "x": 87.93023255813954,
         "y": 8.651162790697681,
         "heading": "constant",
         "reverse": false,
-        "degrees": 180,
+        "degrees": 0,
         "startDeg": 180,
         "endDeg": 90
       },
@@ -79,10 +79,10 @@
     {
       "id": "mmqqtzbz-yf9tgf",
       "endPoint": {
-        "x": 26.760147601476017,
-        "y": 9,
+        "x": 117.23985239852398,
+        "y": 11,
         "heading": "constant",
-        "degrees": 180
+        "degrees": 0
       },
       "controlPoints": [],
       "color": "#875888",
@@ -97,13 +97,13 @@
       "id": "mm9re6p3-xbq4k6",
       "name": "SlamParking",
       "endPoint": {
-        "x": 16.328413284132843,
-        "y": 9,
+        "x": 127.67158671586716,
+        "y": 11,
         "heading": "constant",
         "reverse": false,
         "startDeg": 180,
         "endDeg": 90,
-        "degrees": 180
+        "degrees": 0
       },
       "controlPoints": [],
       "color": "#B96CD7",
@@ -116,10 +116,10 @@
     {
       "id": "mmqquvg8-1eekrh",
       "endPoint": {
-        "x": 36.39852398523985,
-        "y": 9,
+        "x": 107.60147601476015,
+        "y": 11,
         "heading": "constant",
-        "degrees": 180
+        "degrees": 0
       },
       "controlPoints": [],
       "color": "#896AC5",
@@ -133,10 +133,10 @@
     {
       "id": "mmqqv64i-bmgmja",
       "endPoint": {
-        "x": 14.966789667896675,
-        "y": 9,
+        "x": 129.03321033210332,
+        "y": 11,
         "heading": "constant",
-        "degrees": 180
+        "degrees": 0
       },
       "controlPoints": [],
       "color": "#CA6B86",
@@ -151,11 +151,11 @@
       "id": "mmqi7ktz-wnmt2t",
       "name": "ShootParking",
       "endPoint": {
-        "x": 56.06976744186046,
-        "y": 9,
+        "x": 87.93023255813954,
+        "y": 11,
         "heading": "constant",
         "reverse": false,
-        "degrees": 180
+        "degrees": 0
       },
       "controlPoints": [],
       "color": "#789758",
@@ -169,12 +169,12 @@
       "id": "mmqiefm0-3icyb8",
       "name": "Leave",
       "endPoint": {
-        "x": 49.19188191881919,
+        "x": 94.80811808118081,
         "y": 26.18450184501845,
         "heading": "linear",
         "reverse": false,
         "degrees": 180,
-        "startDeg": 180,
+        "startDeg": 0,
         "endDeg": 90
       },
       "controlPoints": [],
@@ -230,23 +230,23 @@
       "name": "Red Goal",
       "vertices": [
         {
-          "x": 144,
+          "x": 0,
           "y": 70
         },
         {
-          "x": 144,
+          "x": 0,
           "y": 144
         },
         {
-          "x": 120,
+          "x": 24,
           "y": 144
         },
         {
-          "x": 138,
+          "x": 6,
           "y": 119
         },
         {
-          "x": 138,
+          "x": 6,
           "y": 70
         }
       ],
@@ -258,23 +258,23 @@
       "name": "Blue Goal",
       "vertices": [
         {
-          "x": 6,
+          "x": 138,
           "y": 119
         },
         {
-          "x": 25,
+          "x": 119,
           "y": 144
         },
         {
-          "x": 0,
+          "x": 144,
           "y": 144
         },
         {
-          "x": 0,
+          "x": 144,
           "y": 70
         },
         {
-          "x": 7,
+          "x": 137,
           "y": 70
         }
       ],
