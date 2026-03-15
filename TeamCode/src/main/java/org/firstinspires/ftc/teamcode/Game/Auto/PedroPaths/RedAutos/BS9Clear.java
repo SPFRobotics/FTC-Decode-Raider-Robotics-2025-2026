@@ -1,33 +1,32 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.BlueAutos;
+package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.RedAutos;
 
 import static org.firstinspires.ftc.teamcode.Subsystems.PoseStorage.IntakeSpeed;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
-
-import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
+import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
+import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
-import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
-@Autonomous(name = "Blue Short 9", group = "BlueAutos", preselectTeleOp = "TeleOpMain")
+@Autonomous(name = "Red Short 9", group = "BlueAutos", preselectTeleOp = "TeleOpMain")
 @Configurable
 public class BS9Clear extends OpMode {
 
@@ -228,95 +227,96 @@ public class BS9Clear extends OpMode {
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(33.400, 133.900),
-                                    new Pose(36.749, 105.565),
-                                    new Pose(47.776, 95.823)
+                                    new Pose(110.600, 133.900),
+                                    new Pose(107.251, 105.565),
+                                    new Pose(96.224, 95.823)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
             RunToSpikeTwo = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(47.776, 95.823),
-                                    new Pose(52.982, 72.476),
-                                    new Pose(44.234, 60.164)
+                                    new Pose(96.224, 95.823),
+                                    new Pose(91.018, 72.476),
+                                    new Pose(99.766, 60.164)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
             IntakeSpikeTwo = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(44.234, 60.164), new Pose(15.000, 57.950))
+                            new BezierLine(new Pose(99.766, 60.164), new Pose(129.000, 57.950))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
             ClearRamp = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(15.000, 57.950),
-                                    new Pose(54.465, 63.292),
-                                    new Pose(17.435, 70.258)
+                                    new Pose(129.000, 57.950),
+                                    new Pose(89.535, 63.292),
+                                    new Pose(126.565, 70.258)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
             RunToShootSpikeTwo = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(17.435, 70.258),
-                                    new Pose(79.396, 70.258),
-                                    new Pose(49.064, 95.823)
+                                    new Pose(126.565, 70.258),
+                                    new Pose(64.604, 70.258),
+                                    new Pose(94.936, 95.823)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
             RunToSpikeOne = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(49.064, 95.823), new Pose(45.700, 84.108))
+                            new BezierLine(new Pose(94.936, 95.823), new Pose(98.300, 84.108))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
             IntakeSpikeOne = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(45.700, 84.108), new Pose(24.200, 84.108))
+                            new BezierLine(new Pose(98.300, 84.108), new Pose(119.800, 84.108))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
             RunToShootSpikeOne = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(24.200, 84.108),
-                                    new Pose(39.322, 80.026),
-                                    new Pose(47.776, 95.823)
+                                    new Pose(119.800, 84.108),
+                                    new Pose(104.678, 80.026),
+                                    new Pose(96.224, 95.823)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
             Leave = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(47.776, 95.823), new Pose(23.000, 74.000))
+                            new BezierLine(new Pose(96.224, 95.823), new Pose(121.000, 74.000))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(90))
                     .build();
         }
     }
+
 
     public void autonomousPathUpdate() {
         switch (pathState) {
