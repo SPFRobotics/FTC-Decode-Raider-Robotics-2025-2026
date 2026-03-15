@@ -130,8 +130,8 @@ public class SLAMSLAMSLAM extends OpMode {
     @Override
     public void stop() {
         PoseStorage.savePose(follower.getPose());
-        PoseStorage.blueAlliance = true;
-        PoseStorage.redAlliance = false;
+        PoseStorage.blueAlliance = false;
+        PoseStorage.redAlliance = true;
         PoseStorage.setTurretStartPos(turret.getCurrentAngularPosition());
     }
 

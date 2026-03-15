@@ -149,8 +149,8 @@ public class RS12 extends OpMode {
 
     public void stop(){
         PoseStorage.savePose(follower.getPose());
-        PoseStorage.blueAlliance = true;
-        PoseStorage.redAlliance = false;
+        PoseStorage.blueAlliance = false;
+        PoseStorage.redAlliance = true;
         PoseStorage.setTurretStartPos(turret.getCurrentAngularPosition());
         //spindex.exitProgram();
     }
