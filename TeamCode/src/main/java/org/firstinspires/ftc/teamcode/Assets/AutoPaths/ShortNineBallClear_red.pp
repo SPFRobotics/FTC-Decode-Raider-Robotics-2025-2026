@@ -173,7 +173,7 @@
         "y": 95.8228782287823,
         "heading": "linear",
         "reverse": false,
-        "startDeg": 90,
+        "startDeg": 0,
         "endDeg": 0
       },
       "controlPoints": [

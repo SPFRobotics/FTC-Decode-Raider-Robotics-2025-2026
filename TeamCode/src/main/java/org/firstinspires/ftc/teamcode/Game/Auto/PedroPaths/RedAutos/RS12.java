@@ -3,34 +3,35 @@ package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.RedAutos;
 import static org.firstinspires.ftc.teamcode.Subsystems.PoseStorage.IntakeSpeed;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.bylazar.telemetry.PanelsTelemetry;
+
+import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
+import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
 import java.io.PrintWriter;
 
-@Autonomous(name = "Red Short 12", group = "BlueAutos", preselectTeleOp = "TeleOpMain")
+@Autonomous(name = "Blue Short 12", group = "BlueAutos", preselectTeleOp = "TeleOpMain")
 @Configurable
-public class BS12 extends OpMode {
+public class RS12 extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final double INTAKE_SPEED = IntakeSpeed;
@@ -156,7 +157,7 @@ public class BS12 extends OpMode {
 
     @Override
     public void loop() {
-       // ElapsedTime time = new ElapsedTime();
+        // ElapsedTime time = new ElapsedTime();
         if (intakeEnabled) {
             intake.intakeOn(true);
         }
@@ -309,8 +310,6 @@ public class BS12 extends OpMode {
 
 
 
-
-
     /* ============================================================= *
      *        Pedro Pathing Plus Visualizer — Auto-Generated         *
      *                                                               *
@@ -374,7 +373,11 @@ public class BS12 extends OpMode {
             RuntoRowTwo = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(94.144, 95.336), new Pose(100.255, 59.786))
+                            new BezierCurve(
+                                    new Pose(94.144, 95.336),
+                                    new Pose(92.037, 79.435),
+                                    new Pose(100.255, 59.786)
+                            )
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(0))
                     .build();
@@ -432,6 +435,7 @@ public class BS12 extends OpMode {
                     .build();
         }
     }
+
 
 
     public void autonomousPathUpdate() {
