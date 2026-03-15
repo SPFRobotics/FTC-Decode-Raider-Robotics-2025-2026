@@ -37,12 +37,6 @@ import java.util.List;
 
 @TeleOp(name="Tele-Op Main")
 public class TeleOpMain extends LinearOpMode {
-    @Config
-    public static class TeleOpMainConfig{
-        public static double farOffset = 20;
-        public static double shortOffset = 1.0;
-    }
-
     //Hardware Devices
     Intake intake = null;
     ElapsedTime loopTime;
