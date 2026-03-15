@@ -73,7 +73,7 @@ public class RS9Clear extends OpMode {
         colorSensor = new DualColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
-        turret = new Turret(hardwareMap, true, limelight);
+        turret = new Turret(hardwareMap, false, limelight);
         spindex = new Spindex(hardwareMap);
 
         spindex.setAutoSortActive(true);
