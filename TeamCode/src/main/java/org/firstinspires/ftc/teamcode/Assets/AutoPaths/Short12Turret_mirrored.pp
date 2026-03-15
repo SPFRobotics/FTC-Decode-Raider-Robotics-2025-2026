@@ -54,7 +54,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmocmi94-1lcjuv",
@@ -71,7 +72,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmocoh33-dhqknw",
@@ -88,7 +90,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmocow3t-ehoohp",
@@ -110,7 +113,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmocppqs-f1sg3h",
@@ -127,7 +131,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmocqdsb-yjhue6",
@@ -149,7 +154,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmocr2of-l3or5e",
@@ -171,7 +177,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmocryu1-n8h6qw",
@@ -188,7 +195,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     },
     {
       "id": "mmocs9to-xl8ejy",
@@ -210,25 +218,8 @@
       "waitBeforeMs": 0,
       "waitAfterMs": 0,
       "waitBeforeName": "",
-      "waitAfterName": ""
-    },
-    {
-      "id": "mmocuy6o-b8u4ar",
-      "name": "Leave",
-      "endPoint": {
-        "x": 84.3949335793358,
-        "y": 108.2029520295203,
-        "heading": "linear",
-        "reverse": false,
-        "startDeg": 0,
-        "endDeg": 0
-      },
-      "controlPoints": [],
-      "color": "#DC8D7A",
-      "waitBeforeMs": 0,
-      "waitAfterMs": 0,
-      "waitBeforeName": "",
-      "waitAfterName": ""
+      "waitAfterName": "",
+      "eventMarkers": []
     }
   ],
   "sequence": [
@@ -271,10 +262,6 @@
     {
       "kind": "path",
       "lineId": "mmocs9to-xl8ejy"
-    },
-    {
-      "kind": "path",
-      "lineId": "mmocuy6o-b8u4ar"
     }
   ],
   "shapes": [

@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 @Autonomous(name = "Red Short 9", group = "BlueAutos", preselectTeleOp = "TeleOpMain")
 @Configurable
-public class BS9Clear extends OpMode {
+public class RS9Clear extends OpMode {
 
     private static final double SHOOT_RPM = Outtake.OuttakeConfig.closeRPM;
     private static final double INTAKE_SPEED = IntakeSpeed;
@@ -316,7 +316,6 @@ public class BS9Clear extends OpMode {
                     .build();
         }
     }
-
 
     public void autonomousPathUpdate() {
         switch (pathState) {
