@@ -91,6 +91,7 @@ public class Spindex {
 
         offset = AngleUnit.normalizeDegrees(spindexPos.getVoltage()/MAXVOLTAGE*360.0);
         index = 0;
+        spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
     }
 
 
@@ -108,9 +109,8 @@ public class Spindex {
         error = getNormEnc(target / 360.0 * encoderTicks - currentPos);
         targetPos = (spindexMotor.getCurrentPosition() + error + 0.5);
 
-        spindexMotor.setTargetPosition((int)targetPos);
+        spindexMotor.setTargetPosition((int) targetPos);
         spindexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        spindexMotor.setVelocityPIDFCoefficients(pidf[0], pidf[1], pidf[2], pidf[3]);
         spindexMotor.setPower(1);
     }
 

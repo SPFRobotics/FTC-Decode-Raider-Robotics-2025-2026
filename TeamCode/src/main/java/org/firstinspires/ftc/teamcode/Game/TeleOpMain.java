@@ -102,18 +102,6 @@ public class TeleOpMain extends LinearOpMode {
         if (PoseStorage.turretValid) {
             turret.setInitialAngle(PoseStorage.turretStartPos);
         }
-        PrintWriter pen = null;
-        PrintWriter pen1 = null;
-        try{
-            pen = new PrintWriter("/sdcard/colorSensor1.txt", "ASCII");
-            pen1 = new PrintWriter("/sdcard/colorSensor2.txt", "ASCII");
-        }
-        catch(FileNotFoundException e){
-
-        }
-        catch (UnsupportedEncodingException e){
-
-        }
 
         //Pedro Pathing for turret
         follower = Constants.createFollower(hardwareMap);
@@ -170,7 +158,7 @@ public class TeleOpMain extends LinearOpMode {
                 speedFactor = 0.25;
             }
             else if (gamepad1.right_stick_button){
-                speedFactor = 0.1;
+                speedFactor = 0.5;
             }
             else{
                 speedFactor = 1;
@@ -182,13 +170,14 @@ public class TeleOpMain extends LinearOpMode {
             double rx = gamepad1.right_stick_x * speedFactor;*/
 
             // When following a path, let the follower control the drive; chassis would overwrite and cause shuddering
-            if (!follower.isBusy() && !holdPos.toggle(gamepad1.touchpad)) {
+            if (!holdPos.toggle(gamepad1.touchpad)) {
+                if (gamepad1.touchpadWasPressed()){
+                    follower.startTeleopDrive();
+                }
                 follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
             }
-            else{
-                if (gamepad1.touchpadWasPressed()){
-                    holdingPosition = new Pose(currentPose.getX(), currentPose.getY(), currentPose.getHeading());
-                }
+            else if (gamepad1.touchpadWasPressed()){
+                holdingPosition = new Pose(currentPose.getX(), currentPose.getY(), currentPose.getHeading());
                 follower.holdPoint(holdingPosition);
             }
 
@@ -306,25 +295,9 @@ public class TeleOpMain extends LinearOpMode {
                 gamepad2.stopRumble();
             }
 
-            if (gamepad1.circleWasPressed() && !follower.isBusy()) {
-                Path pathToTarget = new Path(new BezierLine(currentPose, parkingPose));
-                pathToTarget.setLinearHeadingInterpolation(currentPose.getHeading(),parkingPose.getHeading());
-                follower.followPath(pathToTarget);
-            }
-
-           // outtake.setPower(1);
             /********************************************************/
 
             /*************************************Turret Auto-Aim**************************************/
-            //Vector velocity = follower.getVelocity();
-
-            if (setRPM == farRPM){
-                //turret.setLimelightOffset(TeleOpMainConfig.farOffset);
-            }
-            else if (setRPM == closeRPM){
-                //turret.setLimelightOffset(TeleOpMainConfig.shortOffset);
-            }
-
             boolean turretToggleState = turretToggle.toggle(gamepad1.share);
             if (turretToggleState && (gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0)){
                 if (gamepad1.shareWasPressed()){
@@ -357,12 +330,12 @@ public class TeleOpMain extends LinearOpMode {
             multiTelemetry.addData("Outtake RPM", outtake.getRPM());
             multiTelemetry.addLine("==========================================");
 
-            multiTelemetry.addData("Loop Time", loopTime.milliseconds());
-            multiTelemetry.update();
             //turret.log(pen);*/
-            pen.write(runTime.milliseconds() + ":" + colorSensor.getDistances()[0] + "\n");
-            pen1.write(runTime.milliseconds() + ":" + colorSensor.getDistances()[1] + "\n");
+            //pen.write(runTime.milliseconds() + ":" + colorSensor.getDistances()[0] + "\n");
+            //pen1.write(runTime.milliseconds() + ":" + colorSensor.getDistances()[1] + "\n");
+            //multiTelemetry.addData("Loop Time", loopTime.milliseconds());
+            //multiTelemetry.update();
         }
-        pen.close();
+        //pen.close();
     }
 }
