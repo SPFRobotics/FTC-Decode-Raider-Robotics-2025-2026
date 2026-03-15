@@ -33,7 +33,7 @@ import org.firstinspires.ftc.teamcode.Assets.Button;
 import java.util.List;
 
 @TeleOp(name="Tele-Op Red")
-public class TeleOpRed extends LinearOpMode {
+public class TeleRed extends LinearOpMode {
     Intake intake = null;
     ElapsedTime loopTime;
     Outtake outtake = null;
