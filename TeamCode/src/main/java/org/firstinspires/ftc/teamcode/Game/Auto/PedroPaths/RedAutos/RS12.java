@@ -76,7 +76,7 @@ public class RS12 extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(110.362, 133.314, Math.toRadians(180)));
+        follower.setStartingPose(new Pose(110.362, 133.314, Math.toRadians(0)));
         paths = new Paths(follower);
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);

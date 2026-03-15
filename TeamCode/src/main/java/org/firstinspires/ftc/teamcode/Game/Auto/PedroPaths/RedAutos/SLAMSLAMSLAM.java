@@ -62,7 +62,7 @@ public class SLAMSLAMSLAM extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(88.000, 8.000, Math.toRadians(180)));
+        follower.setStartingPose(new Pose(88.000, 8.000, Math.toRadians(0)));
         paths = new Paths(follower);
         pathTimer = new ElapsedTime();
         intake = new Intake(hardwareMap);

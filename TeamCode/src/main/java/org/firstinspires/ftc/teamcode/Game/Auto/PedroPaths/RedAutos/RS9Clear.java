@@ -64,7 +64,7 @@ public class RS9Clear extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(110.600, 133.900, Math.toRadians(180)));
+        follower.setStartingPose(new Pose(110.600, 133.900, Math.toRadians(0)));
         paths = new Paths(follower);
         pathTimer = new ElapsedTime();
         intake = new Intake(hardwareMap);
