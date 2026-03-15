@@ -8,6 +8,7 @@ public class PoseStorage {
 
     public static double IntakeSpeed = .28;
     public static Pose poseEnd = new Pose();
+    public static Pose teleop = new Pose(33.000, 134.442, Math.toRadians(90));
     public static boolean blueAlliance = false;
     public static boolean redAlliance = false;
 

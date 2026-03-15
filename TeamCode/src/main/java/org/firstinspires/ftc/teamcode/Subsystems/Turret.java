@@ -342,7 +342,7 @@ public class Turret {
     }
 
     public double getCurrentAngularPosition() {
-        return turret.getCurrentPosition() / (ticks * gearRatio) * 360.0 + initialAngleOffset;
+        return wrapDeg360(turret.getCurrentPosition() / (ticks * gearRatio) * 360.0 + initialAngleOffset);
     }
 
     /**
