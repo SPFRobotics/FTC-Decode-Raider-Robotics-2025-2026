@@ -42,7 +42,7 @@ public class LedLights {
             **/
     public void cycleColors(double interval){
        double inty = 0.5;
-        if(interval>0.5) inty = interval;
+        if(interval<0.5) inty = interval;
         if (colorTimer.seconds() >= inty/495.0/2){
             colorTimer.reset();
             currentColor += precision;
