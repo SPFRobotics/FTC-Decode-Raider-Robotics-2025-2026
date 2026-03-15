@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
-@Autonomous(name = "Blue Short 9", group = "BlueAutos", preselectTeleOp = "TeleOpMain")
+@Autonomous(name = "Blue Short 9", group = "BlueAutos", preselectTeleOp = "TeleBlue")
 @Configurable
 public class BS9Clear extends OpMode {
 

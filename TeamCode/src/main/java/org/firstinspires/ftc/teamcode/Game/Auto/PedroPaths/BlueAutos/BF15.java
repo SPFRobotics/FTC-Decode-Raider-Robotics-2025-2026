@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 @Disabled
-@Autonomous(name = "Blue Far 15", group = "Autonomous", preselectTeleOp = "TeleOpMain")
+@Autonomous(name = "Blue Far 15", group = "Autonomous", preselectTeleOp = "TeleBlue")
 @Configurable
 public class BF15 extends OpMode {
 

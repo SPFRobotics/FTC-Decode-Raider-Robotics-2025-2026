@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
-@Autonomous(name = "Red Far 12", group = "BlueAutos", preselectTeleOp = "TeleOpMain")
+@Autonomous(name = "Red Far 12", group = "RedAutos", preselectTeleOp = "TeleRed")
 @Configurable
 public class SLAMSLAMSLAM extends OpMode {
 
