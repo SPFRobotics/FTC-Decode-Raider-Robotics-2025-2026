@@ -46,6 +46,7 @@ public class Turret {
     private boolean tagLostTimerRunning = false;
     private boolean shortMode = true;
     private int lastPipeline = -1;
+    private int farPipeline = 0;
     private int targetTagId = -1;
 
     DcMotorEx turret;
@@ -160,7 +161,7 @@ public class Turret {
 
     private void updatePipeline() {
         if (limelight == null) return;
-        int desired = shortMode ? 1 : 0;
+        int desired = shortMode ? 1 : farPipeline;
         if (desired != lastPipeline) {
             limelight.setPipeline(desired);
             lastPipeline = desired;
@@ -385,9 +386,11 @@ public class Turret {
         if (goalCords) {
             goalX = BlueGoalX;
             goalY = BlueGoalY;
+            farPipeline = 0;
         } else {
             goalX = RedGoalX;
             goalY = RedGoalY;
+            farPipeline = 2;
         }
     }
 
