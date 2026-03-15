@@ -109,7 +109,6 @@ public class TeleOpMain extends LinearOpMode {
         //follower.setStartingPose(pose);
         follower.setStartingPose(PoseStorage.poseEnd);
         //follower.setStartingPose(PoseStorage.teleop);
-        Pose parkingPose = new Pose(39, 33, 180);
         Pose holdingPosition = null;
 
 
