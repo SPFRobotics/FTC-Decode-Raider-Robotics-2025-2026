@@ -41,7 +41,9 @@ public class LedLights {
     @param interval One interval is the amount of time in seconds it takes to get back to the start
             **/
     public void cycleColors(double interval){
-        if (colorTimer.seconds() >= interval/495.0/2){
+       double inty = 0.5;
+        if(interval>0.5) inty = interval;
+        if (colorTimer.seconds() >= inty/495.0/2){
             colorTimer.reset();
             currentColor += precision;
             if (currentColor >= VIOLET){
