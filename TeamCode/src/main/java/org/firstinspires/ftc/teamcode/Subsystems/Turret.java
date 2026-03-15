@@ -46,6 +46,7 @@ public class Turret {
     private boolean tagLostTimerRunning = false;
     private boolean shortMode = true;
     private int lastPipeline = -1;
+    private int targetTagId = -1;
 
     DcMotorEx turret;
     Limelight limelight = null;
@@ -151,6 +152,14 @@ public class Turret {
 
     public void setShortMode(boolean isShort) {
         this.shortMode = isShort;
+    }
+
+    /**
+     * Restrict Limelight aiming to a single AprilTag ID.
+     * Pass -1 to accept both tag 20 and 24 (default behavior).
+     */
+    public void setTargetTag(int tagId) {
+        this.targetTagId = tagId;
     }
 
     private void updatePipeline() {
@@ -267,14 +276,13 @@ public class Turret {
         turret.setPower(TurretConfig.turretPower);
     }
 
-    private static boolean hasShootingTag(LLResult result) {
+    private boolean hasShootingTag(LLResult result) {
         return getShootingTagTx(result) != null;
     }
 
+    private int lastTrackedTagId = -1;
 
-    private static int lastTrackedTagId = -1;
-
-    private static Double getShootingTagTx(LLResult result) {
+    private Double getShootingTagTx(LLResult result) {
         List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
         if (fiducialResults == null || fiducialResults.isEmpty()) {
             lastTrackedTagId = -1;
@@ -283,7 +291,7 @@ public class Turret {
 
         for (LLResultTypes.FiducialResult fr : fiducialResults) {
             int id = fr.getFiducialId();
-            if (id == 20 || id == 24) {
+            if (targetTagId == -1 ? (id == 20 || id == 24) : (id == targetTagId)) {
                 lastTrackedTagId = id;
                 return fr.getTargetXDegrees();
             }
