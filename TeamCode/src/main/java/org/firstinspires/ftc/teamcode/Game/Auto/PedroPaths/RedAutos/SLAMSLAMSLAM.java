@@ -144,7 +144,7 @@ public class SLAMSLAMSLAM extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
-        turret.lockToAngle(297);
+        turret.lockToAngle(360-297);
         autonomousPathUpdate();
         updateSpindexPosition();
     }

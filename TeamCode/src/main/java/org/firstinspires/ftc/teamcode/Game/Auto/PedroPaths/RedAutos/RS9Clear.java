@@ -147,7 +147,7 @@ public class RS9Clear extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
-        turret.lockToAngle(Turret.TurretConfig.turretShortLockLine);
+        turret.lockToAngle(360-Turret.TurretConfig.turretShortLockLine);
         autonomousPathUpdate();
         updateSpindexPosition();
     }

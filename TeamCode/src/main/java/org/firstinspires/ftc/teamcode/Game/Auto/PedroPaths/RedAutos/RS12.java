@@ -167,8 +167,8 @@ public class RS12 extends OpMode {
         follower.update();
         leds.cycleColors(10);
         turret.lockToAngle(pathState >= 8 ?
-                Turret.TurretConfig.turretSHortLockTri :
-                Turret.TurretConfig.turretShortLockLine);
+                360-Turret.TurretConfig.turretSHortLockTri :
+                360-Turret.TurretConfig.turretShortLockLine);
         autonomousPathUpdate();
         updateSpindexPosition();
 /*
