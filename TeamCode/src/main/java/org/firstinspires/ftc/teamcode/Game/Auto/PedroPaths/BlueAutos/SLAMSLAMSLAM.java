@@ -260,7 +260,7 @@ public class SLAMSLAMSLAM extends OpMode {
             SlamParking = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(26.760, 17.000), new Pose(16.328, 17.000))
+                            new BezierLine(new Pose(26.760, 17.000), new Pose(9.872784150156415, 17.000))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
@@ -268,7 +268,7 @@ public class SLAMSLAMSLAM extends OpMode {
             Reverse = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(16.328, 17.000), new Pose(36.399, 17.000))
+                            new BezierLine(new Pose(9.872784150156415, 17.000), new Pose(36.399, 17.000))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
@@ -276,17 +276,17 @@ public class SLAMSLAMSLAM extends OpMode {
             ReSlam = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(36.399, 17.000), new Pose(14.967, 17.000))
+                            new BezierLine(new Pose(36.399, 17.000), new Pose(9.872784150156415, 17.000))
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(210))
                     .build();
 
             ShootParking = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(14.967, 17.000), new Pose(56.070, 17.000))
+                            new BezierLine(new Pose(9.872784150156415, 17.000), new Pose(56.070, 17.000))
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(210),Math.toRadians(180))
                     .build();
 
             Leave = follower

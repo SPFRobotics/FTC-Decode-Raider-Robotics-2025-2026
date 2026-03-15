@@ -408,7 +408,7 @@ public class RS12 extends OpMode {
                             new BezierCurve(
                                     new Pose(95.749, 95.336),
                                     new Pose(92.937, 58.262),
-                                    new Pose(100.255, 35.941)
+                                    new Pose(97.255, 35.941)
                             )
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(0))
@@ -417,7 +417,7 @@ public class RS12 extends OpMode {
             intakeRowThree = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(100.255, 35.941), new Pose(122.380, 35.941))
+                            new BezierLine(new Pose(97.255, 35.941), new Pose(122.380, 35.941))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(0))
                     .build();

@@ -86,7 +86,7 @@ public class SLAMSLAMSLAM extends OpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
-        turret.setInitialAngle(270);
+        turret.setInitialAngle(90);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class SLAMSLAMSLAM extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
-        turret.lockToAngle(360-297);
+        turret.lockToAngle(69);
         autonomousPathUpdate();
         updateSpindexPosition();
     }
@@ -240,6 +240,7 @@ public class SLAMSLAMSLAM extends OpMode {
 
             ShootSpikeOne = follower
                     .pathBuilder()
+                    .setGlobalDeceleration()
                     .addPath(
                             new BezierLine(new Pose(119.209, 35.674), new Pose(87.930, 8.651))
                     )
@@ -273,17 +274,17 @@ public class SLAMSLAMSLAM extends OpMode {
             ReSlam = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(107.601, 11.000), new Pose(129.033, 11.000))
+                            new BezierLine(new Pose(107.601, 11.000), new Pose(144-9.872784150156415, 11.000))
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(0),Math.toRadians(330))
                     .build();
 
             ShootParking = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(129.033, 11.000), new Pose(87.930, 11.000))
+                            new BezierLine(new Pose(144-9.872784150156415, 11.000), new Pose(87.930, 11.000))
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(330),Math.toRadians(0))
                     .build();
 
             Leave = follower
@@ -460,7 +461,7 @@ public class SLAMSLAMSLAM extends OpMode {
                     setPathState(15);
                 }
                 break;
-
+/*
             // ---- Slam Cycle 3 ----
             case 15: // RunToSlam done, start SlamParking intake
                 if (!follower.isBusy()) {
@@ -515,6 +516,8 @@ public class SLAMSLAMSLAM extends OpMode {
                     setPathState(20);
                 }
                 break;
+
+ */
 
             case 20: // Leave for points
                 if (!follower.isBusy()) {

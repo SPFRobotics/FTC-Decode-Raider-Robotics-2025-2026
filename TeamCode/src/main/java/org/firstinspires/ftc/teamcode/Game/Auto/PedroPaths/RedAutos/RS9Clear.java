@@ -147,7 +147,7 @@ public class RS9Clear extends OpMode {
         }
         follower.update();
         leds.cycleColors(10);
-        turret.lockToAngle(360-Turret.TurretConfig.turretShortLockLine);
+        turret.lockToAngle(40);
         autonomousPathUpdate();
         updateSpindexPosition();
     }
@@ -366,7 +366,7 @@ public class RS9Clear extends OpMode {
                 break;
 
             case 5: // Settle after ramp clear, then drive to shoot
-                if (pathTimer.milliseconds() > 500) {
+                if (pathTimer.milliseconds() > 1000) {
                     intakeEnabled = true;
                     follower.followPath(paths.RunToShootSpikeTwo, true);
                     setPathState(6);
