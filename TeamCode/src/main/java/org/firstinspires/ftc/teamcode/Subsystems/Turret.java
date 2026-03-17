@@ -74,7 +74,7 @@ public class Turret {
 
         public static int correctionThresholdTicks = 20;
         public static double limelightAngularOffset = 0.0;
-        public static double wrapGracePeriodMs = 1500;
+        public static double wrapGracePeriodMs = .2;
     }
 
     public Turret(HardwareMap hardwareMap, boolean goalCords) {
