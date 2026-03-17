@@ -13,8 +13,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
-import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Assets.Button;
 
 @Disabled
 public class Test extends LinearOpMode {
@@ -59,23 +58,19 @@ public class Test extends LinearOpMode {
 
         // Initialize subsystems
         Intake intake = new Intake(hardwareMap);
-        Outtake outtake = new Outtake(hardwareMap, true);
+        Outtake outtake = new Outtake(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         ColorFetch colorSensor = new ColorFetch(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
 
-        //Set auto load and launch to true as default
+        //Set autoload and launch to true as default
         autoLoad.changeState(true);
 
         //Initialize Telemetry
         waitForStart();
         telemetry.setMsTransmissionInterval(16);
-        if (opModeIsActive()){
-            updateSpindex.start();
-        }
 
         ElapsedTime loopTime = new ElapsedTime();
         while (opModeIsActive()) {
@@ -171,18 +166,16 @@ public class Test extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.addData("Loop Time", loopTime.milliseconds());
             telemetry.addData("Kickstand Position", kickstand.getVoltage());
-            telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
             //telemetry.addData("Hue", colorSensor.getHSVArray()[0] + " " + colorSensor.getHSVArray()[1] + " " + colorSensor.getHSVArray()[2]);
             telemetry.addData("Spindex Index", spindex.getIndex());
             telemetry.addData("Automated Loading", spindex.isAutoLoading());
             telemetry.addData("Autmated Launch", spindex.isAutoLaunching());
             telemetry.addData("Distance", colorSensor.getDistance());
-            telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+            //telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
             telemetry.addData("Outtaking?", spindex.isOuttakeing());
             telemetry.addLine("==========================================");
             telemetry.update();
         }
         //Tells spindex thread to end execution
-        spindex.exitProgram();
     }
 }

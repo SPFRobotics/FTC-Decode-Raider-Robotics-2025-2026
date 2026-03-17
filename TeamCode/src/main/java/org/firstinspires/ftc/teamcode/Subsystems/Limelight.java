@@ -21,10 +21,8 @@ public class Limelight {
         limelight.pipelineSwitch(0);
         limelight.start();
     }
-
     //Starts Limelight
 
-    
     public void start() {
         limelight.start();
     }
@@ -140,14 +138,9 @@ public class Limelight {
         return result != null && result.isValid();
     }
 
-    // Swithc Limelight Pipeline
-    public void setPipeline(int pipeline) throws Exception {
-
-        if (pipeline > 0 && pipeline < 9) {
+    public void setPipeline(int pipeline) {
+        if (pipeline >= 0 && pipeline <= 9) {
             limelight.pipelineSwitch(pipeline);
-        }
-        else{
-            throw new Exception("Invalid pipeline number, must be within 0-9");
         }
     }
 }

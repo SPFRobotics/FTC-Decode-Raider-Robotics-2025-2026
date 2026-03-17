@@ -16,15 +16,15 @@ public class LedLights {
 
 
     /*Constants*/
-    public final double RED = 0.279;
-    public final double ORANGE = 0.333;
-    public final double YELLOW = 0.388;
-    public final double SAGE = 0.444;
-    public final double GREEN = 0.500;
-    public final double AZURE = 0.555;
-    public final double BLUE = 0.611;
-    public final double INDIGO = 0.666;
-    public final double VIOLET = 0.722;
+    public static final double RED = 0.279;
+    public static final double ORANGE = 0.333;
+    public static final double YELLOW = 0.388;
+    public static final double SAGE = 0.444;
+    public static final double GREEN = 0.500;
+    public static final double AZURE = 0.555;
+    public static final double BLUE = 0.611;
+    public static final double INDIGO = 0.666;
+    public static final double VIOLET = 0.722;
 
     private void setLeds(double pwm){
         leftLed.setPosition(pwm);
@@ -37,9 +37,13 @@ public class LedLights {
         rightLed = hardwareMap.get(Servo.class, "rightLed");
     }
 
-    //One interval is the amount of time in seconds it takes to get back to the value of
-    public void cycleColors(int interval){
-        if (colorTimer.seconds() >= interval/495.0/2){
+    /**
+    @param interval One interval is the amount of time in seconds it takes to get back to the start
+            **/
+    public void cycleColors(double interval){
+       double inty = 0.5;
+        if(interval<0.5) inty = interval;
+        if (colorTimer.seconds() >= inty/495.0/2){
             colorTimer.reset();
             currentColor += precision;
             if (currentColor >= VIOLET){

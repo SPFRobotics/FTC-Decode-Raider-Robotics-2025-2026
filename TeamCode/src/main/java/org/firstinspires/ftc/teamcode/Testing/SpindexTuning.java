@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.Testing.SpindexTuning.SpindexTuning
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,12 +16,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
-
 //@TeleOp(name = "Spindex PID Tuning", group = "Testing")
 public class SpindexTuning extends OpMode {
 
-
-    @Config
     public static class SpindexTuningConfig {
         public static double kP = 20;
         public static double kI = 0.04;
@@ -35,7 +33,7 @@ public class SpindexTuning extends OpMode {
 
     @Override
     public void init() {
-        spindexMotor = hardwareMap.get(DcMotorEx.class, "spindex");
+        spindexMotor = hardwareMap.get(DcMotorEx.class, "outtake");
         spindexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         spindexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

@@ -4,8 +4,8 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.cl
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -14,7 +14,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Resources.Button;
+import org.firstinspires.ftc.teamcode.Assets.Button;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
@@ -22,9 +22,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Subsystems.UpdateSpindex;
 
-
+@Disabled
 //@TeleOp(name = "Field Centric TeleOp")
 public class FieldCentricDrive extends LinearOpMode {
     // Speed multiplier for motors
@@ -80,11 +79,10 @@ public class FieldCentricDrive extends LinearOpMode {
 
         // Initialize subsystems
         Intake intake = new Intake(hardwareMap);
-        Outtake outtake = new Outtake(hardwareMap, true);
+        Outtake outtake = new Outtake(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         ColorFetch colorSensor = new ColorFetch(hardwareMap);
         Spindex spindex = new Spindex(hardwareMap);
-        UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
 
@@ -102,10 +100,6 @@ public class FieldCentricDrive extends LinearOpMode {
         waitForStart();
 
         leds.setColor(leds.RED, false);
-
-        if (opModeIsActive()) {
-            updateSpindex.start();
-        }
 
         if (isStopRequested()) return;
 
@@ -225,15 +219,13 @@ public class FieldCentricDrive extends LinearOpMode {
             // Telemetry
             telemetry.addLine("==========================================");
             telemetry.addData("Loop Time", loopTime.milliseconds());
-            telemetry.addData("Spindex Updater Loop Time", spindex.getThreadLoopTime());
             telemetry.addLine("------------------------------------------");
             telemetry.addData("Bot Heading (deg)", Math.toDegrees(botHeading));
             telemetry.addData("Speed Factor", speedFactor);
             telemetry.addLine("------------------------------------------");
             telemetry.addData("Spindex Index", spindex.getIndex());
-            telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
+            //telemetry.addData("Slot Status", spindex.getSlotStatus()[0] + " " + spindex.getSlotStatus()[1] + " " + spindex.getSlotStatus()[2]);
             telemetry.addData("Color", colorSensor.getHue());
-            telemetry.addData("At Target?", spindex.atTarget());
             telemetry.addData("Spindex Power", spindex.getPower());
             telemetry.addData("Automated Loading", spindex.isAutoLoading());
             telemetry.addData("Outtaking?", spindex.isOuttakeing());
@@ -249,6 +241,5 @@ public class FieldCentricDrive extends LinearOpMode {
         }
 
         // Tell spindex thread to end execution
-        spindex.exitProgram();
     }
 }

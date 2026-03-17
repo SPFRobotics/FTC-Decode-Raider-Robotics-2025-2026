@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
         //(name="Throughput Testing")
 
 public class TroughputTesting extends LinearOpMode {
-    @com.acmerobotics.dashboard.config.Config
     public static class Config{
         public static double power = 1;
     }

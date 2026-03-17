@@ -10,14 +10,14 @@ import static org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex.KickerConf
 public class KickerSpindex {
     @Config
     public static class KickerConfig{
-        public static double down = 0.15;
-        public static double up = 0.37;
+        public static double down = 0.30;
+        public static double up = 0.45;
         public static double offset = 0.4;
-        public static double kickerTimer = 250;
+        public static double kickerTimer = 100;
     }
     private Servo leftKicker = null;
     private Servo rightKicker = null;
-    private boolean state = false;
+    private int state;
     //True if the automate method has completed its run
     private boolean done = true;
     private ElapsedTime kickerClock = new ElapsedTime();
@@ -31,13 +31,13 @@ public class KickerSpindex {
     }
 
     public void up(){
-        state = true;
+        state = 1;
         leftKicker.setPosition(up);
         rightKicker.setPosition(up+offset);
     }
 
     public void down(){
-        state = false;
+        state = 0;
         leftKicker.setPosition(down);
         rightKicker.setPosition(down+offset);
     }
@@ -57,12 +57,15 @@ public class KickerSpindex {
     }
 
     public void zero(){
-        state = false;
+        state = 0;
         leftKicker.setPosition(0);
         rightKicker.setPosition(0);
     }
 
-    public boolean getState(){
+
+
+
+    public int getState(){
         return state;
     }
 }
