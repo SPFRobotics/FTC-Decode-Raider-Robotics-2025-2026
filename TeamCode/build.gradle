@@ -72,7 +72,7 @@ dependencies {
     implementation("com.bylazar.sloth:fullpanels:0.2.4+1.0.12")
 
     // Core Dependencies
-    implementation 'com.pedropathing:ftc:2.0.6'
+    implementation 'com.pedropathing:ftc:2.1.0'
     implementation 'org.solverslib:core:0.3.3' // Will be replaced with PedproPathingPlus-specific version in future
     implementation 'org.solverslib:pedroPathing:0.3.3'
     implementation 'com.github.Mallen220:PedroPathingPlus:1.1.1'
