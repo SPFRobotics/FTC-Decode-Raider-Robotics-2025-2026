@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import java.util.List;
 
+/**
+ *  * @author Om Ramanathan - 17670 Raider Robotics
+ */
 public class Limelight {
     public Limelight3A limelight;
 
@@ -92,9 +95,9 @@ public class Limelight {
         }
 
         // Get the robot's pose from the Limelight
-        Pose3D botpose = result.getBotpose();
 
-        return botpose;
+
+        return result.getBotpose();
     }
 
     //Gets Shooting April Tag ID
