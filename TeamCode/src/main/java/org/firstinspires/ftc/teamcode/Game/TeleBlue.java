@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
@@ -34,7 +34,7 @@ import java.util.List;
 
 @TeleOp(name="Tele-Op Blue")
 public class TeleBlue extends LinearOpMode {
-    Intake intake = null;
+    NextIntake intake = NextIntake.INSTANCE;
     ElapsedTime loopTime;
     Outtake outtake = null;
     KickerSpindex kicker = null;
@@ -71,7 +71,7 @@ public class TeleBlue extends LinearOpMode {
     int kickerCount = 1;
 
     public void runOpMode(){
-        intake = new Intake(hardwareMap);
+        intake.initialize();
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
@@ -149,14 +149,14 @@ public class TeleBlue extends LinearOpMode {
             /*****************************Intake System************************************/
             boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper && !spindex.isOuttakeing());
             if (intakeActive && !gamepad1.left_bumper) {
-                intake.intakeOn(true);
+                intake.turnOn();
             } else if (gamepad1.left_bumper) {
                 intake.setPower(-1);
             } else {
-                intake.setPower(0);
-
+                intake.turnOff();
             }
-            if (intake.getPower() > 0){
+            intake.periodic();
+            if (intake.getMotorPower() > 0){
                 gamepad2.rumble(100);
             }
             /******************************************************************************/

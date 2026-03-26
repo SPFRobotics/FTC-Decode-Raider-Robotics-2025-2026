@@ -19,7 +19,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
@@ -44,7 +44,7 @@ public class BS12 extends OpMode {
 
     private Spindex spindex;
     private Outtake outtake;
-    private Intake intake;
+    private NextIntake intake;
     private KickerSpindex kicker;
     private DualColorFetch colorSensor;
     private LedLights leds = null;
@@ -78,7 +78,8 @@ public class BS12 extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(180)));
         paths = new Paths(follower);
-        intake = new Intake(hardwareMap);
+        intake = NextIntake.INSTANCE;
+        intake.initialize();
         kicker = new KickerSpindex(hardwareMap);
         outtake = new Outtake(hardwareMap, kicker);
         colorSensor = new DualColorFetch(hardwareMap);
@@ -159,11 +160,12 @@ public class BS12 extends OpMode {
     public void loop() {
        // ElapsedTime time = new ElapsedTime();
         if (intakeEnabled) {
-            intake.intakeOn(true);
+            intake.turnOn();
         }
         else {
-            intake.intakeOff();
+            intake.turnOff();
         }
+        intake.periodic();
         follower.update();
         leds.cycleColors(10);
         turret.lockToAngle(pathState >= 8 ?
