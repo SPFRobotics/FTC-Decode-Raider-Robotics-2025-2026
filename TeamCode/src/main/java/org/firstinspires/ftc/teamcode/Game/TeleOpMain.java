@@ -35,7 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-@Disabled
+
 @TeleOp(name="Tele-Op Main")
 public class TeleOpMain extends LinearOpMode {
     //Hardware Devices
@@ -149,15 +149,7 @@ public class TeleOpMain extends LinearOpMode {
             /*************************************Drive Train Control**************************************/
             //Using Pedro Pathing for Tele-Op drive
             //Allows speed to be halved
-            if (gamepad1.left_stick_button){
-                speedFactor = 0.25;
-            }
-            else if (gamepad1.right_stick_button){
-                speedFactor = 0.5;
-            }
-            else{
-                speedFactor = 1;
-            }
+            speedFactor = 0.50;
 
 
             /*double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
@@ -293,13 +285,13 @@ public class TeleOpMain extends LinearOpMode {
             /********************************************************/
 
             /*************************************Turret Auto-Aim**************************************/
-            boolean turretToggleState = turretToggle.toggle(gamepad1.share);
+            boolean turretToggleState = true;
             if (turretToggleState && (gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0)){
                 if (gamepad1.shareWasPressed()){
                     turret.unlockTurret();
                     turret.noEncoder();
                 }
-                turret.setPower((gamepad1.left_trigger - gamepad1.right_trigger)*0.25);
+                turret.setPower((gamepad1.left_trigger - gamepad1.right_trigger)*0.50);
             }
             else if (turretToggleState){
                 turret.unlockTurret();

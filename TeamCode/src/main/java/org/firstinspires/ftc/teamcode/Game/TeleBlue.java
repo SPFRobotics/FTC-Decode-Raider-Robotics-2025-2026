@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.Assets.Button;
 
 import java.util.List;
 
-@TeleOp(name="Tele-Op Blue")
+//@TeleOp(name="Tele-Op Blue")
 public class TeleBlue extends LinearOpMode {
     Intake intake = null;
     ElapsedTime loopTime;

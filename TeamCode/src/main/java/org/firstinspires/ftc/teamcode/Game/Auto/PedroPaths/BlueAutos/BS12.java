@@ -29,7 +29,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 
 import java.io.PrintWriter;
 
-@Autonomous(name = "Blue Short 12", group = "BlueAutos", preselectTeleOp = "Tele-Op Blue")
+//@Autonomous(name = "Blue Short 12", group = "BlueAutos", preselectTeleOp = "Tele-Op Blue")
 @Configurable
 public class BS12 extends OpMode {
 
