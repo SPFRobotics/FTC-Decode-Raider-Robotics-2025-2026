@@ -20,7 +20,7 @@ public class Constants {
             .mass(13.19)
            .headingPIDFCoefficients(new PIDFCoefficients(3,0,0.125,0.023))
             .centripetalScaling(0)
-            //.predictiveBrakingCoefficients(new PredictiveBrakingCoefficients(0.1, 0,0))
+            .predictiveBrakingCoefficients(new PredictiveBrakingCoefficients(0.1, 0.11601124486528748,0.0012563885859059787))
             //.drivePIDFCoefficients(new FilteredPIDFCoefficients(0.2, 0,0.005,0.6,0.02))
             //.forwardZeroPowerAcceleration(-32.8164343787902)
             //.lateralZeroPowerAcceleration(-65.98248001097105)
@@ -46,8 +46,8 @@ public class Constants {
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(1.875)
-            .strafePodX(-7.375)
+            .forwardPodY(1.7922339251660944)
+            .strafePodX(-6.577269546628941)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
