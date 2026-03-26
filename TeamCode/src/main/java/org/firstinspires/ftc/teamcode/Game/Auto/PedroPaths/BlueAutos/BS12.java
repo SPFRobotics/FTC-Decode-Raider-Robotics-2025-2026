@@ -331,7 +331,6 @@ public class BS12 extends OpMode {
         public Paths(Follower follower) {
             shootBallOne = follower
                     .pathBuilder()
-                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
                                     new Pose(33.638, 133.314),
@@ -360,7 +359,6 @@ public class BS12 extends OpMode {
 
             shootRowOne = follower
                     .pathBuilder()
-                    .setGlobalDeceleration()
                     .addPath(
                             new BezierLine(new Pose(21.620, 83.192), new Pose(49.856, 95.336))
                     )
@@ -369,7 +367,6 @@ public class BS12 extends OpMode {
 
             RuntoRowTwo = follower
                     .pathBuilder()
-                    .setGlobalDeceleration()
                     .addPath(
                             new BezierLine(
                                     new Pose(49.856, 95.336),
@@ -389,7 +386,6 @@ public class BS12 extends OpMode {
 
             shootRowTwo = follower
                     .pathBuilder()
-                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
                                     new Pose(21.620, 59.786),
@@ -402,7 +398,6 @@ public class BS12 extends OpMode {
 
             RuntoRowThree = follower
                     .pathBuilder()
-                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
                                     new Pose(48.251, 95.336),
@@ -423,7 +418,6 @@ public class BS12 extends OpMode {
 
             shootRowThree = follower
                     .pathBuilder()
-                    .setGlobalDeceleration()
                     .addPath(
                             new BezierCurve(
                                     new Pose(21.620, 35.941),
