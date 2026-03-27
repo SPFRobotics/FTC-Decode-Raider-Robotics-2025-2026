@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.closeRPM;
-import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.closeRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
 import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
@@ -36,7 +36,7 @@ import java.util.List;
 public class TeleBlue extends LinearOpMode {
     NextIntake intake = NextIntake.INSTANCE;
     ElapsedTime loopTime;
-    Outtake outtake = null;
+    NextOuttake outtake = NextOuttake.INSTANCE;
     KickerSpindex kicker = null;
     Chassis chassis = null;
     Turret turret = null;
@@ -89,7 +89,8 @@ public class TeleBlue extends LinearOpMode {
         Pose holdingPosition = null;
 
         follower.startTeleopDrive();
-        outtake = new Outtake(hardwareMap, kicker);
+        outtake.setKicker(kicker);
+        outtake.initialize();
 
         autoLoad.changeState(true);
 
@@ -231,6 +232,7 @@ public class TeleBlue extends LinearOpMode {
                 setRPM = 0;
             }
             outtake.setRPM(setRPM);
+            outtake.periodic();
 
             double rumbleRange = Math.abs(setRPM - outtake.getRPM());
             if (setRPM == closeRPM && rumbleRange <= 100) {
