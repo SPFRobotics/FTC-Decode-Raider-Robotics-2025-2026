@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
 import java.util.ArrayList;
 
 public class ColorSensorTest extends OpMode {
     DualColorFetch colorSensor = null;
-    Spindex spindex = null;
+    NextSpindex spindex = null;
     FtcDashboard dash = FtcDashboard.getInstance();
     Telemetry dashTelemetry = dash.getTelemetry();
 
@@ -19,12 +19,13 @@ public class ColorSensorTest extends OpMode {
 
     public void init(){
         DualColorFetch colorFetch = new DualColorFetch(hardwareMap);
-        spindex = new Spindex(hardwareMap);
+        spindex = NextSpindex.INSTANCE;
+        spindex.initialize();
     }
 
     public void loop(){
         spindex.autoLoad(colorSensor);
-        spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
+        spindex.moveToPos(NextSpindex.outtakePos[spindex.getIndex()]);
 
         if (spindex.getSlotColors()[0] != 'G' && spindex.getSlotColors()[1] != 'P' && spindex.getSlotColors()[2] != 'P'){
             runs++;

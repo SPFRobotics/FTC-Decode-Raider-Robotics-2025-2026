@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
-import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.closeRPM;
-import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.closeRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -16,12 +16,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Assets.Button;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
 
 @Disabled
 //@TeleOp(name = "Field Centric TeleOp")
@@ -78,11 +78,14 @@ public class FieldCentricDrive extends LinearOpMode {
         imu.initialize(parameters);
 
         // Initialize subsystems
-        Intake intake = new Intake(hardwareMap);
-        Outtake outtake = new Outtake(hardwareMap);
+        NextIntake intake = NextIntake.INSTANCE;
+        intake.initialize();
+        NextOuttake outtake = NextOuttake.INSTANCE;
+        outtake.initialize();
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         ColorFetch colorSensor = new ColorFetch(hardwareMap);
-        Spindex spindex = new Spindex(hardwareMap);
+        NextSpindex spindex = NextSpindex.INSTANCE;
+        spindex.initialize();
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
 
@@ -155,7 +158,7 @@ public class FieldCentricDrive extends LinearOpMode {
             } else if (gamepad1.left_bumper) {
                 intake.setPower(-1);
             } else {
-                intake.setPower(0);
+                intake.turnOff();
             }
             /******************************************************************************/
 

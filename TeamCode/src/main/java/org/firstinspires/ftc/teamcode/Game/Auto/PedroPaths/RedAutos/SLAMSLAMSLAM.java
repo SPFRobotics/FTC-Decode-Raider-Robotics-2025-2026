@@ -15,20 +15,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
-import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 @Autonomous(name = "Red Far 12", group = "RedAutos", preselectTeleOp = "Tele-Op Red")
 @Configurable
 public class SLAMSLAMSLAM extends OpMode {
 
-    private static final double SHOOT_RPM = Outtake.OuttakeConfig.farRPM;
+    private static final double SHOOT_RPM = NextOuttake.farRPM;
     private static final double INTAKE_SPEED = .7;
 
     private TelemetryManager panelsTelemetry;
@@ -37,9 +37,9 @@ public class SLAMSLAMSLAM extends OpMode {
     private Paths paths;
     private int pathState;
 
-    private Spindex spindex;
-    private Outtake outtake;
-    private Intake intake;
+    private NextSpindex spindex = NextSpindex.INSTANCE;
+    private NextOuttake outtake = NextOuttake.INSTANCE;
+    private NextIntake intake = NextIntake.INSTANCE;
     private KickerSpindex kicker;
     private DualColorFetch colorSensor;
     private LedLights leds = null;
@@ -65,14 +65,15 @@ public class SLAMSLAMSLAM extends OpMode {
         follower.setStartingPose(new Pose(88.000, 8.000, Math.toRadians(0)));
         paths = new Paths(follower);
         pathTimer = new ElapsedTime();
-        intake = new Intake(hardwareMap);
+        intake.initialize();
         kicker = new KickerSpindex(hardwareMap);
-        outtake = new Outtake(hardwareMap, kicker);
+        outtake.setKicker(kicker);
+        outtake.initialize();
         colorSensor = new DualColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
         turret = new Turret(hardwareMap, false, limelight);
-        spindex = new Spindex(hardwareMap);
+        spindex.initialize();
 
         spindex.setAutoSortActive(true);
         turret.setAlignmentEnabled(true);
@@ -138,10 +139,13 @@ public class SLAMSLAMSLAM extends OpMode {
     @Override
     public void loop() {
         if (intakeEnabled) {
-            intake.intakeOn(true);
+            intake.turnOn();
         } else {
-            intake.intakeOff();
+            intake.turnOff();
         }
+        intake.periodic();
+        outtake.periodic();
+        spindex.periodic();
         follower.update();
         leds.cycleColors(10);
         turret.lockToAngle(69);
@@ -151,9 +155,9 @@ public class SLAMSLAMSLAM extends OpMode {
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
+            spindex.moveToPos(NextSpindex.outtakePos[spindex.getIndex()]);
         } else {
-            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
+            spindex.moveToPos(NextSpindex.intakePos[spindex.getIndex()]);
         }
     }
 

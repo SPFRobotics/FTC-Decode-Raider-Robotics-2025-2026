@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -24,7 +24,8 @@ public class OuttakeTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
-        Outtake outtake = new Outtake(hardwareMap);
+        NextOuttake outtake = NextOuttake.INSTANCE;
+        outtake.initialize();
         FtcDashboard dash = FtcDashboard.getInstance();
         Telemetry telemetry = dash.getTelemetry();
         telemetry.setMsTransmissionInterval(16);
@@ -40,11 +41,12 @@ public class OuttakeTesting extends LinearOpMode {
             else if (gamepad1.ps){
                 outtake.setRPM(0);
             }
+            outtake.periodic();
             pen.write((int)runtime.milliseconds() + ":" + (int)outtake.getRPM() + "\n");
             telemetryM.addData("RPM", outtake.getRPM());
             telemetryM.debug("RPM", outtake.getRPM());
             telemetry.addData("RPM", outtake.getRPM());
-            telemetry.addData("Outtake Vel:", outtake.outtakeMotor.getVelocity());
+            telemetry.addData("Outtake RPM:", outtake.getRPM());
             telemetryM.update();
             telemetry.update();
         }

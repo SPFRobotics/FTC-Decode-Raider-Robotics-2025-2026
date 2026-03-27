@@ -1,24 +1,24 @@
 package org.firstinspires.ftc.teamcode.Testing;
-import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.closeRPM;
-import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.closeRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.farRPM;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
 import org.firstinspires.ftc.teamcode.Assets.Button;
 
 @Disabled
 public class Test extends LinearOpMode {
-    private Intake intake = null;
-    private Outtake outtake = null;
+    private NextIntake intake = null;
+    private NextOuttake outtake = null;
     private KickerSpindex kicker = null;
 
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motors
@@ -57,11 +57,14 @@ public class Test extends LinearOpMode {
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Initialize subsystems
-        Intake intake = new Intake(hardwareMap);
-        Outtake outtake = new Outtake(hardwareMap);
+        NextIntake intake = NextIntake.INSTANCE;
+        intake.initialize();
+        NextOuttake outtake = NextOuttake.INSTANCE;
+        outtake.initialize();
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         ColorFetch colorSensor = new ColorFetch(hardwareMap);
-        Spindex spindex = new Spindex(hardwareMap);
+        NextSpindex spindex = NextSpindex.INSTANCE;
+        spindex.initialize();
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
 
@@ -106,7 +109,7 @@ public class Test extends LinearOpMode {
                 intake.setPower(-1);
             }
             else {
-                intake.setPower(0);
+                intake.turnOff();
             }
 
             /******************************************************************************/
@@ -133,10 +136,10 @@ public class Test extends LinearOpMode {
             spindex.autoLoad(colorSensor);
 
             /*if (spindex.getMode()){
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()], true);
+                spindex.moveToPos(NextSpindex.outtakePos[spindex.getIndex()], true);
             }
             else{
-                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()], true);
+                spindex.moveToPos(NextSpindex.intakePos[spindex.getIndex()], true);
             }*/
 
             //Controls gamepad rumble

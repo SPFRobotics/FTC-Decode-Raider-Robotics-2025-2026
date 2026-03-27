@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Game;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.closeRPM;
-import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.farRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.closeRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -20,12 +20,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
-import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 import org.firstinspires.ftc.teamcode.Assets.Button;
@@ -34,14 +34,14 @@ import java.util.List;
 
 @TeleOp(name="Tele-Op Red")
 public class TeleRed extends LinearOpMode {
-    Intake intake = null;
+    NextIntake intake = NextIntake.INSTANCE;
     ElapsedTime loopTime;
-    Outtake outtake = null;
+    NextOuttake outtake = NextOuttake.INSTANCE;
     KickerSpindex kicker = null;
     Chassis chassis = null;
     Turret turret = null;
     DualColorFetch colorSensor = null;
-    Spindex spindex = null;
+    NextSpindex spindex = NextSpindex.INSTANCE;
     LedLights leds = null;
     List<LynxModule> allHubs = null;
 
@@ -71,11 +71,11 @@ public class TeleRed extends LinearOpMode {
     int kickerCount = 1;
 
     public void runOpMode(){
-        intake = new Intake(hardwareMap);
+        intake.initialize();
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
-        spindex = new Spindex(hardwareMap);
+        spindex.initialize();
         chassis = new Chassis(hardwareMap);
         leds = new LedLights(hardwareMap);
         turret = new Turret(hardwareMap, false, limelight);
@@ -89,7 +89,8 @@ public class TeleRed extends LinearOpMode {
         Pose holdingPosition = null;
 
         follower.startTeleopDrive();
-        outtake = new Outtake(hardwareMap, kicker);
+        outtake.setKicker(kicker);
+        outtake.initialize();
 
         autoLoad.changeState(true);
 
@@ -149,14 +150,14 @@ public class TeleRed extends LinearOpMode {
             /*****************************Intake System************************************/
             boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper && !spindex.isOuttakeing());
             if (intakeActive && !gamepad1.left_bumper) {
-                intake.intakeOn(true);
+                intake.turnOn();
             } else if (gamepad1.left_bumper) {
                 intake.setPower(-1);
             } else {
-                intake.setPower(0);
-
+                intake.turnOff();
             }
-            if (intake.getPower() > 0){
+            intake.periodic();
+            if (intake.getMotorPower() > 0){
                 gamepad2.rumble(100);
             }
             /******************************************************************************/
@@ -192,7 +193,7 @@ public class TeleRed extends LinearOpMode {
 
             if (spindex.isOuttakeing()) {
                 char[] slotColors = spindex.getSlotColors();
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
+                spindex.moveToPos(NextSpindex.outtakePos[spindex.getIndex()]);
 
                 if (slotColors[spindex.getIndex()] == 'E' || missing){
                     leds.setColor(LedLights.RED, false);
@@ -215,9 +216,10 @@ public class TeleRed extends LinearOpMode {
                 }
             }
             else {
-                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
+                spindex.moveToPos(NextSpindex.intakePos[spindex.getIndex()]);
                 leds.setColor(LedLights.BLUE, false);
             }
+            spindex.periodic();
             /****************************************************************************************************/
 
             /*********************Outtake Logic**********************/
@@ -231,6 +233,7 @@ public class TeleRed extends LinearOpMode {
                 setRPM = 0;
             }
             outtake.setRPM(setRPM);
+            outtake.periodic();
 
             double rumbleRange = Math.abs(setRPM - outtake.getRPM());
             if (setRPM == closeRPM && rumbleRange <= 100) {

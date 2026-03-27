@@ -8,13 +8,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
 
 public class TurretOld {
 
     public CRServo rotation = null;
 
-    public Outtake outtake = null;
+    public NextOuttake outtake = null;
 
     public Servo hood = null;
 
@@ -29,7 +29,7 @@ public class TurretOld {
     private static final double kP = maxPower / thresholdDeg; // proportional slope inside threshold
     private static final double searchP = 0.12;      // slow scan speed when tag not seen
 
-    public TurretOld(HardwareMap hardwareMap,Outtake outtake, Limelight limelight){
+    public TurretOld(HardwareMap hardwareMap, NextOuttake outtake, Limelight limelight){
 
         rotation = hardwareMap.get(CRServo.class, "turretServo");
         hood = hardwareMap.get(Servo.class,"hoodServo");

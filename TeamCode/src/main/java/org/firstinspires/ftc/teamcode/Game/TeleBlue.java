@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
-import org.firstinspires.ftc.teamcode.Subsystems.Spindex;
+import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
 import org.firstinspires.ftc.teamcode.Assets.Button;
@@ -41,7 +41,7 @@ public class TeleBlue extends LinearOpMode {
     Chassis chassis = null;
     Turret turret = null;
     DualColorFetch colorSensor = null;
-    Spindex spindex = null;
+    NextSpindex spindex = NextSpindex.INSTANCE;
     LedLights leds = null;
     List<LynxModule> allHubs = null;
 
@@ -75,7 +75,7 @@ public class TeleBlue extends LinearOpMode {
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
-        spindex = new Spindex(hardwareMap);
+        spindex.initialize();
         chassis = new Chassis(hardwareMap);
         leds = new LedLights(hardwareMap);
         turret = new Turret(hardwareMap, true, limelight);
@@ -193,7 +193,7 @@ public class TeleBlue extends LinearOpMode {
 
             if (spindex.isOuttakeing()) {
                 char[] slotColors = spindex.getSlotColors();
-                spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
+                spindex.moveToPos(NextSpindex.outtakePos[spindex.getIndex()]);
 
                 if (slotColors[spindex.getIndex()] == 'E' || missing){
                     leds.setColor(LedLights.RED, false);
@@ -216,9 +216,10 @@ public class TeleBlue extends LinearOpMode {
                 }
             }
             else {
-                spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
+                spindex.moveToPos(NextSpindex.intakePos[spindex.getIndex()]);
                 leds.setColor(LedLights.BLUE, false);
             }
+            spindex.periodic();
             /****************************************************************************************************/
 
             /*********************Outtake Logic**********************/

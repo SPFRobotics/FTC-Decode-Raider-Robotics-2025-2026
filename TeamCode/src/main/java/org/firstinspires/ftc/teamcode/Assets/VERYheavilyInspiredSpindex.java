@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
 
 
 public class VERYheavilyInspiredSpindex {
@@ -78,7 +78,7 @@ public class VERYheavilyInspiredSpindex {
     // ========================================================================
     private final KickerSpindex kicker;
     private final ColorFetch    colorSensor;
-    private final Outtake       outtake;
+    private final NextOuttake    outtake;
 
     // ========================================================================
     // FSM
@@ -139,7 +139,7 @@ public class VERYheavilyInspiredSpindex {
     public VERYheavilyInspiredSpindex(HardwareMap hardwareMap,
                                       KickerSpindex kicker,
                                       ColorFetch colorSensor,
-                                      Outtake outtake) {
+                                      NextOuttake outtake) {
         this.kicker      = kicker;
         this.colorSensor = colorSensor;
         this.outtake     = outtake;
@@ -370,7 +370,7 @@ public class VERYheavilyInspiredSpindex {
                 break;
 
             case 2: // Wait for flywheel RPM
-                if (outtake.getRPM() >= Outtake.OuttakeConfig.closeRPM
+                if (outtake.getRPM() >= NextOuttake.closeRPM
                         - SpindexConfig.rpmThresholdOffset) {
                     kicker.up();
                     autoShootTimer.reset();
@@ -412,7 +412,7 @@ public class VERYheavilyInspiredSpindex {
                 break;
 
             case 6: // Wait for flywheel RPM
-                if (outtake.getRPM() >= Outtake.OuttakeConfig.closeRPM
+                if (outtake.getRPM() >= NextOuttake.closeRPM
                         - SpindexConfig.rpmThresholdOffset) {
                     kicker.up();
                     autoShootTimer.reset();
@@ -454,7 +454,7 @@ public class VERYheavilyInspiredSpindex {
                 break;
 
             case 10: // Wait for flywheel RPM
-                if (outtake.getRPM() >= Outtake.OuttakeConfig.closeRPM
+                if (outtake.getRPM() >= NextOuttake.closeRPM
                         - SpindexConfig.rpmThresholdOffset) {
                     kicker.up();
                     autoShootTimer.reset();
