@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextTurret;
 
 import static org.firstinspires.ftc.teamcode.Testing.TurretSpinBenchmark.TurretSpinBenchmarkConfig.speed;
 
@@ -24,7 +24,7 @@ public class TurretSpinBenchmark extends OpMode {
         public static double speed = 1;
     }
 
-    Turret turret;
+    NextTurret turret = NextTurret.INSTANCE;
     Follower follower;
     Pose currentPose;
     PrintWriter pen;
@@ -34,7 +34,8 @@ public class TurretSpinBenchmark extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
         follower.startTeleopDrive();
-        turret = new Turret(hardwareMap, true);
+        turret.setGoalCoords(true);
+        turret.initialize();
         try {
             pen = new PrintWriter("/sdcard/turret.txt", "ASCII");
         }
@@ -57,15 +58,16 @@ public class TurretSpinBenchmark extends OpMode {
     public void loop(){
         follower.update();
         currentPose = follower.getPose();
-        double target = turret.getTargetDeg(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
         follower.setTeleOpDrive(0, 0, speed, true); // Remember, Y stick is reversed!
         turret.aimAtGoal(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
+        turret.periodic();
+        double target = turret.getTargetDeg();
 
         if (runtime.milliseconds() >= 10000.0){
             pen.close();
             requestOpModeStop();
         }
         //Log
-        pen.write(runtime.milliseconds() + ":" + Double.toString(Math.toDegrees(currentPose.getHeading())) + ":" + target + ":" + turret.getVelocity()/(turret.ticks*turret.gearRatio)*360.0 + "\n");
+        pen.write(runtime.milliseconds() + ":" + Double.toString(Math.toDegrees(currentPose.getHeading())) + ":" + target + ":" + turret.getVelocity()/(NextTurret.TICKS*NextTurret.GEAR_RATIO)*360.0 + "\n");
     }
 }

@@ -203,6 +203,9 @@ public class NextTurret implements Subsystem {
     // ---- Aiming ----
 
     public void aimAtGoal(double robotX, double robotY, double robotHeading) {
+        this.robotX = robotX;
+        this.robotY = robotY;
+        this.robotHeading = robotHeading;
         double targetDeg = turretDegToShoot(robotX, robotY, robotHeading);
         setTargetDegrees(targetDeg);
     }

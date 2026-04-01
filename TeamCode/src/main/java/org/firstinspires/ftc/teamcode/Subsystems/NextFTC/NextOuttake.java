@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextTurret;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
@@ -41,7 +41,7 @@ public class NextOuttake implements Subsystem {
     private ControlSystem controlSystem;
 
     private KickerSpindex kicker = null;
-    private Turret turret = null;
+    private NextTurret turret = null;
     private boolean isFarLocation = true;
     private boolean launched = false;
     private int kickerCycleCount = 0;
@@ -56,7 +56,7 @@ public class NextOuttake implements Subsystem {
         this.kicker = kicker;
     }
 
-    public void setTurret(Turret turret) {
+    public void setTurret(NextTurret turret) {
         this.turret = turret;
     }
 

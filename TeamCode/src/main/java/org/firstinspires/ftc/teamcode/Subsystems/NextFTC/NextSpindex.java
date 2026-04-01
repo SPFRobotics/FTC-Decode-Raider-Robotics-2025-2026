@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Depreciated.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.DualColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextTurret;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -298,7 +298,7 @@ public class NextSpindex implements Subsystem {
         autoSort(outtake, motifId, null, knownSlotColors);
     }
 
-    public void autoSort(NextOuttake outtake, int motifId, Turret turret, String knownSlotColors) {
+    public void autoSort(NextOuttake outtake, int motifId, NextTurret turret, String knownSlotColors) {
         if (autoSortState == AutoSortState.FIND_NEXT && sortPatternIndex == 0) {
             for (int i = 0; i < 3 && i < knownSlotColors.length(); i++) {
                 slotColors[i] = knownSlotColors.charAt(i);
@@ -307,7 +307,7 @@ public class NextSpindex implements Subsystem {
         autoSort(outtake, motifId, turret);
     }
 
-    public void autoSort(NextOuttake outtake, int motifId, Turret turret) {
+    public void autoSort(NextOuttake outtake, int motifId, NextTurret turret) {
         if (!autoSortActive) return;
         if (motifId < 21 || motifId > 23) motifId = 21;
 

@@ -3,11 +3,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextTurret;
 @Disabled
 @TeleOp (name="Turret Test")
 public class TurretTest extends OpMode {
-    Turret turret = null;
+    NextTurret turret = NextTurret.INSTANCE;
     @Config
     public static class TurretTester{
 
@@ -23,7 +23,8 @@ public class TurretTest extends OpMode {
 
     }
     public void init(){
-        turret = new Turret(hardwareMap, TurretTester.goal);
+        turret.setGoalCoords(TurretTester.goal);
+        turret.initialize();
 
 
 
@@ -36,7 +37,7 @@ public class TurretTest extends OpMode {
     public void loop(){
         if(!TurretTester.manual) {
             turret.aimAtGoal(TurretTester.robotX, TurretTester.robotY, TurretTester.robotHeading);
-            double targetDeg = turret.getTargetDeg(TurretTester.robotX, TurretTester.robotY, TurretTester.robotHeading);
+            double targetDeg = turret.getTargetDeg();
             telemetry.addData("Mode", "Auto-Aim");
             telemetry.addLine("--- Inputs ---");
             telemetry.addData("Robot X", TurretTester.robotX);
@@ -54,14 +55,13 @@ public class TurretTest extends OpMode {
             telemetry.addLine("--- Turret ---");
             telemetry.addData("Manual Goal (deg)", TurretTester.manualGoal);
         }
-        telemetry.addData("TurretConfig.ticks", turret.ticks);
-        telemetry.addData("TurretConfig.gearRatio", turret.gearRatio);
-        telemetry.addData("TurretConfig.turretPower", Turret.TurretConfig.turretPower);
+        turret.periodic();
+        telemetry.addData("TurretConfig.ticks", NextTurret.TICKS);
+        telemetry.addData("TurretConfig.gearRatio", NextTurret.GEAR_RATIO);
+        telemetry.addData("TurretConfig.turretPower", NextTurret.turretPower);
         telemetry.addLine("--- Motor ---");
-        telemetry.addData("Target Ticks", turret.getTargetPosition());
         telemetry.addData("Current Ticks", turret.getCurrentPosition());
-        telemetry.addData("Error (ticks)", turret.getTargetPosition() - turret.getCurrentPosition());
-        telemetry.addData("At Target?", turret.isTurretAtTarget());
+        telemetry.addData("At Target?", !turret.isBusy());
         telemetry.update();
     }
 

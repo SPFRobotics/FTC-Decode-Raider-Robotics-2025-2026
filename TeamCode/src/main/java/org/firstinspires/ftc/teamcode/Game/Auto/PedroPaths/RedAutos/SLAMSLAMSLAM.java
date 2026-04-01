@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextTurret;
 
 @Autonomous(name = "Red Far 12", group = "RedAutos", preselectTeleOp = "Tele-Op Red")
 @Configurable
@@ -44,7 +44,7 @@ public class SLAMSLAMSLAM extends OpMode {
     private DualColorFetch colorSensor;
     private LedLights leds = null;
     private Limelight limelight;
-    private Turret turret;
+    private NextTurret turret = NextTurret.INSTANCE;
     private int detectedMotifId = -1;
 
     private static final String PRELOAD_COLORS = "GPP";
@@ -72,7 +72,9 @@ public class SLAMSLAMSLAM extends OpMode {
         colorSensor = new DualColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
-        turret = new Turret(hardwareMap, false, limelight);
+        turret.setGoalCoords(false);
+        turret.setLimelight(limelight);
+        turret.initialize();
         spindex.initialize();
 
         spindex.setAutoSortActive(true);
@@ -149,6 +151,7 @@ public class SLAMSLAMSLAM extends OpMode {
         follower.update();
         leds.cycleColors(10);
         turret.lockToAngle(69);
+        turret.periodic();
         autonomousPathUpdate();
         updateSpindexPosition();
     }
@@ -531,7 +534,6 @@ public class SLAMSLAMSLAM extends OpMode {
 
             case 21: // Done
                 outtake.setRPM(0);
-                turret.setPower(0);
                 intakeEnabled = false;
                 kicker.down();
                 requestOpModeStop();
@@ -539,7 +541,6 @@ public class SLAMSLAMSLAM extends OpMode {
 
             default:
                 outtake.setRPM(0);
-                turret.setPower(0);
                 intakeEnabled = false;
                 break;
         }

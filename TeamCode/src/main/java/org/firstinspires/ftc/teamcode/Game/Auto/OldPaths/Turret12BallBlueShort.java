@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Spindex;
-import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextTurret;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage;
 
 import java.io.FileNotFoundException;
@@ -42,7 +42,7 @@ public class Turret12BallBlueShort extends OpMode {
     private int pathState;
 
     private Spindex spindex;
-    private Turret turret;
+    private NextTurret turret = NextTurret.INSTANCE;
     private Outtake outtake;
     private Intake intake;
     private KickerSpindex kicker;
@@ -72,7 +72,8 @@ public class Turret12BallBlueShort extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(270)));
         paths = new Paths(follower);
-        turret = new Turret(hardwareMap, true);
+        turret.setGoalCoords(true);
+        turret.initialize();
         spindex = new Spindex(hardwareMap);
         intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
@@ -142,6 +143,7 @@ public class Turret12BallBlueShort extends OpMode {
         }
         follower.update();
         turret.aimAtGoal(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading());
+        turret.periodic();
         leds.cycleColors(10);
         autonomousPathUpdate();
         updateSpindexPosition();

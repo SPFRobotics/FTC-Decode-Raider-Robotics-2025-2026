@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
 import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextTurret;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage;
 import org.firstinspires.ftc.teamcode.Assets.Button;
 
@@ -34,7 +34,7 @@ public class TeleRed extends LinearOpMode {
     NextOuttake outtake = NextOuttake.INSTANCE;
     KickerSpindex kicker = null;
     Chassis chassis = null;
-    Turret turret = null;
+    NextTurret turret = NextTurret.INSTANCE;
     DualColorFetch colorSensor = null;
     NextSpindex spindex = NextSpindex.INSTANCE;
     LedLights leds = null;
@@ -73,7 +73,9 @@ public class TeleRed extends LinearOpMode {
         spindex.initialize();
         chassis = new Chassis(hardwareMap);
         leds = new LedLights(hardwareMap);
-        turret = new Turret(hardwareMap, false, limelight);
+        turret.setGoalCoords(false);
+        turret.setLimelight(limelight);
+        turret.initialize();
         turret.setTargetTag(24);
         if (PoseStorage.turretValid) {
             turret.setInitialAngle(PoseStorage.turretStartPos);
@@ -246,21 +248,18 @@ public class TeleRed extends LinearOpMode {
             if (turretToggleState && (gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0)){
                 if (gamepad1.shareWasPressed()){
                     turret.unlockTurret();
-                    turret.noEncoder();
                 }
-                turret.setPower((gamepad1.left_trigger - gamepad1.right_trigger)*0.25);
             }
             else if (turretToggleState){
                 turret.unlockTurret();
-                turret.aimWithLimelight(limelight.getLatestResult());
             }
             else{
                 if (gamepad1.shareWasPressed()){
                     turret.unlockTurret();
-                    turret.useEncoder();
                 }
-                turret.periodic(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
             }
+            turret.update(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
+            turret.periodic();
 
             /*****************************************************************************************/
         }

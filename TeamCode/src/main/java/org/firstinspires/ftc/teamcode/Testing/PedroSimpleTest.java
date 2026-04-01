@@ -8,14 +8,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextTurret;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 @Disabled
 @TeleOp(name = "Pedro Simple Test", group = "Testing")
 public class PedroSimpleTest extends OpMode {
 
     private Follower follower;
-    private Turret turret;
+    private NextTurret turret = NextTurret.INSTANCE;
     private Pose currentPose;
     //private boolean fieldCentric = false;
     ElapsedTime loopTime;
@@ -28,7 +28,8 @@ public class PedroSimpleTest extends OpMode {
         loopTime = new ElapsedTime();
 
 
-        turret = new Turret(hardwareMap, true);                                      
+        turret.setGoalCoords(true);
+        turret.initialize();
     }
 
     @Override
@@ -54,12 +55,12 @@ public class PedroSimpleTest extends OpMode {
         );
 
         turret.aimAtGoal(currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
+        turret.periodic();
 
         telemetry.addData("Pose", "x=%.1f y=%.1f heading=%.1f°",
                 currentPose.getX(), currentPose.getY(), Math.toDegrees(currentPose.getHeading()));
         telemetry.addData("Turret Pos", turret.getCurrentPosition());
-        telemetry.addData("Turret Target", turret.getTargetPosition());
-        telemetry.addData("Turret At Target", turret.isTurretAtTarget());
+        telemetry.addData("Turret At Target", !turret.isBusy());
         telemetry.addData("Loop Time", loopTime.milliseconds());
 
 

@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickerSpindex;
 import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextTurret;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage;
 
 import java.io.PrintWriter;
@@ -49,7 +49,7 @@ public class BS12 extends OpMode {
     private DualColorFetch colorSensor;
     private LedLights leds = null;
     private Limelight limelight;
-    private Turret turret;
+    private NextTurret turret = NextTurret.INSTANCE;
     private int detectedMotifId = -1;
 
     // Preloaded ball colors in slot order (0, 1, 2).
@@ -85,7 +85,9 @@ public class BS12 extends OpMode {
         colorSensor = new DualColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
-        turret = new Turret(hardwareMap, true,limelight);
+        turret.setGoalCoords(true);
+        turret.setLimelight(limelight);
+        turret.initialize();
         spindex.initialize();
 
         spindex.setAutoSortActive(true);
@@ -169,8 +171,9 @@ public class BS12 extends OpMode {
         follower.update();
         leds.cycleColors(10);
         turret.lockToAngle(pathState >= 8 ?
-                Turret.TurretConfig.turretSHortLockTri :
-                Turret.TurretConfig.turretShortLockLine);
+                NextTurret.turretShortLockTri :
+                NextTurret.turretShortLockLine);
+        turret.periodic();
         autonomousPathUpdate();
         updateSpindexPosition();
         outtake.periodic();
@@ -588,7 +591,6 @@ public class BS12 extends OpMode {
 
             case 12: // Done
                 outtake.setRPM(0);
-                turret.setPower(0);
                 intakeEnabled = false;
                 kicker.down();
                 requestOpModeStop();
@@ -596,7 +598,6 @@ public class BS12 extends OpMode {
 
             default:
                 outtake.setRPM(0);
-                turret.setPower(0);
                 intakeEnabled = false;
                 break;
         }
