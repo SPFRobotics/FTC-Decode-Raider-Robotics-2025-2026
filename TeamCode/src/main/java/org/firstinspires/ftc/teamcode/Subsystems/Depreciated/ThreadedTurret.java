@@ -20,10 +20,10 @@ public class ThreadedTurret {
     @Config
     public static class TurretConfig{
 
-        static double RedGoalX = 132;
-        static double RedGoalY = 136;
-        static double BlueGoalX = 12;
-        static double BlueGoalY = 136;
+        static double RedGoalX = 144;
+        static double RedGoalY = 144;
+        static double BlueGoalX = 0;
+        static double BlueGoalY = 144;
 
         public static double ticks = 145.1;
         public static double gearRatio = 135/31.0;
