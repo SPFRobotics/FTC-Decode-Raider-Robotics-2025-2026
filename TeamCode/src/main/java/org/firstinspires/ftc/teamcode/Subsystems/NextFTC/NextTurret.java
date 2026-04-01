@@ -35,7 +35,7 @@ public class NextTurret implements Subsystem {
     public static double turretPower = 0.8;
     public static int correctionThresholdTicks = 20;
     public static double limelightAngularOffset = 0.0;
-    public static double wrapGracePeriodMs = 0.2;
+    public static double wrapGracePeriodMs = 200;
 
     // Preset lock positions (ticks)
     public static int turretShortLockLine = 322;
@@ -278,8 +278,10 @@ public class NextTurret implements Subsystem {
             filteredTx = adjustedTx;
         }
 
-        double targetDeg = getCurrentAngularPosition() + filteredTx;
-        setTargetDegrees(targetDeg);
+
+        double correctionTicks = (filteredTx / 360.0) * TICKS * GEAR_RATIO;
+        targetPositionTicks = (int) (motor.getCurrentPosition() + correctionTicks);
+        controlSystem.setGoal(new KineticState(targetPositionTicks, 0, 0));
     }
 
     private Double getShootingTagTx(LLResult result) {
