@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.BlueAutos;
-
-import static org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage.IntakeSpeed;
+package org.firstinspires.ftc.teamcode.Game.Auto.OldPaths;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
@@ -19,41 +18,36 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextIntake;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
-import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Outtake;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Spindex;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage;
 
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-
-@Autonomous(name = "Blue Short 12", group = "BlueAutos", preselectTeleOp = "Tele-Op Blue")
+import java.io.UnsupportedEncodingException;
+@Disabled
+@Autonomous(name = "Blue Short 12 Ball", group = "Autonomous")
 @Configurable
-public class BS12 extends OpMode {
+public class BlueShortTwelveBall extends OpMode {
 
-    private static final double SHOOT_RPM = NextOuttake.closeRPM;
-    private static final double INTAKE_SPEED = IntakeSpeed;
+    private static final double ShootRPM = Outtake.OuttakeConfig.closeRPM;
+    private static final double IntakeSpeed = 0.25;
 
     private TelemetryManager panelsTelemetry;
-
     public Follower follower;
     private Paths paths;
     private int pathState;
 
-    private NextSpindex spindex = NextSpindex.INSTANCE;
-    private NextOuttake outtake = NextOuttake.INSTANCE;
-    private NextIntake intake = NextIntake.INSTANCE;
+    private Spindex spindex;
+    private Turret turret;
+    private Outtake outtake;
+    private Intake intake;
     private KickerSpindex kicker;
     private DualColorFetch colorSensor;
     private LedLights leds = null;
-    private Limelight limelight;
-    private Turret turret;
-    private int detectedMotifId = -1;
-
-    // Preloaded ball colors in slot order (0, 1, 2).
-    private static final String PRELOAD_COLORS = "GPP";
 
     private int shotsFired = 0;
     private int ballsLoaded = 0;
@@ -67,55 +61,49 @@ public class BS12 extends OpMode {
 
     ElapsedTime timer = null;
 
-    private PrintWriter pen = null;
-
     private ElapsedTime override = new ElapsedTime();
+
+    PrintWriter pen;
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(180)));
+        follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(90)));
         paths = new Paths(follower);
-        intake.initialize();
+        turret = new Turret(hardwareMap, true);
+        spindex = new Spindex(hardwareMap);
+        intake = new Intake(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
-        outtake.setKicker(kicker);
-        outtake.initialize();
+        outtake = new Outtake(hardwareMap, kicker);
         colorSensor = new DualColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
-        limelight = new Limelight(hardwareMap);
-        turret = new Turret(hardwareMap, true,limelight);
-        spindex.initialize();
 
-        spindex.setAutoSortActive(true);
-
-        turret.setAlignmentEnabled(true);
         spindex.setAutoLoadMode(true);
         outtake.resetKickerCycle();
         kicker.down();
 
-
-
         FtcDashboard dash = FtcDashboard.getInstance();
         telemetry = dash.getTelemetry();
-        telemetry.setMsTransmissionInterval(16);
+        telemetry.setMsTransmissionInterval(1);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
-        turret.setInitialAngle(180);
+        try{
+            pen = new PrintWriter("/sdcard/outtake.txt", "ASCII");
+        }
+        catch (FileNotFoundException e){
+            throw new RuntimeException("File not found!");
+        }
+        catch (UnsupportedEncodingException e){
+            throw new RuntimeException("Invalid character encoding");
+        }
     }
 
-    @Override
-    public void init_loop() {
-        int id = limelight.getMotifId();
-        if (id != -1) {
-            detectedMotifId = id;
-        }
+    public void init_loop(){
+        outtake.setRPM(ShootRPM);
 
-        panelsTelemetry.debug("Raw Limelight ID", id);
-        panelsTelemetry.debug("Stored Motif", detectedMotifId);
-        panelsTelemetry.update(telemetry);
     }
 
     @Override
@@ -123,26 +111,12 @@ public class BS12 extends OpMode {
         timer = new ElapsedTime();
         pathState = 0;
         shotsFired = 0;
-        ballsLoaded = 3;
+        ballsLoaded = 0;
         lastKickerCycles = 0;
 
-        if (detectedMotifId == -1) {
-            detectedMotifId = 21;
-        }
-        limelight.stop();
-
         intakeEnabled = true;
-        if (outtake.isFarLocation()) {
-            outtake.switchLocation();
-        }
-        outtake.setRPM(SHOOT_RPM);
-
-        for (int i = 0; i < 3; i++) {
-            spindex.setIndex(i);
-            spindex.setSlotColor(PRELOAD_COLORS.charAt(i));
-        }
-        spindex.setIndex(0);
-        spindex.setMode(true);
+        outtake.setRPM(ShootRPM);
+        spindex.setMode(true);  // Pre-position spindex for shooting during travel
         follower.followPath(paths.shootBallOne, true);
         //UpdateSpindex updateSpindex = new UpdateSpindex(spindex);
         //updateSpindex.start();
@@ -152,30 +126,25 @@ public class BS12 extends OpMode {
         PoseStorage.savePose(follower.getPose());
         PoseStorage.blueAlliance = true;
         PoseStorage.redAlliance = false;
-        PoseStorage.setTurretStartPos(turret.getCurrentAngularPosition());
         //spindex.exitProgram();
+        pen.close();
     }
 
     @Override
     public void loop() {
-       // ElapsedTime time = new ElapsedTime();
+        ElapsedTime time = new ElapsedTime();
         if (intakeEnabled) {
-            intake.turnOn();
+            intake.intakeOn(true);
         }
         else {
-            intake.turnOff();
+            intake.intakeOff();
         }
-        intake.periodic();
         follower.update();
         leds.cycleColors(10);
-        turret.lockToAngle(pathState >= 8 ?
-                Turret.TurretConfig.turretSHortLockTri :
-                Turret.TurretConfig.turretShortLockLine);
+
         autonomousPathUpdate();
         updateSpindexPosition();
-        outtake.periodic();
-        spindex.periodic();
-/*
+
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("Shots Fired", shotsFired);
         panelsTelemetry.debug("Balls Loaded", ballsLoaded);
@@ -186,47 +155,19 @@ public class BS12 extends OpMode {
         panelsTelemetry.debug("Is Busy", follower.isBusy());
         panelsTelemetry.debug("Loop Time", time.milliseconds());
         panelsTelemetry.debug("Error", spindex.getError());
-        panelsTelemetry.debug("Motif ID", detectedMotifId);
-        panelsTelemetry.debug("Sort State", spindex.getAutoSortStateName());
-        panelsTelemetry.debug("Pattern Pos", spindex.getSortPatternIndex());
-        panelsTelemetry.debug("Slot Colors", "" + spindex.getSlotColors()[0] + spindex.getSlotColors()[1] + spindex.getSlotColors()[2]);
-        panelsTelemetry.debug("Turret Pos", turret.getCurrentPosition());
-        panelsTelemetry.debug("Turret Target", turret.getTargetPosition());
 
-        telemetry.addData("Path State", pathState);
-        telemetry.addData("Shots Fired", shotsFired);
-        telemetry.addData("Balls Loaded", ballsLoaded);
-        telemetry.addData("X", follower.getPose().getX());
-        telemetry.addData("Y", follower.getPose().getY());
-        telemetry.addData("Heading", follower.getPose().getHeading());
-        telemetry.addData("RPM", outtake.getRPM());
-        telemetry.addData("Is Busy", follower.isBusy());
-        telemetry.addData("Loop Time", time.milliseconds());
-        telemetry.addData("Error", spindex.getError());
-        telemetry.addData("Motif ID", detectedMotifId);
-        telemetry.addData("Sort State", spindex.getAutoSortStateName());
-        telemetry.addData("Pattern Pos", spindex.getSortPatternIndex());
-        telemetry.addData("Slot Colors", "" + spindex.getSlotColors()[0] + spindex.getSlotColors()[1] + spindex.getSlotColors()[2]);
-        telemetry.addData("Turret Pos", turret.getCurrentPosition());
-        telemetry.addData("Turret Target", turret.getTargetPosition());
-        telemetry.addData("Turret is Busy:",turret.isTurretAtTarget());
-        telemetry.addData("Spindex is busy?:", spindex.isBusy());
-        telemetry.addData("RPM", outtake.getRPM());
-
-        //)
         //panelsTelemetry.update(telemetry);
 
         telemetry.addLine("Timer: " + timer.milliseconds());
         telemetry.update();
-
- */
+        pen.write(timer.milliseconds() + ":" + outtake.getRPM() + ":" + (kicker.getState() + "\n"));
     }
 
     private void updateSpindexPosition() {
         if (spindex.isOuttakeing()) {
-            spindex.moveToPos(NextSpindex.outtakePos[spindex.getIndex()]);
+            spindex.moveToPos(Spindex.SpindexValues.outtakePos[spindex.getIndex()]);
         } else {
-            spindex.moveToPos(NextSpindex.intakePos[spindex.getIndex()]);
+            spindex.moveToPos(Spindex.SpindexValues.intakePos[spindex.getIndex()]);
         }
     }
 
@@ -246,7 +187,7 @@ public class BS12 extends OpMode {
 
         // Only run kicker cycle when aligned
         if (!spindex.isBusy()) {
-            outtake.enableSpindexKickerCycle(true, SHOOT_RPM);
+            outtake.enableSpindexKickerCycle(true, ShootRPM);
         }
 
         // When a shot completes, advance to next slot
@@ -282,21 +223,9 @@ public class BS12 extends OpMode {
         ballsLoaded = loadedCount;
     }
 
-    private void runIntakeByDistance() {
-        spindex.setMode(false);
-        spindex.autoLoadByDistance(colorSensor);
-
-        int loadedCount = 0;
-        for (char slot : spindex.getSlotColors()) {
-            if (slot != 'E') loadedCount++;
-        }
-        ballsLoaded = loadedCount;
-    }
-
     private void prepareForIntake() {
         spindex.setMode(false);
         spindex.setIndex(0);
-        spindex.resetAutoSort();
         ballsLoaded = 0;
         for (int i = 0; i < 3; i++) {
             spindex.clearBall(i);
@@ -304,9 +233,13 @@ public class BS12 extends OpMode {
     }
 
     private void prepareForShooting() {
-        outtake.setRPM(SHOOT_RPM);
+        spindex.setMode(true);
+        spindex.setIndex(0);
+        shotsFired = 0;
         outtake.resetKickerCycle();
-        spindex.setAutoSortActive(true);
+        lastKickerCycles = 0;
+        waitingForSpindexAlign = false;
+        outtake.setRPM(ShootRPM);
     }
 
 
@@ -316,18 +249,7 @@ public class BS12 extends OpMode {
 
 
 
-    /* ============================================================= *
-     *        Pedro Pathing Plus Visualizer — Auto-Generated         *
-     *                                                               *
-     *  Version: 1.7.5.                                              *
-     *  Copyright (c) 2026 Matthew Allen                             *
-     *                                                               *
-     *  THIS FILE IS AUTO-GENERATED — DO NOT EDIT MANUALLY.          *
-     *  Changes will be overwritten when regenerated.                *
-     * ============================================================= */
-
     public static class Paths {
-
         public PathChain shootBallOne;
         public PathChain RunToRowOne;
         public PathChain intakeRowOne;
@@ -338,109 +260,127 @@ public class BS12 extends OpMode {
         public PathChain RuntoRowThree;
         public PathChain intakeRowThree;
         public PathChain shootRowThree;
+        public PathChain Leave;
 
         public Paths(Follower follower) {
-            shootBallOne = follower
-                    .pathBuilder()
-                    .addPath(
+            shootBallOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(33.638, 133.314),
-                                    new Pose(49.856, 113.306),
-                                    new Pose(48.251, 95.336)
+                                    new Pose(32.840, 134.827),
+                                    new Pose(44.095, 111.604),
+                                    new Pose(50.199, 93.721)
                             )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
+
                     .build();
 
-            RunToRowOne = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(48.251, 95.336), new Pose(43.745, 84.742))
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
-                    .build();
-
-            intakeRowOne = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(43.745, 84.742), new Pose(21.620, 83.192))
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
-                    .build();
-
-            shootRowOne = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(21.620, 83.192), new Pose(49.856, 95.336))
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
-                    .build();
-
-            RuntoRowTwo = follower
-                    .pathBuilder()
-                    .addPath(
+            RunToRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(49.856, 95.336),
-                                    new Pose(51.963, 79.435),
-                                    new Pose(43.745, 59.786)
+                                    new Pose(50.199, 93.721),
+                                    new Pose(44.279, 90.511),
+                                    new Pose(43.525, 84.432)
                             )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+
                     .build();
 
-            intakeRowTwo = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(43.745, 59.786), new Pose(21.620, 59.786))
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+            intakeRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierLine(
+                                    new Pose(43.525, 84.432),
+
+                                    new Pose(21.315, 83.803)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+
                     .build();
 
-            shootRowTwo = follower
-                    .pathBuilder()
-                    .addPath(
+            shootRowOne = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(21.620, 59.786),
-                                    new Pose(43.886, 75.934),
-                                    new Pose(48.251, 95.336)
+                                    new Pose(21.315, 83.803),
+                                    new Pose(43.580, 78.653),
+                                    new Pose(50.210, 94.008)
                             )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+
                     .build();
 
-            RuntoRowThree = follower
-                    .pathBuilder()
-                    .addPath(
+            RuntoRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(48.251, 95.336),
-                                    new Pose(51.063, 58.262),
-                                    new Pose(43.745, 35.941)
+                                    new Pose(50.210, 94.008),
+                                    new Pose(50.928, 70.505),
+                                    new Pose(43.977, 59.881)
                             )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+
                     .build();
 
-            intakeRowThree = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(43.745, 35.941), new Pose(21.620, 35.941))
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+            intakeRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierLine(
+                                    new Pose(43.977, 59.881),
+
+                                    new Pose(22.213, 59.787)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+
                     .build();
 
-            shootRowThree = follower
-                    .pathBuilder()
-                    .addPath(
+            shootRowTwo = follower.pathBuilder().setGlobalDeceleration().addPath(
                             new BezierCurve(
-                                    new Pose(21.620, 35.941),
-                                    new Pose(43.823, 57.631),
-                                    new Pose(54.963, 108.203)
+                                    new Pose(22.213, 59.787),
+                                    new Pose(35.011, 67.842),
+                                    new Pose(42.455, 76.637),
+                                    new Pose(50.406, 93.232)
                             )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+
+                    .build();
+
+            RuntoRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierCurve(
+                                    new Pose(50.406, 93.232),
+                                    new Pose(52.525, 48.393),
+                                    new Pose(44.105, 38.389)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+
+                    .build();
+
+            intakeRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierLine(
+                                    new Pose(44.105, 38.389),
+
+                                    new Pose(21.230, 35.672)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+
+                    .build();
+
+            shootRowThree = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierCurve(
+                                    new Pose(21.230, 35.672),
+                                    new Pose(39.623, 61.934),
+                                    new Pose(49.689, 93.541)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+
+                    .build();
+
+            Leave = follower.pathBuilder().setGlobalDeceleration().addPath(
+                            new BezierCurve(
+                                    new Pose(49.689, 93.541),
+                                    new Pose(51.869, 78.893),
+                                    new Pose(43.721, 71.721)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+
                     .build();
         }
     }
+
+
+
+
+
+
 
 
 
@@ -454,10 +394,8 @@ public class BS12 extends OpMode {
                 }
                 break;
 
-            case 1: // Shoot 3 preloaded balls (sorted by motif)
-                spindex.autoSort(outtake, detectedMotifId, turret);
-                if (spindex.isAutoSortComplete()) {
-                    spindex.resetAutoSort();
+            case 1: // Shoot 3 preloaded balls
+                if (shootBalls()) {
                     follower.followPath(paths.RunToRowOne, true);
                     pathState = 2;
                 }
@@ -466,15 +404,15 @@ public class BS12 extends OpMode {
             case 2: // Run to row 1 intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
-                    follower.followPath(paths.intakeRowOne, INTAKE_SPEED, true);
+                    follower.followPath(paths.intakeRowOne, IntakeSpeed, true);
                     pathState = 3;
                 }
                 break;
 
             case 3: // Intake row 1 (slow) - pre-spin flywheel during intake
-                runIntakeByDistance();
+                runIntake();
                 if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
+                    outtake.setRPM(ShootRPM);
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
@@ -486,16 +424,15 @@ public class BS12 extends OpMode {
                 }
                 break;
 
-            case 4: // Move to shoot position + shoot row 1 balls (sorted)
+            case 4: // Move to shoot position + shoot row 1 balls
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
+                    //override.reset();
                 }
-                if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret,"PPG");
-                }
-                if (spindex.isAutoSortComplete()) {
-                    spindex.resetAutoSort();
+                // Only shoot once path completes and robot is in position
+                if (!follower.isBusy() && shootBalls()) {
+
                     shootingPrepared = false;
                     follower.followPath(paths.RuntoRowTwo, true);
                     pathState = 5;
@@ -505,15 +442,15 @@ public class BS12 extends OpMode {
             case 5: // Run to row 2 intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
-                    follower.followPath(paths.intakeRowTwo, INTAKE_SPEED, true);
+                    follower.followPath(paths.intakeRowTwo, IntakeSpeed, true);
                     pathState = 6;
                 }
                 break;
 
             case 6: // Intake row 2 (slow) - pre-spin flywheel during intake
-                runIntakeByDistance();
+                runIntake();
                 if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
+                    outtake.setRPM(ShootRPM);
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
@@ -525,16 +462,13 @@ public class BS12 extends OpMode {
                 }
                 break;
 
-            case 7: // Move to shoot position + shoot row 2 balls (sorted)
+            case 7: // Move to shoot position + shoot row 2 balls
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
+                    //override.reset();
                 }
-                if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret,"PGP");
-                }
-                if (spindex.isAutoSortComplete()) {
-                    spindex.resetAutoSort();
+                if (!follower.isBusy() && shootBalls()) {
                     shootingPrepared = false;
                     follower.followPath(paths.RuntoRowThree, true);
                     pathState = 8;
@@ -544,15 +478,15 @@ public class BS12 extends OpMode {
             case 8: // Run to row 3 intake position
                 if (!follower.isBusy()) {
                     prepareForIntake();
-                    follower.followPath(paths.intakeRowThree, INTAKE_SPEED, true);
+                    follower.followPath(paths.intakeRowThree, IntakeSpeed, true);
                     pathState = 9;
                 }
                 break;
 
             case 9: // Intake row 3 (slow) - pre-spin flywheel during intake
-                runIntakeByDistance();
+                runIntake();
                 if (!flywheelStarted) {
-                    outtake.setRPM(SHOOT_RPM);
+                    outtake.setRPM(ShootRPM);
                     flywheelStarted = true;
                 }
                 if (!follower.isBusy()) {
@@ -564,18 +498,15 @@ public class BS12 extends OpMode {
                 }
                 break;
 
-            case 10: // Move to shoot position + shoot row 3 balls (sorted)
+            case 10: // Move to shoot position + shoot row 3 balls
                 if (!shootingPrepared) {
                     prepareForShooting();
                     shootingPrepared = true;
+                    //override.reset();
                 }
-                if (!follower.isBusy()) {
-                    spindex.autoSort(outtake, detectedMotifId, turret,"GPP");
-                }
-                if (spindex.isAutoSortComplete()) {
-                    spindex.resetAutoSort();
+                if (!follower.isBusy() && shootBalls()) {
                     shootingPrepared = false;
-                    //follower.followPath(paths.Leave, true);
+                    follower.followPath(paths.Leave, true);
                     pathState = 11;
                 }
                 break;
@@ -588,7 +519,6 @@ public class BS12 extends OpMode {
 
             case 12: // Done
                 outtake.setRPM(0);
-                turret.setPower(0);
                 intakeEnabled = false;
                 kicker.down();
                 requestOpModeStop();
@@ -596,7 +526,6 @@ public class BS12 extends OpMode {
 
             default:
                 outtake.setRPM(0);
-                turret.setPower(0);
                 intakeEnabled = false;
                 break;
         }

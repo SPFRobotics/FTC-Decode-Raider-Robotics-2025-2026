@@ -4,9 +4,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
-import java.util.ArrayList;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.DualColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
 
 public class ColorSensorTest extends OpMode {
     DualColorFetch colorSensor = null;

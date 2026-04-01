@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

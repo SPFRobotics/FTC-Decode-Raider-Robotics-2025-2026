@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
-import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.closeRPM;
-import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.farRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake.closeRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -15,13 +15,13 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Assets.Button;
-import org.firstinspires.ftc.teamcode.Subsystems.ColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
-import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.KickstandServo;
-import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
-import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.Depreciated.ColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextIntake;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickstandServo;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
 
 @Disabled
 //@TeleOp(name = "Field Centric TeleOp")

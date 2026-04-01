@@ -1,16 +1,11 @@
 package org.firstinspires.ftc.teamcode.Game;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.closeRPM;
-import static org.firstinspires.ftc.teamcode.Subsystems.NextOuttake.farRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake.closeRPM;
+import static org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake.farRPM;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.Path;
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,16 +13,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.Chassis;
-import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
-import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
-import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.Turret;
-import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
+import org.firstinspires.ftc.teamcode.Assets.Chassis;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.DualColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextIntake;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Limelight;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage;
 import org.firstinspires.ftc.teamcode.Assets.Button;
 
 import java.util.List;

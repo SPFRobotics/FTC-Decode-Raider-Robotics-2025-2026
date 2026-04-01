@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Testing;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
 
 @Disabled
 public class SpindexStress extends LinearOpMode {

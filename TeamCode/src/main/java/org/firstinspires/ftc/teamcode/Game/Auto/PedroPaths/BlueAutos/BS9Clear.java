@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Game.Auto.PedroPaths.BlueAutos;
 
-import static org.firstinspires.ftc.teamcode.Subsystems.PoseStorage.IntakeSpeed;
+import static org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage.IntakeSpeed;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -9,8 +9,8 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
-import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.DualColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.LedLights;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -19,13 +19,13 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
-import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
-import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.Turret;
-import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextIntake;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Limelight;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage;
 
 @Autonomous(name = "Blue Short 9", group = "BlueAutos", preselectTeleOp = "Tele-Op Blue")
 @Configurable

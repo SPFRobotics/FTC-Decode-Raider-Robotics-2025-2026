@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
 
 import static org.firstinspires.ftc.teamcode.Testing.TurretSpinBenchmark.TurretSpinBenchmarkConfig.speed;
 

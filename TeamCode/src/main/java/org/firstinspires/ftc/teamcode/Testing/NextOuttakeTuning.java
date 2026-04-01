@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
 
 import java.util.List;
 

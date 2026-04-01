@@ -14,15 +14,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.DualColorFetch;
-import org.firstinspires.ftc.teamcode.Subsystems.NextIntake;
-import org.firstinspires.ftc.teamcode.Subsystems.KickerSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.LedLights;
-import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.Subsystems.NextOuttake;
-import org.firstinspires.ftc.teamcode.Subsystems.PoseStorage;
-import org.firstinspires.ftc.teamcode.Subsystems.NextSpindex;
-import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.DualColorFetch;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextIntake;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickerSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.LedLights;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Limelight;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage;
+import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
+import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.Turret;
 
 @Autonomous(name = "Red Far 12", group = "RedAutos", preselectTeleOp = "Tele-Op Red")
 @Configurable
