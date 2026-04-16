@@ -23,7 +23,7 @@ public class Intake {
     // Constructor - initializes the intake motor
     public Intake(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "IntakeMotor");
-        intakeMotor.setCurrentAlert(7.7,  CurrentUnit.AMPS);
+        intakeMotor.setCurrentAlert(8.5,  CurrentUnit.AMPS);
         /*
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

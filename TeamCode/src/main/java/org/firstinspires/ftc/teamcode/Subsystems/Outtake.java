@@ -13,9 +13,9 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.*;
 public class Outtake {
     @Config
     public static class OuttakeConfig{
-        public static double farRPM = 5333.3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333;
+        public static double farRPM = 2700;
         //public static double closeRPM = 2600;
-        public static double closeRPM = 2700;
+        public static double closeRPM = 2000;
         public static double[] pidf = {268, 14.99, 0, 14.99};
         public static double gearRatio = 18.0/16.0;
 
@@ -198,7 +198,7 @@ public class Outtake {
         if (x){
             // Phase 1: Wait for flywheel RPM, then kick up and start the timer
 
-            if (!launched && Math.abs(RPM-getRPM()) <=100){
+            if (!launched && Math.abs(RPM-getRPM()) <= 100){
                 kicker.up();
                 launched = true;
                 interval.reset(); // Timer starts when kick actually begins
