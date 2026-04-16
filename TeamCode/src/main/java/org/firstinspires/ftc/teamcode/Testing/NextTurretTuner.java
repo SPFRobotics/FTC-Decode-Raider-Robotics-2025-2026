@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextTurret;
 
-@Disabled
+//@Disabled
 @TeleOp(name = "NextTurret Tuner", group = "Testing")
 public class NextTurretTuner extends OpMode {
 
