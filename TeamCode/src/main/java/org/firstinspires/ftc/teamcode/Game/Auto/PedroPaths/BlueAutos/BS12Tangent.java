@@ -170,10 +170,14 @@ public class BS12Tangent extends OpMode {
         intake.periodic();
         follower.update();
         leds.cycleColors(10);
+
+        /*
         turret.lockToAngle(pathState >= 8 ?
                 NextTurret.turretShortLockTri :
                 NextTurret.turretShortLockLine);
-        turret.periodic();
+
+         */
+        turret.periodic(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         autonomousPathUpdate();
         updateSpindexPosition();
         outtake.periodic();

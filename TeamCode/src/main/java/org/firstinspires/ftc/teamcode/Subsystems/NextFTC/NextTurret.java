@@ -108,6 +108,11 @@ public class NextTurret implements Subsystem {
     public void periodic() {
         motor.setPower(controlSystem.calculate(motor.getState()));
     }
+    public void periodic(double robotX, double robotY, double robotHeading) {
+        motor.setPower(controlSystem.calculate(motor.getState()));
+        update(robotX, robotY, robotHeading);
+    }
+
 
     // ---- Robot Pose / Alignment Update ----
 
