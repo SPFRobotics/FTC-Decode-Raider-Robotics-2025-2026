@@ -177,6 +177,7 @@ public class BS12Tangent extends OpMode {
                 NextTurret.turretShortLockLine);
 
          */
+        //turret.periodic
         turret.periodic(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         autonomousPathUpdate();
         updateSpindexPosition();
