@@ -27,9 +27,9 @@ public class NextTurret implements Subsystem {
     public static final NextTurret INSTANCE = new NextTurret();
 
     // Dashboard-tunable PID gains
-    public static double kP = 0.007;
-    public static double kI = 0;
-    public static double kD = 0.0009;
+    public static final double kP = 0.007;
+    public static final double kI = 0;
+    public static final double kD = 0.0009;
 
     // Dashboard-tunable power limit and correction settings
     public static double turretPower = 0.8;
