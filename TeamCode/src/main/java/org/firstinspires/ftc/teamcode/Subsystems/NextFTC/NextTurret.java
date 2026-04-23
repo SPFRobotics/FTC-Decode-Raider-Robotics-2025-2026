@@ -83,6 +83,7 @@ public class NextTurret implements Subsystem {
 
     private final ElapsedTime tagLostTimer = new ElapsedTime();
     private boolean tagLostTimerRunning = false;
+    private boolean firstLimelightFrame = true;
 
     private NextTurret() {}
 
@@ -102,6 +103,7 @@ public class NextTurret implements Subsystem {
         lastPipeline = -1;
         lastTrackedTagId = -1;
         tagLostTimerRunning = false;
+        firstLimelightFrame = true;
     }
 
     @Override
@@ -141,6 +143,9 @@ public class NextTurret implements Subsystem {
             filteredTx = 0;
             tagLostTimerRunning = false;
         } else if (shootingTagTx != null) {
+            if (state != AlignmentMode.Limelight) {
+                firstLimelightFrame = true;
+            }
             state = AlignmentMode.Limelight;
             tagLostTimerRunning = false;
         } else if (state == AlignmentMode.Limelight) {
@@ -282,8 +287,9 @@ public class NextTurret implements Subsystem {
         double adjustedTx = -tagTx + limelightAngularOffset;
 
         int posError = (int) Math.abs(motor.getCurrentPosition() - targetPositionTicks);
-        if (posError < correctionThresholdTicks) {
+        if (firstLimelightFrame || posError < correctionThresholdTicks) {
             filteredTx = adjustedTx;
+            firstLimelightFrame = false;
         }
 
 
