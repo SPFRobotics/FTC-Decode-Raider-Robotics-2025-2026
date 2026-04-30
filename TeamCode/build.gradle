@@ -83,5 +83,7 @@ dependencies {
     implementation 'dev.nextftc:control:1.0.0'
     implementation 'dev.nextftc:bindings:1.0.1'
 
+    implementation 'com.skeletonarmyftc.marrow:core:1.1.0'
+
 
 }

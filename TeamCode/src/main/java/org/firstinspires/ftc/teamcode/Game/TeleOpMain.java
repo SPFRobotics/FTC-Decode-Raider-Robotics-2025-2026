@@ -5,12 +5,15 @@ import static org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake.farR
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Point;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import com.skeletonarmy.marrow.zones.PolygonZone;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Assets.PedroPathing.Constants;
@@ -42,6 +45,10 @@ public class TeleOpMain extends LinearOpMode {
     LedLights leds = null;
     List<LynxModule> allHubs = null;
 
+    //Shooting Zones (Marrow)
+    final PolygonZone farLaunchZone = new PolygonZone(new Point(48, 0), new Point(71, 23), new Point(93, 0));
+    final PolygonZone closeLaunchZone = new PolygonZone(new Point(0, 144), new Point(71, 71), new Point(144, 144));
+    final PolygonZone robotZone = new PolygonZone(18, 18);
 
     //Pedro Pathing
     Follower follower;
@@ -141,6 +148,10 @@ public class TeleOpMain extends LinearOpMode {
             follower.update();
             currentPose = follower.getPose();
 
+            //Sync robot zone with current pose for shooting zone checks
+            robotZone.setPosition(currentPose.getX(), currentPose.getY());
+            robotZone.setRotation(currentPose.getHeading());
+
             /*************************************Drive Train Control**************************************/
             //Using Pedro Pathing for Tele-Op drive
             //Allows speed to be halved
@@ -203,9 +214,10 @@ public class TeleOpMain extends LinearOpMode {
             }*/
 
             /*********************Kicker and index emptying logic**********************/
+            boolean inShootingZone = robotZone.isInside(farLaunchZone) || robotZone.isInside(closeLaunchZone);
             boolean crossWasPressed = gamepad2.crossWasPressed();
-            kicker.automate(crossWasPressed && spindex.isOuttakeing());
-            if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0) {
+            kicker.automate(crossWasPressed && spindex.isOuttakeing() && inShootingZone);
+            if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0 && inShootingZone) {
                 spindex.clearBall(spindex.getIndex());
             }
             /**************************************************************************/
