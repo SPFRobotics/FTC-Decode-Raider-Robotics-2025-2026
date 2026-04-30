@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.PoseStorage;
 import org.firstinspires.ftc.teamcode.Assets.Button;
 
 import java.util.List;
-@Disabled
+//@Disabled
 @TeleOp(name="Tele-Op Main")
 public class TeleOpMain extends LinearOpMode {
     //Hardware Devices
@@ -164,7 +164,7 @@ public class TeleOpMain extends LinearOpMode {
                 if (gamepad1.touchpadWasPressed()){
                     follower.startTeleopDrive();
                 }
-                follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
+                follower.setTeleOpDrive(gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
             }
             else if (gamepad1.touchpadWasPressed()){
                 holdingPosition = new Pose(currentPose.getX(), currentPose.getY(), currentPose.getHeading());

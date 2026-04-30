@@ -135,7 +135,7 @@ public class TeleBlue extends LinearOpMode {
                 if (gamepad1.touchpadWasPressed()){
                     follower.startTeleopDrive();
                 }
-                follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true);
+                follower.setTeleOpDrive(gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true);
             }
             else if (gamepad1.touchpadWasPressed()){
                 holdingPosition = new Pose(currentPose.getX(), currentPose.getY(), currentPose.getHeading());

@@ -14,7 +14,6 @@ import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Depreciated.ColorFetch;
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.DualColorFetch;
@@ -47,9 +46,8 @@ public class NextSpindex implements Subsystem {
     public static double[] outtakePos = {180 + posOffset, 300 + posOffset, 60 + posOffset};
 
     public static double ballDistanceThreshold = 2.3;
-    public static double positionToleranceTicks = 8;
+    public static double positionToleranceDeg = 5.0;
 
-    public static final double ENCODER_TICKS = 537.7;
     private static final double MAX_VOLTAGE = 3.216;
 
     public static final String motif21Pattern = "GPP";
@@ -60,10 +58,19 @@ public class NextSpindex implements Subsystem {
     private AnalogInput analogEncoder;
     private ControlSystem controlSystem;
 
-    private double offset = 0;
     private int index = 0;
     private double error = 0;
-    private double targetPos = 0;
+    private double targetDeg = 0;
+
+    // Absolute encoder tracking for velocity estimation
+    private double prevAbsDeg = 0;
+    private long prevTimeNanos = 0;
+    private double absVelocityDegPerSec = 0;
+
+    // Cumulative (unwrapped) position tracking for PID
+    // This avoids the PID seeing a jump from 359->1 as a huge error
+    private double cumulativeDeg = 0;
+    private double cumulativeTarget = 0;
 
     private boolean outtakeMode = false;
     private boolean autoLoadMode = false;
@@ -91,7 +98,6 @@ public class NextSpindex implements Subsystem {
     @Override
     public void initialize() {
         analogEncoder = ActiveOpMode.hardwareMap().get(AnalogInput.class, "spindexPos");
-        offset = AngleUnit.normalizeDegrees(analogEncoder.getVoltage() / MAX_VOLTAGE * 360.0);
 
         controlSystem = ControlSystem.builder()
                 .posPid(kP, kI, kD)
@@ -100,6 +106,17 @@ public class NextSpindex implements Subsystem {
         controlSystem.setGoal(new KineticState(0, 0, 0));
 
         motor.zeroed();
+
+        // Initialize absolute encoder tracking
+        double initDeg = readAbsoluteDegrees();
+        prevAbsDeg = initDeg;
+        prevTimeNanos = System.nanoTime();
+        absVelocityDegPerSec = 0;
+        cumulativeDeg = initDeg;
+        cumulativeTarget = initDeg;
+
+        // Set the control system goal to current position (no movement on init)
+        controlSystem.setGoal(new KineticState(cumulativeDeg, 0, 0));
 
         index = 0;
         outtakeMode = false;
@@ -112,31 +129,72 @@ public class NextSpindex implements Subsystem {
 
     @Override
     public void periodic() {
-        motor.setPower(controlSystem.calculate(motor.getState()));
+        updateAbsoluteEncoder();
+        KineticState currentState = new KineticState(cumulativeDeg, absVelocityDegPerSec);
+        motor.setPower(controlSystem.calculate(currentState));
+    }
+
+    // ---- Absolute Encoder Helpers ----
+
+    /**
+     * Reads the raw absolute encoder angle in degrees [0, 360).
+     */
+    private double readAbsoluteDegrees() {
+        return analogEncoder.getVoltage() / MAX_VOLTAGE * 360.0;
+    }
+
+    /**
+     * Updates the cumulative (unwrapped) position and velocity from the absolute encoder.
+     * Called every loop in periodic().
+     */
+    private void updateAbsoluteEncoder() {
+        double currentAbsDeg = readAbsoluteDegrees();
+        long currentTimeNanos = System.nanoTime();
+
+        // Compute the wrapped delta (shortest path) from previous reading
+        double delta = normalizeDeg(currentAbsDeg - prevAbsDeg);
+        cumulativeDeg += delta;
+
+        // Estimate velocity (degrees per second)
+        double dtSec = (currentTimeNanos - prevTimeNanos) / 1_000_000_000.0;
+        if (dtSec > 0) {
+            absVelocityDegPerSec = delta / dtSec;
+        }
+
+        prevAbsDeg = currentAbsDeg;
+        prevTimeNanos = currentTimeNanos;
+    }
+
+    /**
+     * Normalizes a degree value to the range [-180, 180).
+     */
+    private double normalizeDeg(double deg) {
+        deg = deg % 360.0;
+        if (deg >= 180.0) deg -= 360.0;
+        if (deg < -180.0) deg += 360.0;
+        return deg;
     }
 
     // ---- Position Control ----
 
     /**
      * Moves the spindex to the target angle (degrees) using the shortest path.
-     * Calculates the wrapped error and sets an absolute tick target for the PID.
+     * Calculates the wrapped error and sets an absolute cumulative target for the PID.
      */
     public void moveToPos(double targetDegrees) {
-        double currentTicks = motor.getCurrentPosition() + (offset / 360.0 * ENCODER_TICKS);
-        double targetTicks = targetDegrees / 360.0 * ENCODER_TICKS;
-        error = normalizeEncoder(targetTicks - currentTicks);
-        targetPos = motor.getCurrentPosition() + error;
+        targetDeg = targetDegrees;
 
-        controlSystem.setGoal(new KineticState(targetPos, 0, 0));
-    }
+        // Compute the shortest-path error from current absolute position to target
+        double currentAbsDeg = readAbsoluteDegrees();
+        error = normalizeDeg(targetDegrees - currentAbsDeg);
 
-    private double normalizeEncoder(double ticks) {
-        return ((ticks + ENCODER_TICKS / 2) % ENCODER_TICKS + ENCODER_TICKS) % ENCODER_TICKS - ENCODER_TICKS / 2;
+        // Set the cumulative target by adding the error to the current cumulative position
+        cumulativeTarget = cumulativeDeg + error;
+        controlSystem.setGoal(new KineticState(cumulativeTarget, 0, 0));
     }
 
     public boolean isBusy() {
-        return !controlSystem.isWithinTolerance(
-                new KineticState(positionToleranceTicks, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
+        return Math.abs(cumulativeDeg - cumulativeTarget) > positionToleranceDeg;
     }
 
     // ---- Command Factories ----
@@ -451,12 +509,27 @@ public class NextSpindex implements Subsystem {
 
     // ---- Getters ----
 
+    /**
+     * Returns the raw absolute encoder angle in degrees [0, 360).
+     */
     public double getPos() {
-        return analogEncoder.getVoltage() / MAX_VOLTAGE * 360.0;
+        return readAbsoluteDegrees();
     }
 
+    /**
+     * Returns the unwrapped cumulative position in degrees (used by the PID).
+     */
+    public double getCumulativePos() {
+        return cumulativeDeg;
+    }
+
+    /**
+     * Returns the normalized absolute position in degrees [0, 360).
+     */
     public double getNormAngPos() {
-        return AngleUnit.normalizeDegrees((motor.getCurrentPosition() / ENCODER_TICKS * 360.0) + offset);
+        double norm = cumulativeDeg % 360.0;
+        if (norm < 0) norm += 360.0;
+        return norm;
     }
 
     public double getError() {
@@ -468,7 +541,7 @@ public class NextSpindex implements Subsystem {
     }
 
     public double getVelocity() {
-        return motor.getVelocity();
+        return absVelocityDegPerSec;
     }
 
     public double getAmps() {
@@ -479,26 +552,28 @@ public class NextSpindex implements Subsystem {
         return analogEncoder.getVoltage();
     }
 
-    public boolean atTarget(int tolerance) {
-        return Math.abs(error) <= tolerance;
+    public boolean atTarget(double toleranceDeg) {
+        return Math.abs(cumulativeDeg - cumulativeTarget) <= toleranceDeg;
     }
 
     // ---- Telemetry ----
 
     public void showTelemetry(Telemetry telemetry) {
-        telemetry.addData("Spindex Position (ticks)", "%.0f", motor.getCurrentPosition());
-        telemetry.addData("Spindex Norm Angle", "%.1f°", getNormAngPos());
-        telemetry.addData("Spindex Abs Encoder", "%.1f°", getPos());
-        telemetry.addData("Spindex Error", "%.1f", error);
+        telemetry.addData("Spindex Abs Encoder", "%.1f°", readAbsoluteDegrees());
+        telemetry.addData("Spindex Cumulative Pos", "%.1f°", cumulativeDeg);
+        telemetry.addData("Spindex Target", "%.1f°", cumulativeTarget);
+        telemetry.addData("Spindex Error", "%.1f°", cumulativeDeg - cumulativeTarget);
+        telemetry.addData("Spindex Velocity", "%.1f°/s", absVelocityDegPerSec);
         telemetry.addData("Spindex Power", "%.3f", getPower());
         telemetry.addData("Slot Colors", Arrays.toString(slotColors));
     }
 
     public void showTelemetry(MultipleTelemetry telemetry) {
-        telemetry.addData("Spindex Position (ticks)", "%.0f", motor.getCurrentPosition());
-        telemetry.addData("Spindex Norm Angle", "%.1f°", getNormAngPos());
-        telemetry.addData("Spindex Abs Encoder", "%.1f°", getPos());
-        telemetry.addData("Spindex Error", "%.1f", error);
+        telemetry.addData("Spindex Abs Encoder", "%.1f°", readAbsoluteDegrees());
+        telemetry.addData("Spindex Cumulative Pos", "%.1f°", cumulativeDeg);
+        telemetry.addData("Spindex Target", "%.1f°", cumulativeTarget);
+        telemetry.addData("Spindex Error", "%.1f°", cumulativeDeg - cumulativeTarget);
+        telemetry.addData("Spindex Velocity", "%.1f°/s", absVelocityDegPerSec);
         telemetry.addData("Spindex Power", "%.3f", getPower());
         telemetry.addData("Slot Colors", Arrays.toString(slotColors));
     }

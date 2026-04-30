@@ -160,7 +160,7 @@ public class NextSpindexTuning extends LinearOpMode {
             telemetry.addData("kD", NextSpindex.kD);
             telemetry.addData("kS (static FF)", NextSpindex.kS);
             telemetry.addData("kV (vel FF)", NextSpindex.kV);
-            telemetry.addData("Tolerance", NextSpindex.positionToleranceTicks);
+            telemetry.addData("Tolerance (deg)", NextSpindex.positionToleranceDeg);
             telemetry.addLine("");
             telemetry.addData("Current (A)", "%.2f", spindex.getAmps());
             telemetry.addData("Loop ms", "%.1f", loopTime);
