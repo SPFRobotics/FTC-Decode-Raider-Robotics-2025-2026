@@ -5,7 +5,7 @@ import static org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake.farR
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Point;
+import com.skeletonarmy.marrow.zones.Point;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
