@@ -62,9 +62,9 @@ public class TeleBlue extends LinearOpMode {
 
     Button autoAimTurretButton = new Button();
 
-    FtcDashboard dash = FtcDashboard.getInstance();
-    Telemetry dashBoardTele = dash.getTelemetry();
-    MultipleTelemetry multiTelemetry = new MultipleTelemetry();
+    FtcDashboard dash;
+    Telemetry dashBoardTele;
+    MultipleTelemetry multiTelemetry;
 
     double speedFactor = 1;
     boolean fieldCentric = true;
@@ -74,6 +74,11 @@ public class TeleBlue extends LinearOpMode {
     int kickerCount = 1;
 
     public void runOpMode(){
+        // Initialize dashboard
+        dash = FtcDashboard.getInstance();
+        dashBoardTele = dash.getTelemetry();
+        multiTelemetry = new MultipleTelemetry();
+
         intake.initialize();
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);

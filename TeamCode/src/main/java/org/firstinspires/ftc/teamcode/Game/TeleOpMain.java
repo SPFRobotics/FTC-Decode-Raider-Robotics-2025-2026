@@ -68,9 +68,9 @@ public class TeleOpMain extends LinearOpMode {
     Button autoAimTurretButton = new Button();
 
     //Telemetry
-    FtcDashboard dash = FtcDashboard.getInstance();
-    Telemetry dashBoardTele = dash.getTelemetry();
-    MultipleTelemetry multiTelemetry = new MultipleTelemetry();
+    FtcDashboard dash;
+    Telemetry dashBoardTele;
+    MultipleTelemetry multiTelemetry;
 
     //Other Varibles
     //Multiplys the motor power by a certain amount to lower or raise the speed of the motor
@@ -83,6 +83,11 @@ public class TeleOpMain extends LinearOpMode {
     //boolean autoLaunch = false;
 
     public void runOpMode(){
+        // Initialize dashboard
+        dash = FtcDashboard.getInstance();
+        dashBoardTele = dash.getTelemetry();
+        multiTelemetry = new MultipleTelemetry();
+
         // Initialize subsystems
         intake.initialize();
         limelight = new Limelight(hardwareMap);
