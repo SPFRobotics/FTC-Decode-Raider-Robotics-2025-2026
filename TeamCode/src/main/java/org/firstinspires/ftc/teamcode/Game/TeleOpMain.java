@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.OuttakeConfig.fa
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.bylazar.gamepad.PanelsGamepad;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -83,6 +84,9 @@ public class TeleOpMain extends LinearOpMode {
     int kickerCount = 1;
     //boolean autoLaunch = false;
 
+    private final PanelsGamepad g1Manager = PanelsGamepad.INSTANCE;
+    private final PanelsGamepad g2Manager = PanelsGamepad.INSTANCE;
+
     public void runOpMode(){
         // Initialize subsystems
         intake = new Intake(hardwareMap);
@@ -151,17 +155,20 @@ public class TeleOpMain extends LinearOpMode {
             //Allows speed to be halved
             speedFactor = 0.50;
 
+            com.qualcomm.robotcore.hardware.Gamepad g1Combined = PanelsGamepad.INSTANCE.getFirstManager().asCombinedFTCGamepad(gamepad1);
+            com.qualcomm.robotcore.hardware.Gamepad g2Combined = PanelsGamepad.INSTANCE.getSecondManager().asCombinedFTCGamepad(gamepad2);
 
-            /*double y = -gamepad1.left_stick_y * speedFactor; // Remember, Y stick is reversed!
-            double x = gamepad1.left_stick_x * speedFactor;
-            double rx = gamepad1.right_stick_x * speedFactor;*/
+            double y = (gamepad1.left_stick_y + g1Combined.left_stick_y)* speedFactor; // Remember, Y stick is reversed!
+            double x = (gamepad1.left_stick_x + g1Combined.left_stick_x)* speedFactor;
+            double rx = (gamepad1.right_stick_x + g1Combined.right_stick_x)* speedFactor;
+
 
             // When following a path, let the follower control the drive; chassis would overwrite and cause shuddering
             if (!holdPos.toggle(gamepad1.touchpad)) {
                 if (gamepad1.touchpadWasPressed()){
                     follower.startTeleopDrive();
                 }
-                follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
+                follower.setTeleOpDrive(-y, -x, -rx, true); // Remember, Y stick is reversed!
             }
             else if (gamepad1.touchpadWasPressed()){
                 holdingPosition = new Pose(currentPose.getX(), currentPose.getY(), currentPose.getHeading());
@@ -171,7 +178,7 @@ public class TeleOpMain extends LinearOpMode {
             /**********************************************************************************************/
 
             /*****************************Intake System************************************/
-            boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper);
+            boolean intakeActive = intakeButton.toggle(gamepad1.right_bumper) || intakeButton.toggle(g1Combined.right_bumper);
             if (intakeActive && !gamepad1.left_bumper) {
                 intake.intakeOn(true);
             } else if (gamepad1.left_bumper) {
@@ -199,22 +206,22 @@ public class TeleOpMain extends LinearOpMode {
             }*/
 
             /*********************Kicker and index emptying logic**********************/
-            boolean crossWasPressed = gamepad2.crossWasPressed();
-            kicker.automate(crossWasPressed && spindex.isOuttakeing());
+            boolean crossWasPressed = gamepad2.crossWasPressed() || g2Combined.cross;
+            kicker.automate(crossWasPressed);
             if (crossWasPressed && spindex.isOuttakeing() && outtake.getPower() != 0) {
                 spindex.clearBall(spindex.getIndex());
             }
             /**************************************************************************/
 
             /*******************************************Spindex Logic********************************************/
-            if (spindexRightBumper.press(gamepad2.right_bumper)) {
+            if (spindexRightBumper.press(gamepad2.right_bumper) || g2Combined.right_bumper) {
                 if (!spindex.isOuttakeing()) {
                     autoLoad.changeState(false);
                 }
                 spindex.addIndex();
                 missing = false;
             }
-            if (spindexLeftBumper.press(gamepad2.left_bumper)) {
+            if (spindexLeftBumper.press(gamepad2.left_bumper) || spindexLeftBumper.press(g2Combined.left_bumper)) {
                 if (!spindex.isOuttakeing()) {
                     autoLoad.changeState(false);
                 }
@@ -223,7 +230,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             //Sets either intake or outtake mode
-            spindex.setMode(spindexModeToggle.toggle(gamepad2.circle));
+            spindex.setMode(spindexModeToggle.toggle(gamepad2.circle) || spindexModeToggle.toggle(g2Combined.circle));
 
             //Automatic Loading
             spindex.setAutoLoadMode(autoLoad.toggle(gamepad2.share) && !spindex.isOuttakeing());
@@ -261,13 +268,13 @@ public class TeleOpMain extends LinearOpMode {
 
             /*********************Outtake Logic**********************/
             // Outtake control
-            if (gamepad2.dpad_up) {
+            if (gamepad2.dpad_up || g2Combined.dpad_up) {
                 setRPM = farRPM;
                 turret.setShortMode(false);
-            } else if (gamepad2.dpad_down) {
+            } else if (gamepad2.dpad_down || g2Combined.dpad_down) {
                 setRPM = closeRPM;
                 turret.setShortMode(true);
-            } else if (gamepad2.touchpad) {
+            } else if (gamepad2.touchpad || g2Combined.touchpad) {
                 setRPM = 0;
             }
             outtake.setRPM(setRPM);
