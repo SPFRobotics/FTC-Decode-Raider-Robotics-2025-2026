@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems.NextFTC;
 
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -16,7 +18,7 @@ public class NextIntake implements Subsystem {
 
     public static final NextIntake INSTANCE = new NextIntake();
 
-    private final MotorEx motor = new MotorEx("IntakeMotor");
+    private MotorEx motor;
 
     private final ElapsedTime jamTimer = new ElapsedTime();
     private final ElapsedTime waitOnStart = new ElapsedTime();
@@ -25,17 +27,28 @@ public class NextIntake implements Subsystem {
     private int lastEncoderPos = 0;
     private final ElapsedTime rpmTimer = new ElapsedTime();
 
-    // Commands
-    public final Command intakeOn = new SetPower(motor, 1.0).requires(this).named("IntakeOn");
-    public final Command intakeOff = new SetPower(motor, 0.0).requires(this).named("IntakeOff");
-    public final Command intakeReverse = new SetPower(motor, -1.0).requires(this).named("IntakeReverse");
+    // Commands (initialized in initialize() after motor is created)
+    public Command intakeOn;
+    public Command intakeOff;
+    public Command intakeReverse;
 
-    private NextIntake() {
-        motor.getMotor().setCurrentAlert(7.7, CurrentUnit.AMPS);
-    }
+    private NextIntake() {}
 
     @Override
     public void initialize() {
+        // No-arg version for Subsystem interface; should not be called directly.
+        throw new RuntimeException("Use initialize(HardwareMap) instead.");
+    }
+
+    /**
+     * Call this from your OpMode's init()/runOpMode() with the live hardwareMap.
+     */
+    public void initialize(HardwareMap hardwareMap) {
+        motor = new MotorEx(() -> hardwareMap.get(DcMotorEx.class, "IntakeMotor"));
+        motor.getMotor().setCurrentAlert(7.7, CurrentUnit.AMPS);
+        intakeOn = new SetPower(motor, 1.0).requires(this).named("IntakeOn");
+        intakeOff = new SetPower(motor, 0.0).requires(this).named("IntakeOff");
+        intakeReverse = new SetPower(motor, -1.0).requires(this).named("IntakeReverse");
         motor.setPower(0);
         isReversed = false;
         waitOnStart.reset();

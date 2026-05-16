@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextOuttake;
 public class TurretTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         NextOuttake outtake = NextOuttake.INSTANCE;
-        outtake.initialize();
+        outtake.initialize(hardwareMap);
         waitForStart();
 
         while (opModeIsActive()) {

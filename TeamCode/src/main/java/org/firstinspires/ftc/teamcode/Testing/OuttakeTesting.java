@@ -25,7 +25,7 @@ public class OuttakeTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
         NextOuttake outtake = NextOuttake.INSTANCE;
-        outtake.initialize();
+        outtake.initialize(hardwareMap);
         FtcDashboard dash = FtcDashboard.getInstance();
         Telemetry telemetry = dash.getTelemetry();
         telemetry.setMsTransmissionInterval(16);

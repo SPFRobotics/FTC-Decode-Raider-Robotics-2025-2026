@@ -4,6 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import dev.nextftc.control.ControlSystem;
@@ -54,7 +56,7 @@ public class NextTurret implements Subsystem {
 
     public enum AlignmentMode { Limelight, Odometry, Locked, OFF }
 
-    private final MotorEx motor = new MotorEx("turretMotor").reversed().brakeMode();
+    private MotorEx motor;
 
     private ControlSystem controlSystem;
     private Limelight limelight = null;
@@ -89,6 +91,15 @@ public class NextTurret implements Subsystem {
 
     @Override
     public void initialize() {
+        // No-arg version for Subsystem interface; should not be called directly.
+        throw new RuntimeException("Use initialize(HardwareMap) instead.");
+    }
+
+    /**
+     * Call this from your OpMode's init()/runOpMode() with the live hardwareMap.
+     */
+    public void initialize(HardwareMap hardwareMap) {
+        motor = new MotorEx(() -> hardwareMap.get(DcMotorEx.class, "turretMotor")).reversed().brakeMode();
         controlSystem = ControlSystem.builder()
                 .posPid(kP, kI, kD)
                 .build();
@@ -236,7 +247,7 @@ public class NextTurret implements Subsystem {
 
     public void setInitialAngle(double angleDeg) {
         angleDeg = wrapDeg360(angleDeg);
-        if (angleDeg > 330) angleDeg -= 360;
+        if (angleDeg > 270) angleDeg -= 360;
         this.initialAngleOffset = angleDeg;
     }
 
@@ -322,7 +333,7 @@ public class NextTurret implements Subsystem {
 
     private int degreesToTicks(double physicalDeg) {
         physicalDeg = wrapDeg360(physicalDeg);
-        if (physicalDeg > 330) physicalDeg -= 360;
+        if (physicalDeg > 270) physicalDeg -= 360;
         double encoderDeg = physicalDeg - initialAngleOffset;
         return (int) ((encoderDeg / 360.0) * TICKS * GEAR_RATIO);
     }

@@ -79,13 +79,13 @@ public class FieldCentricDrive extends LinearOpMode {
 
         // Initialize subsystems
         NextIntake intake = NextIntake.INSTANCE;
-        intake.initialize();
+        intake.initialize(hardwareMap);
         NextOuttake outtake = NextOuttake.INSTANCE;
-        outtake.initialize();
+        outtake.initialize(hardwareMap);
         KickerSpindex kicker = new KickerSpindex(hardwareMap);
         ColorFetch colorSensor = new ColorFetch(hardwareMap);
         NextSpindex spindex = NextSpindex.INSTANCE;
-        spindex.initialize();
+        spindex.initialize(hardwareMap);
         KickstandServo kickstand = new KickstandServo(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
 

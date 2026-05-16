@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Subsystems.NextFTC;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystems.OldSubsystems.KickerSpindex;
@@ -36,7 +38,7 @@ public class NextOuttake implements Subsystem {
 
     private static final int ENCODER_TICKS = 28;
 
-    private final MotorEx motor = new MotorEx("OuttakeMotor").reversed();
+    private MotorEx motor;
 
     private ControlSystem controlSystem;
 
@@ -62,6 +64,15 @@ public class NextOuttake implements Subsystem {
 
     @Override
     public void initialize() {
+        // No-arg version for Subsystem interface; should not be called directly.
+        throw new RuntimeException("Use initialize(HardwareMap) instead.");
+    }
+
+    /**
+     * Call this from your OpMode's init()/runOpMode() with the live hardwareMap.
+     */
+    public void initialize(HardwareMap hardwareMap) {
+        motor = new MotorEx(() -> hardwareMap.get(DcMotorEx.class, "OuttakeMotor")).reversed();
         controlSystem = ControlSystem.builder()
                 .velPid(kP, kI, kD)
                 .basicFF(kV, 0.0, kS)

@@ -29,7 +29,7 @@ public class PedroSimpleTest extends OpMode {
 
 
         turret.setGoalCoords(true);
-        turret.initialize();
+        turret.initialize(hardwareMap);
     }
 
     @Override

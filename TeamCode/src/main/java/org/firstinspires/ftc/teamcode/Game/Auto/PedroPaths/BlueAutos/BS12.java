@@ -78,17 +78,17 @@ public class BS12 extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(33.000, 134.442, Math.toRadians(180)));
         paths = new Paths(follower);
-        intake.initialize();
+        intake.initialize(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         outtake.setKicker(kicker);
-        outtake.initialize();
+        outtake.initialize(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
         turret.setGoalCoords(true);
         turret.setLimelight(limelight);
-        turret.initialize();
-        spindex.initialize();
+        turret.initialize(hardwareMap);
+        spindex.initialize(hardwareMap);
 
         spindex.setAutoSortActive(true);
 

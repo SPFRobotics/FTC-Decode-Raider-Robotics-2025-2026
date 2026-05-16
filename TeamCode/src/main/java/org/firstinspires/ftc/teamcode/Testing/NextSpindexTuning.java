@@ -40,7 +40,7 @@ public class NextSpindexTuning extends LinearOpMode {
         telemetry.setMsTransmissionInterval(20);
 
         NextSpindex spindex = NextSpindex.INSTANCE;
-        spindex.initialize();
+        spindex.initialize(hardwareMap);
 
         telemetry.addLine("=== NextSpindex PID Tuner ===");
         telemetry.addLine("Adjust kP/kI/kD in Dashboard under NextSpindex");
@@ -70,7 +70,7 @@ public class NextSpindexTuning extends LinearOpMode {
 
             // --- Rebuild PID with latest Dashboard values ---
             if (gamepad1.back && !prevBack) {
-                spindex.initialize();
+                spindex.initialize(hardwareMap);
                 spindex.moveToPos(targetAngle);
             }
             prevBack = gamepad1.back;

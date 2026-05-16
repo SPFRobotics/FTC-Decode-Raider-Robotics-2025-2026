@@ -35,7 +35,7 @@ public class NextOuttakeTuning extends LinearOpMode {
         telemetry.setMsTransmissionInterval(20);
 
         NextOuttake outtake = NextOuttake.INSTANCE;
-        outtake.initialize();
+        outtake.initialize(hardwareMap);
 
         telemetry.addLine("=== NextOuttake PID Tuner ===");
         telemetry.addLine("Adjust kP/kI/kD/kV/kS in Dashboard under NextOuttake");
@@ -59,7 +59,7 @@ public class NextOuttakeTuning extends LinearOpMode {
             loopTimer.reset();
 
             if (gamepad1.back && !prevBack) {
-                outtake.initialize();
+                outtake.initialize(hardwareMap);
                 if (targetRPM > 0) {
                     outtake.setRPM(targetRPM);
                 }

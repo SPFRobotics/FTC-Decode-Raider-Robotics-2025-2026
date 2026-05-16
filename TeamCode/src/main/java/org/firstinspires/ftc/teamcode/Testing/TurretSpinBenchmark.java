@@ -35,7 +35,7 @@ public class TurretSpinBenchmark extends OpMode {
         follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
         follower.startTeleopDrive();
         turret.setGoalCoords(true);
-        turret.initialize();
+        turret.initialize(hardwareMap);
         try {
             pen = new PrintWriter("/sdcard/turret.txt", "ASCII");
         }

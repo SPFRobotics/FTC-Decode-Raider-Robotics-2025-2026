@@ -24,7 +24,7 @@ public class TurretTest extends OpMode {
     }
     public void init(){
         turret.setGoalCoords(TurretTester.goal);
-        turret.initialize();
+        turret.initialize(hardwareMap);
 
 
 

@@ -89,17 +89,17 @@ public class TeleOpMain extends LinearOpMode {
         multiTelemetry = new MultipleTelemetry();
 
         // Initialize subsystems
-        intake.initialize();
+        intake.initialize(hardwareMap);
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
-        spindex.initialize();
+        spindex.initialize(hardwareMap);
         chassis = new Chassis(hardwareMap);
         leds = new LedLights(hardwareMap);
         //ZucskyLens huskyLens = new ZucskyLens(hardwareMap);
         turret.setGoalCoords(PoseStorage.blueAlliance);
         turret.setLimelight(limelight);
-        turret.initialize();
+        turret.initialize(hardwareMap);
         if (PoseStorage.turretValid) {
             turret.setInitialAngle(PoseStorage.turretStartPos);
         }
@@ -115,7 +115,7 @@ public class TeleOpMain extends LinearOpMode {
 
         follower.startTeleopDrive();
         outtake.setKicker(kicker);
-        outtake.initialize();
+        outtake.initialize(hardwareMap);
 
         //Set autoload and launch to true as default
         autoLoad.changeState(true);
@@ -180,7 +180,7 @@ public class TeleOpMain extends LinearOpMode {
                 if (gamepad1.touchpadWasPressed()){
                     follower.startTeleopDrive();
                 }
-                follower.setTeleOpDrive(gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
+                follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true); // Remember, Y stick is reversed!
             }
             else if (gamepad1.touchpadWasPressed()){
                 holdingPosition = new Pose(currentPose.getX(), currentPose.getY(), currentPose.getHeading());
@@ -299,7 +299,7 @@ public class TeleOpMain extends LinearOpMode {
             double rumbleRange = Math.abs(setRPM - outtake.getRPM());
             if (setRPM == closeRPM && rumbleRange <= 100) {
                 gamepad2.rumble(100);
-            } else if (setRPM == farRPM & rumbleRange <= 100) {
+            } else if (setRPM == farRPM && rumbleRange <= 100) {
                 gamepad2.rumble(100);
             } else {
                 gamepad2.stopRumble();

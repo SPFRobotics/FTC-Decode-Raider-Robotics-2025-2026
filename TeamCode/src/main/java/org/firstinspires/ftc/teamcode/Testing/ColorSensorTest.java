@@ -19,7 +19,7 @@ public class ColorSensorTest extends OpMode {
     public void init(){
         DualColorFetch colorFetch = new DualColorFetch(hardwareMap);
         spindex = NextSpindex.INSTANCE;
-        spindex.initialize();
+        spindex.initialize(hardwareMap);
     }
 
     public void loop(){

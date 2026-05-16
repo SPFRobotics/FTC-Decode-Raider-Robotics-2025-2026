@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.NextFTC.NextSpindex;
 public class SpindexStress extends LinearOpMode {
     public void runOpMode(){
         NextSpindex spindex = NextSpindex.INSTANCE;
-        spindex.initialize();
+        spindex.initialize(hardwareMap);
         waitForStart();
         while (opModeIsActive()){
             //spindex.moveToPos(NextSpindex.outtakePos[spindex.getIndex()], false);

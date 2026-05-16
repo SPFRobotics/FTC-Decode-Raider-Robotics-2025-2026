@@ -66,17 +66,17 @@ public class SLAMSLAMSLAM extends OpMode {
         follower.setStartingPose(new Pose(56.000, 8.000, Math.toRadians(180)));
         paths = new Paths(follower);
         pathTimer = new ElapsedTime();
-        intake.initialize();
+        intake.initialize(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         outtake.setKicker(kicker);
-        outtake.initialize();
+        outtake.initialize(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
         turret.setGoalCoords(true);
         turret.setLimelight(limelight);
-        turret.initialize();
-        spindex.initialize();
+        turret.initialize(hardwareMap);
+        spindex.initialize(hardwareMap);
 
         spindex.setAutoSortActive(true);
         turret.setAlignmentEnabled(true);

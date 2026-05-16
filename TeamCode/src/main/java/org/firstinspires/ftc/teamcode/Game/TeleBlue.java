@@ -79,16 +79,16 @@ public class TeleBlue extends LinearOpMode {
         dashBoardTele = dash.getTelemetry();
         multiTelemetry = new MultipleTelemetry();
 
-        intake.initialize();
+        intake.initialize(hardwareMap);
         limelight = new Limelight(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
-        spindex.initialize();
+        spindex.initialize(hardwareMap);
         chassis = new Chassis(hardwareMap);
         leds = new LedLights(hardwareMap);
         turret.setGoalCoords(true);
         turret.setLimelight(limelight);
-        turret.initialize();
+        turret.initialize(hardwareMap);
         turret.setTargetTag(20);
         if (PoseStorage.turretValid) {
             turret.setInitialAngle(PoseStorage.turretStartPos);
@@ -100,7 +100,7 @@ public class TeleBlue extends LinearOpMode {
 
         follower.startTeleopDrive();
         outtake.setKicker(kicker);
-        outtake.initialize();
+        outtake.initialize(hardwareMap);
 
         autoLoad.changeState(true);
 
@@ -152,7 +152,7 @@ public class TeleBlue extends LinearOpMode {
                 if (gamepad1.touchpadWasPressed()){
                     follower.startTeleopDrive();
                 }
-                follower.setTeleOpDrive(gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true);
+                follower.setTeleOpDrive(-gamepad1.left_stick_y * speedFactor, -gamepad1.left_stick_x * speedFactor, -gamepad1.right_stick_x * speedFactor, true);
             }
             else if (gamepad1.touchpadWasPressed()){
                 holdingPosition = new Pose(currentPose.getX(), currentPose.getY(), currentPose.getHeading());
@@ -253,7 +253,7 @@ public class TeleBlue extends LinearOpMode {
             double rumbleRange = Math.abs(setRPM - outtake.getRPM());
             if (setRPM == closeRPM && rumbleRange <= 100) {
                 gamepad2.rumble(100);
-            } else if (setRPM == farRPM & rumbleRange <= 100) {
+            } else if (setRPM == farRPM && rumbleRange <= 100) {
                 gamepad2.rumble(100);
             } else {
                 gamepad2.stopRumble();

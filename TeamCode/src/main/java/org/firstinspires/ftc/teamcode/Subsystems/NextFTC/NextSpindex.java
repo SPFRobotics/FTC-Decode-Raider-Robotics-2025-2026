@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Subsystems.NextFTC;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import dev.nextftc.control.ControlSystem;
@@ -10,7 +12,6 @@ import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
-import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -54,7 +55,7 @@ public class NextSpindex implements Subsystem {
     public static final String motif22Pattern = "PGP";
     public static final String motif23Pattern = "PPG";
 
-    private final MotorEx motor = new MotorEx("spindex").reversed().brakeMode();
+    private MotorEx motor;
     private AnalogInput analogEncoder;
     private ControlSystem controlSystem;
 
@@ -97,7 +98,16 @@ public class NextSpindex implements Subsystem {
 
     @Override
     public void initialize() {
-        analogEncoder = ActiveOpMode.hardwareMap().get(AnalogInput.class, "spindexPos");
+        // No-arg version for Subsystem interface; should not be called directly.
+        throw new RuntimeException("Use initialize(HardwareMap) instead.");
+    }
+
+    /**
+     * Call this from your OpMode's init()/runOpMode() with the live hardwareMap.
+     */
+    public void initialize(HardwareMap hardwareMap) {
+        motor = new MotorEx(() -> hardwareMap.get(DcMotorEx.class, "spindex")).reversed().brakeMode();
+        analogEncoder = hardwareMap.get(AnalogInput.class, "spindexPos");
 
         controlSystem = ControlSystem.builder()
                 .posPid(kP, kI, kD)

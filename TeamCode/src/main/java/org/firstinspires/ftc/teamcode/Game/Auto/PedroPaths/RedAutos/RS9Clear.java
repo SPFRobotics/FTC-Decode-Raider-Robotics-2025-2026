@@ -67,17 +67,17 @@ public class RS9Clear extends OpMode {
         follower.setStartingPose(new Pose(110.600, 133.900, Math.toRadians(0)));
         paths = new Paths(follower);
         pathTimer = new ElapsedTime();
-        intake.initialize();
+        intake.initialize(hardwareMap);
         kicker = new KickerSpindex(hardwareMap);
         outtake.setKicker(kicker);
-        outtake.initialize();
+        outtake.initialize(hardwareMap);
         colorSensor = new DualColorFetch(hardwareMap);
         leds = new LedLights(hardwareMap);
         limelight = new Limelight(hardwareMap);
         turret.setGoalCoords(false);
         turret.setLimelight(limelight);
-        turret.initialize();
-        spindex.initialize();
+        turret.initialize(hardwareMap);
+        spindex.initialize(hardwareMap);
 
         spindex.setAutoSortActive(true);
         turret.setAlignmentEnabled(true);

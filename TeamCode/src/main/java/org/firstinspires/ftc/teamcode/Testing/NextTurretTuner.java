@@ -29,7 +29,7 @@ public class NextTurretTuner extends OpMode {
     public void init() {
         multiTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         turret.setGoalCoords(TunerConfig.blueAlliance);
-        turret.initialize();
+        turret.initialize(hardwareMap);
     }
 
     @Override
